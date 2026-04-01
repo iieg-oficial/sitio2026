@@ -10,17 +10,22 @@ export default function DatosNuevos() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingData, setEditingData] = useState(null);
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetchDatosNuevos();
     }, []);
 
     const fetchDatosNuevos = async () => {
+        setLoading(true);
         try {
             const response = await api.get('/datos-nuevos');
             setDatosNuevos(response.data);
         } catch (error) {
             message.error('Error al cargar los datos nuevos');
+        }
+        finally {
+            setLoading(false);
         }
     };
 
