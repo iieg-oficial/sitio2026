@@ -20,6 +20,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "8000:8000"
     depends_on:
       - api
     networks:
@@ -36,7 +37,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-iieg_user} -d ${POSTGRES_DB:-iieg_portal}" ]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-iieg_user} -d ${POSTGRES_DB:-iieg_portal}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -49,7 +54,7 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5

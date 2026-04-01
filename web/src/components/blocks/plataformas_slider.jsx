@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-export default function PlataformasDestacado() {
+export default function PlataformasSlider() {
     const [plataformas, setPlataformas] = useState([])
     const location = useLocation()
 
