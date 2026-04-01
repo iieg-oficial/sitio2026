@@ -96,6 +96,12 @@ export default function MainLayout() {
             label: 'Plataformas',
             onClick: () => navigate('/plataformas')
         });
+        menuItems.push({
+            key: '/datos-nuevos',
+            icon: <MenuOutlined />,
+            label: 'Datos Nuevos',
+            onClick: () => navigate('/datos-nuevos')
+        });
     }
 
     const userMenuItems = [

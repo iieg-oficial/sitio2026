@@ -1,0 +1,167 @@
+import { useState, useEffect } from 'react';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import api from '@services/api';
+
+const { Title } = Typography;
+
+export default function DatosNuevos() {
+    const [datosNuevos, setDatosNuevos] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [editingData, setEditingData] = useState(null);
+    const [form] = Form.useForm();
+
+    useEffect(() => {
+        fetchDatosNuevos();
+    }, []);
+
+    const fetchDatosNuevos = async () => {
+        try {
+            const response = await api.get('/datos-nuevos');
+            setDatosNuevos(response.data);
+        } catch (error) {
+            message.error('Error al cargar los datos nuevos');
+        }
+    };
+
+    const handleCreate = () => {
+        setEditingData(null);
+        form.resetFields();
+        setIsModalVisible(true);
+    };
+
+    const handleEdit = (record) => {
+        setEditingData(record);
+        form.setFieldsValue(record);
+        setIsModalVisible(true);
+    };
+
+    const handleDelete = (record) => {
+        Modal.confirm({
+            title: '¿Está seguro de eliminar este dato nuevo?',
+            content: `Se eliminará el dato nuevo: ${record.titulo}`,
+            okText: 'Eliminar',
+            okType: 'danger',
+            cancelText: 'Cancelar',
+            onOk: async () => {
+                try {
+                    await api.delete(`/datos-nuevos/${record.id}`);
+                    message.success('Dato nuevo eliminado exitosamente');
+                    fetchDatosNuevos();
+                } catch (error) {
+                    message.error('Error al eliminar el dato nuevo');
+                }
+            }
+        });
+    };
+
+    const handleSubmit = async (values) => {
+        try {
+            if (editingData) {
+                await api.put(`/datos-nuevos/${editingData.id}`, values);
+                message.success('Dato nuevo actualizado exitosamente');
+            } else {
+                await api.post('/datos-nuevos/create', values);
+                message.success('Dato nuevo creado exitosamente');
+            }
+            setIsModalVisible(false);
+            fetchDatosNuevos();
+        } catch (error) {
+            message.error(editingData ? 'Error al actualizar el dato nuevo' : 'Error al crear el dato nuevo');
+        }
+    };
+
+    const columns = [
+        {
+            title: 'Número',
+            dataIndex: 'numero',
+            key: 'numero',
+            sorter: (a, b) => a.numero - b.numero
+        },
+        {
+            title: 'Descripción',
+            dataIndex: 'descripcion',
+            key: 'descripcion',
+            sorter: (a, b) => a.descripcion.localeCompare(b.descripcion)
+        },
+        {
+            title: 'Acciones',
+            key: 'actions',
+            render: (_, record) => (
+                <Space>
+                    <Button
+                        type="link"
+                        icon={<EditOutlined />}
+                        onClick={() => handleEdit(record)}
+                    >
+                        Editar
+                    </Button>
+                    <Button
+                        type="link"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleDelete(record)}
+                    >
+                        Eliminar
+                    </Button>
+                </Space>
+            )
+        }
+    ];
+
+    return (
+        <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                <Title level={2} style={{ margin: 0 }}>Administración de Datos Nuevos</Title>
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={handleCreate}
+                >
+                    Nuevo Dato
+                </Button>
+            </div>
+
+            <Card>
+                <Table
+                    columns={columns}
+                    dataSource={datosNuevos}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                        pageSize: 10,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} datos`
+                    }}
+                />
+            </Card>
+
+            <Modal
+                title={editingData ? 'Editar Dato' : 'Nuevo Dato'}
+                open={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                onOk={form.submit}
+                okText="Guardar"
+                cancelText="Cancelar"
+            >
+                <Form form={form} onFinish={handleSubmit} layout="vertical">
+                    <Form.Item
+                        name="numero"
+                        label="Número"
+                        rules={[{ required: true, message: 'Por favor ingrese el número' }]}
+                    >
+                        <Input type="number" />
+                    </Form.Item>
+                    <Form.Item
+                        name="descripcion"
+                        label="Descripción"
+                        rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
+                    >
+                        <Input.TextArea rows={4} />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </div>
+    );
+}
+        
