@@ -5,7 +5,7 @@ class PlataformasCreate(BaseModel):
     descripcion: str
     url: str
     imagen: str
-    destacada: bool
+    destacada: bool = False
     orden: int
 
 class PlataformasOut(BaseModel):
@@ -14,7 +14,7 @@ class PlataformasOut(BaseModel):
     descripcion: str
     url: str
     imagen: str
-    destacada: bool
+    destacada: bool = False
     orden: int
 
     class Config:
@@ -26,7 +26,7 @@ class PlataformasResponse(BaseModel):
     descripcion: str
     url: str
     imagen: str
-    destacada: bool
+    destacada: bool = False
     orden: int
 
     class Config:

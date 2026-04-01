@@ -10,5 +10,5 @@ class Plataformas(Base):
     descripcion = Column(String(300))
     url = Column(String(200))
     imagen = Column(String(200))
-    destacada = Column(Boolean, default=False)
-    orden = Column(Integer, default=0)
+    destacada = Column(Boolean, default=False, nullable=True)
+    orden = Column(Integer, default=0, nullable=True)

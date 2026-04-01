@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 
@@ -8,7 +8,8 @@ const { Title } = Typography;
 export default function Plataformas() {
     const [form] = Form.useForm();
     const [plataformas, setPlataformas] = useState([]);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [editingPlataforma, setEditingPlataforma] = useState(null);
 
     useEffect(() => {
@@ -16,24 +17,28 @@ export default function Plataformas() {
     }, []);
 
     const fetchPlataformas = async () => {
+        setLoading(true);
         try {
             const response = await api.get('/plataformas');
             setPlataformas(response.data);
         } catch (error) {
             message.error('Error al cargar plataformas');
         }
+        finally {
+            setLoading(false);
+        }
     };
 
     const handleCreate = () => {
         setEditingPlataforma(null);
         form.resetFields();
-        setIsModalVisible(true);
+        setModalVisible(true);
     };
 
     const handleEdit = (record) => {
         setEditingPlataforma(record);
         form.setFieldsValue(record);
-        setIsModalVisible(true);
+        setModalVisible(true);
     };
 
     const handleDelete = (record) => {
@@ -64,7 +69,7 @@ export default function Plataformas() {
                 await api.post('/plataformas/create', values);
                 message.success('Plataforma creada exitosamente');
             }
-            setIsModalVisible(false);
+            setModalVisible(false);
             fetchPlataformas();
         } catch (error) {
             message.error(editingPlataforma ? 'Error al actualizar plataforma' : 'Error al crear plataforma');
@@ -88,7 +93,8 @@ export default function Plataformas() {
             title: 'Destacada',
             dataIndex: 'destacada',
             key: 'destacada',
-            sorter: (a, b) => a.destacada.localeCompare(b.destacada)
+            render: (val) => val ? 'Sí' : 'No',
+            sorter: (a, b) => Number(a.destacada) - Number(b.destacada)
         },
         {
             title: 'Acciones',
@@ -144,17 +150,17 @@ export default function Plataformas() {
 
             <Modal
                 title={editingPlataforma ? 'Editar Plataforma' : 'Nueva Plataforma'}
-                open={isModalVisible}
-                onCancel={() => setIsModalVisible(false)}
+                open={modalVisible}
+                onCancel={() => setModalVisible(false)}
                 onOk={form.submit}
                 okText={editingPlataforma ? 'Actualizar' : 'Crear'}
                 cancelText="Cancelar"
             >
-                <Form form={form} onFinish={handleSubmit} layout="vertical">
+                <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{ destacada: false, orden: 0 }}>
                     <Form.Item
-                        name="nombre"
-                        label="Nombre"
-                        rules={[{ required: true, message: 'Por favor ingrese el nombre de la plataforma' }]}
+                        name="titulo"
+                        label="Titulo"
+                        rules={[{ required: true, message: 'Por favor ingrese el titulo de la plataforma' }]}
                     >
                         <Input />
                     </Form.Item>
@@ -182,14 +188,13 @@ export default function Plataformas() {
                     <Form.Item
                         name="destacada"
                         label="Destacada"
-                        rules={[{ required: true, message: 'Por favor ingrese si la plataforma es destacada' }]}
+                        valuePropName="checked"
                     >
-                        <Input type="checkbox" />
+                        <Checkbox>Destacada</Checkbox>
                     </Form.Item>
                     <Form.Item
                         name="orden"
                         label="Orden"
-                        rules={[{ required: true, message: 'Por favor ingrese el orden de la plataforma' }]}
                     >
                         <Input type="number" />
                     </Form.Item>

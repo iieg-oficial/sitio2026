@@ -21,6 +21,7 @@ import RevisionQueue from '@pages/RevisionQueue';
 import Posts from '@pages/Posts';
 import Subject from '@pages/Subject';
 import Paginas from '@pages/Paginas';
+import Plataformas from '@pages/Plataformas';
 
 const { DEV, VITE_GOOGLE_ANALYTICS_ID } = import.meta.env;
 
@@ -115,6 +116,14 @@ const router = createBrowserRouter([
                         element: (
                             <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
                                 <Paginas />
+                            </RoleProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'plataformas',
+                        element: (
+                            <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
+                                <Plataformas />
                             </RoleProtectedRoute>
                         )
                     },
