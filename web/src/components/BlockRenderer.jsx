@@ -2,9 +2,9 @@ import Carousel from './pageComponents/Carousel'
 import Plataformas from './pageComponents/Plataformas'
 import HeroBlock from './blocks/HeroBlock'
 import TextBlock from './blocks/TextBlock'
-import Contacto from './blocks/contacto'
-import PlataformasDestacado from './blocks/plataformasDestacado'
-import PlataformasSlider from './blocks/plataformas_slider'
+import Contacto from './home/contacto'
+import PlataformasDestacado from './home/plataformasDestacado'
+import PlataformasSlider from './home/plataformas_slider'
 
 const COMPONENT_MAP = {
     'carousel': Carousel,
