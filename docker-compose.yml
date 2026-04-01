@@ -1,0 +1,95 @@
+name: portal
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+      args:
+        VITE_NODE_ENV: ${VITE_NODE_ENV:-production}
+        VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:-}
+        VITE_WEB_API_URL: ${VITE_WEB_API_URL}
+        VITE_API_TIMEOUT: ${VITE_API_TIMEOUT:-10000}
+        VITE_APP_NAME: ${VITE_APP_NAME:-Portal}
+        VITE_ADMIN_API_URL: ${VITE_ADMIN_API_URL}
+        VITE_ADMIN_API_TIMEOUT: ${VITE_ADMIN_API_TIMEOUT:-10000}
+        VITE_ADMIN_APP_NAME: ${VITE_ADMIN_APP_NAME:-Administrador}
+    container_name: portal-nginx
+    env_file:
+      - ./nginx/.env
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+    networks:
+      - portal_network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: portal-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-iieg_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-iieg_password}
+      POSTGRES_DB: ${POSTGRES_DB:-iieg_portal}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-iieg_user} -d ${POSTGRES_DB:-iieg_portal}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - portal_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: portal-redis
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - portal_network
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: portal-api
+    command: ./scripts/start_backend.sh
+    env_file:
+      - ./.env
+    volumes:
+      - ./api:/app
+      - ../acervo/nginx/ssl/acervo.crt:/usr/local/share/ca-certificates/acervo.crt:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-iieg_user}:${POSTGRES_PASSWORD:-iieg_password}@postgres:5432/${POSTGRES_DB:-iieg_portal}
+      REDIS_URL: redis://redis:6379/0
+      ACERVO_ENDPOINT: ${ACERVO_ENDPOINT}
+      ACERVO_PUBLIC_ENDPOINT: ${ACERVO_PUBLIC_ENDPOINT}
+      ACERVO_ACCESS_KEY: ${ACERVO_ACCESS_KEY}
+      ACERVO_SECRET_KEY: ${ACERVO_SECRET_KEY}
+      ACERVO_BUCKET_NAME: ${ACERVO_BUCKET_NAME:-iieg-acervo}
+      ACERVO_USE_SSL: ${ACERVO_USE_SSL:-false}
+      REQUESTS_CA_BUNDLE: /usr/local/share/ca-certificates/acervo.crt
+      SSL_CERT_FILE: /usr/local/share/ca-certificates/acervo.crt
+    networks:
+      - portal_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  portal_network:
+    driver: bridge
