@@ -20,14 +20,14 @@ export default function PlataformasSlider() {
     }, [location])
 
     return (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="">
             <Swiper
             modules={[Navigation, Pagination, Autoplay]}
             navigation
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000 }}
             spaceBetween={20}
-            slidesPerView={1}
+            slidesPerView={3}
             >
             {plataformas.map(plataforma => (
                         <SwiperSlide key={plataforma.id}>

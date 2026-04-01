@@ -66,22 +66,22 @@ function HomePage() {
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
             <section className="container-fluid relative">
-                <Link to="/mapalab" className="btn btn-primary z-10">Quiero explorar MapaLab</Link>
-                <img src="/images/mapalab.png" alt="MapaLab" className="absolute top-0 left-0 w-full h-full object-cover" />
+                <Link to="/mapalab" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Quiero explorar MapaLab</Link>
+                <img src="/logo_iieg.svg" alt="MapaLab" className="w-full h-full object-cover" />
             </section>
             <section className="w-10/12 mx-auto">
                 <BlockRenderer block={{ type: 'datos_nuevos' }} />
             </section>
             <section className="w-8/12 mx-auto">
                 <BlockRenderer block={{ type: 'flashes' }} />
-                <Link to="/flashes" className="btn btn-primary">Ver todos los flashes</Link>
+                <Link to="/flashes" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Ver todos los flashes</Link>
             </section>
             <section className="w-11/12 mx-auto border rounded-lg bg-amber-300 h-5">
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
             </section>
             <section className="w-8/12 mx-auto">
                 <BlockRenderer block={{ type: 'mapas' }} />
-                <Link to="/mapas" className="btn btn-primary">Ver todos los mapas</Link>
+                <Link to="/mapas" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Ver todos los mapas</Link>
             </section>
             <section className="container-fluid mx-auto grid grid-cols-3">
                 <Link to="/transparencia" className="btn btn-primary">Transparencia</Link>
