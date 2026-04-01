@@ -9,6 +9,7 @@ from app.schemas.user import LoginRequest, LoginResponse, UsuarioCreate, Usuario
 from app.schemas.posts import PostCreate, PostOut, PostResponse
 from app.schemas.subject import SubjectCreate, SubjectOut, SubjectResponse
 from app.schemas.plataformas import PlataformasCreate, PlataformasOut, PlataformasResponse
+from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosResponse, DatosNuevosOut
 
 __all__ = [
     "UsuarioCreate",
@@ -33,4 +34,7 @@ __all__ = [
     "PlataformasCreate",
     "PlataformasOut",
     "PlataformasResponse",
+    "DatosNuevosCreate",
+    "DatosNuevosOut",
+    "DatosNuevosResponse",
 ]

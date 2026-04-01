@@ -7,6 +7,7 @@ from app.models.posts import Posts
 from app.models.user import Usuario
 from app.models.subject import Subject
 from app.models.plaformas import Plataformas
+from app.models.datos_nuevos import DatosNuevos
 
 __all__ = [
     "Base",
@@ -19,4 +20,5 @@ __all__ = [
     "Posts",
     "Subject",
     "Plataformas",
+    "DatosNuevos",
 ]
