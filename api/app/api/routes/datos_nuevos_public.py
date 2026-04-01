@@ -5,7 +5,7 @@ from sqlalchemy.orm.attributes import flag_modified
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.core.cache import get_cache, redis_client, set_cache
 from app.models import DatosNuevos, Usuario     
-
+from app.schemas.datos_nuevos import DatosNuevosResponse
 router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos-public"])  
 
 @router.get("/", response_model=DatosNuevosResponse)
