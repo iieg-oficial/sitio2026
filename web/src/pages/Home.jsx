@@ -56,13 +56,13 @@ function HomePage() {
 
     return (
         <>
-            <section className="min-h-screen" role="banner">
+            <section className="" role="banner">
                 <h1>Home</h1>
                 <div style={{ paddingTop: 37 }}>
                     <BlockRenderer block={{ type: 'banner' }} />
                 </div>
             </section>
-            <section className="container mx-auto border rounded-lg">
+            <section className="container mx-auto border rounded-lg bg-amber-300">                
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
             <section className="container-fluid relative">
@@ -76,7 +76,7 @@ function HomePage() {
                 <BlockRenderer block={{ type: 'flashes' }} />
                 <Link to="/flashes" className="btn btn-primary">Ver todos los flashes</Link>
             </section>
-            <section className="w-11/12 mx-auto border rounded-lg">
+            <section className="w-11/12 mx-auto border rounded-lg bg-amber-300 h-5">
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
             </section>
             <section className="w-8/12 mx-auto">

@@ -4,6 +4,7 @@ import HeroBlock from './blocks/HeroBlock'
 import TextBlock from './blocks/TextBlock'
 import Contacto from './blocks/contacto'
 import PlataformasDestacado from './blocks/plataformasDestacado'
+import PlataformasSlider from './blocks/plataformas_slider'
 
 const COMPONENT_MAP = {
     'carousel': Carousel,
@@ -11,7 +12,8 @@ const COMPONENT_MAP = {
     'hero': HeroBlock,
     'text': TextBlock,
     'contacto': Contacto,
-    'plataformasDestacado': PlataformasDestacado
+    'plataformasDestacado': PlataformasDestacado,
+    'plataformas_slider': PlataformasSlider
 }
 
 export default function BlockRenderer({ block }) {

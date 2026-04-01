@@ -5,7 +5,7 @@ from app.api.deps import get_db
 from app.models import Plataformas
 from app.schemas.plataformas import PlataformasResponse
 
-router = APIRouter(prefix="/plataformas", tags=["plataformas"])
+router = APIRouter(prefix="/plataformas", tags=["plataformas -public"])
 
 @router.get("/", response_model=list[PlataformasResponse])
 def list_plataformas(
