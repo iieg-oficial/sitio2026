@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.attributes import flag_modified
 
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.core.cache import get_cache, redis_client, set_cache
-from app.models import Flashes, Usuario     
+from app.api.deps import get_db
+from app.models import Flashes    
 from app.schemas.flashes import FlashesResponse
 
 router = APIRouter(prefix="/flashes", tags=["flashes-public"])  
@@ -12,7 +10,7 @@ router = APIRouter(prefix="/flashes", tags=["flashes-public"])
 @router.get("/", response_model=FlashesResponse)
 def read_flashes(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    limit: int = 1,
 ):
     """Obtener todos los flashes"""
     flashes = db.query(Flashes).all()
