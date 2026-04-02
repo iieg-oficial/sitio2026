@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import DatosNuevos, Usuario     
-from app.schemas.datos_nuevos import DatosNuevosResponse, DatosNuevosCreate
+from app.schemas.datos_nuevos import DatosNuevosOut, DatosNuevosResponse, DatosNuevosCreate
 
 router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos"])
 
@@ -19,7 +19,7 @@ def read_datos_nuevos(
         "total": len(datos_nuevos),
     }
 
-@router.post("/create", response_model=DatosNuevosResponse)
+@router.post("/create", response_model=DatosNuevosCreate)
 def create_datos_nuevos(
     datos_nuevos: DatosNuevosCreate,
     db: Session = Depends(get_db),
@@ -35,7 +35,7 @@ def create_datos_nuevos(
     db.refresh(db_datos_nuevos)
     return db_datos_nuevos
 
-@router.put("/{id}", response_model=DatosNuevosResponse)
+@router.put("/{id}", response_model=DatosNuevosOut)
 def update_datos_nuevos(
     id: int,
     datos_nuevos: DatosNuevosCreate,
@@ -55,7 +55,7 @@ def update_datos_nuevos(
     db.refresh(db_datos_nuevos)
     return db_datos_nuevos
 
-@router.delete("/{id}", response_model=DatosNuevosResponse)
+@router.delete("/{id}", response_model=DatosNuevosOut)
 def delete_datos_nuevos(
     id: int,
     db: Session = Depends(get_db),

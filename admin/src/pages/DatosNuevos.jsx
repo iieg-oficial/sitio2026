@@ -20,7 +20,7 @@ export default function DatosNuevos() {
         setLoading(true);
         try {
             const response = await api.get('/datos-nuevos');
-            setDatosNuevos(response.data);
+            setDatosNuevos(response.data.datos_nuevos);
         } catch (error) {
             message.error('Error al cargar los datos nuevos');
         }
