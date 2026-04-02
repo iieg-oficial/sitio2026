@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
 
-from app.api.deps import get_current_user, get_db, verify_csrf
+from app.api.deps import get_db
 from app.core.cache import get_cache, redis_client, set_cache
-from app.models import DatosNuevos, Usuario     
+from app.models import DatosNuevos   
 from app.schemas.datos_nuevos import DatosNuevosResponse
 
 router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos-public"])  
@@ -12,7 +12,6 @@ router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos-public"])
 @router.get("/", response_model=DatosNuevosResponse)
 def read_datos_nuevos(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los datos nuevos"""
     datos_nuevos = db.query(DatosNuevos).all()

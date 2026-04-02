@@ -11,6 +11,7 @@ export default function Flashes() {
             const response = await api.get('/flashes')
             setFlashes(response.data.flashes)
         }
+        console.log(flashes)
         fetchFlashes()
     }, [location])
 
