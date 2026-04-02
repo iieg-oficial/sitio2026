@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum
+import enum
 from datetime import datetime
-from enum import Enum
+from sqlalchemy import Column, Integer, String, DateTime, Enum
+
 from app.core.database import Base
 
 class PeriocidadEnum(str, enum.Enum):
