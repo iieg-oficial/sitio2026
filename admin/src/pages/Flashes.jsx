@@ -95,10 +95,11 @@ export default function Flashes() {
             sorter: (a, b) => a.desc_nac.localeCompare(b.desc_nac)
         },
         {
-            title: 'Periocidad',
+            title: 'periocidad',
             dataIndex: 'periocidad',
             key: 'periocidad',
-            sorter: (a, b) => a.periocidad.localeCompare(b.periocidad)
+            sorter: (a, b) => a.periocidad.localeCompare(b.periocidad),
+            
         },
         {
             title: "Fecha de publicación",

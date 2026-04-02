@@ -32,7 +32,7 @@ def create_flashes(
         titulo=flashes.titulo,
         desc_jal=flashes.desc_jal,
         desc_nac=flashes.desc_nac,
-        periodicidad=flashes.periocidad,
+        periocidad=flashes.periocidad,
         fecha_publicacion=flashes.fecha_publicacion,
         fuente=flashes.fuente,
         link=flashes.link,
@@ -59,7 +59,7 @@ def update_flashes(
     db_flashes.titulo = flashes.titulo
     db_flashes.desc_jal = flashes.desc_jal
     db_flashes.desc_nac = flashes.desc_nac
-    db_flashes.periodicidad = flashes.periocidad
+    db_flashes.periocidad = flashes.periocidad
     db_flashes.fecha_publicacion = flashes.fecha_publicacion
     db_flashes.fuente = flashes.fuente
     db_flashes.link = flashes.link
