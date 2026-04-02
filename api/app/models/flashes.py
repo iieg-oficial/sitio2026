@@ -1,5 +1,12 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Enum
+from datetime import datetime
+from enum import Enum
 from app.core.database import Base
+
+class PeriocidadEnum(str, enum.Enum):
+    diaria = "diaria"
+    mensual = "mensual"
+    anual = "anual"
 
 class Flashes(Base):
     __tablename__ = "flashes"
@@ -8,7 +15,7 @@ class Flashes(Base):
     titulo = Column(String, nullable=False)
     desc_jal = Column(String, nullable=False)
     desc_nac = Column(String, nullable=False)
-    periocidad = Column(String, nullable=True)
+    periodicidad = Column(Enum(PeriodicidadEnum), nullable=False)
     fecha_publicacion = Column(DateTime, default=datetime.utcnow)
     fuente = Column(String, nullable=True)
     link = Column(String, nullable=True)
