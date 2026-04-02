@@ -8,6 +8,7 @@ from app.models.user import Usuario
 from app.models.subject import Subject
 from app.models.plaformas import Plataformas
 from app.models.datos_nuevos import DatosNuevos
+from app.models.flashes import Flashes
 
 __all__ = [
     "Base",
@@ -21,4 +22,5 @@ __all__ = [
     "Subject",
     "Plataformas",
     "DatosNuevos",
+    "Flashes",
 ]

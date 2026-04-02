@@ -10,6 +10,7 @@ from app.schemas.posts import PostCreate, PostOut, PostResponse
 from app.schemas.subject import SubjectCreate, SubjectOut, SubjectResponse
 from app.schemas.plataformas import PlataformasCreate, PlataformasOut, PlataformasResponse
 from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosResponse, DatosNuevosOut
+from app.schemas.flashes import FlashesCreate, FlashesOut, FlashesResponse
 
 __all__ = [
     "UsuarioCreate",
@@ -37,4 +38,7 @@ __all__ = [
     "DatosNuevosCreate",
     "DatosNuevosOut",
     "DatosNuevosResponse",
+    "FlashesCreate",
+    "FlashesOut",
+    "FlashesResponse",
 ]
