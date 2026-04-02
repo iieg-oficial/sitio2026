@@ -5,6 +5,7 @@ import TextBlock from './blocks/TextBlock'
 import Contacto from './home/contacto'
 import PlataformasDestacado from './home/plataformasDestacado'
 import PlataformasSlider from './home/plataformas_slider'
+import DatosNuevos from './home/datos_nuevos'
 
 const COMPONENT_MAP = {
     'carousel': Carousel,
@@ -13,7 +14,8 @@ const COMPONENT_MAP = {
     'text': TextBlock,
     'contacto': Contacto,
     'plataformasDestacado': PlataformasDestacado,
-    'plataformas_slider': PlataformasSlider
+    'plataformas_slider': PlataformasSlider,
+    'datos_nuevos': DatosNuevos,
 }
 
 export default function BlockRenderer({ block }) {
