@@ -69,7 +69,7 @@ function HomePage() {
                 <Link to="/mapalab" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Quiero explorar MapaLab</Link>
                 <img src="/logo_iieg.svg" alt="MapaLab" className="w-full h-full object-cover" />
             </section>
-            <section className="w-10/12 mx-auto">
+            <section className="w-10/12 mx-auto h-96 bg-pink-50">
                 <BlockRenderer block={{ type: 'datos_nuevos' }} />
             </section>
             <section className="w-8/12 mx-auto">
