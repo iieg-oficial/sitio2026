@@ -11,6 +11,7 @@ from app.schemas.subject import SubjectCreate, SubjectOut, SubjectResponse
 from app.schemas.plataformas import PlataformasCreate, PlataformasOut, PlataformasResponse
 from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosResponse, DatosNuevosOut
 from app.schemas.flashes import FlashesCreate, FlashesOut, FlashesResponse
+from app.schemas.mapa import MapaResponse, MapaCreate, MapaOut
 
 __all__ = [
     "UsuarioCreate",
@@ -41,4 +42,7 @@ __all__ = [
     "FlashesCreate",
     "FlashesOut",
     "FlashesResponse",
+    "MapaCreate",
+    "MapaOut",
+    "MapaResponse",
 ]
