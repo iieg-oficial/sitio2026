@@ -23,6 +23,7 @@ import Subject from '@pages/Subject';
 import Paginas from '@pages/Paginas';
 import Plataformas from '@pages/Plataformas';
 import DatosNuevos from '@pages/DatosNuevos';
+import Flashes from '@pages/Flashes';
 
 const { DEV, VITE_GOOGLE_ANALYTICS_ID } = import.meta.env;
 
@@ -133,6 +134,14 @@ const router = createBrowserRouter([
                         element: (
                             <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
                                 <DatosNuevos />
+                            </RoleProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'flashes',
+                        element: (
+                            <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
+                                <Flashes />
                             </RoleProtectedRoute>
                         )
                     },

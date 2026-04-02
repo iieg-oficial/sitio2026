@@ -102,6 +102,13 @@ export default function MainLayout() {
             label: 'Datos Nuevos',
             onClick: () => navigate('/datos-nuevos')
         });
+        menuItems.push({
+            key: '/flashes',
+            icon: <MenuOutlined />,
+            label: 'Flashes',
+            onClick: () => navigate('/flashes')
+        });
+
     }
 
     const userMenuItems = [
