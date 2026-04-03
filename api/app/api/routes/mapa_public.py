@@ -6,7 +6,7 @@ from app.api.deps import get_db
 from app.models import Mapa     
 from app.schemas.mapa import MapaResponse
 
-router = APIRouter(prefix="/mapa", tags=["mapa-public"])
+router = APIRouter(prefix="/mapas", tags=["mapa-public"])
 
 @router.get("/", response_model=MapaResponse)
 def read_mapa(

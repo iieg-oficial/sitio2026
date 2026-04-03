@@ -8,7 +8,7 @@ class Mapa(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String, nullable=False)
-    anyo = Column(Integer, nullable=False)
+    anyo = Column(Integer, nullable=True)
     imagen = Column(String, nullable=True)
     archivo = Column(String, nullable=True)
     autor = Column(String, nullable=True)

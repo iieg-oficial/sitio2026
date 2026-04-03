@@ -7,7 +7,7 @@ from app.core.cache import get_cache, redis_client, set_cache
 from app.models import Mapa, Usuario     
 from app.schemas.mapa import MapaOut, MapaResponse, MapaCreate
 
-router = APIRouter(prefix="/mapa", tags=["mapa"])
+router = APIRouter(prefix="/mapas", tags=["mapa"])
 
 @router.get("/", response_model=MapaResponse)
 def read_mapa(
