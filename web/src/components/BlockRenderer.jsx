@@ -7,6 +7,7 @@ import PlataformasDestacado from './home/plataformasDestacado'
 import PlataformasSlider from './home/plataformas_slider'
 import DatosNuevos from './home/datos_nuevos'
 import Flashes from './home/flash'
+import Mapas from './home/mapas'
 
 const COMPONENT_MAP = {
     'carousel': Carousel,
@@ -18,6 +19,7 @@ const COMPONENT_MAP = {
     'plataformas_slider': PlataformasSlider,
     'datos_nuevos': DatosNuevos,
     'flashes': Flashes,
+    'mapas': Mapas
 }
 
 export default function BlockRenderer({ block }) {

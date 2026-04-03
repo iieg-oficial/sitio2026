@@ -4,12 +4,12 @@ from sqlalchemy.sql import func
 
 from app.api.deps import get_db
 from app.models import Mapa     
-from app.schemas.mapa import MapaResponse
+from app.schemas.mapa import MapaResponse, MapaOut
 
 router = APIRouter(prefix="/mapas", tags=["mapa-public"])
 
 @router.get("/", response_model=MapaResponse)
-def read_mapa(
+def read_mapas(
     db: Session = Depends(get_db),
 ):
     """Obtener todos los mapas"""
@@ -20,8 +20,8 @@ def read_mapa(
     }   
 
 
-@router.get("/random", response_model=MapaResponse)
-def read_mapa(
+@router.get("/random", response_model=MapaOut)
+def read_mapa_random(
     db: Session = Depends(get_db),
 ):
     """Obtener un mapa aleatorio"""
