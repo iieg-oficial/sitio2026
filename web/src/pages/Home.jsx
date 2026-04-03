@@ -84,7 +84,7 @@ function HomePage() {
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <Link to="/mapas" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Ver todos los mapas</Link>
             </section>
-            <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-3">
+            <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-3 my-14 gap-4">
                 <Link to="/transparencia" className="btn btn-primary">Transparencia</Link>
                 <Link to="/licitaciones" className="btn btn-primary">Licitaciones</Link>
                 <Link to="/contabilidad-gubernamental" className="btn btn-primary">Contabilidad Gubernamental</Link>

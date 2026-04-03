@@ -35,6 +35,8 @@ const router = createBrowserRouter([
             { path: '*', element: <DynamicPage /> },
             { path: '/comunidad', element: <Post /> },
             { path: '/resultados', element: <Resultados /> },
+            { path: '/:slug', element: <DynamicPage /> },
+            { path: '/:type/:id', element: <PaginaIndividual /> }
         ],
     },
 ]);
