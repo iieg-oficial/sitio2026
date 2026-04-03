@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 
 from app.core.database import Base
 
 class MapaCreate(BaseModel):
     titulo: str
-    anyo: datetime = None
+    anyo: int = None
     imagen: str = None
     archivo: str = None
     autor: str = None
@@ -17,10 +17,18 @@ class MapaCreate(BaseModel):
     ubicacion: str = None
     informacion: str = None
 
+    @field_validator('anyo')
+    @classmethod
+    def validar_anio(cls, v):
+        anio_actual = datetime.now().year
+        if v is not None and (v < 0 or v > anio_actual):
+            raise ValueError(f"El año debe estar entre 0 y {anio_actual}")
+        return v
+
 class MapaOut(BaseModel):
     id: int
     titulo: str
-    anyo: datetime = None
+    anyo: int = None
     imagen: str = None
     archivo: str = None
     autor: str = None
@@ -37,4 +45,5 @@ class MapaOut(BaseModel):
 
 class MapaResponse(BaseModel):
     mapas: list[MapaOut]
+    anyo: int = None
     total: int

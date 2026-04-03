@@ -146,6 +146,14 @@ const router = createBrowserRouter([
                         )
                     },
                     {
+                        path: 'mapas',
+                        element: (
+                            <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
+                                <Mapas />
+                            </RoleProtectedRoute>
+                        )
+                    },
+                    {
                         path: 'change-password',
                         element: (
                             <ProtectedRoute>

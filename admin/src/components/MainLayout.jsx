@@ -108,7 +108,12 @@ export default function MainLayout() {
             label: 'Flashes',
             onClick: () => navigate('/flashes')
         });
-
+        menuItems.push({
+            key: '/mapas',
+            icon: <MenuOutlined />,
+            label: 'Mapas',
+            onClick: () => navigate('/mapas')
+        });
     }
 
     const userMenuItems = [
