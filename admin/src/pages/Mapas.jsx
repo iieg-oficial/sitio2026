@@ -19,8 +19,8 @@ export default function Mapas() {
     const fetchMapas = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/mapa');
-            setMapas(response.data);
+            const response = await api.get('/mapas');
+            setMapas(response.data.mapas);
         } catch {
             message.error('Error al cargar mapas');
         } finally {
@@ -49,7 +49,7 @@ export default function Mapas() {
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
-                    await api.delete(`/mapa/${record.id}`);
+                    await api.delete(`/mapas/${record.id}`);
                     message.success('Mapa eliminado exitosamente');
                     fetchMapas();
                 } catch (error) {
@@ -62,10 +62,10 @@ export default function Mapas() {
     const handleSubmit = async (values) => {
         try {
             if (editingMapa) {
-                await api.put(`/mapa/${editingMapa.id}`, values);
+                await api.put(`/mapas/${editingMapa.id}`, values);
                 message.success('Mapa actualizado exitosamente');
             } else {
-                await api.post('/mapa', values);
+                await api.post('/mapas/create', values);
                 message.success('Mapa creado exitosamente');
             }
             setModalVisible(false);
@@ -134,11 +134,11 @@ export default function Mapas() {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        name="anio"
+                        name="anyo"
                         label="Año"
-                        rules={[{ required: false, message: 'Por favor selecciona el año' }]}
+                        rules={[{ required: false, message: 'Por favor ingresa el año' }]}
                     >
-                        <Input />
+                        <Input type="number" min={0} />
                     </Form.Item>
                     <Form.Item
                         name="imagen"
