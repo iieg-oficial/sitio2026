@@ -1,13 +1,13 @@
-import { createBrowserRouter } from 'react-router';
-import { RouterProvider } from 'react-router/dom';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 import { createRoot } from 'react-dom/client'
 import ReactGA from 'react-ga4';
 import './index.css'
 import MainProvider from '@providers/MainProvider';
 import Home from '@pages/Home';
-import DynamicPage from '@pages/DynamicPage';
+import DynamicPage from './components/pageComponents/DynamicPage';
 import Post from '@pages/Post';
 import Resultados from '@pages/Resultados';
+import PaginaIndividual from './components/pageComponents/PaginaIndividual'
 
 const env = import.meta.env;
 const MODE = env.VITE_NODE_ENV
@@ -32,7 +32,6 @@ const router = createBrowserRouter([
         element: <MainProvider />,
         children: [
             { index: true, element: <Home /> },
-            { path: '*', element: <DynamicPage /> },
             { path: '/comunidad', element: <Post /> },
             { path: '/resultados', element: <Resultados /> },
             { path: '/:slug', element: <DynamicPage /> },

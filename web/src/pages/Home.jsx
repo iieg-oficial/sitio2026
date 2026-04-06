@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router'
 import { getPageBySlug, getPreviewPage } from '@services/pageService'
 import BlockRenderer from '@components/BlockRenderer'
+import { Navbardinamic } from '@components/Navbardinamic'
 
 function HomePage() {
     const [searchParams] = useSearchParams()
@@ -55,7 +56,10 @@ function HomePage() {
     }
 
     return (
-        <>
+        <>  
+            <section className="w-11/12 mx-auto border rounded-lg bg-amber-300">
+                <Navbardinamic />
+            </section>
             <section className="" role="banner">
                 <h1>Home</h1>
                 <div style={{ paddingTop: 37 }}>
