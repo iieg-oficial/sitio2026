@@ -1,50 +1,52 @@
 import { useEffect, useState } from "react";
-import Banner from "../Banner";
 import { Helmet } from 'react-helmet-async';
 import PaginaDinamica from './PaginaDinamica';
-
+import api from '@services/apiService';
+import NotFound from '../blocks/NotFound';
 
 function PaginaPorSlug({ slug }) {
   const [page, setPage] = useState(null);
+  const [errorNotFound, setErrorNotFound] = useState(false);
 
   useEffect(() => {
-    async function fetchPage() {
+    const fetchPage = async () => {
+      if (!slug) return;
       try {
-        const res = await fetch(`http://headless.test/wp-json/wp/v2/pages?slug=${slug}`);
-        const data = await res.json();
-            
-        if (data.length > 0) {
-          setPage(data[0]); // Siempre devuelve un array
+        const response = await api.get(`/paginas/${slug}`);
+        setPage(response.data);
+      } catch(error) {
+        if (error.response?.status === 404) {
+          setErrorNotFound(true);
         }
-      } catch (err) {
-        console.error("Error al obtener la página:", err);
-      }
+        console.error("Error al obtener la página:", error);
+      } 
     }
     fetchPage();
+  }, [slug]);
 
-}, [slug]);
+  if (errorNotFound) {
+      return (
+        <article style={{ marginTop: '50px' }}>
+          <PaginaDinamica />
+        </article>
+      );
+  }
 
   if (!page) return <p>Cargando...</p>;
-    
-  const DynamicComponent = dynamicComponents[slug];
-  
 
   return (
     <>    
     <Helmet>
-        <title>{page.yoast_head_json.title}</title>
-        <meta name="description" content={page.yoast_head_json.description} />
-        <meta property="og:title" content={page.yoast_head_json.og_title} />
-        <meta property="og:url" content={page.yoast_head_json.og_url} />
+        <title>{page.title}</title>
+        {page.meta_description && <meta name="description" content={page.meta_description} />}
+        {page.meta_keywords && <meta name="keywords" content={page.meta_keywords} />}
     </Helmet>
     <article>
-        <Banner mensaje={page.title.rendered} />
-        {DynamicComponent ? <DynamicComponent /> : <p>Componente no encontrado.</p>}
+        <h1>{page.title}</h1>
         <PaginaDinamica />
     </article>
     </>
   );
 }
-
 
 export default PaginaPorSlug

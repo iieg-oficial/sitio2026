@@ -1,10 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { useEffect, useState, useRef } from "react";
 import { Helmet } from 'react-helmet-async';
-import gsap from 'gsap';
-import { CSSPlugin } from 'gsap';
 
-gsap.registerPlugin(CSSPlugin);
 
 function PaginaIndividual() {
     const { id, type } = useParams(); // obtiene el id del elemento clicleable
@@ -15,7 +12,7 @@ function PaginaIndividual() {
     useEffect(() => {
         async function fetchSinglePost() {
             try {
-                const response = await fetch(`http://headless.test/wp-json/wp/v2/${type}/${id}`);
+                //const response = await fetch(`http://headless.test/wp-json/wp/v2/${type}/${id}`);
                 // manejo simple de error
                 if (!response.ok) {
                     console.error('Error en la respuesta de la API');
