@@ -9,7 +9,8 @@ router = APIRouter(prefix="/subject", tags=["portal - subject"])
 
 
 @router.get("", response_model=list[SubjectResponse])
-async def listar_subjects(db: Session = Depends(get_db)):
+async def listar_subjects(
+    db: Session = Depends(get_db)):
     subjects = db.query(Subject).all()
     return subjects 
 

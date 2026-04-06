@@ -12,6 +12,7 @@ from app.schemas.plataformas import PlataformasCreate, PlataformasOut, Plataform
 from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosResponse, DatosNuevosOut
 from app.schemas.flashes import FlashesCreate, FlashesOut, FlashesResponse
 from app.schemas.mapa import MapaResponse, MapaCreate, MapaOut
+from app.schemas.valores import ValoresCreate, ValoresOut, ValoresResponse
 
 __all__ = [
     "UsuarioCreate",
