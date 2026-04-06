@@ -114,6 +114,12 @@ export default function MainLayout() {
             label: 'Mapas',
             onClick: () => navigate('/mapas')
         });
+        menuItems.push({
+            key: '/valores',
+            icon: <MenuOutlined />,
+            label: 'Valores',
+            onClick: () => navigate('/valores')
+        });
     }
 
     const userMenuItems = [

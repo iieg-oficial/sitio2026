@@ -10,6 +10,7 @@ from app.models.plaformas import Plataformas
 from app.models.datos_nuevos import DatosNuevos
 from app.models.flashes import Flashes
 from app.models.mapa import Mapa
+from app.models.valores import Valores
 
 __all__ = [
     "Base",
