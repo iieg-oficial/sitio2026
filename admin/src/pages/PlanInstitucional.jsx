@@ -19,7 +19,7 @@ export default function PlanInstitucional() {
     const fetchPlanes = async () => {
         try {
             const response = await api.get('/plan-institucional');
-            setPlanes(response.data.planes);
+            setPlanes(response.data.plan_institucional);
         } catch (error) {
             message.error('Error al cargar los planes');
         } finally {
