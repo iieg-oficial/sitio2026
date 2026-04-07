@@ -1,12 +1,13 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+from datetime import datetime
 
 class PlanTrabajoBase(BaseModel):
     nombre: str
     descripcion: str
-    fecha: str | None = None
-    documento: str | None = None
-    link: str | None = None
+    fecha: Optional[datetime] = None
+    documento: Optional[str] = None
+    link: Optional[str] = None
 
 class PlanTrabajoCreate(PlanTrabajoBase):
     pass

@@ -19,7 +19,7 @@ export default function PlanTrabajo() {
     const fetchTrabajos = async () => {
         try {
             const response = await api.get('/plan-trabajo');
-            setTrabajos(response.data.trabajos);
+            setTrabajos(response.data.plan_trabajo);
         } catch (error) {
             message.error('Error al cargar los trabajos');
         } finally {
@@ -178,7 +178,7 @@ export default function PlanTrabajo() {
                     <Form.Item
                         name="fecha"
                         label="Fecha"
-                        rules={[{ required: true, message: 'Por favor ingrese la fecha' }]}
+                        rules={[{ required: false, message: 'Por favor ingrese la fecha' }]}
                     >
                         <Input type="date"/>
                     </Form.Item>
