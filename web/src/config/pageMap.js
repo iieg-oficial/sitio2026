@@ -1,3 +1,3 @@
 export const pageMap = {
-    conocenos: ['valores'],
+    conocenos: ['valores', 'normatividad','plan-institucional','plan-trabajo'],
 };
