@@ -19,7 +19,7 @@ export default function Valores() {
     const fetchValores = async () => {
         try {
             const response = await api.get('/valores');
-            setValores(response.data);
+            setValores(response.data.valores);
         } catch (error) {
             message.error('Error al cargar los valores');
         } finally {

@@ -11,5 +11,3 @@ class Valores(Base):
     nombre = Column(String(255), nullable=False)
     descripcion = Column(Text, nullable=False)
     imagen = Column(String(255), nullable=True)
-    
-    
