@@ -120,6 +120,24 @@ export default function MainLayout() {
             label: 'Valores',
             onClick: () => navigate('/valores')
         });
+        menuItems.push({
+            key: '/normatividad',
+            icon: <MenuOutlined />,
+            label: 'Normatividad',
+            onClick: () => navigate('/normatividad')
+        });
+        menuItems.push({
+            key: '/plan-trabajo',
+            icon: <MenuOutlined />,
+            label: 'Plan de Trabajo',
+            onClick: () => navigate('/plan-trabajo')
+        });
+        menuItems.push({
+            key: '/plan-institucional',
+            icon: <MenuOutlined />,
+            label: 'Plan Institucional',
+            onClick: () => navigate('/plan-institucional')
+        });
     }
 
     const userMenuItems = [
