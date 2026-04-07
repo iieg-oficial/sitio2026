@@ -9,7 +9,7 @@ export default function PlanTrabajo() {
     useEffect(() => {
         const fetchPlanTrabajo = async () => {
             const response = await api.get('/plan-trabajo')
-            setPlanTrabajo(response.data.planTrabajo)
+            setPlanTrabajo(response.data.plan_trabajo)
         }
         fetchPlanTrabajo()
     }, [location])

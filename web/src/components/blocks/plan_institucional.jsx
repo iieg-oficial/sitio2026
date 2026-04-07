@@ -9,7 +9,7 @@ export default function PlanInstitucional() {
     useEffect(() => {
         const fetchPlanInstitucional = async () => {
             const response = await api.get('/plan-institucional')
-            setPlanInstitucional(response.data.planInstitucional)
+            setPlanInstitucional(response.data.plan_institucional)
         }
         fetchPlanInstitucional()
     }, [location])
