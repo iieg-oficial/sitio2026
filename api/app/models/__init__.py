@@ -11,6 +11,9 @@ from app.models.datos_nuevos import DatosNuevos
 from app.models.flashes import Flashes
 from app.models.mapa import Mapa
 from app.models.valores import Valores
+from app.models.normatividad import Normatividad
+from app.models.plan_institucional import PlanInstitucional
+from app.models.plan_trabajo import PlanTrabajo
 
 __all__ = [
     "Base",
@@ -27,4 +30,7 @@ __all__ = [
     "Flashes",
     "Mapa",
     "Valores",
+    "Normatividad",
+    "PlanInstitucional",
+    "PlanTrabajo",
 ]
