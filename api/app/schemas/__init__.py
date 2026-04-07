@@ -13,6 +13,9 @@ from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosResponse, Dat
 from app.schemas.flashes import FlashesCreate, FlashesOut, FlashesResponse
 from app.schemas.mapa import MapaResponse, MapaCreate, MapaOut
 from app.schemas.valores import ValoresCreate, ValoresOut, ValoresResponse
+from app.schemas.normatividad import NormatividadCreate, NormatividadOut, NormatividadResponse
+from app.schemas.plan_institucional import PlanInstitucionalCreate, PlanInstitucionalOut, PlanInstitucionalResponse
+from app.schemas.plan_trabajo import PlanTrabajoCreate, PlanTrabajoOut, PlanTrabajoResponse
 
 __all__ = [
     "UsuarioCreate",
@@ -49,4 +52,13 @@ __all__ = [
     "ValoresCreate",
     "ValoresOut",
     "ValoresResponse",
+    "NormatividadCreate",
+    "NormatividadOut",
+    "NormatividadResponse",
+    "PlanInstitucionalCreate",
+    "PlanInstitucionalOut",
+    "PlanInstitucionalResponse",
+    "PlanTrabajoCreate",
+    "PlanTrabajoOut",
+    "PlanTrabajoResponse",
 ]

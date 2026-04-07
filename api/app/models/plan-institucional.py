@@ -10,3 +10,4 @@ class PlanInstitucional(Base):
     descripcion = Column(Text, nullable=False)
     link = Column(String(255), nullable=True)
     documento = Column(String(255), nullable=True)
+    imagen = Column(String(255), nullable=True)
