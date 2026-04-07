@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from datetime import datetime
+from typing import List
 
 class ValoresBase(BaseModel):
     nombre: str
@@ -11,19 +11,13 @@ class ValoresCreate(ValoresBase):
 
 class ValoresOut(ValoresBase):
     id: int
-    created_at: datetime
-    updated_at: datetime
 
     class Config:
         from_attributes = True
 
 class ValoresResponse(BaseModel):
-    id: int
-    nombre: str
-    descripcion: str
-    imagen: str | None = None
-    created_at: datetime
-    updated_at: datetime
+    valores: List[ValoresOut]
+    total: int
 
     class Config:
         from_attributes = True

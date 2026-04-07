@@ -46,4 +46,7 @@ __all__ = [
     "MapaCreate",
     "MapaOut",
     "MapaResponse",
+    "ValoresCreate",
+    "ValoresOut",
+    "ValoresResponse",
 ]

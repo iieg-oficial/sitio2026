@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
 
 from app.schemas.valores import ValoresResponse
-from app.models.valores import Valores
+from app.models import Valores
 from app.api.deps import get_db
 
 router = APIRouter(prefix="/valores", tags=["valores"])

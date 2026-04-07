@@ -26,4 +26,5 @@ __all__ = [
     "DatosNuevos",
     "Flashes",
     "Mapa",
+    "Valores",
 ]

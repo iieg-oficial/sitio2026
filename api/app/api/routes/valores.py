@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.attributes import flag_modified
 
 from app.schemas.valores import ValoresCreate, ValoresOut, ValoresResponse
-from app.models.valores import Valores, Usuario
+from app.models import Valores, Usuario
 from app.api.deps import get_current_user, get_db, verify_csrf
 
 router = APIRouter(prefix="/valores", tags=["valores"])
 
-@router.get("/", response_model=list[ValoresResponse])
+@router.get("/", response_model=ValoresResponse)
 def read_valores(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
@@ -19,25 +18,24 @@ def read_valores(
         "total": len(valores),
     }
 
-@router.post("/create", response_model=ValoresResponse)
+@router.post("/create", response_model=ValoresOut)
 def create_valores(
-    valores: ValoresCreate, 
+    valores: ValoresCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),    
+    current_user: Usuario = Depends(get_current_user),
     ):
-
     db_valores = Valores(**valores.dict())
     db.add(db_valores)
     db.commit()
     db.refresh(db_valores)
     return db_valores
 
-@router.put("/{id}", response_model=ValoresResponse)
+@router.put("/{id}", response_model=ValoresOut)
 def update_valores(
     id: int,
-    valores: ValoresCreate, 
+    valores: ValoresCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),    
+    current_user: Usuario = Depends(get_current_user),
     ):
     db_valores = db.query(Valores).filter(Valores.id == id).first()
     if not db_valores:
@@ -52,11 +50,11 @@ def update_valores(
     db.refresh(db_valores)
     return db_valores
 
-@router.delete("/{id}", response_model=ValoresResponse)
+@router.delete("/{id}")
 def delete_valores(
-    id: int, 
+    id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),    
+    current_user: Usuario = Depends(get_current_user),
     ):
     db_valores = db.query(Valores).filter(Valores.id == id).first()
     if not db_valores:
@@ -66,6 +64,4 @@ def delete_valores(
         )
     db.delete(db_valores)
     db.commit()
-    return {
-        "message": "Valor eliminado correctamente",
-    }
+    return {"message": "Valor eliminado correctamente"}
