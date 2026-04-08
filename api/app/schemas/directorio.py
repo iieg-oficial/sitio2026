@@ -1,5 +1,7 @@
-from pydantic import BaseModel
 from typing import List
+
+from pydantic import BaseModel
+
 
 class DirectorioBase(BaseModel):
     nombre: str
@@ -16,7 +18,7 @@ class DirectorioOut(DirectorioBase):
         from_attributes = True
 
 class DirectorioResponse(BaseModel):
-    directorio: List[DirectorioOut]
+    items: List[DirectorioOut]
     total: int
 
     class Config:
