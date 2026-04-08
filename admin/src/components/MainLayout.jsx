@@ -138,6 +138,12 @@ export default function MainLayout() {
             label: 'Plan Institucional',
             onClick: () => navigate('/plan-institucional')
         });
+        menuItems.push({
+            key: '/directorio',
+            icon: <MenuOutlined />,
+            label: 'Directorio',
+            onClick: () => navigate('/directorio')
+        });
     }
 
     const userMenuItems = [
