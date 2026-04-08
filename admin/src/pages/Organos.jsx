@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 
@@ -11,13 +11,12 @@ export default function Organos() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingOrgano, setEditingOrgano] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
 
     const fetchOrganos = async () => {
         setLoading(true);
         try {
             const res = await api.get('/organos');
-            setOrganos(res.data);
+            setOrganos(res.data.organos);
         } catch (err) {
             console.error("Error fetching organos:", err);
         } finally {
@@ -82,54 +81,85 @@ export default function Organos() {
             title: 'Título',
             dataIndex: 'titulo',
             key: 'titulo',
+            sorter: (a, b) => a.titulo.localeCompare(b.titulo)
         },
         {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
+            sorter: (a, b) => a.descripcion.localeCompare(b.descripcion)
         },
         {
             title: 'Link',
             dataIndex: 'link',
             key: 'link',
+            sorter: (a, b) => a.link.localeCompare(b.link)
         },
         {
             title: 'Acciones',
             key: 'actions',
-            render: (text, record) => (
+            render: (_, record) => (
                 <Space>
-                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} /> Editar
-                    <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record)} /> Eliminar
+                    <Button type="link" icon={<EditOutlined />} 
+                    onClick={() => handleEdit(record)}>
+                        Editar
+                    </Button>
+                    <Button type="link" icon={<DeleteOutlined />} 
+                    onClick={() => handleDelete(record)}>
+                        Eliminar
+                    </Button>
                 </Space>
             ),
         },
     ];
 
     return (
+        <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                <Title level={2} style={{ margin: 0 }}>Administración de Organos</Title>
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={handleCreate}
+                >
+                    Nuevo Organo
+                </Button>
+            </div>
+
         <Card>
-            <Title level={4}>Organos</Title>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-                Crear Organo
-            </Button>
-            <Table columns={columns} dataSource={organos} loading={loading} />
-            <Modal
-                title={editingOrgano ? 'Editar Organo' : 'Crear Organo'}
-                visible={modalVisible}
-                onOk={form.submit}
-                onCancel={() => setModalVisible(false)}
-            >
-                <Form form={form} onFinish={handleSave}>
-                    <Form.Item name="titulo" label="Título" rules={[{ required: true }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="descripcion" label="Descripción">
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="link" label="Link">
-                        <Input />
-                    </Form.Item>
-                </Form>
-            </Modal>
+            
+            <Table 
+            columns={columns} 
+            dataSource={organos} 
+            rowKey="id"
+            loading={loading}
+            pagination={{
+                pageSize: 10,
+                showSizeChanger: true,
+                showTotal: (total) => `Total ${total} organos`
+            }}
+            loading={loading} />
+            
         </Card>
+
+        <Modal
+            title={editingOrgano ? 'Editar Organo' : 'Crear Organo'}
+            open={modalVisible}
+            onOk={form.submit}
+            onCancel={() => setModalVisible(false)}
+        >
+            <Form form={form} onFinish={handleSave}>
+                <Form.Item name="titulo" label="Título" rules={[{ required: true }]}>
+                    <Input />
+                </Form.Item>
+                <Form.Item name="descripcion" label="Descripción">
+                    <Input />
+                </Form.Item>
+                <Form.Item name="link" label="Link">
+                    <Input />
+                </Form.Item>
+            </Form>
+        </Modal>
+        </div>
     );
 }
