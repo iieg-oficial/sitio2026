@@ -16,6 +16,7 @@ from app.schemas.valores import ValoresCreate, ValoresOut, ValoresResponse
 from app.schemas.normatividad import NormatividadCreate, NormatividadOut, NormatividadResponse
 from app.schemas.plan_institucional import PlanInstitucionalCreate, PlanInstitucionalOut, PlanInstitucionalResponse
 from app.schemas.plan_trabajo import PlanTrabajoCreate, PlanTrabajoOut, PlanTrabajoResponse
+from app.schemas.directorio import DirectorioCreate, DirectorioOut, DirectorioResponse
 
 __all__ = [
     "UsuarioCreate",
@@ -61,4 +62,7 @@ __all__ = [
     "PlanTrabajoCreate",
     "PlanTrabajoOut",
     "PlanTrabajoResponse",
+    "DirectorioCreate",
+    "DirectorioOut",
+    "DirectorioResponse",
 ]
