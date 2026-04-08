@@ -144,6 +144,12 @@ export default function MainLayout() {
             label: 'Directorio',
             onClick: () => navigate('/directorio')
         });
+        menuItems.push({
+            key: '/organos',
+            icon: <MenuOutlined />,
+            label: 'Organos',
+            onClick: () => navigate('/organos')
+        });
     }
 
     const userMenuItems = [

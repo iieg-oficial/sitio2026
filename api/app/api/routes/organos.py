@@ -13,10 +13,8 @@ def read_organos(
     current_user: Usuario = Depends(get_current_user),
     ):
     organos = db.query(Organos).all()
-    return {
-        "organos": organos,
-        "total": len(organos),
-    }
+    return {"organos": organos, "total": len(organos)}
+    
 
 @router.post("/create", response_model=OrganosOut)
 def create_organos(
