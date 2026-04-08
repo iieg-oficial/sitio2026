@@ -14,6 +14,7 @@ from app.models.valores import Valores
 from app.models.normatividad import Normatividad
 from app.models.plan_institucional import PlanInstitucional
 from app.models.plan_trabajo import PlanTrabajo
+from app.models.directorio import Directorio
 
 __all__ = [
     "Base",
@@ -33,4 +34,5 @@ __all__ = [
     "Normatividad",
     "PlanInstitucional",
     "PlanTrabajo",
+    "Directorio",
 ]
