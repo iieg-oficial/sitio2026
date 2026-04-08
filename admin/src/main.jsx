@@ -29,6 +29,7 @@ import Valores from '@pages/Valores';
 import PlanTrabajo from '@pages/PlanTrabajo';
 import PlanInstitucional from '@pages/PlanInstitucional';
 import Normatividad from '@pages/Normatividad';
+import Directorio from '@pages/Directorio';
 
 const { DEV, VITE_GOOGLE_ANALYTICS_ID } = import.meta.env;
 
@@ -187,6 +188,14 @@ const router = createBrowserRouter([
                         element: (
                             <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
                                 <PlanInstitucional />
+                            </RoleProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'directorio',
+                        element: (
+                            <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
+                                <Directorio />
                             </RoleProtectedRoute>
                         )
                     },
