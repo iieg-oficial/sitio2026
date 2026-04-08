@@ -1,24 +1,24 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Directorio, Usuario
-from app.schemas.directorio import DirectorioCreate, DirectorioResponse
+from app.schemas.directorio import DirectorioCreate, DirectorioOut
 
 router = APIRouter(prefix="/directorio", tags=["directorio"])
 
-@router.get("/", response_model=DirectorioResponse)
+@router.get("/", response_model=List[DirectorioOut])
 def list_directorio(
     db: Session = Depends(get_db),
-    skip: int = 0,
-    limit: int = 100,
     current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener lista de directorio"""
-    directorio = db.query(Directorio).offset(skip).limit(limit).all()
+    directorio = db.query(Directorio).all()
     return directorio
 
-@router.post("/create", response_model=DirectorioResponse)
+@router.post("/create", response_model=DirectorioOut)
 def create_directorio(
     directorio: DirectorioCreate,
     db: Session = Depends(get_db),
@@ -31,7 +31,7 @@ def create_directorio(
     db.refresh(db_directorio)
     return db_directorio
 
-@router.put("/{directorio_id}", response_model=DirectorioResponse)
+@router.put("/{directorio_id}", response_model=DirectorioOut)
 def update_directorio(
     directorio_id: int,
     directorio: DirectorioCreate,

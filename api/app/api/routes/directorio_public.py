@@ -1,13 +1,15 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.models import Directorio
-from app.schemas.directorio import DirectorioResponse
+from app.schemas.directorio import DirectorioOut
 
-router = APIRouter(prefix="/directorio", tags=["directorio-public"])
+router = APIRouter(prefix="/directorio", tags=["directorio - public"])
 
-@router.get("/", response_model=DirectorioResponse)
+@router.get("/", response_model=List[DirectorioOut])
 def list_directorio(
     db: Session = Depends(get_db),
     skip: int = 0,
@@ -15,11 +17,13 @@ def list_directorio(
     director: bool | None = None,
 ):
     """Obtener lista de directorio"""
-    directorio = db.query(Directorio).offset(skip).limit(limit).all()
-    return directorio
+    directorio = db.query(Directorio)
+    if director is not None:
+        directorio = directorio.filter(Directorio.director == director)
+    return directorio.offset(skip).limit(limit).all()
 
 
-@router.get("/{directorio_id}", response_model=DirectorioResponse)
+@router.get("/{directorio_id}", response_model=DirectorioOut)
 def get_directorio(
     directorio_id: int,
     db: Session = Depends(get_db),
