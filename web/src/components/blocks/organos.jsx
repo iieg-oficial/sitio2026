@@ -9,7 +9,7 @@ export default function Organos() {
     useEffect(() => {
         const fetchOrganos = async () => {
             const response = await api.get('/organos')
-            setOrganos(response.data)
+            setOrganos(response.data.organos)
         }
         fetchOrganos()
     }, [location])
@@ -21,7 +21,7 @@ export default function Organos() {
                 <div key={organo.id}>
                     <p>{organo.nombre}</p>
                     <p>{organo.descripcion}</p>
-                    <a href={organo.url}>Ver más</a>
+                    <a href={organo.link}>Ver más</a>
                 </div>
             ))}
         </div>
