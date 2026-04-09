@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 
 const { Title } = Typography;
+const { Option } = Select;
 
 export default function Archivos() {
     const [archivos, setArchivos] = useState([]);
@@ -31,7 +32,7 @@ export default function Archivos() {
         setLoading(true);
         try {
             const response = await api.get('/archivos');
-            setArchivos(response.data);
+            setArchivos(response.data.archivos);
         } catch {
             message.error('Error al cargar archivos');
         } finally {
@@ -167,7 +168,7 @@ export default function Archivos() {
                         title={editingArchivo ? 'Editar Archivo' : 'Nuevo Archivo'}
                         open={modalVisible}
                         onCancel={() => setModalVisible(false)}
-                        onOk={handleSubmit}
+                        onOk={() => form.submit()}
                         okText={editingArchivo ? 'Actualizar' : 'Crear'}
                         cancelText="Cancelar"
                     >
@@ -177,23 +178,23 @@ export default function Archivos() {
                             </Form.Item>
                             <Form.Item name="tipo" label="Tipo" rules={[{ required: true, message: 'Por favor ingrese el tipo' }]}>
                                 <Select>
-                                    <Option value="institucional">Institucional</Option>
-                                    <Option value="contabilidad">Contabilidad</Option>
+                                    <Option key="institucional" value="institucional">Institucional</Option>
+                                    <Option key="contabilidad" value="contabilidad">Contabilidad</Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingrese la periocidad' }]}>
+                            <Form.Item name="periocidad" label="Periocidad" rules={[{ required: false, message: 'Por favor ingrese la periocidad' }]}>
                                 <Select>
-                                    <Option value="mensual">Mensual</Option>
-                                    <Option value="bimestral">Bimestral</Option>
-                                    <Option value="trimestral">Trimestral</Option>
-                                    <Option value="semestral">Semestral</Option>
-                                    <Option value="anual">Anual</Option>
+                                    <Option key="mensual" value="mensual">Mensual</Option>
+                                    <Option key="bimestral" value="bimestral">Bimestral</Option>
+                                    <Option key="trimestral" value="trimestral">Trimestral</Option>
+                                    <Option key="semestral" value="semestral">Semestral</Option>
+                                    <Option key="anual" value="anual">Anual</Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item name="fecha" label="Fecha" rules={[{ required: true, message: 'Por favor ingrese la fecha' }]}>
-                                <DatePicker />
+                            <Form.Item name="fecha" label="Fecha" rules={[{ required: false, message: 'Por favor ingrese la fecha' }]}>
+                                <Input type="date" />
                             </Form.Item>
-                            <Form.Item name="subject_id" label="Tema" rules={[{ required: true, message: 'Por favor seleccione el tema' }]}>
+                            <Form.Item name="subject_id" label="Tema" rules={[{ required: false, message: 'Por favor seleccione el tema' }]}>
                                 <Select>
                                     {subjects.map((subject) => (
                                         <Option key={subject.id} value={subject.id}>
@@ -201,6 +202,9 @@ export default function Archivos() {
                                         </Option>
                                     ))}
                                 </Select>
+                            </Form.Item>
+                            <Form.Item name="archivo" label="Archivo" rules={[{ required: false, message: 'Por favor ingrese el archivo' }]}>
+                                <Input />                        
                             </Form.Item>
                         </Form>
                     </Modal>
