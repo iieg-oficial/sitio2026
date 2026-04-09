@@ -11,3 +11,4 @@ class Subject(Base):
     titulo = Column(String(200), nullable=False)
 
     posts = relationship("Posts", back_populates="subject")
+    archivos = relationship("Archivos", back_populates="subject")

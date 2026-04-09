@@ -16,6 +16,7 @@ from app.models.plan_institucional import PlanInstitucional
 from app.models.plan_trabajo import PlanTrabajo
 from app.models.directorio import Directorio
 from app.models.organos import Organos
+from app.models.archivos import Archivos
 
 __all__ = [
     "Base",
@@ -37,4 +38,5 @@ __all__ = [
     "PlanTrabajo",
     "Directorio",
     "Organos",
+    "Archivos",
 ]
