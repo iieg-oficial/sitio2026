@@ -8,6 +8,7 @@ class ArchivoCreate(BaseModel):
     fecha: Optional[datetime] = None
     tipo: int
     subject_id: int
+    periocidad: Optional[str] = None
 
 class ArchivoOut(BaseModel):
     id: int
@@ -16,6 +17,7 @@ class ArchivoOut(BaseModel):
     tipo: int
     subject_id: int
     subject: SubjectOut
+    periocidad: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -28,6 +30,7 @@ class ArchivoResponse(BaseModel):
     tipo: int
     subject_id: int
     subject: SubjectOut
+    periocidad: Optional[str] = None
 
     class Config:
         from_attributes = True

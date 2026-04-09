@@ -12,6 +12,7 @@ class Archivos(Base):
     titulo = Column(String(200), nullable=False)
     fecha = Column(DateTime, default=datetime.utcnow)
     tipo = Column(Integer, nullable=False)
+    periocidad = Column(String(200), nullable=True)
     
     subject_id = Column(Integer, ForeignKey("subject.id"), nullable=False)
     subject = relationship("Subject", back_populates="archivos")
