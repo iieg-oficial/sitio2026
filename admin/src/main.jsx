@@ -31,6 +31,7 @@ import PlanInstitucional from '@pages/PlanInstitucional';
 import Normatividad from '@pages/Normatividad';
 import Directorio from '@pages/Directorio';
 import Organos from '@pages/Organos';
+import Archivos from '@pages/Archivos';
 
 const { DEV, VITE_GOOGLE_ANALYTICS_ID } = import.meta.env;
 
@@ -205,6 +206,14 @@ const router = createBrowserRouter([
                         element: (
                             <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
                                 <Organos />
+                            </RoleProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'archivos',
+                        element: (
+                            <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
+                                <Archivos />
                             </RoleProtectedRoute>
                         )
                     },

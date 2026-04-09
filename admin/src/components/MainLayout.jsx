@@ -150,6 +150,12 @@ export default function MainLayout() {
             label: 'Organos',
             onClick: () => navigate('/organos')
         });
+        menuItems.push({
+            key: '/archivos',
+            icon: <MenuOutlined />,
+            label: 'Archivos',
+            onClick: () => navigate('/archivos')
+        });
     }
 
     const userMenuItems = [
