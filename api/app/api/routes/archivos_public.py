@@ -14,12 +14,12 @@ async def listar_archivos_publicos(db: Session = Depends(get_db)):
 
 @router.get("/institucionales", response_model=list[ArchivoResponse])
 async def listar_archivos_institucionales(db: Session = Depends(get_db)):
-    archivos_institucionales = db.query(Archivos).options(joinedload(Archivos.subject)).filter(Archivos.tipo == 1).order_by(Archivos.fecha.desc()).all()
+    archivos_institucionales = db.query(Archivos).options(joinedload(Archivos.subject)).filter(Archivos.tipo == "institucional").order_by(Archivos.fecha.desc()).all()
     return archivos_institucionales
 
 @router.get("/contabilidad", response_model=list[ArchivoResponse])
 async def listar_archivos_contabilidad(db: Session = Depends(get_db)):
-    archivos_contabilidad = db.query(Archivos).options(joinedload(Archivos.subject)).filter(Archivos.tipo == 2).order_by(Archivos.fecha.desc()).all()
+    archivos_contabilidad = db.query(Archivos).options(joinedload(Archivos.subject)).filter(Archivos.tipo == "contabilidad").order_by(Archivos.fecha.desc()).all()
     return archivos_contabilidad
 
 @router.get("/{archivo_id}", response_model=ArchivoOut)
