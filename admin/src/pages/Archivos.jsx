@@ -1,0 +1,209 @@
+import { useState, useEffect } from 'react';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import api from '@services/api';
+
+const { Title } = Typography;
+
+export default function Archivos() {
+    const [archivos, setArchivos] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [form] = Form.useForm();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editingArchivo, setEditingArchivo] = useState(null);
+    const [subjects, setSubjects] = useState([]);
+
+    useEffect(() => {
+        fetchArchivos();
+        fetchSubjects();
+    }, []);
+
+    const fetchSubjects = async () => {
+        try {
+            const response = await api.get('/subject');
+            setSubjects(response.data);
+        } catch {
+            message.error('Error al cargar temas');
+        }
+    };
+
+    const fetchArchivos = async () => {
+        setLoading(true);
+        try {
+            const response = await api.get('/archivos');
+            setArchivos(response.data);
+        } catch {
+            message.error('Error al cargar archivos');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCreate = () => {
+        setEditingArchivo(null);
+        form.resetFields();
+        setModalVisible(true);
+    };
+
+    const handleEdit = (record) => {
+        setEditingArchivo(record);
+        form.setFieldsValue(record);
+        setModalVisible(true);
+    };
+
+    const handleDelete = (record) => {
+        Modal.confirm({
+            title: '¿Está seguro de eliminar este archivo?',
+            content: `Se eliminará el archivo: ${record.titulo}`,
+            okText: 'Eliminar',
+            okType: 'danger',
+            cancelText: 'Cancelar',
+            onOk: async () => {
+                try {
+                    await api.delete(`/archivos/${record.id}`);
+                    message.success('Archivo eliminado exitosamente');
+                    fetchArchivos();
+                } catch {
+                    message.error('Error al eliminar archivo');
+                }
+            }
+        });
+    };
+
+    const handleSubmit = async (values) => {
+        try {
+            if (editingArchivo) {
+                await api.put(`/archivos/${editingArchivo.id}`, values);
+                message.success('Archivo actualizado exitosamente');
+            } else {
+                await api.post('/archivos/create', values);
+                message.success('Archivo creado exitosamente');
+            }
+            setModalVisible(false);
+            fetchArchivos();
+        } catch {
+            message.error(editingArchivo ? 'Error al actualizar archivo' : 'Error al crear archivo');
+        }
+    };
+
+    const columns = [
+        {
+            title: 'Titulo',
+            dataIndex: 'titulo',
+            key: 'titulo',
+            sorter: (a, b) => a.titulo.localeCompare(b.titulo)
+        },
+        {
+            title: 'Tipo',
+            dataIndex: 'tipo',
+            key: 'tipo',
+            sorter: (a, b) => a.tipo.localeCompare(b.tipo)
+        },
+        {
+            title: 'Periocidad',
+            dataIndex: 'periocidad',
+            key: 'periocidad',
+            sorter: (a, b) => a.periocidad.localeCompare(b.periocidad)
+        },
+        {
+            title: 'Fecha',
+            dataIndex: 'fecha',
+            key: 'fecha',
+            render: (date) => new Date(date).toLocaleDateString('es-MX'),
+            sorter: (a, b) => new Date(a.fecha) - new Date(b.fecha)
+        },
+        {
+            title: 'Acciones',
+            key: 'actions',
+            render: (_, record) => (
+                <Space>
+                    <Button
+                        type="link"
+                        icon={<EditOutlined />}
+                        onClick={() => handleEdit(record)}
+                    >
+                        Editar
+                    </Button>
+                    <Button
+                        type="link"
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleDelete(record)}
+                    >
+                        Eliminar
+                    </Button>
+                </Space>
+            )
+        }
+    ];
+            return (
+                <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                        <Title level={2} style={{ margin: 0 }}>Administración de Archivos</Title>
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            onClick={handleCreate}
+                        >
+                            Nuevo Archivo
+                        </Button>
+                    </div>
+
+                    <Card>
+                        <Table
+                            columns={columns}
+                            dataSource={archivos}
+                            rowKey="id"
+                            loading={loading}
+                            pagination={{
+                                pageSize: 10,
+                                showSizeChanger: true,
+                                showTotal: (total) => `Total ${total} archivos`
+                            }}
+                        />
+                    </Card>
+
+                    <Modal
+                        title={editingArchivo ? 'Editar Archivo' : 'Nuevo Archivo'}
+                        open={modalVisible}
+                        onCancel={() => setModalVisible(false)}
+                        onOk={handleSubmit}
+                        okText={editingArchivo ? 'Actualizar' : 'Crear'}
+                        cancelText="Cancelar"
+                    >
+                        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+                            <Form.Item name="titulo" label="Titulo" rules={[{ required: true, message: 'Por favor ingrese el titulo' }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item name="tipo" label="Tipo" rules={[{ required: true, message: 'Por favor ingrese el tipo' }]}>
+                                <Select>
+                                    <Option value="institucional">Institucional</Option>
+                                    <Option value="contabilidad">Contabilidad</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingrese la periocidad' }]}>
+                                <Select>
+                                    <Option value="mensual">Mensual</Option>
+                                    <Option value="bimestral">Bimestral</Option>
+                                    <Option value="trimestral">Trimestral</Option>
+                                    <Option value="semestral">Semestral</Option>
+                                    <Option value="anual">Anual</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item name="fecha" label="Fecha" rules={[{ required: true, message: 'Por favor ingrese la fecha' }]}>
+                                <DatePicker />
+                            </Form.Item>
+                            <Form.Item name="subject_id" label="Tema" rules={[{ required: true, message: 'Por favor seleccione el tema' }]}>
+                                <Select>
+                                    {subjects.map((subject) => (
+                                        <Option key={subject.id} value={subject.id}>
+                                            {subject.titulo}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                </div>
+            );
+        }

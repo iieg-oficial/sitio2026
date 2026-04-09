@@ -11,7 +11,7 @@ class Archivos(Base):
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
     fecha = Column(DateTime, default=datetime.utcnow)
-    tipo = Column(Integer, nullable=False)
+    tipo = Column(String(200), nullable=False)
     periocidad = Column(String(200), nullable=True)
     
     subject_id = Column(Integer, ForeignKey("subject.id"), nullable=False)
