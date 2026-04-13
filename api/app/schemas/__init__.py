@@ -19,6 +19,7 @@ from app.schemas.plan_trabajo import PlanTrabajoCreate, PlanTrabajoOut, PlanTrab
 from app.schemas.directorio import DirectorioCreate, DirectorioOut, DirectorioResponse
 from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse
+from app.schemas.snieg import SniegCreate, SniegOut, SniegResponse
 
 __all__ = [
     "UsuarioCreate",
@@ -73,4 +74,7 @@ __all__ = [
     "ArchivoCreate",
     "ArchivoOut",
     "ArchivoResponse",
+    "SniegCreate",
+    "SniegOut",
+    "SniegResponse",
 ]
