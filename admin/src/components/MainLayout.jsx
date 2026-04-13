@@ -156,6 +156,12 @@ export default function MainLayout() {
             label: 'Archivos',
             onClick: () => navigate('/archivos')
         });
+        menuItems.push({
+            key: '/snieg',
+            icon: <MenuOutlined />,
+            label: 'Snieg / CEIEG',
+            onClick: () => navigate('/snieg')
+        });
     }
 
     const userMenuItems = [
