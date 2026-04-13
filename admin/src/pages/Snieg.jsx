@@ -10,6 +10,7 @@ export default function Snieg() {
     const [snieg, setSnieg] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingSnieg, setEditingSnieg] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchSnieg();
@@ -26,19 +27,19 @@ export default function Snieg() {
         }
     };
 
-    const handleAddSnieg = () => {
+    const handleCreate = () => {
         setEditingSnieg(null);
         form.resetFields();
         setIsModalVisible(true);
     };
 
-    const handleEditSnieg = (snieg) => {
+    const handleEdit = (snieg) => {
         setEditingSnieg(snieg);
         form.setFieldsValue(snieg);
         setIsModalVisible(true);
     };
 
-    const handleDeleteSnieg = async (id) => {
+    const handleDelete = async (id) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar este snieg / CEIEG?',
             content: 'Se eliminará el snieg / CEIEG',
@@ -94,8 +95,8 @@ export default function Snieg() {
             key: 'actions',
             render: (text, record) => (
                 <Space size="middle">
-                    <Button icon={<EditOutlined />} onClick={() => handleEditSnieg(record)} /> Editar
-                    <Button icon={<DeleteOutlined />} onClick={() => handleDeleteSnieg(record.id)} /> Eliminar
+                    <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} > Editar</Button>
+                    <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)} > Eliminar</Button>
                 </Space>
             ),
         },
@@ -130,7 +131,7 @@ export default function Snieg() {
                 onOk={form.submit}
                 okText={editingSnieg ? 'Actualizar' : 'Crear'}
             >
-                <Form form={form} layout="vertical">
+                <Form form={form} layout="vertical" onFinish={handleSubmit}>
                     <Form.Item name="titulo" label="Título" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
