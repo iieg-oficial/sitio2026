@@ -11,41 +11,20 @@ export default function Preguntas() {
         const response = await api.get('/preguntas')
         setPreguntas(response.data.preguntas)
     }
+
     useEffect(() => {
         showPreguntas()
     }, [])
-
     
-    const subjects = [...new Set(
-        preguntas.map(p => p.subject?.titulo))].sort();
-    
-    useEffect(() => {
-        if (subjects.length > 0 && !subjects.includes(activeTab)) {
-            setActiveTab(subjects[0]);
-        }
-    }, [subjects.join(',')]);
-
-    const toggleSubject = (subject) => {
-        setOpenSubjects(prev => ({ ...prev, [subject]: !prev[subject] }));
-    };
-
-    const groupedBySubject = preguntas.reduce((grupos, pregunta) => {
-        const subject = pregunta.subject?.titulo || 'Sin categoría';
-        if (!grupos[subject]) {
-            grupos[subject] = [];
-        }
-        grupos[subject].push(pregunta);
-        return grupos;
-    }, {});
     
    return (
     <div>
         <h1>Preguntas frecuentes</h1>
         <div className='border-2 border-gray-200 rounded-lg p-4'>
-            {subjects.map(subject => (
-                <div key={subject} className='border-2 border-gray-200 rounded-lg mb-3'>
+            {preguntas.map(pregunta => (
+                <div key={pregunta.id} className='border-2 border-gray-200 rounded-lg mb-3'>
                     <button
-                        onClick={() => setActiveTab(subject)}
+                        onClick={() => setActiveTab(pregunta.id)}
                         className='w-full flex justify-between items-center px-4 py-3 font-semibold text-left hover:bg-gray-50'
                     >
                         <span>{subject}</span>
