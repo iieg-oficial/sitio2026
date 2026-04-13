@@ -3,5 +3,6 @@ export const pageMap = {
     "organigrama": ['director', 'directorio'],
     "organos-de-gobierno": ['organos'],
     "sistema-institucional-de-archivo": ['archivo'],
-    "contabilidad-gubernamental": ['contabilidad']
+    "contabilidad-gubernamental": ['contabilidad'],
+    "snieg": ['snieg']
 };
