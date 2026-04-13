@@ -4,5 +4,6 @@ export const pageMap = {
     "organos-de-gobierno": ['organos'],
     "sistema-institucional-de-archivo": ['archivo'],
     "contabilidad-gubernamental": ['contabilidad'],
-    "snieg": ['snieg']
+    "snieg": ['snieg'], 
+    "preguntas-frecuentes": ['preguntas']
 };
