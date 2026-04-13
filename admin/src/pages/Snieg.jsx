@@ -135,7 +135,7 @@ export default function Snieg() {
                         <Input />
                     </Form.Item>
                     <Form.Item name="descripcion" label="Descripción" rules={[{ required: true }]}>
-                        <Input.TextArea  rows={4}/>
+                        <Input.TextArea rows={4}/>
                     </Form.Item>
                     <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
                         <Input />
