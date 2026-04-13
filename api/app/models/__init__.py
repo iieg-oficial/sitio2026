@@ -17,6 +17,7 @@ from app.models.plan_trabajo import PlanTrabajo
 from app.models.directorio import Directorio
 from app.models.organos import Organos
 from app.models.archivos import Archivos
+from app.models.snieg import Snieg
 
 __all__ = [
     "Base",
@@ -39,4 +40,5 @@ __all__ = [
     "Directorio",
     "Organos",
     "Archivos",
+    "Snieg",
 ]
