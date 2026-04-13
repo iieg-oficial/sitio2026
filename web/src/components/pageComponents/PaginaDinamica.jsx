@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 import { lazy, Suspense } from 'react';
 import { pageMap } from '../../config/pageMap';
 
+
 function PaginaDinamica() {
   const { slug } = useParams();
 
