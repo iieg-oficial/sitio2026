@@ -32,6 +32,7 @@ import Normatividad from '@pages/Normatividad';
 import Directorio from '@pages/Directorio';
 import Organos from '@pages/Organos';
 import Archivos from '@pages/Archivos';
+import Snieg from '@pages/Snieg';
 
 const { DEV, VITE_GOOGLE_ANALYTICS_ID } = import.meta.env;
 
@@ -214,6 +215,14 @@ const router = createBrowserRouter([
                         element: (
                             <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
                                 <Archivos />
+                            </RoleProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'snieg',
+                        element: (
+                            <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
+                                <Snieg />
                             </RoleProtectedRoute>
                         )
                     },
