@@ -23,10 +23,42 @@ services:
       - "8000:8000"
     depends_on:
       - api
+      - ckan
     networks:
       - portal_network
     restart: unless-stopped
 
+  ckan:
+    image: ckan/ckan-base:2.10
+    env_file:
+      - ./ckan/ckan.env
+    depends_on:
+      - ckan-db
+      - solr
+      - redis
+    networks:
+      - webnet
+      - ckannet
+    volumes:
+      - ckan_storage:/var/lib/ckan
+
+  ckan-db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ckan
+      POSTGRES_PASSWORD: ckanpassword
+      POSTGRES_DB: ckan
+    volumes:
+      - ckan_pg_data:/var/lib/postgresql/data
+    networks:
+      - ckannet
+
+  solr:
+    image: ckan/ckan-solr:2.10-solr9
+    volumes:
+      - solr_data:/var/solr
+    networks:
+      - ckannet
   postgres:
     image: postgres:16-alpine
     container_name: portal-postgres
@@ -60,6 +92,7 @@ services:
       retries: 5
     networks:
       - portal_network
+      - ckannet
 
   api:
     build:
@@ -94,6 +127,9 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  ckan_storage:
+  ckan_pg_data:
+  solr_data:
 
 networks:
   portal_network:
