@@ -29,7 +29,9 @@ services:
     restart: unless-stopped
 
   ckan:
-    image: ckan/ckan-base:2.10
+    build:
+      context: ./ckan
+      dockerfile: Dockerfile
     env_file:
       - ./ckan/ckan.env
     depends_on:
