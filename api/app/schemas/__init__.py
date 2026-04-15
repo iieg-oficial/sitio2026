@@ -20,9 +20,9 @@ from app.schemas.directorio import DirectorioCreate, DirectorioOut, DirectorioRe
 from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse
 from app.schemas.snieg import SniegCreate, SniegOut, SniegResponse
-from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasResponse
+from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasResponse, PreguntasListResponse
 
-__all__ = [
+__all__ = [ 
     "UsuarioCreate",
     "UsuarioUpdate",
     "UsuarioResponse",
@@ -81,4 +81,5 @@ __all__ = [
     "PreguntasCreate",
     "PreguntasOut",
     "PreguntasResponse",
+    "PreguntasListResponse",
 ]
