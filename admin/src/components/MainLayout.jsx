@@ -162,6 +162,12 @@ export default function MainLayout() {
             label: 'Snieg / CEIEG',
             onClick: () => navigate('/snieg')
         });
+        menuItems.push({
+            key: '/preguntas',
+            icon: <MenuOutlined />,
+            label: 'Preguntas',
+            onClick: () => navigate('/preguntas')
+        });
     }
 
     const userMenuItems = [
