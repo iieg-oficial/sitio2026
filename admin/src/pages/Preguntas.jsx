@@ -31,7 +31,7 @@ export default function Preguntas() {
         setLoading(true);
         try {
             const response = await api.get('/preguntas');
-            setPreguntas(response.data);
+            setPreguntas(response.data.preguntas);
         } catch {
             message.error('Error al cargar preguntas');
         } finally {
@@ -89,9 +89,9 @@ export default function Preguntas() {
     const columns = [
         {
             title: 'Pregunta',
-            dataIndex: 'pregunta',
-            key: 'pregunta',
-            sorter: (a, b) => a.pregunta.localeCompare(b.pregunta)
+            dataIndex: 'titulo',
+            key: 'titulo',
+            sorter: (a, b) => a.titulo.localeCompare(b.titulo)
         },
         {
             title: 'Respuesta',
