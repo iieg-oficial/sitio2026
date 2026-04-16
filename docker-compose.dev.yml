@@ -1,6 +1,34 @@
 name: portal-dev
 
 services:
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+      args:
+        VITE_NODE_ENV: ${VITE_NODE_ENV:-production}
+        VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:-}
+        VITE_WEB_API_URL: ${VITE_WEB_API_URL}
+        VITE_API_TIMEOUT: ${VITE_API_TIMEOUT:-10000}
+        VITE_APP_NAME: ${VITE_APP_NAME:-Portal}
+        VITE_ADMIN_API_URL: ${VITE_ADMIN_API_URL}
+        VITE_ADMIN_API_TIMEOUT: ${VITE_ADMIN_API_TIMEOUT:-10000}
+        VITE_ADMIN_APP_NAME: ${VITE_ADMIN_APP_NAME:-Administrador}
+    container_name: portal-nginx_dev
+    env_file:
+      - ./nginx/.env
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+      - ckan
+    networks:
+      - portal_network_dev
+      - webnet
+    restart: unless-stopped
+
   postgres:
     image: postgres:18-alpine
     container_name: portal-postgres-dev
@@ -20,6 +48,54 @@ services:
     networks:
       - portal_network_dev
 
+  ckan:
+    build:
+      context: ./ckan
+      dockerfile: Dockerfile
+    env_file:
+      - ./ckan/ckan.env
+    depends_on:
+      ckan-db:
+        condition: service_healthy  
+      solr:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - webnet
+      - ckannet
+    volumes:
+      - ckan_storage:/var/lib/ckan
+
+  ckan-db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ckan
+      POSTGRES_PASSWORD: ckanpassword
+      POSTGRES_DB: ckan
+    volumes:
+      - ckan_pg_data:/var/lib/postgresql/data
+    networks:
+      - ckannet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ckan -d ckan"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  solr:
+    image: ckan/ckan-solr:2.10-solr9
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8983/solr/admin/cores?action=STATUS"]
+      interval: 30s
+      timeout: 10s
+      retries: 3    
+    volumes:
+      - solr_data:/var/solr
+    networks:
+      - ckannet
+  
   redis:
     image: redis:8-alpine
     container_name: portal-redis-dev
@@ -34,6 +110,7 @@ services:
       retries: 5
     networks:
       - portal_network_dev
+      - ckannet
 
   api:
     build:
@@ -108,8 +185,14 @@ volumes:
   redis_data_dev:
   web_node_modules:
   admin_node_modules:
-
+  ckan_storage:
+  ckan_pg_data:
+  solr_data:
 
 networks:
   portal_network_dev:
+    driver: bridge
+  webnet:
+    driver: bridge
+  ckannet:
     driver: bridge

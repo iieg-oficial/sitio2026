@@ -62,6 +62,7 @@ function HomePage() {
             </section>
             <section className="" role="banner">
                 <h1>Home</h1>
+                <a href="/datos-abiertos">Portal de Datos</a>
                 <div style={{ paddingTop: 37 }}>
                     <BlockRenderer block={{ type: 'banner' }} />
                 </div>
