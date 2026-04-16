@@ -4,7 +4,7 @@ set -e
 echo ">>> Iniciando CKAN..."
 
 # Esperar a que la base de datos esté lista
-until ckan db version 2>/dev/null; do
+until pg_isready -h ckan-db -U ckan -d ckan 2>/dev/null; do
   echo ">>> Esperando base de datos..."
   sleep 3
 done
