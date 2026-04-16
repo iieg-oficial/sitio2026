@@ -1,0 +1,32 @@
+from pydantic import BaseModel
+from datetime import datetime
+from enum import Enum
+from typing import List, Optional
+
+class TipoSistemaEnum(str, Enum):
+    plataforma = "plataforma"
+    datos = "datos recients"
+    estadistica = "estadistica"
+    otro = "otro"
+
+class SistemasCreate(BaseModel):
+    titulo: str
+    descripcion: str
+    link: str
+    tipo: TipoSistemaEnum
+    imagen: str = None
+
+class SistemasOut(BaseModel):
+    id: int
+    titulo: str
+    descripcion: str
+    link: str
+    tipo: TipoSistemaEnum
+    imagen: str = None
+
+    class Config:
+        from_attributes = True
+
+class SistemasResponse(BaseModel):
+    sistemas: list[SistemasOut]
+    total: int

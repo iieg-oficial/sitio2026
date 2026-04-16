@@ -21,6 +21,7 @@ from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse
 from app.schemas.snieg import SniegCreate, SniegOut, SniegResponse
 from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasResponse, PreguntasListResponse
+from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse
 
 __all__ = [ 
     "UsuarioCreate",
@@ -82,4 +83,7 @@ __all__ = [
     "PreguntasOut",
     "PreguntasResponse",
     "PreguntasListResponse",
+    "SistemasCreate",
+    "SistemasOut",
+    "SistemasResponse",
 ]
