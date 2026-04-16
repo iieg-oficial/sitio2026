@@ -19,6 +19,7 @@ from app.models.organos import Organos
 from app.models.archivos import Archivos
 from app.models.snieg import Snieg
 from app.models.preguntas import Preguntas
+from app.models.sistemas import Sistemas
 
 __all__ = [
     "Base",
@@ -43,4 +44,5 @@ __all__ = [
     "Archivos",
     "Snieg",
     "Preguntas",
+    "Sistemas",
 ]
