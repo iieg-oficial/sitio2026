@@ -4,7 +4,7 @@ from typing import List, Optional
 
 class TipoSistemaEnum(str, Enum):
     plataforma = "plataforma"
-    datos = "datos recients"
+    datos = "datos-recientes"
     estadistica = "estadistica"
     otro = "otro"
 
@@ -13,7 +13,7 @@ class SistemasCreate(BaseModel):
     descripcion: str
     link: str
     tipo: TipoSistemaEnum
-    imagen: str = None
+    imagen: Optional[str] = None 
 
 class SistemasOut(BaseModel):
     id: int
@@ -21,7 +21,7 @@ class SistemasOut(BaseModel):
     descripcion: str
     link: str
     tipo: TipoSistemaEnum
-    imagen: str = None
+    imagen: Optional[str] = None
 
     class Config:
         from_attributes = True

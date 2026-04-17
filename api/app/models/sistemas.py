@@ -7,7 +7,7 @@ from app.core.database import Base
 
 class TipoSistemaEnum(str, enum.Enum):
     plataforma = "plataforma"
-    datos = "datos recients"
+    datos = "datos-recientes"
     estadistica = "estadistica"
     otro = "otro"
 
