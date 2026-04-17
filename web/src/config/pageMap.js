@@ -6,5 +6,7 @@ export const pageMap = {
     "contabilidad-gubernamental": ['contabilidad'],
     "snieg": ['snieg'], 
     "preguntas-frecuentes": ['preguntas'],
-    "sistemas-de-informacion": ['sistemas']
+    "sistemas-de-informacion": ['sistemas'],
+    "flashes": ['flashes'],
+    "reportes": ['reportes']
 };
