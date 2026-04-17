@@ -92,13 +92,7 @@ export default function Sistemas() {
             title: 'Tipo',
             dataIndex: 'tipo',
             key: 'tipo',
-            filters: [
-                { text: 'Plataforma', value: 'plataforma' },
-                { text: 'Datos', value: 'datos' },
-                { text: 'Estadística', value: 'estadistica' },
-                { text: 'Otro', value: 'otro' },
-            ],
-            onFilter: (value, record) => record.tipo === value,
+            sorter: (a, b) => a.tipo.localeCompare(b.tipo),
         },
         {
             title: 'Acciones',
@@ -126,12 +120,12 @@ export default function Sistemas() {
 
     return (
        <div>
-        <div className="flex justify-between items-center mb-4">
-            <Title level={2}>Sistemas</Title>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-                Crear Sistema
-            </Button>
-        </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                <Title level={2} style={{ margin: 0 }}>Sistemas</Title>
+                <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
+                    Crear Sistema
+                </Button>
+            </div>
         <Card>
             <Table 
             columns={columns} 
@@ -153,7 +147,7 @@ export default function Sistemas() {
                     <Input />
                 </Form.Item>
                 <Form.Item name="descripcion" label="Descripción" rules={[{ required: true }]}>
-                    <Input />
+                    <Input.TextArea rows={3} />
                 </Form.Item>
                 <Form.Item name="link" label="Link" rules={[{ required: true }]}>
                     <Input />
@@ -161,12 +155,12 @@ export default function Sistemas() {
                 <Form.Item name="tipo" label="Tipo" rules={[{ required: true }]}>
                     <Select>
                         <Option value="plataforma">Plataforma</Option>
-                        <Option value="datos">Datos</Option>
+                        <Option value="datos-recientes">Datos recientes</Option>
                         <Option value="estadistica">Estadística</Option>
                         <Option value="otro">Otro</Option>
                     </Select>
                 </Form.Item>
-                <Form.Item name="imagen" label="Imagen">
+                <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
                     <Input />
                 </Form.Item>
             </Form>
