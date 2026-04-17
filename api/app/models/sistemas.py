@@ -1,4 +1,4 @@
-from datetime import enum
+import enum
 
 from sqlalchemy import Column, Integer, String, Text, Enum
 from sqlalchemy.orm import relationship
@@ -14,7 +14,7 @@ class TipoSistemaEnum(str, enum.Enum):
 class Sistemas(Base):
     __tablename__ = "sistemas"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)  
     titulo = Column(String, nullable=False)
     descripcion = Column(String, nullable=False)
     link = Column(String, nullable=False)
