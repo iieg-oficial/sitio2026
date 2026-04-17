@@ -1,21 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.orm.attributes import flag_modified
+from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.core.cache import get_cache, redis_client, set_cache
+from app.api.deps import get_current_user, get_db
 from app.models import Sistemas, Usuario
 from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse
 
 router = APIRouter(prefix="/sistemas", tags=["sistemas"])
 
-@router.get("/", response_model=SistemasResponse)
+@router.get("", response_model=SistemasResponse)
 def read_sistemas(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los sistemas"""
-    sistemas = db.query(Sistemas).options(joinedload(Sistemas.tipo)).all()
+    sistemas = db.query(Sistemas).all()
     return {
         "sistemas": sistemas,
         "total": len(sistemas),
@@ -38,7 +36,7 @@ def create_sistemas(
     db.add(db_sistemas)
     db.commit()
     db.refresh(db_sistemas)
-    return db.query(Sistemas).options(joinedload(Sistemas.tipo)).filter(Sistemas.id == db_sistemas.id).first()
+    return db.query(Sistemas).filter(Sistemas.id == db_sistemas.id).first()
 
 @router.put("/{id}", response_model=SistemasOut)
 def update_sistemas(
@@ -61,7 +59,7 @@ def update_sistemas(
     db_sistemas.imagen = sistemas.imagen
     db.commit()
     db.refresh(db_sistemas)
-    return db.query(Sistemas).options(joinedload(Sistemas.tipo)).filter(Sistemas.id == db_sistemas.id).first()
+    return db.query(Sistemas).filter(Sistemas.id == db_sistemas.id).first()
 
 @router.delete("/{id}", response_model=SistemasOut)
 def delete_sistemas(
@@ -78,4 +76,4 @@ def delete_sistemas(
         )
     db.delete(db_sistemas)
     db.commit()
-    return db_sistemas
+    return {"message": "Sistema eliminado exitosamente"}
