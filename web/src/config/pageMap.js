@@ -5,5 +5,6 @@ export const pageMap = {
     "sistema-institucional-de-archivo": ['archivo'],
     "contabilidad-gubernamental": ['contabilidad'],
     "snieg": ['snieg'], 
-    "preguntas-frecuentes": ['preguntas']
+    "preguntas-frecuentes": ['preguntas'],
+    "sistemas-de-informacion": ['sistemas']
 };
