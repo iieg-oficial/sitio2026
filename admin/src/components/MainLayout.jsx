@@ -168,6 +168,12 @@ export default function MainLayout() {
             label: 'Preguntas',
             onClick: () => navigate('/preguntas')
         });
+        menuItems.push({
+            key: '/sistemas',
+            icon: <MenuOutlined />,
+            label: 'Sistemas',
+            onClick: () => navigate('/sistemas')
+        });
     }
 
     const userMenuItems = [
