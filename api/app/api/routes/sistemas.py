@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.attributes import flag_modified
 
 from app.api.deps import get_current_user, get_db, verify_csrf
@@ -15,17 +15,17 @@ def read_sistemas(
     current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los sistemas"""
-    sistemas = db.query(Sistemas).all()
+    sistemas = db.query(Sistemas).options(joinedload(Sistemas.tipo)).all()
     return {
         "sistemas": sistemas,
         "total": len(sistemas),
     }
 
-@router.post("/create", response_model=SistemasOut)
+@router.post("/create", response_model=SistemasOut, status_code=status.HTTP_201_CREATED)
 def create_sistemas(
     sistemas: SistemasCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Crear un nuevo sistema"""
     db_sistemas = Sistemas(
@@ -38,14 +38,14 @@ def create_sistemas(
     db.add(db_sistemas)
     db.commit()
     db.refresh(db_sistemas)
-    return db_sistemas
+    return db.query(Sistemas).options(joinedload(Sistemas.tipo)).filter(Sistemas.id == db_sistemas.id).first()
 
 @router.put("/{id}", response_model=SistemasOut)
 def update_sistemas(
     id: int,
     sistemas: SistemasCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Actualizar un sistema"""
     db_sistemas = db.query(Sistemas).filter(Sistemas.id == id).first()
@@ -61,13 +61,13 @@ def update_sistemas(
     db_sistemas.imagen = sistemas.imagen
     db.commit()
     db.refresh(db_sistemas)
-    return db_sistemas
+    return db.query(Sistemas).options(joinedload(Sistemas.tipo)).filter(Sistemas.id == db_sistemas.id).first()
 
 @router.delete("/{id}", response_model=SistemasOut)
 def delete_sistemas(
     id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Eliminar un sistema"""
     db_sistemas = db.query(Sistemas).filter(Sistemas.id == id).first()
