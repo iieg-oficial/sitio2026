@@ -25,7 +25,7 @@ def read_flashes(
 def create_flashes(
     flashes: FlashesCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Crear un nuevo flash"""
     db_flashes = Flashes(
@@ -47,7 +47,7 @@ def update_flashes(
     id: int,
     flashes: FlashesCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Actualizar un flash"""
     db_flashes = db.query(Flashes).filter(Flashes.id == id).first()
@@ -71,7 +71,7 @@ def update_flashes(
 def delete_flashes( 
     id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Eliminar un flash"""
     db_flashes = db.query(Flashes).filter(Flashes.id == id).first()

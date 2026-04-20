@@ -7,13 +7,25 @@ from app.schemas.flashes import FlashesResponse
 
 router = APIRouter(prefix="/flashes", tags=["flashes-public"])  
 
+
 @router.get("/", response_model=FlashesResponse)
 def read_flashes(
     db: Session = Depends(get_db),
-    limit: int = 1,
 ):
     """Obtener todos los flashes"""
     flashes = db.query(Flashes).all()
+    return {
+        "flashes": flashes,
+        "total": len(flashes),
+    }
+
+@router.get("/last", response_model=FlashesResponse)
+def read_last_flashes(
+    db: Session = Depends(get_db),
+    limit: int = 1,
+):
+    """Obtener el ultimo flash"""
+    flashes = db.query(Flashes).order_by(Flashes.id.desc()).limit(limit).all()
     return {
         "flashes": flashes,
         "total": len(flashes),
