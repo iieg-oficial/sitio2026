@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.attributes import flag_modified
 
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.core.cache import get_cache, redis_client, set_cache
+from app.api.deps import get_current_user, get_db
 from app.models import Mapa, Usuario     
 from app.schemas.mapa import MapaOut, MapaResponse, MapaCreate
 
@@ -69,4 +67,4 @@ def delete_mapa(
         )
     db.delete(db_mapa)
     db.commit()
-    return db_mapa
+    return {"message": "Mapa eliminado correctamente"}

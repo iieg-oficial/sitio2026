@@ -99,8 +99,8 @@ export default function Mapas() {
             key: 'actions',
             render: (_, record) => (
                 <Space>
-                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />Editar
-                    <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record)} danger />Eliminar
+                    <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} />Editar
+                    <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDelete(record)} danger />Eliminar
                 </Space>
             )
         }
