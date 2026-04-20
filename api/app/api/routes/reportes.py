@@ -27,10 +27,11 @@ async def crear_reporte(
     nuevo = Reportes(
         titulo=reporte_in.titulo,
         fecha=reporte_in.fecha,
-        tipo=reporte_in.tipo,
+        descripcion=reporte_in.descripcion,
         subject_id=reporte_in.subject_id,
         periocidad=reporte_in.periocidad,
         archivo=reporte_in.archivo,
+        subtema=reporte_in.subtema,
     )
     db.add(nuevo)
     db.commit()
