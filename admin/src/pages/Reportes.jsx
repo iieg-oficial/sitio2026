@@ -200,19 +200,19 @@ export default function Reportes() {
                         label="Tema"
                         rules={[{ required: true, message: 'Por favor seleccione el tema' }]}
                     >
-                        <Select>
-                            {subjects.map((subject) => (
-                                <Option key={subject.id} value={subject.id}>
-                                    {subject.name}
-                                </Option>
-                            ))}
-                        </Select>
+                        <Select
+                            placeholder="Selecciona un tema"
+                            options={subjects.map((s) => ({
+                                value: s.id,
+                                label: s.titulo
+                            }))}
+                        />
                     </Form.Item>
                     <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingresa la periocidad' }]}>
                         <Select placeholder="Selecciona la periocidad" options={[
                             { value: 'diaria', label: 'Diaria'},
                             { value: 'mensual', label: 'Mensual'},
-                            { value: 'Anual', label: 'Anual'},
+                            { value: 'anual', label: 'Anual'},
                         ]}
                         />
                     </Form.Item>
