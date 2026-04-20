@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router'
 import api from '@services/apiService'
 import Searcher from '../pageComponents/searcher';
+import ReactPaginate from 'react-paginate';
+import { format } from 'date-fns';
 
 export default function Reportes() {
     const [reportes, setReportes] = useState([])
