@@ -8,6 +8,7 @@ import DynamicPage from './components/pageComponents/DynamicPage';
 import Post from '@pages/Post';
 import Resultados from '@pages/Resultados';
 import PaginaIndividual from './components/pageComponents/PaginaIndividual'
+import ClasificadorCultivos from '@pages/ClasificadorCultivos'
 
 const env = import.meta.env;
 const MODE = env.VITE_NODE_ENV
@@ -35,7 +36,8 @@ const router = createBrowserRouter([
             { path: '/comunidad', element: <Post /> },
             { path: '/resultados', element: <Resultados /> },
             { path: '/:slug', element: <DynamicPage /> },
-            { path: '/:type/:id', element: <PaginaIndividual /> }
+            { path: '/:type/:id', element: <PaginaIndividual /> },
+            { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> }
         ],
     },
 ]);
