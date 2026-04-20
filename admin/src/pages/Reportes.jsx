@@ -182,16 +182,12 @@ export default function Reportes() {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        name="tipo"
-                        label="Tipo"
-                        rules={[{ required: true, message: 'Por favor seleccione el tipo' }]}
+                        name="descripcion"
+                        label="Descripción"
+                        rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
                     >
-                        <Select>
-                            <Option value="mensual">Mensual</Option>
-                            <Option value="trimestral">Trimestral</Option>
-                            <Option value="anual">Anual</Option>
-                        </Select>
-                    </Form.Item>
+                        <Input />
+                    </Form.Item>                    
                     <Form.Item
                         name="fecha"
                         label="Fecha"
@@ -211,6 +207,28 @@ export default function Reportes() {
                                 </Option>
                             ))}
                         </Select>
+                    </Form.Item>
+                    <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingresa la periocidad' }]}>
+                        <Select placeholder="Selecciona la periocidad" options={[
+                            { value: 'diaria', label: 'Diaria'},
+                            { value: 'mensual', label: 'Mensual'},
+                            { value: 'Anual', label: 'Anual'},
+                        ]}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="subtema"
+                        label="Subtema"
+                        rules={[{ required: true, message: 'Por favor ingrese el subtema' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="archivo"
+                        label="Archivo"
+                        rules={[{ required: true, message: 'Por favor ingrese el archivo' }]}
+                    >
+                        <Input />
                     </Form.Item>
                 </Form>
             </Modal>
