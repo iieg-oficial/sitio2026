@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db
 from app.models import Flashes    
@@ -13,7 +13,7 @@ def read_flashes(
     db: Session = Depends(get_db),
 ):
     """Obtener todos los flashes"""
-    flashes = db.query(Flashes).all()
+    flashes = db.query(Flashes).options(joinedload(Flashes.subject)).all()
     return {
         "flashes": flashes,
         "total": len(flashes),
