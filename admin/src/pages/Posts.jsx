@@ -12,7 +12,6 @@ export default function Posts() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingPost, setEditingPost] = useState(null);
     const [subjects, setSubjects] = useState([]);  
-    const [loading, setLoading] = useState(false); 
 
     useEffect(() => {
         fetchPosts();
@@ -21,15 +20,13 @@ export default function Posts() {
 
     
     const fetchSubjects = async () => {
-        setLoading(true);
+        
         try {
             const response = await api.get('/subject');
             setSubjects(response.data);
         } catch {
             message.error('Error al cargar temas');
-        } finally {
-            setLoading(false);
-        }
+        } 
     };
     
     const fetchPosts = async () => {

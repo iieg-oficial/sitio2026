@@ -11,10 +11,21 @@ export default function Flashes() {
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [editingFlash, setEditingFlash] = useState(null);
+    const [subjects, setSubjects] = useState([]);  
 
     useEffect(() => {
         fetchFlashes();
+        fetchSubjects();
     }, []);
+
+    const fetchSubjects = async () => {
+        try {
+            const response = await api.get('/subject');
+            setSubjects(response.data);
+        } catch {
+            message.error('Error al cargar temas');
+        } 
+    };
 
     const fetchFlashes = async () => {
         setLoading(true);
