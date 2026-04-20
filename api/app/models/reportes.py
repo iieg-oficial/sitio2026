@@ -1,9 +1,14 @@
 from datetime import datetime
-
-from sqlalchemy import Column, DateTime, Integer, String, ForeignKey
+import enum
+from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
+
+class PeriocidadEnum(str, enum.Enum):
+    diaria = "diaria"
+    mensual = "mensual"
+    anual = "anual"
 
 class Reportes(Base):
     __tablename__ = "reportes"
@@ -12,7 +17,7 @@ class Reportes(Base):
     titulo = Column(String(200), nullable=False)
     descripcion = Column(String(200), nullable=False)
     fecha = Column(DateTime, default=datetime.utcnow, nullable=True)
-    periocidad = Column(String(200), nullable=True)
+    periocidad = Column(Enum(PeriocidadEnum), nullable=True)
     subtema = Column(String(200), nullable=True)
     archivo = Column(String(200), nullable=True)
 
