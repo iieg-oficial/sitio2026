@@ -14,3 +14,4 @@ class Subject(Base):
     archivos = relationship("Archivos", back_populates="subject")
     preguntas = relationship("Preguntas", back_populates="subject")
     flashes = relationship("Flashes", back_populates="subject")
+    reportes = relationship("Reportes", back_populates="subject")
