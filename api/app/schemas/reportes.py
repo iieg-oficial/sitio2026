@@ -1,13 +1,19 @@
 from pydantic import BaseModel, field_validator
 from datetime import datetime
+from enum import Enum
 from typing import Optional, List
 from app.schemas.subject import SubjectOut
+
+class PeriocidadEnum(str, Enum):
+    diaria = "diaria"
+    mensual = "mensual"
+    anual = "anual"
 
 class ReporteCreate(BaseModel):
     titulo: str
     descripcion: str
     fecha: Optional[datetime] = None
-    periocidad: Optional[str] = None
+    periocidad: PeriocidadEnum = None
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     subject_id: Optional[int] = None
@@ -24,7 +30,7 @@ class ReporteOut(BaseModel):
     titulo: str
     descripcion: str
     fecha: Optional[datetime] = None
-    periocidad: Optional[str] = None
+    periocidad: PeriocidadEnum = None
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     subject_id: Optional[int] = None
@@ -39,7 +45,7 @@ class ReporteResponse(BaseModel):
     titulo: str
     descripcion: str
     fecha: Optional[datetime] = None
-    periocidad: Optional[str] = None
+    periocidad: PeriocidadEnum = None
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     subject_id: Optional[int] = None
