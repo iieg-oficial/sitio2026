@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
+from app.schemas.subject import SubjectOut
 
 class PeriocidadEnum(str, Enum):
     diaria = "diaria"
@@ -16,6 +17,7 @@ class FlashesCreate(BaseModel):
     fecha_publicacion: datetime = None
     fuente: str = None
     link: str = None
+    subject_id: Optional[int] = None
 
 class FlashesOut(BaseModel):
     id: int
@@ -26,6 +28,8 @@ class FlashesOut(BaseModel):
     fecha_publicacion: datetime = None
     fuente: str = None
     link: str = None
+    subject_id: Optional[int] = None
+    subject: Optional[SubjectOut] = None
 
     class Config:
         from_attributes = True
