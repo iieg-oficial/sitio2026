@@ -192,6 +192,15 @@ export default function Flashes() {
                     <Form.Item name="link" label="Link" rules={[{ required: true, message: 'Por favor ingresa el link' }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item label="Tema" name="subject_id" rules={[{ required: true, message: 'Por favor seleccione un tema' }]}>
+                        <Select
+                            placeholder="Selecciona un tema"
+                            options={subjects.map((s) => ({
+                                value: s.id,
+                                label: s.titulo
+                            }))}
+                        />
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>

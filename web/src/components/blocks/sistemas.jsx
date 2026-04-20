@@ -18,7 +18,7 @@ export default function Sistemas() {
         showData()
     }, []);
 
-    const sistemasFiltrados = !searchTerm 
+    const filteredSistemas = !searchTerm 
         ? sistemas
         : sistemas.filter(sistema => {
             return keys.some(key => {
