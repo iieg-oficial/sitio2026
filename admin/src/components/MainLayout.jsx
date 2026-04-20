@@ -174,6 +174,12 @@ export default function MainLayout() {
             label: 'Sistemas',
             onClick: () => navigate('/sistemas')
         });
+        menuItems.push({
+            key: '/reportes',
+            icon: <MenuOutlined />,
+            label: 'Reportes',
+            onClick: () => navigate('/reportes')
+        });
     }
 
     const userMenuItems = [

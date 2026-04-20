@@ -35,6 +35,7 @@ import Archivos from '@pages/Archivos';
 import Snieg from '@pages/Snieg';
 import Preguntas from '@pages/Preguntas';
 import Sistemas from '@pages/Sistemas';
+import Reportes from '@pages/Reportes';
 
 const { DEV, VITE_GOOGLE_ANALYTICS_ID } = import.meta.env;
 
@@ -241,6 +242,14 @@ const router = createBrowserRouter([
                         element: (
                             <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
                                 <Sistemas />
+                            </RoleProtectedRoute>
+                        )
+                    },
+                    {
+                        path: 'reportes',
+                        element: (
+                            <RoleProtectedRoute allowedRoles={['tetlamamakani', 'editora']}>
+                                <Reportes />
                             </RoleProtectedRoute>
                         )
                     },
