@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.attributes import flag_modified
 
 from app.api.deps import get_current_user, get_db, verify_csrf
@@ -36,11 +36,12 @@ def create_flashes(
         fecha_publicacion=flashes.fecha_publicacion,
         fuente=flashes.fuente,
         link=flashes.link,
+        subject_id=flashes.subject_id,
     )
     db.add(db_flashes)
     db.commit()
     db.refresh(db_flashes)
-    return db_flashes
+    return db.query(Flashes).options(joinedload(Flashes.subject)).filter(Flashes.id == db_flashes.id).first()
 
 @router.put("/{id}", response_model=FlashesOut)
 def update_flashes(
@@ -50,7 +51,7 @@ def update_flashes(
     current_user: Usuario = Depends(get_current_user),
 ):
     """Actualizar un flash"""
-    db_flashes = db.query(Flashes).filter(Flashes.id == id).first()
+    db_flashes = db.query(Flashes).options(joinedload(Flashes.subject)).filter(Flashes.id == id).first()
     if not db_flashes:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -63,9 +64,10 @@ def update_flashes(
     db_flashes.fecha_publicacion = flashes.fecha_publicacion
     db_flashes.fuente = flashes.fuente
     db_flashes.link = flashes.link
+    db_flashes.subject_id = flashes.subject_id
     db.commit()
     db.refresh(db_flashes)
-    return db_flashes
+    return db.query(Flashes).options(joinedload(Flashes.subject)).filter(Flashes.id == db_flashes.id).first()
 
 @router.delete("/{id}", response_model=FlashesOut)
 def delete_flashes( 
@@ -82,5 +84,5 @@ def delete_flashes(
         )
     db.delete(db_flashes)
     db.commit()
-    return db_flashes
+    return {"message": "Flash eliminado exitosamente"}
 
