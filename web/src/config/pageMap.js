@@ -8,5 +8,6 @@ export const pageMap = {
     "preguntas-frecuentes": ['preguntas'],
     "sistemas-de-informacion": ['sistemas'],
     "flashes": ['flashes'],
-    "reportes": ['reportes']
+    "reportes": ['reportes'],
+    "galeria-de-mapas": ['mapas']
 };
