@@ -23,6 +23,7 @@ from app.schemas.snieg import SniegCreate, SniegOut, SniegResponse
 from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasResponse, PreguntasListResponse
 from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse
 from app.schemas.reportes import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
+from app.schemas.documentacion import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
 
 __all__ = [ 
     "UsuarioCreate",
@@ -91,4 +92,8 @@ __all__ = [
     "ReporteOut",
     "ReporteResponse",
     "ReporteList",
+    "DocumentacionCreate",
+    "DocumentacionOut",
+    "DocumentacionResponse",
+    "DocumentacionList",
 ]
