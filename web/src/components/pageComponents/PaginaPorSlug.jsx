@@ -27,7 +27,7 @@ function PaginaPorSlug({ slug }) {
   if (errorNotFound) {
       return (
         <article style={{ marginTop: '50px' }}>
-          <PaginaDinamica />
+          <NotFound />
         </article>
       );
   }

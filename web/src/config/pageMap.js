@@ -12,6 +12,5 @@ export const pageMap = {
     "galeria-de-mapas": ['mapas'],
     "documentacion": ['documentacion'],
     "capacitaciones": ['capacitaciones'],
-    "convocatorias": ['convocatorias'],
-    "comunicacion": ['comunicacion']
+    "convocatorias": ['convocatorias']
 };
