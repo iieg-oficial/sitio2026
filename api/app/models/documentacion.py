@@ -10,7 +10,7 @@ class Documentacion(Base):
     titulo = Column(String(200), nullable=False)
     descripcion = Column(String(200), nullable=False)
     metodologia = Column(String(200), nullable=True)
-    archivo = Column(String(200), nullable=True)
+    codigo = Column(String(200), nullable=True)
     claves = Column(String(200), nullable=True)
 
     subject_id = Column(Integer, ForeignKey("subject.id"), nullable=True)
