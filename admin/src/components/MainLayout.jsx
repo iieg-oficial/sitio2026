@@ -180,6 +180,12 @@ export default function MainLayout() {
             label: 'Reportes',
             onClick: () => navigate('/reportes')
         });
+        menuItems.push({
+            key: '/documentacion',
+            icon: <MenuOutlined />,
+            label: 'Documentación',
+            onClick: () => navigate('/documentacion')
+        });
     }
 
     const userMenuItems = [
