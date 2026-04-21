@@ -9,5 +9,9 @@ export const pageMap = {
     "sistemas-de-informacion": ['sistemas'],
     "flashes": ['flashes'],
     "reportes": ['reportes'],
-    "galeria-de-mapas": ['mapas']
+    "galeria-de-mapas": ['mapas'],
+    "documentacion": ['documentacion'],
+    "capacitaciones": ['capacitaciones'],
+    "convocatorias": ['convocatorias'],
+    "comunicacion": ['comunicacion']
 };
