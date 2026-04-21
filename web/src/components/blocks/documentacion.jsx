@@ -46,14 +46,12 @@ export default function Documentacion() {
             <hr />
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4'>
                 {filteredDocumentaciones.map(documentacion => (
-                    <div className='border-2 border-yellow-500 rounded-lg p-4' key={documentacion.id}>
-                        <span className='text-blue-600 font-semibold'>{format(new Date(documentacion.fecha), 'yyyy')}</span>
+                    <div className='border-2 border-yellow-500 rounded-lg p-4' key={documentacion.id}>                        
                         <h3>{documentacion.titulo}</h3>
                         <p>{documentacion.descripcion}</p>
-                        <p>periocidad: {documentacion.periocidad}</p>
-                        <p>subtema: {documentacion.subtema}</p>
-                        <p>fecha: {documentacion.fecha}</p>
-                        <p>archivo: {documentacion.archivo}</p>
+                        <p>metodologia: {documentacion.metodologia}</p>
+                        <p>codigo: {documentacion.codigo}</p>
+                        <p>claves: {documentacion.claves}</p>
                     </div>
                 ))}
             </div>
