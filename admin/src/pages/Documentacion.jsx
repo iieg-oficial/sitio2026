@@ -31,7 +31,7 @@ export default function Documentacion() {
         setLoading(true);
         try {
             const response = await api.get('/documentacion');
-            setDocumentaciones(response.data);
+            setDocumentaciones(response.data.documentaciones);
         } catch (error) {
             console.error('Error al obtener documentaciones:', error);
         } finally {
