@@ -5,7 +5,7 @@ from app.api.deps import get_db
 from app.models import Documentacion
 from app.schemas import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
 
-router = APIRouter(prefix="/documentacion", tags=["documentacion"])
+router = APIRouter(prefix="/documentacion", tags=["documentacion - public"])
 
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
