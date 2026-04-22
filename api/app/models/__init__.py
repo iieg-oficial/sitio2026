@@ -24,6 +24,8 @@ from app.models.reportes import Reportes
 from app.models.documentacion import Documentacion
 from app.models.profesores import Profesores
 from app.models.instituciones import Instituciones
+from app.models.modulos import Modulos
+from app.models.perfiles import Perfiles
 
 __all__ = [
     "Base",
@@ -53,4 +55,6 @@ __all__ = [
     "Documentacion",
     "Profesores",
     "Instituciones",
+    "Modulos",
+    "Perfiles",
 ]
