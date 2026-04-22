@@ -132,7 +132,10 @@ export default function Sistemas() {
             dataSource={sistemas} 
             loading={loading} 
             rowKey="id"
-            pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `Total ${total} sistemas` }}/>
+            pagination={{ 
+                pageSize: 10, 
+                showSizeChanger: true, 
+                showTotal: (total) => `Total ${total} sistemas` }}/>
         </Card>
         <Modal
             title={editingSistema ? 'Editar Sistema' : 'Crear Sistema'}

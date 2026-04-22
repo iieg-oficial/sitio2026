@@ -132,13 +132,12 @@ export default function Organos() {
             columns={columns} 
             dataSource={organos} 
             rowKey="id"
-            loading={loading}
             pagination={{
                 pageSize: 10,
                 showSizeChanger: true,
                 showTotal: (total) => `Total ${total} organos`
             }}
-            loading={loading} />
+        />
             
         </Card>
 

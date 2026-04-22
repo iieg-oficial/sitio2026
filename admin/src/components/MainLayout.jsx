@@ -156,7 +156,7 @@ export default function MainLayout() {
                     ],
                 },
                 {
-                    key: '/organos',
+                    key: '/organos_m',
                     icon: <MenuOutlined />,
                     label: 'Organos',
                     children:[
@@ -191,7 +191,7 @@ export default function MainLayout() {
         });
 
         menuItems.push({
-            key: '/sistemas',
+            key: '/sistemas_i',
             icon: <MenuOutlined />,
             label: 'Sistemas',
             children: [
