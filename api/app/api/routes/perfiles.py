@@ -3,11 +3,11 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db
 from app.models import Perfiles, Usuario
-from app.schemas.perfiles import PerfilesCreate, PerfilesResponse
+from app.schemas.perfiles import PerfilesCreate, PerfilesResponse, PerfilesOut
 
 router = APIRouter(prefix="/perfiles", tags=["perfiles"])
 
-@router.get("/", response_model=PerfilesResponse)
+@router.get("", response_model=PerfilesResponse)
 def read_perfiles(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
@@ -19,22 +19,24 @@ def read_perfiles(
         "total": len(perfiles),
     }
 
-@router.post("/create", response_model=PerfilesResponse)
+@router.post("/create", response_model=PerfilesOut)
 def create_perfil(
     perfil: PerfilesCreate,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
     """Crear un nuevo perfil"""
-    perfil_db = Perfiles(**perfil.dict())
+    perfil_db = Perfiles(
+        nombre=perfil.nombre,
+        descripcion=perfil.descripcion,
+        area=perfil.area,
+    )
     db.add(perfil_db)
     db.commit()
     db.refresh(perfil_db)
-    return {
-        "perfil": perfil_db,
-    }
+    return perfil_db
 
-@router.put("/{id}", response_model=PerfilesResponse)
+@router.put("/{id}", response_model=PerfilesOut)
 def update_perfil(
     id: int,
     perfil: PerfilesCreate,
@@ -53,11 +55,9 @@ def update_perfil(
     perfil_db.area = perfil.area
     db.commit()
     db.refresh(perfil_db)
-    return {
-        "perfil": perfil_db,
-    }
+    return perfil_db
 
-@router.delete("/{id}", response_model=PerfilesResponse)
+@router.delete("/{id}", response_model=PerfilesOut)
 def delete_perfil(
     id: int,
     db: Session = Depends(get_db),
@@ -66,9 +66,8 @@ def delete_perfil(
     """Eliminar un perfil"""
     perfil_db = db.query(Perfiles).filter(Perfiles.id == id).first()
     if not perfil_db:
-        raise HTTPException(status_code=404, detail="Perfil no encontrado")
+        raise HTTPException(status_code=404, 
+        detail="Perfil no encontrado")
     db.delete(perfil_db)
     db.commit()
-    return {
-        "perfil": perfil_db,
-    }
+    return perfil_db
