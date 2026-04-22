@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 from app.schemas.subject import SubjectOut
+from slugify import slugify
 
 class PostCreate(BaseModel):
     titulo: str
@@ -11,6 +12,7 @@ class PostCreate(BaseModel):
     fecha: Optional[datetime] = None
     keywords: str = ""
     subject_id: int
+    slug: Optional[str] = None
 
 class PostOut(BaseModel):
     id: int
@@ -22,6 +24,7 @@ class PostOut(BaseModel):
     keywords: str
     subject_id: int
     subject: SubjectOut
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -37,6 +40,7 @@ class PostResponse(BaseModel):
     keywords: str
     subject_id: int
     subject: SubjectOut
+    slug: Optional[str] = None
 
     class Config:                              
         from_attributes = True

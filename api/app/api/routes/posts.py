@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session, joinedload
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models.posts import Posts
 from app.schemas.posts import PostCreate, PostOut, PostResponse
+from slugify import slugify
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -30,6 +31,13 @@ async def crear_post(
     db: Session = Depends(get_db),
     current_user=Depends(verify_csrf),
 ):
+    slug = slugify(post_in.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Posts).filter(Posts.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+
     nuevo = Posts(
         titulo=post_in.titulo,
         resumen=post_in.resumen,
@@ -38,12 +46,25 @@ async def crear_post(
         keywords=post_in.keywords,
         fecha=post_in.fecha,
         subject_id=post_in.subject_id,
+        slug=slug,
     )
     db.add(nuevo)
     db.commit()
     db.refresh(nuevo)
 
     return db.query(Posts).filter(Posts.id == nuevo.id).first()
+
+@router.get("/{slug}", response_model=PostOut)
+async def obtener_post_slug(
+    slug: str, 
+    db: Session = Depends(get_db)
+):
+    post = db.query(Posts).filter(Posts.slug == slug).first()
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Post no encontrado"
+        )
+    return post
 
 
 @router.put("/{post_id}", response_model=PostOut)
