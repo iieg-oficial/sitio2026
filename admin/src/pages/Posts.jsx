@@ -102,10 +102,10 @@ export default function Posts() {
             sorter: (a, b) => a.resumen.localeCompare(b.resumen)
         },
         {
-            title: 'Contenido',
-            dataIndex: 'contenido',
-            key: 'contenido',
-            sorter: (a, b) => a.contenido.localeCompare(b.contenido)
+            title: 'Slug',
+            dataIndex: 'slug',
+            key: 'slug',
+            sorter: (a, b) => a.slug.localeCompare(b.slug)
         },
         {
             title: 'Autor',

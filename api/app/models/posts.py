@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from slugify import slugify
 from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -16,6 +16,7 @@ class Posts(Base):
     autor = Column(String(100), default="IIEG")
     fecha = Column(DateTime, default=datetime.utcnow)
     keywords = Column(String(200))
+    slug = Column(String(200), nullable=False)
 
     subject_id = Column(Integer, ForeignKey("subject.id"), nullable=True)
     subject = relationship("Subject", back_populates="posts")
