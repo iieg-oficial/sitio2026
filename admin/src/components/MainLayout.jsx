@@ -56,6 +56,13 @@ export default function MainLayout() {
                 : 'Revisiones',
             onClick: () => navigate('/revision')
         });
+
+        menuItems.push({
+            key: '/paginas',
+            icon: <MenuOutlined />,
+            label: 'Páginas',
+            onClick: () => navigate('/paginas')
+        });
     }
 
     if (user?.role === 'tetlamamakani' || user?.role === 'editora') {
@@ -72,132 +79,191 @@ export default function MainLayout() {
             label: 'Menú',
             onClick: () => navigate('/menu')
         });
-        menuItems.push({
-            key: '/posts',
+
+         menuItems.push({
+            key: '/catalogos',
             icon: <MenuOutlined />,
-            label: 'Posts',
-            onClick: () => navigate('/posts')
+            label: 'Catálogos',
+            children: [
+                {
+                    key: '/subjects',
+                    icon: <MenuOutlined />,
+                    label: 'Temas',
+                    onClick: () => navigate('/subjects')
+                },
+                {
+                    key: '/profesores',
+                    icon: <MenuOutlined />,
+                    label: 'Profesores',
+                    onClick: () => navigate('/profesores')
+                },
+                {
+                    key: '/instituciones',
+                    icon: <MenuOutlined />,
+                    label: 'Instituciones',
+                    onClick: () => navigate('/instituciones')
+                },
+            ],         
         });
+
         menuItems.push({
-            key: '/subjects',
+            key: '/conocenos',
             icon: <MenuOutlined />,
-            label: 'Subjects',
-            onClick: () => navigate('/subjects')
+            label: 'Conocenos',
+            children: [
+                {
+                    key: '/iieg',
+                    icon: <MenuOutlined />,
+                    label: 'IIEG',
+                    children:[
+                        {
+                            key: '/valores',
+                            icon: <MenuOutlined />,
+                            label: 'Valores',
+                            onClick: () => navigate('/valores')
+                        },
+                        {
+                            key: '/normatividad',
+                            icon: <MenuOutlined />,
+                            label: 'Normatividad',
+                            onClick: () => navigate('/normatividad')
+                        },
+                        {
+                            key: '/plan-trabajo',
+                            icon: <MenuOutlined />,
+                            label: 'Plan de Trabajo',
+                            onClick: () => navigate('/plan-trabajo')
+                        },
+                        {
+                            key: '/plan-institucional',
+                    icon: <MenuOutlined />,
+                    label: 'Plan Institucional',
+                    onClick: () => navigate('/plan-institucional')
+                        }
+                    ],
+                },
+                {
+                    key: '/organigrama',
+                    icon: <MenuOutlined />,
+                    label: 'Organigrama',
+                    children:[
+                        {
+                            key: '/directorio',
+                            icon: <MenuOutlined />,
+                            label: 'Directorio',
+                            onClick: () => navigate('/directorio')
+                        }
+                    ],
+                },
+                {
+                    key: '/organos',
+                    icon: <MenuOutlined />,
+                    label: 'Organos',
+                    children:[
+                        {
+                            key: '/organos',
+                            icon: <MenuOutlined />,
+                            label: 'Organos',
+                            onClick: () => navigate('/organos')
+                        }
+                    ],
+                },
+                {
+                    key: '/archivos',
+                    icon: <MenuOutlined />,
+                    label: 'Archivos',
+                    onClick: () => navigate('/archivos')
+                },
+                {
+                    key: '/snieg',
+                    icon: <MenuOutlined />,
+                    label: 'Snieg / CEIEG',
+                    onClick: () => navigate('/snieg')
+                },
+                {
+                    key: '/preguntas',
+                    icon: <MenuOutlined />,
+                    label: 'Preguntas',
+                    onClick: () => navigate('/preguntas')
+                }
+                
+            ],
         });
+
         menuItems.push({
-            key: '/paginas',
+            key: '/sistemas',
             icon: <MenuOutlined />,
-            label: 'Páginas',
-            onClick: () => navigate('/paginas')
+            label: 'Sistemas',
+            children: [
+                {
+                    key: '/plataformas',
+                    icon: <MenuOutlined />,
+                    label: 'Plataformas',
+                    onClick: () => navigate('/plataformas')
+                },
+                {
+                    key: '/sistemas',
+                    icon: <MenuOutlined />,
+                    label: 'Sistemas',
+                    onClick: () => navigate('/sistemas')
+                }
+            ],
         });
+
         menuItems.push({
-            key: '/plataformas',
+            key: '/datos-abiertos',
             icon: <MenuOutlined />,
-            label: 'Plataformas',
-            onClick: () => navigate('/plataformas')
+            label: 'Datos Abiertos',
+            children: [
+                {
+                    key: '/datos-nuevos',
+                    icon: <MenuOutlined />,
+                    label: 'Datos Nuevos',
+                    onClick: () => navigate('/datos-nuevos')
+                },
+                {
+                    key: '/flashes',
+                    icon: <MenuOutlined />,
+                    label: 'Flashes',
+                    onClick: () => navigate('/flashes')
+                },
+                {
+                    key: '/reportes',
+                    icon: <MenuOutlined />,
+                    label: 'Reportes',
+                    onClick: () => navigate('/reportes')
+                },
+                {
+                    key: '/documentacion',
+                    icon: <MenuOutlined />,
+                    label: 'Documentación',
+                    onClick: () => navigate('/documentacion')
+                }
+            ],
         });
+
         menuItems.push({
-            key: '/datos-nuevos',
+            key: '/comunidad',
             icon: <MenuOutlined />,
-            label: 'Datos Nuevos',
-            onClick: () => navigate('/datos-nuevos')
+            label: 'Comunidad',
+            children: [
+                {
+                    key: '/posts',
+                    icon: <MenuOutlined />,
+                    label: 'Posts',
+                    onClick: () => navigate('/posts')
+                }
+            ],
         });
-        menuItems.push({
-            key: '/flashes',
-            icon: <MenuOutlined />,
-            label: 'Flashes',
-            onClick: () => navigate('/flashes')
-        });
+
+
         menuItems.push({
             key: '/mapas',
             icon: <MenuOutlined />,
             label: 'Mapas',
             onClick: () => navigate('/mapas')
         });
-        menuItems.push({
-            key: '/valores',
-            icon: <MenuOutlined />,
-            label: 'Valores',
-            onClick: () => navigate('/valores')
-        });
-        menuItems.push({
-            key: '/normatividad',
-            icon: <MenuOutlined />,
-            label: 'Normatividad',
-            onClick: () => navigate('/normatividad')
-        });
-        menuItems.push({
-            key: '/plan-trabajo',
-            icon: <MenuOutlined />,
-            label: 'Plan de Trabajo',
-            onClick: () => navigate('/plan-trabajo')
-        });
-        menuItems.push({
-            key: '/plan-institucional',
-            icon: <MenuOutlined />,
-            label: 'Plan Institucional',
-            onClick: () => navigate('/plan-institucional')
-        });
-        menuItems.push({
-            key: '/directorio',
-            icon: <MenuOutlined />,
-            label: 'Directorio',
-            onClick: () => navigate('/directorio')
-        });
-        menuItems.push({
-            key: '/organos',
-            icon: <MenuOutlined />,
-            label: 'Organos',
-            onClick: () => navigate('/organos')
-        });
-        menuItems.push({
-            key: '/archivos',
-            icon: <MenuOutlined />,
-            label: 'Archivos',
-            onClick: () => navigate('/archivos')
-        });
-        menuItems.push({
-            key: '/snieg',
-            icon: <MenuOutlined />,
-            label: 'Snieg / CEIEG',
-            onClick: () => navigate('/snieg')
-        });
-        menuItems.push({
-            key: '/preguntas',
-            icon: <MenuOutlined />,
-            label: 'Preguntas',
-            onClick: () => navigate('/preguntas')
-        });
-        menuItems.push({
-            key: '/sistemas',
-            icon: <MenuOutlined />,
-            label: 'Sistemas',
-            onClick: () => navigate('/sistemas')
-        });
-        menuItems.push({
-            key: '/reportes',
-            icon: <MenuOutlined />,
-            label: 'Reportes',
-            onClick: () => navigate('/reportes')
-        });
-        menuItems.push({
-            key: '/documentacion',
-            icon: <MenuOutlined />,
-            label: 'Documentación',
-            onClick: () => navigate('/documentacion')
-        });
-        menuItems.push({
-            key: '/profesores',
-            icon: <MenuOutlined />,
-            label: 'Profesores',
-            onClick: () => navigate('/profesores')
-        });
-        menuItems.push({
-            key: '/instituciones',
-            icon: <MenuOutlined />,
-            label: 'Instituciones',
-            onClick: () => navigate('/instituciones')
-        });
+
     }
 
     const userMenuItems = [
