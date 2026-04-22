@@ -12,5 +12,5 @@ class Profesores(Base):
     descripcion = Column(String(200), nullable=False)
     foto = Column(String(200), nullable=False)
     
-    capacitaciones = relationship("Capacitaciones", back_populates="profesor")
+    
     

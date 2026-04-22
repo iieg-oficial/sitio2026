@@ -37,7 +37,8 @@ export default defineConfig(({ mode }) => {
                 '@hooks': path.resolve(__dirname, './src/hooks'),
                 '@services': path.resolve(__dirname, './src/services'),
                 '@contexts': path.resolve(__dirname, './src/contexts'),
-                '@constants': path.resolve(__dirname, './src/constants')
+                '@constants': path.resolve(__dirname, './src/constants'),
+                '@router': path.resolve(__dirname, './src/router'),
             },
         },
     };
