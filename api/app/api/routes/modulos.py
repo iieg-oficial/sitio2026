@@ -1,15 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.orm.attributes import flag_modified
+from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.core.cache import get_cache, redis_client, set_cache
+from app.api.deps import get_current_user, get_db
 from app.models import Modulos, Usuario
 from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
 
 router = APIRouter(prefix="/modulos", tags=["modulos"])
 
-@router.get("/", response_model=ModulosResponse)
+@router.get("", response_model=ModulosResponse)
 def read_modulos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
@@ -20,6 +18,18 @@ def read_modulos(
         "modulos": modulos,
         "total": len(modulos),
     }
+
+@router.get("/{id}", response_model=ModulosOut)
+def read_modulos_by_id(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
+):
+    """Obtener un modulo por id"""
+    db_modulos = db.query(Modulos).filter(Modulos.id == id).first()
+    if not db_modulos:
+        raise HTTPException(status_code=404, detail="Modulo no encontrado")
+    return db_modulos
 
 @router.post("/create", response_model=ModulosOut)
 def create_modulos(

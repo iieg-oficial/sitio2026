@@ -13,23 +13,21 @@ class AreaEnum(str, Enum):
 
 class PerfilesCreate(BaseModel):
     nombre: str
-    descripcion: str
+    descripcion: str = None
     area: AreaEnum = None
 
 class PerfilesOut(BaseModel):
     id: int
     nombre: str
-    descripcion: str
+    descripcion: str = None
     area: AreaEnum = None
 
     class Config:
         from_attributes = True
 
 class PerfilesResponse(BaseModel):
-    id: int
-    nombre: str
-    descripcion: str
-    area: AreaEnum = None
+    perfiles: list[PerfilesOut]
+    total: int
 
     class Config:
         from_attributes = True
