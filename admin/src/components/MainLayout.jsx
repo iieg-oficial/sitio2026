@@ -103,6 +103,18 @@ export default function MainLayout() {
                     label: 'Instituciones',
                     onClick: () => navigate('/instituciones')
                 },
+                {
+                    key: '/modulos',
+                    icon: <MenuOutlined />,
+                    label: 'Módulos',
+                    onClick: () => navigate('/modulos')
+                },
+                {
+                    key: '/perfiles',
+                    icon: <MenuOutlined />,
+                    label: 'Perfiles',
+                    onClick: () => navigate('/perfiles')
+                },
             ],         
         });
 

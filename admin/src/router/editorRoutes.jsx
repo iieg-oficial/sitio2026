@@ -21,6 +21,8 @@ import Reportes from '../pages/Reportes';
 import Documentacion from '../pages/Documentacion';
 import Profesores from '../pages/Profesores';
 import Instituciones from '../pages/Instituciones';
+import Modulos from '../pages/Modulos';
+import Perfiles from '../pages/Perfiles';
 
 import { protectedRoute } from './helpers';
 
@@ -50,4 +52,6 @@ export const editorRoutes = [
   protectedRoute('documentacion', <Documentacion />, ADMIN_EDITOR),
   protectedRoute('profesores', <Profesores />, ADMIN_EDITOR),
   protectedRoute('instituciones', <Instituciones />, ADMIN_EDITOR),
+  protectedRoute('modulos', <Modulos />, ADMIN_EDITOR),
+  protectedRoute('perfiles', <Perfiles />, ADMIN_EDITOR),
 ];
