@@ -11,4 +11,4 @@ class Instituciones(Base):
     descripcion = Column(String(200), nullable=False)
     logo = Column(String(200), nullable=False)
     
-    capacitaciones = relationship("Capacitaciones", back_populates="institucion")
+    

@@ -186,6 +186,18 @@ export default function MainLayout() {
             label: 'Documentación',
             onClick: () => navigate('/documentacion')
         });
+        menuItems.push({
+            key: '/profesores',
+            icon: <MenuOutlined />,
+            label: 'Profesores',
+            onClick: () => navigate('/profesores')
+        });
+        menuItems.push({
+            key: '/instituciones',
+            icon: <MenuOutlined />,
+            label: 'Instituciones',
+            onClick: () => navigate('/instituciones')
+        });
     }
 
     const userMenuItems = [
