@@ -19,3 +19,5 @@ class Perfiles(Base):
     nombre = Column(String(200), nullable=False)
     descripcion = Column(String(200), nullable=True)
     area = Column(Enum(AreaEnum), nullable=True)
+
+    cursos = relationship("Cursos", back_populates="perfil")
