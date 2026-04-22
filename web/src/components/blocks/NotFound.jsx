@@ -1,6 +1,6 @@
 function NotFound() {
     return (
-        <h1>Pagina custom de no existe la pagina</h1>
+        <h1>Pagina no encontrada - 404</h1>
     );
 }
 

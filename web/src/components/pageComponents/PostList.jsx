@@ -10,7 +10,7 @@ function PostList({ results = [] }) {
           <h3>{post.titulo}</h3>
           <p>{post.resumen}</p>
           <small>Categoría: {post.subject?.titulo}</small>
-          <Link to={`/comunidad/${post.slug}`} className="read-more bg-blue-500 text-white">
+          <Link to={`/comunidad/${post.slug}`} state={{ type: 'blog' }} className="read-more bg-blue-500 text-white">
             Leer más
           </Link>
         </article>
