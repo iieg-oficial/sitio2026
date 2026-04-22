@@ -8,7 +8,7 @@ class Instituciones(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(200), nullable=False)
-    descripcion = Column(String(200), nullable=False)
-    logo = Column(String(200), nullable=False)
+    descripcion = Column(String(200), nullable=True)
+    logo = Column(String(200), nullable=True)
     
     

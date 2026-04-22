@@ -11,7 +11,6 @@ export default function Paginas() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingPage, setEditingPage] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
 
     const fetchPages = async () => {
         setLoading(true);
