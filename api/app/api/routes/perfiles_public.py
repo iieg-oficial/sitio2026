@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.models import Perfiles
 from app.schemas.perfiles import PerfilesResponse
 
-router = APIRouter(prefix="/perfiles", tags=["perfiles"])
+router = APIRouter(prefix="/perfiles", tags=["perfiles - public"])
 
 @router.get("/", response_model=PerfilesResponse)
 def read_perfiles(
@@ -15,4 +15,5 @@ def read_perfiles(
     perfiles = db.query(Perfiles).all()
     return {
         "perfiles": perfiles,
+        "total": len(perfiles),
     }

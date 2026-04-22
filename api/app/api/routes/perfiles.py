@@ -1,11 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.orm.attributes import flag_modified
+from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.core.cache import get_cache, redis_client, set_cache
+from app.api.deps import get_current_user, get_db
 from app.models import Perfiles, Usuario
-from app.schemas.perfiles import PerfilesCreate, PerfilesOut, PerfilesResponse
+from app.schemas.perfiles import PerfilesCreate, PerfilesResponse
 
 router = APIRouter(prefix="/perfiles", tags=["perfiles"])
 
@@ -18,6 +16,7 @@ def read_perfiles(
     perfiles = db.query(Perfiles).all()
     return {
         "perfiles": perfiles,
+        "total": len(perfiles),
     }
 
 @router.post("/create", response_model=PerfilesResponse)
@@ -45,7 +44,10 @@ def update_perfil(
     """Actualizar un perfil"""
     perfil_db = db.query(Perfiles).filter(Perfiles.id == id).first()
     if not perfil_db:
-        raise HTTPException(status_code=404, detail="Perfil no encontrado")
+        raise HTTPException(
+            status_code=404, 
+            detail="Perfil no encontrado"
+        )
     perfil_db.nombre = perfil.nombre
     perfil_db.descripcion = perfil.descripcion
     perfil_db.area = perfil.area
