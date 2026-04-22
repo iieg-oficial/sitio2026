@@ -1,19 +1,26 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db
-from app.models.profesores import Profesores
+from app.api.deps import get_db, get_current_user
+from app.models import Profesores, Usuario
 from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresResponse
 
 router = APIRouter(prefix="/profesores", tags=["profesores"])
 
 @router.get("", response_model=list[ProfesoresResponse])
-async def listar_profesores(db: Session = Depends(get_db)):
+async def listar_profesores(
+    db: Session = Depends(get_db), 
+    current_user: Usuario = Depends(get_current_user)
+):
     profesores = db.query(Profesores).all()
     return profesores
 
 @router.get("/{profesor_id}", response_model=ProfesoresOut)
-async def obtener_profesor(profesor_id: int, db: Session = Depends(get_db)):
+async def obtener_profesor(
+    profesor_id: int,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
+):
     profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
     if not profesor:
         raise HTTPException(
@@ -25,11 +32,13 @@ async def obtener_profesor(profesor_id: int, db: Session = Depends(get_db)):
 async def crear_profesor(
     profesor_in: ProfesoresCreate,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     nuevo = Profesores(
         nombre=profesor_in.nombre,
         descripcion=profesor_in.descripcion,
-        logo=profesor_in.logo,
+        puesto=profesor_in.puesto,
+        foto=profesor_in.foto,
     )
     db.add(nuevo)
     db.commit()
@@ -41,6 +50,7 @@ async def actualizar_profesor(
     profesor_id: int,
     profesor_in: ProfesoresCreate,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
     if not profesor:
@@ -57,6 +67,7 @@ async def actualizar_profesor(
 async def eliminar_profesor(
     profesor_id: int,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user)
 ):
     profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
     if not profesor:
