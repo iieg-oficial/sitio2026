@@ -24,6 +24,8 @@ from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasRespon
 from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse
 from app.schemas.reportes import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
 from app.schemas.documentacion import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
+from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresResponse
+from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
 
 __all__ = [ 
     "UsuarioCreate",
@@ -96,4 +98,10 @@ __all__ = [
     "DocumentacionOut",
     "DocumentacionResponse",
     "DocumentacionList",
+    "ProfesoresCreate",
+    "ProfesoresOut",
+    "ProfesoresResponse",
+    "InstitucionesCreate",
+    "InstitucionesOut",
+    "InstitucionesResponse",
 ]
