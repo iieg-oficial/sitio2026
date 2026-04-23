@@ -11,6 +11,6 @@ class Instituciones(Base):
     descripcion = Column(String(200), nullable=True)
     logo = Column(String(200), nullable=True)
     
-    cursos = relationship("Cursos", back_populates="institucion")
+    cursos = relationship("Cursos", secondary="curso_instituciones", back_populates="instituciones")
     
     

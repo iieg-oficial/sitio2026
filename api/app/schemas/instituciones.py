@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class InstitucionesCreate(BaseModel):
     nombre: str
@@ -15,10 +16,8 @@ class InstitucionesOut(BaseModel):
         from_attributes = True
 
 class InstitucionesResponse(BaseModel):
-    id: int
-    nombre: str
-    descripcion: str
-    logo: str
+    instituciones: List[InstitucionesOut]
+    total: int
 
     class Config:
         from_attributes = True

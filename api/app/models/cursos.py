@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime
 from slugify import slugify
-from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey, Enum, Boolean
+from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey, Enum, Boolean, Table
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -11,6 +11,13 @@ curso_modulos = Table(
     Base.metadata,
     Column("curso_id", Integer, ForeignKey("cursos.id"), primary_key=True),
     Column("modulo_id", Integer, ForeignKey("modulos.id"), primary_key=True),
+)
+
+curso_instituciones = Table(
+    "curso_instituciones",
+    Base.metadata,
+    Column("curso_id", Integer, ForeignKey("cursos.id"), primary_key=True),
+    Column("institucion_id", Integer, ForeignKey("instituciones.id"), primary_key=True),
 )
 
 class TipoCurso(enum.Enum):
@@ -33,13 +40,12 @@ class Cursos(Base):
     tipo_curso = Column(Enum(TipoCurso), nullable=False)
     destacado = Column(Boolean, default=False, nullable=True)
 
-    
-    modulos = relationship("Modulos", secondary=curso_modulos, back_populates="cursos")
-
     inscripcion = Column(String(200), nullable=True)
     acreditacion = Column(String(200), nullable=True)
 
     vigencia = Column(String(200), nullable=True)
     contacto = Column(String(200), nullable=True)
 
+    modulos = relationship("Modulos", secondary=curso_modulos, back_populates="cursos")
+    instituciones = relationship("Instituciones", secondary=curso_instituciones, back_populates="cursos")
     
