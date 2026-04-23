@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from enum import Enum
-from typing import Optional, List
+from typing import List
 
 class AreaEnum(str, Enum):
     desarrollo = "desarrollo"
@@ -13,20 +13,20 @@ class AreaEnum(str, Enum):
 
 class PerfilesCreate(BaseModel):
     nombre: str
-    descripcion: str = None
-    area: AreaEnum = None
+    descripcion: str | None = None
+    area: AreaEnum | None = None
 
 class PerfilesOut(BaseModel):
     id: int
     nombre: str
-    descripcion: str = None
-    area: AreaEnum = None
+    descripcion: str | None = None
+    area: AreaEnum | None = None
 
     class Config:
         from_attributes = True
 
 class PerfilesResponse(BaseModel):
-    perfiles: list[PerfilesOut]
+    perfiles: List[PerfilesOut]
     total: int
 
     class Config:
