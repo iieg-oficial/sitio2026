@@ -3,6 +3,8 @@ from datetime import datetime
 from typing import List, Optional
 from app.schemas.modulos import ModulosOut
 from app.schemas.instituciones import InstitucionesOut
+from app.schemas.perfiles import PerfilesOut
+from app.schemas.profesores import ProfesoresOut
 from app.models.cursos import TipoCurso
 
 class CursosCreate(BaseModel):
@@ -16,8 +18,10 @@ class CursosCreate(BaseModel):
     p_ingreso: str = None
     p_egreso: str = None
     tipo_curso: TipoCurso
-    modulo_ids: list[int] = None
-    instituciones_ids: list[int] = None
+    modulo_ids: List[int] = None
+    instituciones_ids: List[int] = None
+    perfiles_ids: List[int] = None
+    profesores_ids: List[int] = None
     inscripcion: str = None
     acreditacion: str = None
     vigencia: str = None
@@ -34,8 +38,10 @@ class CursosOut(BaseModel):
     p_ingreso: str | None = None
     p_egreso: str | None = None
     tipo_curso: TipoCurso | None = None
-    modulo_ids: list[ModulosOut] | None = None
-    instituciones_ids: list[InstitucionesOut] | None = None
+    modulos: List[ModulosOut] | None = None
+    instituciones: List[InstitucionesOut] | None = None
+    perfiles: List[PerfilesOut] | None = None
+    profesores: List[ProfesoresOut] | None = None
     inscripcion: str | None = None
     acreditacion: str | None = None
     vigencia: str | None = None
@@ -46,5 +52,5 @@ class CursosOut(BaseModel):
         from_attributes = True
 
 class CursosResponse(BaseModel):
-    cursos: list[CursosOut]
+    cursos: List[CursosOut]
     total: int

@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm.attributes import flag_modified
 
-from app.api.deps import get_db
-from app.models import Cursos
-from app.schemas.cursos import CursosResponse
+from app.api.deps import get_current_user, get_db, verify_csrf
+from app.core.cache import get_cache, redis_client, set_cache
+from app.models import Cursos, Usuario, Modulos, Instituciones, Perfiles, Profesores
+from app.schemas.cursos import CursosOut, CursosResponse
 
 router = APIRouter(prefix="/cursos-public", tags=["cursos-public"])
 
 @router.get("/", response_model=CursosResponse)
-def read_cursos(
+def get_cursos(
     db: Session = Depends(get_db),
     destacado: bool | None = None,
 ):
