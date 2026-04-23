@@ -7,10 +7,10 @@ from app.schemas.instituciones import InstitucionesOut, InstitucionesResponse
 
 router = APIRouter(prefix="/instituciones", tags=["instituciones public"])
 
-@router.get("", response_model=list[InstitucionesResponse])
+@router.get("", response_model=InstitucionesResponse)
 async def listar_instituciones(db: Session = Depends(get_db)):
     instituciones = db.query(Instituciones).all()
-    return instituciones
+    return {"instituciones": instituciones, "total": len(instituciones)}
 
 @router.get("/{institucion_id}", response_model=InstitucionesOut)
 async def obtener_institucion(institucion_id: int, db: Session = Depends(get_db)):
