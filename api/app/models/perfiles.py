@@ -20,4 +20,6 @@ class Perfiles(Base):
     descripcion = Column(String(200), nullable=True)
     area = Column(Enum(AreaEnum), nullable=True)
 
+    cursos = relationship("Cursos", secondary="curso_perfiles", back_populates="perfiles")
+
         
