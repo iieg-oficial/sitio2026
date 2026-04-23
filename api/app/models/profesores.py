@@ -12,7 +12,7 @@ class Profesores(Base):
     descripcion = Column(String(200), nullable=True)
     foto = Column(String(200), nullable=True)
 
-    cursos = relationship("Cursos", back_populates="profesor")
+
     
     
     
