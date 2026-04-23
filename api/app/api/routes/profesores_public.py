@@ -10,7 +10,10 @@ router = APIRouter(prefix="/profesores", tags=["profesores public"])
 @router.get("", response_model=list[ProfesoresResponse])
 async def listar_profesores(db: Session = Depends(get_db)):
     profesores = db.query(Profesores).all()
-    return profesores
+    return {
+        "profesores": profesores,
+        "total": len(profesores)
+    }
 
 @router.get("/{profesor_id}", response_model=ProfesoresOut)
 async def obtener_profesor(profesor_id: int, db: Session = Depends(get_db)):

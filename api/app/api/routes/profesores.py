@@ -7,13 +7,16 @@ from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresRe
 
 router = APIRouter(prefix="/profesores", tags=["profesores"])
 
-@router.get("", response_model=list[ProfesoresResponse])
+@router.get("", response_model=ProfesoresResponse)
 async def listar_profesores(
     db: Session = Depends(get_db), 
     current_user: Usuario = Depends(get_current_user)
 ):
     profesores = db.query(Profesores).all()
-    return profesores
+    return {
+        "profesores": profesores,
+        "total": len(profesores),
+    }
 
 @router.get("/{profesor_id}", response_model=ProfesoresOut)
 async def obtener_profesor(
