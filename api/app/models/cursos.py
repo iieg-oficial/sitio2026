@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime
 from slugify import slugify
-from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey, Enum
+from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey, Enum, Boolean
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -24,6 +24,7 @@ class Cursos(Base):
     p_egreso = Column(String(100), nullable=True)
 
     tipo_curso = Column(Enum(TipoCurso), nullable=False)
+    destacado = Column(Boolean, default=False, nullable=True)
 
     profesores_id = Column(Integer, ForeignKey("profesores.id"), nullable=True)
     profesor = relationship("Profesores", back_populates="cursos")

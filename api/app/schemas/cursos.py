@@ -53,6 +53,7 @@ class CursosOut(BaseModel):
     modulo: Optional[ModulosOut] = None
     perfil: Optional[PerfilesOut] = None
     institucion: Optional[InstitucionesOut] = None
+    destacado: bool = False
 
     class Config:
         from_attributes = True
