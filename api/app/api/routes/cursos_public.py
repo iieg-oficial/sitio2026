@@ -15,7 +15,7 @@ def get_cursos(
     destacado: bool | None = None,
 ):
     """Obtener todos los cursos"""
-    query = db.query(Cursos).options(joinedload(Cursos.profesor), joinedload(Cursos.modulo), joinedload(Cursos.perfil), joinedload(Cursos.institucion))
+    query = db.query(Cursos).options(joinedload(Cursos.profesores), joinedload(Cursos.modulos), joinedload(Cursos.perfiles), joinedload(Cursos.instituciones))
     if destacado is not None:
         query = query.filter(Cursos.destacado == destacado)
     cursos = query.all()
