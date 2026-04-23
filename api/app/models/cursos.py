@@ -20,6 +20,20 @@ curso_instituciones = Table(
     Column("institucion_id", Integer, ForeignKey("instituciones.id"), primary_key=True),
 )
 
+curso_perfiles = Table(
+    "curso_perfiles",
+    Base.metadata,
+    Column("curso_id", Integer, ForeignKey("cursos.id"), primary_key=True),
+    Column("perfil_id", Integer, ForeignKey("perfiles.id"), primary_key=True),
+)
+
+curso_profesores = Table(
+    "curso_profesores",
+    Base.metadata,
+    Column("curso_id", Integer, ForeignKey("cursos.id"), primary_key=True),
+    Column("profesor_id", Integer, ForeignKey("profesores.id"), primary_key=True),
+)
+
 class TipoCurso(enum.Enum):
     CAPACITACION = "Capacitación"
     CONVOCATORIA = "Convocatoria"
@@ -48,4 +62,6 @@ class Cursos(Base):
 
     modulos = relationship("Modulos", secondary=curso_modulos, back_populates="cursos")
     instituciones = relationship("Instituciones", secondary=curso_instituciones, back_populates="cursos")
+    perfiles = relationship("Perfiles", secondary=curso_perfiles, back_populates="cursos")
+    profesores = relationship("Profesores", secondary=curso_profesores, back_populates="cursos")
     
