@@ -19,7 +19,7 @@ export default function Modulos() {
     const fetchModulos = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/modulo');
+            const response = await api.get('/modulos');
             setModulos(response.data.modulos);
         } catch (error) {
             console.error('Error al obtener modulos:', error);
