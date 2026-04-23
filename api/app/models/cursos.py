@@ -15,13 +15,13 @@ class Cursos(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
-    descripcion = Column(String(300))
-    inicio = Column(DateTime, default=datetime.utcnow)
-    formato = Column(String(100))
-    Horario = Column(String(100))
-    Objetivo = Column(String(300))
-    p_ingreso = Column(String(100))
-    p_egreso = Column(String(100))
+    descripcion = Column(String(300), nullable=True)
+    inicio = Column(DateTime, default=datetime.utcnow, nullable=True)
+    formato = Column(String(100), nullable=True)
+    Horario = Column(String(100), nullable=True)
+    Objetivo = Column(String(300), nullable=True)
+    p_ingreso = Column(String(100), nullable=True)
+    p_egreso = Column(String(100), nullable=True)
 
     tipo_curso = Column(Enum(TipoCurso), nullable=False)
 

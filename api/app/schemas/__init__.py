@@ -28,6 +28,7 @@ from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresRe
 from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
 from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
 from app.schemas.perfiles import PerfilesCreate, PerfilesOut, PerfilesResponse
+from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 
 __all__ = [ 
     "UsuarioCreate",
@@ -112,4 +113,7 @@ __all__ = [
     "PerfilesCreate",
     "PerfilesOut",
     "PerfilesResponse",
+    "CursosCreate",
+    "CursosOut",
+    "CursosResponse",
 ]
