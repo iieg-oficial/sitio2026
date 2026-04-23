@@ -20,7 +20,7 @@ export default function Instituciones() {
         setLoading(true);
         try {
             const response = await api.get('/instituciones');
-            setInstituciones(response.data);
+            setInstituciones(response.data.instituciones);
         } catch {
             message.error('Error al cargar instituciones');
         } finally {
