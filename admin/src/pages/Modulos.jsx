@@ -20,7 +20,7 @@ export default function Modulos() {
         setLoading(true);
         try {
             const response = await api.get('/modulo');
-            setModulos(response.data.modulo);
+            setModulos(response.data.modulos);
         } catch (error) {
             console.error('Error al obtener modulos:', error);
         } finally {

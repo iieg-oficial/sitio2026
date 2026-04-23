@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 from typing import List
 
-class ModuloCreate(BaseModel):
+class ModulosCreate(BaseModel):
     id: int
     nombre: str
     descripcion: str = None
 
-class ModuloOut(BaseModel):
+class ModulosOut(BaseModel):
     id: int
     nombre: str
     descripcion: str = None
@@ -14,8 +14,8 @@ class ModuloOut(BaseModel):
     class Config:
         from_attributes = True
 
-class ModuloResponse(BaseModel):
-    modulos: list[ModuloOut]
+class ModulosResponse(BaseModel):
+    modulos: list[ModulosOut]
     total: int
 
     class Config:
