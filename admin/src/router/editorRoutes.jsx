@@ -23,6 +23,7 @@ import Profesores from '../pages/Profesores';
 import Instituciones from '../pages/Instituciones';
 import Modulos from '../pages/Modulos';
 import Perfiles from '../pages/Perfiles';
+import Cursos from '../pages/Cursos'; 
 
 import { protectedRoute } from './helpers';
 
@@ -54,4 +55,5 @@ export const editorRoutes = [
   protectedRoute('instituciones', <Instituciones />, ADMIN_EDITOR),
   protectedRoute('modulos', <Modulos />, ADMIN_EDITOR),
   protectedRoute('perfiles', <Perfiles />, ADMIN_EDITOR),
+  protectedRoute('cursos', <Cursos />, ADMIN_EDITOR),
 ];

@@ -264,6 +264,12 @@ export default function MainLayout() {
                     icon: <MenuOutlined />,
                     label: 'Posts',
                     onClick: () => navigate('/posts')
+                },
+                {
+                    key: '/cursos',
+                    icon: <MenuOutlined />,
+                    label: 'Cursos',
+                    onClick: () => navigate('/cursos')
                 }
             ],
         });
