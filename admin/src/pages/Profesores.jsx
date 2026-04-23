@@ -20,7 +20,7 @@ export default function Profesores() {
         setLoading(true);
         try {
             const response = await api.get('/profesores');
-            setProfesores(response.data);
+            setProfesores(response.data.profesores);
         } catch {
             message.error('Error al cargar profesores');
         } finally {
