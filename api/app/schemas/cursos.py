@@ -12,6 +12,7 @@ class TipoCurso(str, Enum):
     CONVOCATORIA = "Convocatoria"
 
 class CursosCreate(BaseModel):
+    id: int
     titulo: str
     descripcion: str = None
     inicio: datetime = None
