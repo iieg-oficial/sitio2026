@@ -5,7 +5,7 @@ from app.api.deps import get_db
 from app.models import Modulos
 from app.schemas.modulos import ModulosResponse
 
-router = APIRouter(prefix="/modulo", tags=["modulo - public"])
+router = APIRouter(prefix="/modulos", tags=["modulos - public"])
 
 @router.get("", response_model=ModulosResponse)
 def read_modulo(db: Session = Depends(get_db)):

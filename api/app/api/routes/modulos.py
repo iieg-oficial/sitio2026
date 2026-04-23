@@ -5,7 +5,7 @@ from app.api.deps import get_current_user, get_db
 from app.models import Modulos, Usuario
 from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
 
-router = APIRouter(prefix="/modulo", tags=["modulo"])
+router = APIRouter(prefix="/modulos", tags=["modulos"])
 
 @router.get("", response_model=ModulosResponse)
 def read_modulo(   
@@ -31,7 +31,7 @@ def read_modulo_by_id(
         raise HTTPException(status_code=404, detail="Modulo no encontrado")
     return db_modulo
 
-@router.post("/create", response_model=ModulosOut)
+@router.post("/create", response_model=ModulosOut, status_code=status.HTTP_201_CREATED)
 def create_modulo(
     modulo: ModulosCreate,
     db: Session = Depends(get_db),
@@ -58,8 +58,9 @@ def update_modulo(
     db_modulo = db.query(Modulos).filter(Modulos.id == id).first()
     if not db_modulo:
         raise HTTPException(status_code=404, detail="Modulo no encontrado")
-    db_modulo.nombre = modulo.nombre
-    db_modulo.descripcion = modulo.descripcion
+    
+    for campo, valor in modulo.model_dump().items():
+        setattr(db_modulo, campo, valor)
     db.commit()
     db.refresh(db_modulo)
     return db_modulo

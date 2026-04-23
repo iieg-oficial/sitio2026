@@ -8,12 +8,17 @@ from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, Ins
 router = APIRouter(prefix="/instituciones", tags=["instituciones"])
 
 @router.get("", response_model=InstitucionesResponse)
-async def listar_instituciones(db: Session = Depends(get_db)):
+async def listar_instituciones(
+    db: Session = Depends(get_db)
+    ):
     instituciones = db.query(Instituciones).all()
     return {"instituciones": instituciones, "total": len(instituciones)}
 
 @router.get("/{institucion_id}", response_model=InstitucionesOut)
-async def obtener_institucion(institucion_id: int, db: Session = Depends(get_db)):
+async def obtener_institucion(
+    institucion_id: int, 
+    db: Session = Depends(get_db)
+    ):
     institucion = db.query(Instituciones).filter(Instituciones.id == institucion_id).first()
     if not institucion:
         raise HTTPException(
