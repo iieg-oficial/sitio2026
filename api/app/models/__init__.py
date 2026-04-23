@@ -24,7 +24,7 @@ from app.models.reportes import Reportes
 from app.models.documentacion import Documentacion
 from app.models.profesores import Profesores
 from app.models.instituciones import Instituciones
-from app.models.modulo import Modulo
+from app.models.modulos import Modulos
 from app.models.perfiles import Perfiles
 from app.models.cursos import Cursos
 
@@ -56,7 +56,7 @@ __all__ = [
     "Documentacion",
     "Profesores",
     "Instituciones",
-    "Modulo",
+    "Modulos",
     "Perfiles",
     "Cursos",
 ]

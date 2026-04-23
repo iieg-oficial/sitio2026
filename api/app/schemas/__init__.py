@@ -26,7 +26,7 @@ from app.schemas.reportes import ReporteCreate, ReporteOut, ReporteResponse, Rep
 from app.schemas.documentacion import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
 from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresResponse
 from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
-from app.schemas.modulo import ModuloCreate, ModuloOut, ModuloResponse
+from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
 from app.schemas.perfiles import PerfilesCreate, PerfilesOut, PerfilesResponse
 from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 
@@ -107,9 +107,9 @@ __all__ = [
     "InstitucionesCreate",
     "InstitucionesOut",
     "InstitucionesResponse",
-    "ModuloCreate",
-    "ModuloOut",
-    "ModuloResponse",
+    "ModulosCreate",
+    "ModulosOut",
+    "ModulosResponse",
     "PerfilesCreate",
     "PerfilesOut",
     "PerfilesResponse",

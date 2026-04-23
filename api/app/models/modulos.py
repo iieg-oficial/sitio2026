@@ -3,11 +3,11 @@ from sqlalchemy.orm import relationship
 
 from app.core.database import Base
 
-class Modulo(Base):
-    __tablename__ = "modulo"
+class Modulos(Base):
+    __tablename__ = "modulos"
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(200), nullable=False)
     descripcion = Column(String(200), nullable=True)
     
-    cursos = relationship("Cursos", back_populates="modulo")
+    cursos = relationship("Cursos", back_populates="modulos")
