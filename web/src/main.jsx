@@ -37,6 +37,8 @@ const router = createBrowserRouter([
             { path: '/resultados', element: <Resultados /> },
             { path: '/:slug', element: <DynamicPage /> },
             { path: '/comunidad/:slug', element: <PaginaIndividual /> },
+            { path: '/capacitaciones/:slug', element: <PaginaIndividual /> },
+            { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
             { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> }
         ],
     },
