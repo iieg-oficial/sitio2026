@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 
@@ -7,13 +8,13 @@ export default function Capacitaciones() {
     const [capacitacionesDestacadas, setCapacitacionesDestacadas] = useState([])
 
     const fetchCapacitaciones = async () => {
-        const response = await api.get('/capacitaciones')
-        setCapacitaciones(response.data.capacitaciones)
+        const response = await api.get('/cursos-public', { params: { destacado: false, tipo_curso: 'capacitacion' } })
+        setCapacitaciones(response.data.cursos)
     }
 
     const fetchCapacitacionesDestacadas = async () => {
-        const response = await api.get('/capacitaciones', { params: { destacado: true } })
-        setCapacitacionesDestacadas(response.data.capacitaciones)
+        const response = await api.get('/cursos-public', { params: { destacado: true, tipo_curso: 'capacitacion' } })
+        setCapacitacionesDestacadas(response.data.cursos)
     }
 
     useEffect(() => {
@@ -27,7 +28,7 @@ export default function Capacitaciones() {
     const pageCount = Math.ceil(capacitaciones.length / itemsPerPage);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % filteredCapacitaciones.length;
+        const newOffset = (event.selected * itemsPerPage) % capacitaciones.length;
         setItemOffset(newOffset);
     };
 

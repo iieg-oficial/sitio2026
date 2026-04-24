@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 
@@ -6,8 +7,8 @@ export default function Convocatorias() {
     const [convocatorias, setConvocatorias] = useState([])
     
     const fetchConvocatorias = async () => {
-        const response = await api.get('/convocatorias')
-        setConvocatorias(response.data.convocatorias)
+        const response = await api.get('/cursos-public', { params: { destacado: false, tipo_curso: 'convocatoria' } })
+        setConvocatorias(response.data.cursos)
     }
 
     useEffect(() => {
@@ -20,7 +21,7 @@ export default function Convocatorias() {
     const pageCount = Math.ceil(convocatorias.length / itemsPerPage);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % filteredConvocatorias.length;
+        const newOffset = (event.selected * itemsPerPage) % convocatorias.length;
         setItemOffset(newOffset);
     };
 
