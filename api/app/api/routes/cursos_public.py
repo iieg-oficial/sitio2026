@@ -23,3 +23,17 @@ def get_cursos(
         "cursos": cursos,
         "total": len(cursos),
     }
+
+@router.get("/{slug}", response_model=CursosOut)
+def get_cursos_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un curso por slug"""
+    db_cursos = db.query(Cursos).filter(Cursos.slug == slug).first()
+    if not db_cursos:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Curso no encontrado",
+        )
+    return db_cursos

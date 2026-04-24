@@ -65,3 +65,4 @@ class Cursos(Base):
     perfiles = relationship("Perfiles", secondary=curso_perfiles, back_populates="cursos")
     profesores = relationship("Profesores", secondary=curso_profesores, back_populates="cursos")
     
+    slug = Column(String(200), nullable=False)

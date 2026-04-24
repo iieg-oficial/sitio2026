@@ -6,6 +6,7 @@ from app.api.deps import get_current_user, get_db, verify_csrf
 from app.core.cache import get_cache, redis_client, set_cache
 from app.models import Cursos, Usuario, Modulos, Instituciones, Perfiles, Profesores
 from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
+from slugify import slugify
 
 router = APIRouter(prefix="/cursos", tags=["cursos"])
 
@@ -43,6 +44,13 @@ def create_cursos(
             detail="Profesor no encontrado",
         )
 
+    slug = slugify(cursos.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Cursos).filter(Cursos.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     """Crear un nuevo curso"""
     db_cursos = Cursos(
         titulo=cursos.titulo,
@@ -63,6 +71,7 @@ def create_cursos(
         vigencia=cursos.vigencia,
         contacto=cursos.contacto,
         destacado=cursos.destacado,
+        slug=slug,
     )
     db.add(db_cursos)
     db.commit()
@@ -77,6 +86,21 @@ def get_cursos(
     """Obtener todos los cursos"""
     cursos = db.query(Cursos).all()
     return {"cursos": cursos, "total": len(cursos)}
+
+@router.get("/{slug}", response_model=CursosOut)
+def get_cursos_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
+):
+    """Obtener un curso por slug"""
+    db_cursos = db.query(Cursos).filter(Cursos.slug == slug).first()
+    if not db_cursos:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Curso no encontrado",
+        )
+    return db_cursos
 
 @router.put("/{curso_id}", response_model=CursosOut)
 def update_cursos(

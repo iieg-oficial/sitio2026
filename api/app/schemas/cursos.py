@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional
+from slugify import slugify
 from app.schemas.modulos import ModulosOut
 from app.schemas.instituciones import InstitucionesOut
 from app.schemas.perfiles import PerfilesOut
@@ -27,6 +28,7 @@ class CursosCreate(BaseModel):
     vigencia: str = None
     contacto: str = None
     destacado: bool = False
+    slug: Optional[str] = None
 
 class CursosOut(BaseModel):
     id: int
@@ -48,6 +50,7 @@ class CursosOut(BaseModel):
     vigencia: str | None = None
     contacto: str | None = None
     destacado: bool | None = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True
