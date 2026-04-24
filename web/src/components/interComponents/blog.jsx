@@ -45,7 +45,6 @@ export default function Blog() {
                     )}
                 </div>
             </main>
-            <div className='mov1 z-0 bottom-10 absolute'></div>
         </article>
     </>
   );
