@@ -2,14 +2,10 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
-import { camposCapacitaciones, camposConvocatorias, camposComunes } from '@components/campos/cursos';
+import { CamposCapacitaciones, CamposConvocatorias, CamposComunes } from '@components/campos/cursos';
 
 const { Title } = Typography;
-const SECCIONES = {
-  CAPACITACION: <camposCapacitaciones />,
-  CONVOCATORIA: <camposConvocatorias />,
-  COMUN: <camposComunes />
-};
+const { Option } = Select;
 
 export default function Cursos() {
   const [cursos, setCursos] = useState([]);
@@ -127,6 +123,12 @@ export default function Cursos() {
     }
   };
 
+  const SECCIONES = {
+    CAPACITACION: <CamposCapacitaciones modulos={modulos} profesores={profesores} />,
+    CONVOCATORIA: <CamposConvocatorias instituciones={instituciones} perfiles={perfiles} />,
+    COMUN: <CamposComunes />
+  };
+
   const columns = [
     {
       title: 'Titulo',
@@ -208,7 +210,7 @@ export default function Cursos() {
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
 
-          {SECCIONES["COMUN"] ?? null}
+          {SECCIONES["COMUN"]}
 
           <Form.Item
             name="tipo_curso"
