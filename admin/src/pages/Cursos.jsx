@@ -124,9 +124,9 @@ export default function Cursos() {
   };
 
   const SECCIONES = {
-    CAPACITACION: <CamposCapacitaciones modulos={modulos} profesores={profesores} />,
-    CONVOCATORIA: <CamposConvocatorias instituciones={instituciones} perfiles={perfiles} />,
-    COMUN: <CamposComunes />
+    capacitacion: <CamposCapacitaciones modulos={modulos} profesores={profesores} />,
+    convocatoria: <CamposConvocatorias instituciones={instituciones} perfiles={perfiles} />,
+    comun: <CamposComunes />
   };
 
   const columns = [
@@ -210,7 +210,7 @@ export default function Cursos() {
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
 
-          {SECCIONES["COMUN"]}
+          {SECCIONES["comun"]}
 
           <Form.Item
             name="tipo_curso"
@@ -218,8 +218,8 @@ export default function Cursos() {
             rules={[{ required: true, message: 'Por favor seleccione un tipo de curso' }]}
           >
             <Select placeholder="Seleccione un tipo de curso" onChange={setTipoCurso}>
-              <Option key="CAPACITACION" value="CAPACITACION">Capacitación</Option>
-              <Option key="CONVOCATORIA" value="CONVOCATORIA">Convocatoria</Option>
+              <Option key="capacitacion" value="capacitacion">Capacitación</Option>
+              <Option key="convocatoria" value="convocatoria">Convocatoria</Option>
             </Select>
           </Form.Item>
 

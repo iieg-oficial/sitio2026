@@ -50,7 +50,7 @@ export const CamposCapacitaciones = ({ modulos, profesores }) => (
             >
                 {modulos.map((modulo) => (
                     <Option key={modulo.id} value={modulo.id}>
-                        {modulo.titulo}
+                        {modulo.nombre}
                     </Option>
                 ))}
             </Select>

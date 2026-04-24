@@ -35,8 +35,8 @@ curso_profesores = Table(
 )
 
 class TipoCurso(enum.Enum):
-    CAPACITACION = "Capacitación"
-    CONVOCATORIA = "Convocatoria"
+    capacitacion = "capacitacion"
+    convocatoria = "convocatoria"
 
 class Cursos(Base):
     __tablename__ = "cursos"
