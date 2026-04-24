@@ -4,7 +4,7 @@ import { pageComponentMap } from '../../config/pageComponentMap';
 
 function PaginaIndividual() {    
     const location = useLocation();
-    const { type } = location.state || {};
+    const type = location.state?.type || location.pathname.split('/')[1];
     
     const blockNames = pageComponentMap[type];
 
