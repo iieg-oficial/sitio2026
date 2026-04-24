@@ -69,14 +69,14 @@ def create_cursos(
     db.refresh(db_cursos)
     return db_cursos
 
-@router.get("/", response_model=list[CursosOut])
+@router.get("/", response_model=CursosResponse)
 def get_cursos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los cursos"""
     cursos = db.query(Cursos).all()
-    return cursos
+    return {"cursos": cursos, "total": len(cursos)}
 
 @router.put("/{curso_id}", response_model=CursosOut)
 def update_cursos(
