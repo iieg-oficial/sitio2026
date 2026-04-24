@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.orm.attributes import flag_modified
+from typing import Optional
 
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.core.cache import get_cache, redis_client, set_cache
-from app.models import Cursos, Usuario, Modulos, Instituciones, Perfiles, Profesores
+from app.api.deps import get_db
+from app.models import Cursos
 from app.schemas.cursos import CursosOut, CursosResponse
 
 router = APIRouter(prefix="/cursos-public", tags=["cursos-public"])
@@ -12,12 +11,22 @@ router = APIRouter(prefix="/cursos-public", tags=["cursos-public"])
 @router.get("/", response_model=CursosResponse)
 def get_cursos(
     db: Session = Depends(get_db),
-    destacado: bool | None = None,
+    destacado: Optional[bool] = Query(default=None, description="Destacado"),
+    tipo_curso: Optional[str] = Query(default=None, description="Tipo de curso"),
 ):
     """Obtener todos los cursos"""
-    query = db.query(Cursos).options(joinedload(Cursos.profesores), joinedload(Cursos.modulos), joinedload(Cursos.perfiles), joinedload(Cursos.instituciones))
+    query = db.query(Cursos).options(
+        joinedload(Cursos.profesores), 
+        joinedload(Cursos.modulos), 
+        joinedload(Cursos.perfiles), 
+        joinedload(Cursos.instituciones)
+    )
+
     if destacado is not None:
         query = query.filter(Cursos.destacado == destacado)
+    if tipo_curso is not None:
+        query = query.filter(Cursos.tipo_curso == tipo_curso)
+
     cursos = query.all()
     return {
         "cursos": cursos,
