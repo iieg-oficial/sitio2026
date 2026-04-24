@@ -1,4 +1,8 @@
-export const camposCapacitaciones = () => (
+import { Form, Input, Select, Checkbox } from 'antd';
+
+const { Option } = Select;
+
+export const CamposCapacitaciones = ({ modulos, profesores }) => (
     <>
         <Form.Item
             name="destacado"
@@ -76,7 +80,7 @@ export const camposCapacitaciones = () => (
         </Form.Item>
     </>
 );
-export const camposConvocatorias = () => (
+export const CamposConvocatorias = ({ instituciones, perfiles }) => (
     <>
         <Form.Item
             name="institucion_id"
@@ -127,7 +131,7 @@ export const camposConvocatorias = () => (
     </>
 );
 
-export const camposComunes = () => (
+export const CamposComunes = () => (
     <>
         <Form.Item
             name="titulo"
