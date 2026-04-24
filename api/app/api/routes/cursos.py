@@ -15,29 +15,29 @@ def create_cursos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
-    modulos = db.query(Modulos).filter(Modulos.id.in_(cursos.modulo_ids)).all()
-    if len(modulos) != len(cursos.modulo_ids):
+    modulos = db.query(Modulos).filter(Modulos.id.in_(cursos.modulo_ids)).all() if cursos.modulo_ids else []
+    if cursos.modulo_ids and len(modulos) != len(cursos.modulo_ids):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Módulo no encontrado",
         )
     
-    instituciones = db.query(Instituciones).filter(Instituciones.id.in_(cursos.instituciones_ids)).all()
-    if len(instituciones) != len(cursos.instituciones_ids):
+    instituciones = db.query(Instituciones).filter(Instituciones.id.in_(cursos.instituciones_ids)).all() if cursos.instituciones_ids else []
+    if cursos.instituciones_ids and len(instituciones) != len(cursos.instituciones_ids):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Institución no encontrada",
         )
 
-    perfiles = db.query(Perfiles).filter(Perfiles.id.in_(cursos.perfiles_ids)).all()
-    if len(perfiles) != len(cursos.perfiles_ids):
+    perfiles = db.query(Perfiles).filter(Perfiles.id.in_(cursos.perfiles_ids)).all() if cursos.perfiles_ids else []
+    if cursos.perfiles_ids and len(perfiles) != len(cursos.perfiles_ids):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Perfil no encontrado",
         )
     
-    profesores = db.query(Profesores).filter(Profesores.id.in_(cursos.profesores_ids)).all()
-    if len(profesores) != len(cursos.profesores_ids):
+    profesores = db.query(Profesores).filter(Profesores.id.in_(cursos.profesores_ids)).all() if cursos.profesores_ids else []
+    if cursos.profesores_ids and len(profesores) != len(cursos.profesores_ids):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Profesor no encontrado",
@@ -94,7 +94,7 @@ def update_cursos(
         )
     
     if cursos.modulo_ids is not None:
-        modulos = db.query(Modulos).filter(Modulos.id.in_(cursos.modulo_ids)).all()
+        modulos = db.query(Modulos).filter(Modulos.id.in_(cursos.modulo_ids)).all() if cursos.modulo_ids else []
         if len(modulos) != len(cursos.modulo_ids):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -103,7 +103,7 @@ def update_cursos(
         db_cursos.modulos = modulos
     
     if cursos.instituciones_ids is not None:
-        instituciones = db.query(Instituciones).filter(Instituciones.id.in_(cursos.instituciones_ids)).all()
+        instituciones = db.query(Instituciones).filter(Instituciones.id.in_(cursos.instituciones_ids)).all() if cursos.instituciones_ids else []
         if len(instituciones) != len(cursos.instituciones_ids):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -112,7 +112,7 @@ def update_cursos(
         db_cursos.instituciones = instituciones
 
     if cursos.perfiles_ids is not None:
-        perfiles = db.query(Perfiles).filter(Perfiles.id.in_(cursos.perfiles_ids)).all()
+        perfiles = db.query(Perfiles).filter(Perfiles.id.in_(cursos.perfiles_ids)).all() if cursos.perfiles_ids else []
         if len(perfiles) != len(cursos.perfiles_ids):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -121,7 +121,7 @@ def update_cursos(
         db_cursos.perfiles = perfiles
     
     if cursos.profesores_ids is not None:
-        profesores = db.query(Profesores).filter(Profesores.id.in_(cursos.profesores_ids)).all()
+        profesores = db.query(Profesores).filter(Profesores.id.in_(cursos.profesores_ids)).all() if cursos.profesores_ids else []
         if len(profesores) != len(cursos.profesores_ids):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

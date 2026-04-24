@@ -8,7 +8,7 @@ from app.schemas.profesores import ProfesoresOut
 from app.models.cursos import TipoCurso
 
 class CursosCreate(BaseModel):
-    id: int
+    
     titulo: str
     descripcion: str = None
     inicio: datetime = None
@@ -26,6 +26,7 @@ class CursosCreate(BaseModel):
     acreditacion: str = None
     vigencia: str = None
     contacto: str = None
+    destacado: bool = False
 
 class CursosOut(BaseModel):
     id: int
