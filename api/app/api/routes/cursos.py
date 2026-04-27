@@ -1,14 +1,32 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.orm.attributes import flag_modified
 
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.core.cache import get_cache, redis_client, set_cache
+from app.api.deps import get_current_user, get_db
 from app.models import Cursos, Usuario, Modulos, Instituciones, Perfiles, Profesores
 from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 from slugify import slugify
 
 router = APIRouter(prefix="/cursos", tags=["cursos"])
+
+
+@router.get("/", response_model=CursosResponse)
+def get_cursos(
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
+):
+    """Obtener todos los cursos con sus relaciones"""
+    cursos = (
+        db.query(Cursos)
+        .options(
+            joinedload(Cursos.modulos),
+            joinedload(Cursos.instituciones),
+            joinedload(Cursos.perfiles),
+            joinedload(Cursos.profesores),
+        )
+        .all()
+    )
+    return {"cursos": cursos, "total": len(cursos)}
+
 
 @router.post("/create", response_model=CursosOut)
 def create_cursos(
@@ -16,42 +34,61 @@ def create_cursos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
-    modulos = db.query(Modulos).filter(Modulos.id.in_(cursos.modulo_ids)).all() if cursos.modulo_ids else []
-    if cursos.modulo_ids and len(modulos) != len(cursos.modulo_ids):
+    """Crear un nuevo curso"""
+
+    # Validar y obtener objetos de las relaciones many-to-many
+    modulos = (
+        db.query(Modulos).filter(Modulos.id.in_(cursos.modulos)).all()
+        if cursos.modulos
+        else []
+    )
+    if cursos.modulos and len(modulos) != len(cursos.modulos):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Módulo no encontrado",
-        )
-    
-    instituciones = db.query(Instituciones).filter(Instituciones.id.in_(cursos.instituciones_ids)).all() if cursos.instituciones_ids else []
-    if cursos.instituciones_ids and len(instituciones) != len(cursos.instituciones_ids):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Institución no encontrada",
+            detail="Uno o más módulos no encontrados",
         )
 
-    perfiles = db.query(Perfiles).filter(Perfiles.id.in_(cursos.perfiles_ids)).all() if cursos.perfiles_ids else []
-    if cursos.perfiles_ids and len(perfiles) != len(cursos.perfiles_ids):
+    instituciones = (
+        db.query(Instituciones).filter(Instituciones.id.in_(cursos.instituciones)).all()
+        if cursos.instituciones
+        else []
+    )
+    if cursos.instituciones and len(instituciones) != len(cursos.instituciones):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Perfil no encontrado",
-        )
-    
-    profesores = db.query(Profesores).filter(Profesores.id.in_(cursos.profesores_ids)).all() if cursos.profesores_ids else []
-    if cursos.profesores_ids and len(profesores) != len(cursos.profesores_ids):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Profesor no encontrado",
+            detail="Una o más instituciones no encontradas",
         )
 
+    perfiles = (
+        db.query(Perfiles).filter(Perfiles.id.in_(cursos.perfiles)).all()
+        if cursos.perfiles
+        else []
+    )
+    if cursos.perfiles and len(perfiles) != len(cursos.perfiles):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Uno o más perfiles no encontrados",
+        )
+
+    profesores = (
+        db.query(Profesores).filter(Profesores.id.in_(cursos.profesores)).all()
+        if cursos.profesores
+        else []
+    )
+    if cursos.profesores and len(profesores) != len(cursos.profesores):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Uno o más profesores no encontrados",
+        )
+
+    # Generar slug único
     slug = slugify(cursos.titulo)
     base_slug = slug
     contador = 1
     while db.query(Cursos).filter(Cursos.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
-    """Crear un nuevo curso"""
+
     db_cursos = Cursos(
         titulo=cursos.titulo,
         descripcion=cursos.descripcion,
@@ -62,10 +99,6 @@ def create_cursos(
         p_ingreso=cursos.p_ingreso,
         p_egreso=cursos.p_egreso,
         tipo_curso=cursos.tipo_curso,
-        modulos=modulos,
-        instituciones=instituciones,
-        perfiles=perfiles,
-        profesores=profesores,
         inscripcion=cursos.inscripcion,
         acreditacion=cursos.acreditacion,
         vigencia=cursos.vigencia,
@@ -73,34 +106,66 @@ def create_cursos(
         destacado=cursos.destacado,
         slug=slug,
     )
+    # Asignar relaciones many-to-many como objetos ORM
+    print(">>> ASIGNANDO RELACIONES:")
+    print(f"Modulos ORM: {modulos}")
+    print(f"Instituciones ORM: {instituciones}")
+    
+    db_cursos.modulos = modulos
+    db_cursos.instituciones = instituciones
+    db_cursos.perfiles = perfiles
+    db_cursos.profesores = profesores
+
+    print(f">>> db_cursos.modulos ANTES de commit: {db_cursos.modulos}")
+
     db.add(db_cursos)
+    db.flush()
+    print(f">>> db_cursos ID recien creado (despues de flush): {db_cursos.id}")
+    
     db.commit()
     db.refresh(db_cursos)
+    print(f">>> Relaciones despues de refresh: {db_cursos.modulos}")
+
+    # Recargar con joinedload para serializar correctamente
+    db_cursos = (
+        db.query(Cursos)
+        .options(
+            joinedload(Cursos.modulos),
+            joinedload(Cursos.instituciones),
+            joinedload(Cursos.perfiles),
+            joinedload(Cursos.profesores),
+        )
+        .filter(Cursos.id == db_cursos.id)
+        .first()
+    )
     return db_cursos
 
-@router.get("/", response_model=CursosResponse)
-def get_cursos(
-    db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
-):
-    """Obtener todos los cursos"""
-    cursos = db.query(Cursos).all()
-    return {"cursos": cursos, "total": len(cursos)}
 
-@router.get("/{slug}", response_model=CursosOut)
+@router.get("/slug/{slug}", response_model=CursosOut)
 def get_cursos_slug(
     slug: str,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
-    """Obtener un curso por slug"""
-    db_cursos = db.query(Cursos).filter(Cursos.slug == slug).first()
+    """Obtener un curso por slug con sus relaciones"""
+    db_cursos = (
+        db.query(Cursos)
+        .options(
+            joinedload(Cursos.modulos),
+            joinedload(Cursos.instituciones),
+            joinedload(Cursos.perfiles),
+            joinedload(Cursos.profesores),
+        )
+        .filter(Cursos.slug == slug)
+        .first()
+    )
     if not db_cursos:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Curso no encontrado",
         )
     return db_cursos
+
 
 @router.put("/{curso_id}", response_model=CursosOut)
 def update_cursos(
@@ -110,62 +175,105 @@ def update_cursos(
     current_user: Usuario = Depends(get_current_user),
 ):
     """Actualizar un curso"""
-    db_cursos = db.query(Cursos).filter(Cursos.id == curso_id).first()
+    db_cursos = (
+        db.query(Cursos)
+        .options(
+            joinedload(Cursos.modulos),
+            joinedload(Cursos.instituciones),
+            joinedload(Cursos.perfiles),
+            joinedload(Cursos.profesores),
+        )
+        .filter(Cursos.id == curso_id)
+        .first()
+    )
     if not db_cursos:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Curso no encontrado",
         )
-    
-    if cursos.modulo_ids is not None:
-        modulos = db.query(Modulos).filter(Modulos.id.in_(cursos.modulo_ids)).all() if cursos.modulo_ids else []
-        if len(modulos) != len(cursos.modulo_ids):
+
+    # Actualizar relaciones many-to-many (solo si se envían en el payload)
+    if cursos.modulos is not None:
+        modulos = (
+            db.query(Modulos).filter(Modulos.id.in_(cursos.modulos)).all()
+            if cursos.modulos
+            else []
+        )
+        if len(modulos) != len(cursos.modulos):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Módulo no encontrado",
+                detail="Uno o más módulos no encontrados",
             )
         db_cursos.modulos = modulos
-    
-    if cursos.instituciones_ids is not None:
-        instituciones = db.query(Instituciones).filter(Instituciones.id.in_(cursos.instituciones_ids)).all() if cursos.instituciones_ids else []
-        if len(instituciones) != len(cursos.instituciones_ids):
+
+    if cursos.instituciones is not None:
+        instituciones = (
+            db.query(Instituciones).filter(Instituciones.id.in_(cursos.instituciones)).all()
+            if cursos.instituciones
+            else []
+        )
+        if len(instituciones) != len(cursos.instituciones):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Institución no encontrada",
+                detail="Una o más instituciones no encontradas",
             )
         db_cursos.instituciones = instituciones
 
-    if cursos.perfiles_ids is not None:
-        perfiles = db.query(Perfiles).filter(Perfiles.id.in_(cursos.perfiles_ids)).all() if cursos.perfiles_ids else []
-        if len(perfiles) != len(cursos.perfiles_ids):
+    if cursos.perfiles is not None:
+        perfiles = (
+            db.query(Perfiles).filter(Perfiles.id.in_(cursos.perfiles)).all()
+            if cursos.perfiles
+            else []
+        )
+        if len(perfiles) != len(cursos.perfiles):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Perfil no encontrado",
+                detail="Uno o más perfiles no encontrados",
             )
         db_cursos.perfiles = perfiles
-    
-    if cursos.profesores_ids is not None:
-        profesores = db.query(Profesores).filter(Profesores.id.in_(cursos.profesores_ids)).all() if cursos.profesores_ids else []
-        if len(profesores) != len(cursos.profesores_ids):
+
+    if cursos.profesores is not None:
+        profesores = (
+            db.query(Profesores).filter(Profesores.id.in_(cursos.profesores)).all()
+            if cursos.profesores
+            else []
+        )
+        if len(profesores) != len(cursos.profesores):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Profesor no encontrado",
+                detail="Uno o más profesores no encontrados",
             )
         db_cursos.profesores = profesores
-    
-    campos = [
-        "titulo", "descripcion", "inicio", "formato", "Horario", "Objetivo", "p_ingreso", "p_egreso", 
-        "tipo_curso", "inscripcion", "acreditacion", "vigencia", "contacto", "destacado",
+
+    # Actualizar solo campos escalares (NO incluir las relaciones many-to-many)
+    campos_escalares = [
+        "titulo", "descripcion", "inicio", "formato", "Horario", "Objetivo",
+        "p_ingreso", "p_egreso", "tipo_curso", "inscripcion", "acreditacion",
+        "vigencia", "contacto", "destacado",
     ]
-    for campo in campos:
+    for campo in campos_escalares:
         valor = getattr(cursos, campo, None)
         if valor is not None:
             setattr(db_cursos, campo, valor)
+
     db.commit()
     db.refresh(db_cursos)
+
+    # Recargar con joinedload para serializar correctamente
+    db_cursos = (
+        db.query(Cursos)
+        .options(
+            joinedload(Cursos.modulos),
+            joinedload(Cursos.instituciones),
+            joinedload(Cursos.perfiles),
+            joinedload(Cursos.profesores),
+        )
+        .filter(Cursos.id == curso_id)
+        .first()
+    )
     return db_cursos
-    
-        
+
+
 @router.delete("/{curso_id}", response_model=CursosOut)
 def delete_cursos(
     curso_id: int,
@@ -173,7 +281,17 @@ def delete_cursos(
     current_user: Usuario = Depends(get_current_user),
 ):
     """Eliminar un curso"""
-    db_cursos = db.query(Cursos).filter(Cursos.id == curso_id).first()
+    db_cursos = (
+        db.query(Cursos)
+        .options(
+            joinedload(Cursos.modulos),
+            joinedload(Cursos.instituciones),
+            joinedload(Cursos.perfiles),
+            joinedload(Cursos.profesores),
+        )
+        .filter(Cursos.id == curso_id)
+        .first()
+    )
     if not db_cursos:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
