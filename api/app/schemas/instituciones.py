@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 class InstitucionesCreate(BaseModel):
     nombre: str
@@ -9,8 +9,8 @@ class InstitucionesCreate(BaseModel):
 class InstitucionesOut(BaseModel):
     id: int
     nombre: str
-    descripcion: str
-    logo: str
+    descripcion: Optional[str] = None
+    logo: Optional[str] = None
 
     class Config:
         from_attributes = True

@@ -11,27 +11,19 @@ router = APIRouter(prefix="/cursos-public", tags=["cursos-public"])
 @router.get("/", response_model=CursosResponse)
 def get_cursos(
     db: Session = Depends(get_db),
-    destacado: Optional[bool] = Query(default=None, description="Destacado"),
-    tipo_curso: Optional[str] = Query(default=None, description="Tipo de curso"),
 ):
-    """Obtener todos los cursos"""
-    query = db.query(Cursos).options(
-        joinedload(Cursos.profesores), 
-        joinedload(Cursos.modulos), 
-        joinedload(Cursos.perfiles), 
-        joinedload(Cursos.instituciones)
+    """Obtener todos los cursos con sus relaciones"""
+    cursos = (
+        db.query(Cursos)
+        .options(
+            joinedload(Cursos.modulos),
+            joinedload(Cursos.instituciones),
+            joinedload(Cursos.perfiles),
+            joinedload(Cursos.profesores),
+        )
+        .all()
     )
-
-    if destacado is not None:
-        query = query.filter(Cursos.destacado == destacado)
-    if tipo_curso is not None:
-        query = query.filter(Cursos.tipo_curso == tipo_curso)
-
-    cursos = query.all()
-    return {
-        "cursos": cursos,
-        "total": len(cursos),
-    }
+    return {"cursos": cursos, "total": len(cursos)}
 
 @router.get("/{slug}", response_model=CursosOut)
 def get_cursos_slug(
@@ -39,7 +31,17 @@ def get_cursos_slug(
     db: Session = Depends(get_db),
 ):
     """Obtener un curso por slug"""
-    db_cursos = db.query(Cursos).filter(Cursos.slug == slug).first()
+    db_cursos = (
+        db.query(Cursos)
+        .options(
+            joinedload(Cursos.modulos),
+            joinedload(Cursos.instituciones),
+            joinedload(Cursos.perfiles),
+            joinedload(Cursos.profesores),
+        )
+        .filter(Cursos.slug == slug)
+        .first()
+    )
     if not db_cursos:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

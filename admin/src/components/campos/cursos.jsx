@@ -33,7 +33,7 @@ export const CamposCapacitaciones = ({ modulos, profesores }) => (
             <Input />
         </Form.Item>
         <Form.Item
-            name="modulo_id"
+            name="modulos"
             label="Módulo"
             rules={[{ required: true, message: 'Por favor seleccione un módulo' }]}
         >
@@ -56,7 +56,7 @@ export const CamposCapacitaciones = ({ modulos, profesores }) => (
             </Select>
         </Form.Item>
         <Form.Item
-            name="profesor_id"
+            name="profesores"
             label="Profesor"
             rules={[{ required: true, message: 'Por favor seleccione un profesor' }]}
         >
@@ -83,7 +83,7 @@ export const CamposCapacitaciones = ({ modulos, profesores }) => (
 export const CamposConvocatorias = ({ instituciones, perfiles }) => (
     <>
         <Form.Item
-            name="institucion_id"
+            name="instituciones"
             label="Institución"
             rules={[{ required: true, message: 'Por favor seleccione una institución' }]}
         >
@@ -106,7 +106,7 @@ export const CamposConvocatorias = ({ instituciones, perfiles }) => (
             </Select>
         </Form.Item>
         <Form.Item
-            name="perfil_id"
+            name="perfiles"
             label="Perfil"
             rules={[{ required: true, message: 'Por favor seleccione un perfil' }]}
         >
@@ -162,14 +162,14 @@ export const CamposComunes = () => (
             <Input />
         </Form.Item>
         <Form.Item
-            name="horario"
+            name="Horario"
             label="Horario"
             rules={[{ required: true, message: 'Por favor seleccione un horario' }]}
         >
             <Input />
         </Form.Item>
         <Form.Item
-            name="objetivo"
+            name="Objetivo"
             label="Objetivo"
             rules={[{ required: true, message: 'Por favor seleccione un objetivo' }]}
         >

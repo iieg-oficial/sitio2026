@@ -19,10 +19,10 @@ class CursosCreate(BaseModel):
     p_ingreso: str = None
     p_egreso: str = None
     tipo_curso: TipoCurso
-    modulo_ids: List[int] = None
-    instituciones_ids: List[int] = None
-    perfiles_ids: List[int] = None
-    profesores_ids: List[int] = None
+    modulos: Optional[List[int]] = None
+    instituciones: Optional[List[int]] = None
+    perfiles: Optional[List[int]] = None
+    profesores: Optional[List[int]] = None
     inscripcion: str = None
     acreditacion: str = None
     vigencia: str = None
@@ -41,10 +41,10 @@ class CursosOut(BaseModel):
     p_ingreso: str | None = None
     p_egreso: str | None = None
     tipo_curso: TipoCurso | None = None
-    modulos: List[ModulosOut] | None = None
-    instituciones: List[InstitucionesOut] | None = None
-    perfiles: List[PerfilesOut] | None = None
-    profesores: List[ProfesoresOut] | None = None
+    modulos: List[ModulosOut] = None
+    instituciones: List[InstitucionesOut] = None
+    perfiles: List[PerfilesOut] = None
+    profesores: List[ProfesoresOut] = None
     inscripcion: str | None = None
     acreditacion: str | None = None
     vigencia: str | None = None

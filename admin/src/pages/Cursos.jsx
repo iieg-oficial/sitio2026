@@ -83,7 +83,14 @@ export default function Cursos() {
 
   const handleEdit = (record) => {
     setEditingCurso(record);
-    form.setFieldsValue(record);
+    const formValues = {
+      ...record,
+      modulos: record.modulos ? record.modulos.map(m => m.id) : [],
+      instituciones: record.instituciones ? record.instituciones.map(i => i.id) : [],
+      perfiles: record.perfiles ? record.perfiles.map(p => p.id) : [],
+      profesores: record.profesores ? record.profesores.map(p => p.id) : [],
+    };
+    form.setFieldsValue(formValues);
     setModalVisible(true);
   };
 
