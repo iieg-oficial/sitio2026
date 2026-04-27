@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
+import CapacitacionesList from './capacitaciones_list';
 
 export default function Capacitaciones() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
@@ -63,86 +64,14 @@ export default function Capacitaciones() {
                         <p>{singleCapacitacion.p_egreso}</p>                        
                     </div>
                 </section>
-                <section className="border-2 border-gray-200 p-5 my-5">
-                    <p><strong>Módulos:</strong> 
-                        {singleCapacitacion.modulos.map((modulo) => (
-                            <div key={modulo.id}>
-                                <strong>{modulo.nombre}</strong>
-                                <p>{modulo.descripcion}</p>
-                            </div>
-                        ))}
-                    </p><br></br>
-                    <p><strong>Instituciones:</strong> 
-                    {singleCapacitacion.instituciones.map((institucion) => institucion.nombre).join(', ')}
-                    {singleCapacitacion.instituciones.map((institucion) => (
-                            <div key={institucion.id}>
-                                <strong>{institucion.nombre}</strong>
-                                <p>{institucion.descripcion}</p>
-                            </div>
-                        ))}
-                    </p><br></br>
-                    <p>
-                        <strong>Perfiles:</strong> 
-                        {singleCapacitacion.perfiles.map((perfil) => perfil.nombre).join(', ')}
-                        {singleCapacitacion.perfiles.map((perfil) => (
-                            <div key={perfil.id}>
-                                <strong>{perfil.nombre}</strong>
-                                <p>{perfil.descripcion}</p>
-                            </div>
-                        ))}
-                        </p><br></br>
-                    <p>
-                        <strong>Profesores:</strong> 
-                        {singleCapacitacion.profesores.map((profesor) => (
-                            <div key={profesor.id}>
-                                <strong>{profesor.nombre}</strong>
-                                <p>{profesor.descripcion}</p>
-                            </div>
-                        ))}
-                        </p><br></br>
-                    <p>
-                        <strong>Tipo de curso:</strong> {singleCapacitacion.tipo_curso}
-                    </p><br></br>
-                    <p><strong>Destacado:</strong> {singleCapacitacion.destacado}</p><br></br>
+                    
+                <CapacitacionesList />
+
+                <section>
                     <p><strong>Inscripción:</strong> {singleCapacitacion.inscripcion}</p><br></br>
                     <p><strong>Acreditación:</strong> {singleCapacitacion.acreditacion}</p><br></br>
                     <p><strong>Vigencia:</strong> {singleCapacitacion.vigencia}</p><br></br>
                     <p><strong>Contacto:</strong> {singleCapacitacion.contacto}</p><br></br>
-                </section>
-                    
-                <section className='container mx-auto'>
-                    <h2>Módulos</h2>
-                    <ul>
-                        {singleCapacitacion.modulos.map((modulo) => (
-                            <li key={modulo.id}>{modulo.nombre}</li>
-                        ))}
-                    </ul>
-                    <div className='flex justify-center mt-8'>
-                        {singleCapacitacion.modulos.map((modulo) => (
-                            <button 
-                            key={modulo.id}
-                            onClick={() => setActiveTab(modulo.nombre)}
-                            className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === modulo.nombre
-                                ? 'bg-blue-600 text-white border-blue-600'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'}`
-                            }
-                            >
-                                {modulo.nombre}
-                            </button>
-                        ))}
-                    </div>
-                    <div className='border-2 border-gray-200 p-5 my-5'>
-                        {singleCapacitacion.modulos.map((modulo) => {
-                            if (activeTab === modulo.nombre) {
-                                return (
-                                    <div key={modulo.id}>
-                                        <h2>{modulo.nombre}</h2>
-                                        <p>{modulo.descripcion}</p>
-                                    </div>
-                                )}
-                            } 
-                        )}
-                    </div>
                 </section>
                     
             </article>
