@@ -233,13 +233,21 @@ export default function Cursos() {
           {SECCIONES[tipoCurso] ?? null}
 
           <Form.Item
+            name="vigencia"
+            label="Vigencia"
+            rules={[{ required: true, message: 'Por favor seleccione una vigencia' }]}
+        >
+            <Input />
+        </Form.Item>
+
+          <Form.Item
             name="contacto"
             label="Contacto"
             rules={[{ required: true, message: 'Por favor seleccione un contacto' }]}
           >
             <Input />
           </Form.Item>
-         
+        
 
         </Form>
       </Modal>
