@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from slugify import slugify
 
 class InstitucionesCreate(BaseModel):
     nombre: str
@@ -11,6 +12,7 @@ class InstitucionesOut(BaseModel):
     nombre: str
     descripcion: Optional[str] = None
     logo: Optional[str] = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True

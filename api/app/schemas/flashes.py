@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 from app.schemas.subject import SubjectOut
+from slugify import slugify
 
 class PeriocidadEnum(str, Enum):
     diaria = "diaria"
@@ -18,6 +19,7 @@ class FlashesCreate(BaseModel):
     fuente: str = None
     link: str = None
     subject_id: Optional[int] = None
+    slug: Optional[str] = None
 
 class FlashesOut(BaseModel):
     id: int
@@ -30,6 +32,7 @@ class FlashesOut(BaseModel):
     link: str = None
     subject_id: Optional[int] = None
     subject: Optional[SubjectOut] = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True

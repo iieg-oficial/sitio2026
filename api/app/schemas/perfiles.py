@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from enum import Enum
 from typing import List
+from slugify import slugify
 
 class AreaEnum(str, Enum):
     desarrollo = "desarrollo"
@@ -15,12 +16,14 @@ class PerfilesCreate(BaseModel):
     nombre: str
     descripcion: str | None = None
     area: AreaEnum | None = None
+    slug: Optional[str] = None
 
 class PerfilesOut(BaseModel):
     id: int
     nombre: str
     descripcion: str | None = None
     area: AreaEnum | None = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True

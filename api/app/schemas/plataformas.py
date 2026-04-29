@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from slugify import slugify
 
 class PlataformasCreate(BaseModel):
     titulo: str
@@ -7,6 +8,7 @@ class PlataformasCreate(BaseModel):
     imagen: str
     destacada: bool = False
     orden: int
+    slug: Optional[str] = None
 
 class PlataformasOut(BaseModel):
     id: int
@@ -16,6 +18,7 @@ class PlataformasOut(BaseModel):
     imagen: str
     destacada: bool = False
     orden: int
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -28,6 +31,7 @@ class PlataformasResponse(BaseModel):
     imagen: str
     destacada: bool = False
     orden: int
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True

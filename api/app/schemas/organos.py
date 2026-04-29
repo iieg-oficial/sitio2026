@@ -1,10 +1,12 @@
 from pydantic import BaseModel
 from typing import List
+from slugify import slugify
 
 class OrganosBase(BaseModel):
     titulo: str
     descripcion: str | None = None
     link: str | None = None
+    slug: Optional[str] = None
 
 class OrganosCreate(OrganosBase):
     pass
