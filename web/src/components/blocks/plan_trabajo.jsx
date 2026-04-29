@@ -8,8 +8,8 @@ export default function PlanTrabajo() {
 
     useEffect(() => {
         const fetchPlanTrabajo = async () => {
-            const response = await api.get('/plan-trabajo')
-            setPlanTrabajo(response.data.plan_trabajo)
+            const response = await api.get('/docs_iieg/tipo/plan_de_trabajo')
+            setPlanTrabajo(response.data.docs_iieg)
         }
         fetchPlanTrabajo()
     }, [location])

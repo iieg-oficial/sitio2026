@@ -97,3 +97,11 @@ def get_docs_iieg_slug(
         )
     return db_docs_iieg
     
+@router.get("/tipo/{tipo}", response_model=DocsIIEGResponse)
+def get_docs_iieg_tipo(
+    tipo: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener documentos del IIEG por tipo"""
+    docs_iieg = db.query(DocsIIEG).filter(DocsIIEG.tipo == tipo).all()
+    return {"docs_iieg": docs_iieg, "total": len(docs_iieg)}

@@ -8,8 +8,8 @@ export default function Valores() {
 
     useEffect(() => {
         const fetchValores = async () => {
-            const response = await api.get('/valores')
-            setValores(response.data.valores)
+            const response = await api.get('/docs_iieg/tipo/valor')
+            setValores(response.data.docs_iieg)
         }
         fetchValores()
     }, [location])

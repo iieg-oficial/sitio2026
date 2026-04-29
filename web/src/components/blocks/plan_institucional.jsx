@@ -8,8 +8,8 @@ export default function PlanInstitucional() {
 
     useEffect(() => {
         const fetchPlanInstitucional = async () => {
-            const response = await api.get('/plan-institucional')
-            setPlanInstitucional(response.data.plan_institucional)
+            const response = await api.get('/docs_iieg/tipo/plan_institucional')
+            setPlanInstitucional(response.data.docs_iieg)
         }
         fetchPlanInstitucional()
     }, [location])
