@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text
-
+from slugify import slugify
 from app.core.database import Base
 
 class Organos(Base):
@@ -9,3 +9,4 @@ class Organos(Base):
     titulo = Column(String(255), nullable=False)
     descripcion = Column(Text, nullable=True)
     link = Column(String(255), nullable=True)
+    slug = Column(String(200), nullable=False)

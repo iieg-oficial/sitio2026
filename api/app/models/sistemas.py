@@ -2,7 +2,7 @@ import enum
 
 from sqlalchemy import Column, Integer, String, Text, Enum
 from sqlalchemy.orm import relationship
-
+from slugify import slugify
 from app.core.database import Base
 
 class TipoSistemaEnum(str, enum.Enum):
@@ -20,4 +20,5 @@ class Sistemas(Base):
     link = Column(String, nullable=False)
     tipo = Column(Enum(TipoSistemaEnum), nullable=False)
     imagen = Column(String, nullable=True)
+    slug = Column(String(200), nullable=False)
     

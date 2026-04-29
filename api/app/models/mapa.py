@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String
-
+from slugify import slugify
 from app.core.database import Base
 
 class Mapa(Base):
@@ -19,4 +19,5 @@ class Mapa(Base):
     sitio_web = Column(String, nullable=True)
     ubicacion = Column(String, nullable=True)
     informacion = Column(String, nullable=True)
+    slug = Column(String(200), nullable=False)
     

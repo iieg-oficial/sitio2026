@@ -2,6 +2,7 @@ import enum
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey
 from sqlalchemy.orm import relationship
+from slugify import slugify
 
 from app.core.database import Base
 
@@ -21,6 +22,7 @@ class Flashes(Base):
     fecha_publicacion = Column(DateTime, default=datetime.utcnow)
     fuente = Column(String, nullable=True)
     link = Column(String, nullable=True)
+    slug = Column(String(200), nullable=False)
     
     subject_id = Column(Integer, ForeignKey("subject.id"), nullable=True)
     subject = relationship("Subject", back_populates="flashes")

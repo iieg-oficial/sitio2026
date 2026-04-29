@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-
+from slugify import slugify
 from app.core.database import Base
 
 class Profesores(Base):
@@ -11,6 +11,7 @@ class Profesores(Base):
     puesto = Column(String(200), nullable=False)
     descripcion = Column(String(200), nullable=True)
     foto = Column(String(200), nullable=True)
+    slug = Column(String(200), nullable=False)
 
     cursos = relationship("Cursos", secondary="curso_profesores", back_populates="profesores")
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from slugify import slugify
 from sqlalchemy import Column, DateTime, Integer, JSON, String, Text
 
 from app.core.database import Base
@@ -18,4 +18,5 @@ class Page(Base):
     meta_keywords = Column(String, nullable=True)
     published_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)
-    blocks = Column(JSON, default=list, nullable=False)
+    blocks = Column(JSON, default=list, nullable=False) 
+    slug = Column(String(200), nullable=False)

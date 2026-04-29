@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from app.core.database import Base
-
+from slugify import slugify
 
 class Plataformas(Base):
     __tablename__ = "plataformas"
@@ -12,3 +12,4 @@ class Plataformas(Base):
     imagen = Column(String(200))
     destacada = Column(Boolean, default=False, nullable=True)
     orden = Column(Integer, default=0, nullable=True)
+    slug = Column(String(200), nullable=False)
