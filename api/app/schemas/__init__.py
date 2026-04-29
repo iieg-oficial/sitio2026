@@ -29,6 +29,7 @@ from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, Ins
 from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
 from app.schemas.perfiles import PerfilesCreate, PerfilesOut, PerfilesResponse
 from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
+from app.schemas.docs_iieg import DocsIIEGCreate, DocsIIEGOut, DocsIIEGResponse
 
 __all__ = [ 
     "UsuarioCreate",
@@ -116,4 +117,7 @@ __all__ = [
     "CursosCreate",
     "CursosOut",
     "CursosResponse",
+    "DocsIIEGCreate",
+    "DocsIIEGOut",
+    "DocsIIEGResponse",
 ]
