@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models.instituciones import Instituciones
 from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
@@ -71,3 +71,16 @@ async def eliminar_institucion(
     db.delete(institucion)
     db.commit()
     return {"message": "Institucion eliminada exitosamente"}
+
+@router.get("/slug/{slug}", response_model=InstitucionesOut)
+def get_instituciones_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener una institucion por slug"""
+    institucion = db.query(Instituciones).filter(Instituciones.slug == slug).first()
+    if not institucion:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Institucion no encontrada"
+        )
+    return institucion

@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from slugify import slugify
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
@@ -67,3 +67,16 @@ def delete_page(page_id: int, db: Session = Depends(get_db)):
     db.delete(page)
     db.commit()
     return {"ok": True}
+
+@router.get("/slug/{slug}", response_model=PageResponse)
+def get_page_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener una página por slug"""
+    page = db.query(Page).filter(Page.slug == slug).first()
+    if not page:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Página no encontrada"
+        )
+    return page

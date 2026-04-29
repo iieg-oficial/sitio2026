@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models.subject import Subject
 from app.schemas.subject import SubjectCreate, SubjectOut, SubjectResponse
@@ -70,3 +70,16 @@ async def eliminar_subject(
     db.delete(subject)
     db.commit()
     return {"message": "Subject eliminado exitosamente"}
+
+@router.get("/slug/{slug}", response_model=SubjectOut)
+def get_subject_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un subject por slug"""
+    subject = db.query(Subject).filter(Subject.slug == slug).first()
+    if not subject:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Subject no encontrado"
+        )
+    return subject

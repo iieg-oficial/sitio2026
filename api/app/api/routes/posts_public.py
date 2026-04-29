@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-
+from slugify import slugify
 from app.api.deps import get_db
 from app.models.posts import Posts
 from app.schemas.posts import PostOut, PostResponse
@@ -13,7 +13,7 @@ async def listar_posts_publicos(db: Session = Depends(get_db)):
     posts = db.query(Posts).options(joinedload(Posts.subject)).order_by(Posts.fecha.desc()).all()
     return posts 
 
-@router.get("/{slug}", response_model=PostOut)
+@router.get("/slug/{slug}", response_model=PostOut)
 async def obtener_post_slug(
     slug: str, 
     db: Session = Depends(get_db)

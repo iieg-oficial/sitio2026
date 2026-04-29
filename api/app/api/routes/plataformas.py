@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Plataformas, Usuario     
 from app.schemas.plataformas import PlataformasResponse, PlataformasCreate
@@ -61,3 +61,14 @@ def delete_plataforma(
     db.delete(db_plataforma)
     db.commit()
     return {"message": "Plataforma eliminada exitosamente"}
+
+@router.get("/slug/{slug}", response_model=PlataformasResponse)
+def get_plataformas_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener una plataforma por slug"""
+    db_plataforma = db.query(Plataformas).filter(Plataformas.slug == slug).first()
+    if not db_plataforma:
+        raise HTTPException(status_code=404, detail="Plataforma no encontrada")
+    return db_plataforma

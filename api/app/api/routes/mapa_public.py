@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
-
+from slugify import slugify
 from app.api.deps import get_db
 from app.models import Mapa     
 from app.schemas.mapa import MapaResponse, MapaOut
@@ -30,4 +30,17 @@ def read_mapa_random(
     if not mapa:
         raise HTTPException(status_code=404, detail="No hay mapas disponibles")
 
+    return mapa
+
+@router.get("/slug/{slug}", response_model=MapaOut)
+def get_mapa_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un mapa por slug"""
+    mapa = db.query(Mapa).filter(Mapa.slug == slug).first()
+    if not mapa:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Mapa no encontrado"
+        )
     return mapa

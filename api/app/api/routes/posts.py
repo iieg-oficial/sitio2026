@@ -54,7 +54,7 @@ async def crear_post(
 
     return db.query(Posts).filter(Posts.id == nuevo.id).first()
 
-@router.get("/{slug}", response_model=PostOut)
+@router.get("/slug/{slug}", response_model=PostOut)
 async def obtener_post_slug(
     slug: str, 
     db: Session = Depends(get_db)

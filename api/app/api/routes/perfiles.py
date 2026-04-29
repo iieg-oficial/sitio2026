@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db
 from app.models import Perfiles, Usuario
 from app.schemas.perfiles import PerfilesCreate, PerfilesResponse, PerfilesOut
@@ -70,4 +70,17 @@ def delete_perfil(
         detail="Perfil no encontrado")
     db.delete(perfil_db)
     db.commit()
+    return perfil_db
+
+@router.get("/slug/{slug}", response_model=PerfilesOut)
+def get_perfiles_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un perfil por slug"""
+    perfil_db = db.query(Perfiles).filter(Perfiles.slug == slug).first()
+    if not perfil_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Perfil no encontrado"
+        )
     return perfil_db

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Reportes, Usuario
 from app.schemas import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
@@ -83,3 +83,16 @@ async def eliminar_reporte(
     db.delete(reporte)
     db.commit()
     return {"message": "Reporte eliminado exitosamente"}
+
+@router.get("/slug/{slug}", response_model=ReporteOut)
+def get_reporte_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un reporte por slug"""
+    reporte = db.query(Reportes).filter(Reportes.slug == slug).first()
+    if not reporte:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Reporte no encontrado"
+        )
+    return reporte

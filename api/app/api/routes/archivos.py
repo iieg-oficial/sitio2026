@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Archivos, Usuario
 from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse, ArchivoList 

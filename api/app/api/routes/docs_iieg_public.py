@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-
+from slugify import slugify
 from app.api.deps import get_db
 from app.models import DocsIIEG
 from app.schemas.docs_iieg import DocsIIEGResponse, DocsIIEGOut

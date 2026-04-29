@@ -1,5 +1,5 @@
 from typing import List
-
+from slugify import slugify
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -32,4 +32,17 @@ def get_directorio(
     directorio = db.query(Directorio).filter(Directorio.id == directorio_id).first()
     if not directorio:
         raise HTTPException(status_code=404, detail="Directorio no encontrado")
+    return directorio
+
+@router.get("/slug/{slug}", response_model=DirectorioOut)
+def get_directorio_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un directorio por slug"""
+    directorio = db.query(Directorio).filter(Directorio.slug == slug).first()
+    if not directorio:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Directorio no encontrado"
+        )
     return directorio

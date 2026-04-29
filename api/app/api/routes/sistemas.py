@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db
 from app.models import Sistemas, Usuario
 from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse
@@ -77,3 +77,17 @@ def delete_sistemas(
     db.delete(db_sistemas)
     db.commit()
     return {"message": "Sistema eliminado exitosamente"}
+
+@router.get("/slug/{slug}", response_model=SistemasResponse)
+def get_sistemas_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un sistema por slug"""
+    sistema = db.query(Sistemas).filter(Sistemas.slug == slug).first()
+    if not sistema:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sistema no encontrado",
+        )
+    return sistema
