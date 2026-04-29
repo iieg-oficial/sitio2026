@@ -5,8 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import (
     auth, borradores, media, menu, pages, pages_public, preview, public, users, posts, posts_public, subject, subject_public, 
-    plataformas, plataformas_public, datos_nuevos, datos_nuevos_public, flashes, flashes_public, mapa_public, mapa, valores, 
-    valores_public, normatividad, normatividad_public, plan_institucional, plan_institucional_public, plan_trabajo, plan_trabajo_public, 
+    plataformas, plataformas_public, datos_nuevos, datos_nuevos_public, flashes, flashes_public, mapa_public, mapa, 
     directorio, directorio_public, organos, organos_public, archivos, archivos_public, snieg, snieg_public, preguntas, preguntas_public, 
     sistemas, sistemas_public, reportes, reportes_public, documentacion, documentacion_public, profesores, profesores_public, 
     instituciones, instituciones_public, profesores, profesores_public, modulos, modulos_public, perfiles, perfiles_public,
@@ -62,14 +61,6 @@ def create_app() -> FastAPI:
     app.include_router(flashes_public.router,prefix=settings.web_prefix) 
     app.include_router(mapa.router,prefix=settings.admin_prefix) 
     app.include_router(mapa_public.router,prefix=settings.web_prefix)
-    app.include_router(valores.router,prefix=settings.admin_prefix) 
-    app.include_router(valores_public.router,prefix=settings.web_prefix)
-    app.include_router(normatividad.router,prefix=settings.admin_prefix) 
-    app.include_router(normatividad_public.router,prefix=settings.web_prefix)
-    app.include_router(plan_institucional.router,prefix=settings.admin_prefix) 
-    app.include_router(plan_institucional_public.router,prefix=settings.web_prefix)
-    app.include_router(plan_trabajo.router,prefix=settings.admin_prefix) 
-    app.include_router(plan_trabajo_public.router,prefix=settings.web_prefix)
     app.include_router(directorio.router,prefix=settings.admin_prefix) 
     app.include_router(directorio_public.router,prefix=settings.web_prefix)
     app.include_router(organos.router,prefix=settings.admin_prefix) 
