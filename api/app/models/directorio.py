@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, Boolean
-
+from slugify import slugify
 from app.core.database import Base
 
 class Directorio(Base):
@@ -9,3 +9,4 @@ class Directorio(Base):
     nombre = Column(String(255), nullable=False)
     cargo = Column(String(255), nullable=False)
     director = Column(Boolean, default=False, nullable=True)
+    slug = Column(String(200), nullable=False)

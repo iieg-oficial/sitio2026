@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text
-
+from slugify import slugify
 from app.core.database import Base
 
 class Snieg(Base):
@@ -10,3 +10,4 @@ class Snieg(Base):
     descripcion = Column(Text, nullable=False)
     imagen = Column(String(255), nullable=True)
     enlace = Column(String(255), nullable=True)
+    slug = Column(String(200), nullable=False)

@@ -1,7 +1,7 @@
 import enum
 from sqlalchemy import Column, Integer, String, Enum
 from sqlalchemy.orm import relationship
-
+from slugify import slugify
 from app.core.database import Base
 
 class AreaEnum(str, enum.Enum):
@@ -19,6 +19,7 @@ class Perfiles(Base):
     nombre = Column(String(200), nullable=False)
     descripcion = Column(String(200), nullable=True)
     area = Column(Enum(AreaEnum), nullable=True)
+    slug = Column(String(200), nullable=False)
 
     cursos = relationship("Cursos", secondary="curso_perfiles", back_populates="perfiles")
 

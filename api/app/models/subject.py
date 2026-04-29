@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-
+from slugify import slugify
 from app.core.database import Base
 
 
@@ -16,3 +16,4 @@ class Subject(Base):
     flashes = relationship("Flashes", back_populates="subject")
     reportes = relationship("Reportes", back_populates="subject")
     documentacion = relationship("Documentacion", back_populates="subject")
+    slug = Column(String(200), nullable=False)
