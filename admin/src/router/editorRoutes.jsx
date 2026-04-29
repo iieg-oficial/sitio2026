@@ -19,7 +19,8 @@ import Profesores from '../pages/Profesores';
 import Instituciones from '../pages/Instituciones';
 import Modulos from '../pages/Modulos';
 import Perfiles from '../pages/Perfiles';
-import Cursos from '../pages/Cursos'; 
+import Cursos from '../pages/Cursos';
+import DocsIieg from '../pages/DocsIieg';
 
 import { protectedRoute } from './helpers';
 
