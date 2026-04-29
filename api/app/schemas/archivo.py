@@ -2,6 +2,7 @@ from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional, List
 from app.schemas.subject import SubjectOut
+from slugify import slugify
 
 class ArchivoCreate(BaseModel):
     titulo: str
@@ -10,6 +11,7 @@ class ArchivoCreate(BaseModel):
     archivo: Optional[str] = None
     subject_id: Optional[int] = None
     periocidad: Optional[str] = None
+    slug: Optional[str] = None
     
     @field_validator('subject_id', mode='before')
     @classmethod
@@ -27,6 +29,7 @@ class ArchivoOut(BaseModel):
     subject_id: Optional[int] = None
     subject: Optional[SubjectOut] = None
     periocidad: Optional[str] = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -41,6 +44,7 @@ class ArchivoResponse(BaseModel):
     subject_id: Optional[int] = None
     subject: Optional[SubjectOut] = None
     periocidad: Optional[str] = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True

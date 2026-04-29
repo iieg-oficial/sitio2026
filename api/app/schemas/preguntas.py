@@ -1,11 +1,13 @@
 from pydantic import BaseModel
 from typing import Optional
 from app.schemas.subject import SubjectOut
+from slugify import slugify
 
 class PreguntasCreate(BaseModel):
     titulo: str
     respuesta: str
     subject_id: int
+    slug: Optional[str] = None
 
 class PreguntasOut(BaseModel):
     id: int
@@ -13,6 +15,7 @@ class PreguntasOut(BaseModel):
     respuesta: str
     subject_id: int
     subject: SubjectOut
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -23,6 +26,7 @@ class PreguntasResponse(BaseModel):
     respuesta: str
     subject_id: Optional[int]
     subject: Optional[SubjectOut]
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True

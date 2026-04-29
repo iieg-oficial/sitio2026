@@ -1,14 +1,17 @@
 from pydantic import BaseModel
 from typing import List
+from slugify import slugify
 
 class ModulosCreate(BaseModel):    
     nombre: str
     descripcion: str = None
+    slug: Optional[str] = None
 
 class ModulosOut(BaseModel):
     id: int
     nombre: str
     descripcion: str = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True

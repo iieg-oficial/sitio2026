@@ -1,6 +1,7 @@
 from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional
+from slugify import slugify
 
 from app.core.database import Base
 
@@ -17,6 +18,7 @@ class MapaCreate(BaseModel):
     sitio_web: str = None
     ubicacion: str = None
     informacion: str = None
+    slug: Optional[str] = None
 
     @field_validator('anyo')
     @classmethod
@@ -42,6 +44,7 @@ class MapaOut(BaseModel):
     sitio_web: Optional[str] = None
     ubicacion: Optional[str] = None
     informacion: Optional[str] = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True

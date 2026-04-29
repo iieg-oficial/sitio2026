@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from enum import Enum
 from typing import List, Optional
+from slugify import slugify
 
 class TipoSistemaEnum(str, Enum):
     plataforma = "plataforma"
@@ -14,6 +15,7 @@ class SistemasCreate(BaseModel):
     link: str
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None 
+    slug: Optional[str] = None
 
 class SistemasOut(BaseModel):
     id: int
@@ -22,6 +24,7 @@ class SistemasOut(BaseModel):
     link: str
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True

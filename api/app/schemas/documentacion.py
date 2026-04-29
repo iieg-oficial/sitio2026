@@ -2,6 +2,7 @@ from typing import Optional, List
 from app.schemas.subject import SubjectOut
 from pydantic import BaseModel, field_validator
 from app.schemas.subject import SubjectOut
+from slugify import slugify
 
 class DocumentacionCreate(BaseModel):
     titulo: str
@@ -10,6 +11,7 @@ class DocumentacionCreate(BaseModel):
     codigo: Optional[str] = None
     claves: Optional[str] = None
     subject_id: Optional[int] = None
+    slug: Optional[str] = None
 
     @field_validator('subject_id', mode='before')
     @classmethod
@@ -26,6 +28,7 @@ class DocumentacionOut(BaseModel):
     codigo: Optional[str] = None
     claves: Optional[str] = None
     subject_id: Optional[int] = None
+    slug: Optional[str] = None
 
     subject: Optional[SubjectOut] = None
 
@@ -40,6 +43,7 @@ class DocumentacionResponse(BaseModel):
     codigo: Optional[str] = None
     claves: Optional[str] = None
     subject_id: Optional[int] = None
+    slug: Optional[str] = None
 
     subject: Optional[SubjectOut] = None
 

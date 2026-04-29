@@ -1,11 +1,13 @@
 from pydantic import BaseModel
 from typing import List
+from slugify import slugify
 
 class SniegBase(BaseModel):
     titulo: str
     descripcion: str
     imagen: str | None = None
     enlace: str | None = None
+    slug: Optional[str] = None
 
 class SniegCreate(SniegBase):
     pass

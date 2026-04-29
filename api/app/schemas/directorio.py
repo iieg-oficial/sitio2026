@@ -1,5 +1,5 @@
 from typing import List
-
+from slugify import slugify
 from pydantic import BaseModel
 
 
@@ -7,6 +7,7 @@ class DirectorioBase(BaseModel):
     nombre: str
     cargo: str
     director: bool = False
+    slug: Optional[str] = None
 
 class DirectorioCreate(DirectorioBase):
     pass

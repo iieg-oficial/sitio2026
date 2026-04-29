@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional, List
 from app.schemas.subject import SubjectOut
+from slugify import slugify
 
 class PeriocidadEnum(str, Enum):
     diaria = "diaria"
@@ -17,6 +18,7 @@ class ReporteCreate(BaseModel):
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     subject_id: Optional[int] = None
+    slug: Optional[str] = None
 
     @field_validator('subject_id', mode='before')
     @classmethod
@@ -34,6 +36,7 @@ class ReporteOut(BaseModel):
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     subject_id: Optional[int] = None
+    slug: Optional[str] = None
 
     subject: Optional[SubjectOut] = None
 
@@ -49,6 +52,7 @@ class ReporteResponse(BaseModel):
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     subject_id: Optional[int] = None
+    slug: Optional[str] = None
 
     subject: Optional[SubjectOut] = None
 
