@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 from app.models import Organos, Usuario
 from app.api.deps import get_current_user, get_db, verify_csrf
@@ -63,3 +63,17 @@ def delete_organos(
     db.delete(db_organos)
     db.commit()
     return {"message": "Organo eliminado correctamente"}
+
+@router.get("/slug/{slug}", response_model=OrganosOut)
+def get_organos_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un organo por slug"""
+    db_organos = db.query(Organos).filter(Organos.slug == slug).first()
+    if not db_organos:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Organo no encontrado",
+        )
+    return db_organos

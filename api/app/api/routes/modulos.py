@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db
 from app.models import Modulos, Usuario
 from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
@@ -77,4 +77,15 @@ def delete_modulo(
         raise HTTPException(status_code=404, detail="Modulo no encontrado")
     db.delete(db_modulo)
     db.commit()
+    return db_modulo
+
+@router.get("/slug/{slug}", response_model=ModulosOut)
+def get_modulos_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un modulo por slug"""
+    db_modulo = db.query(Modulos).filter(Modulos.slug == slug).first()
+    if not db_modulo:
+        raise HTTPException(status_code=404, detail="Modulo no encontrado")
     return db_modulo

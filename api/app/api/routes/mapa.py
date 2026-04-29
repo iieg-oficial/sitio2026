@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db
 from app.models import Mapa, Usuario     
 from app.schemas.mapa import MapaOut, MapaResponse, MapaCreate
@@ -68,3 +68,16 @@ def delete_mapa(
     db.delete(db_mapa)
     db.commit()
     return {"message": "Mapa eliminado correctamente"}
+
+@router.get("/slug/{slug}", response_model=MapaOut)
+def get_mapa_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un mapa por slug"""
+    mapa = db.query(Mapa).filter(Mapa.slug == slug).first()
+    if not mapa:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Mapa no encontrado"
+        )
+    return mapa

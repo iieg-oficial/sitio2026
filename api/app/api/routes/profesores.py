@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.api.deps import get_db, get_current_user
 from app.models import Profesores, Usuario
 from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresResponse
@@ -80,3 +80,16 @@ async def eliminar_profesor(
     db.delete(profesor)
     db.commit()
     return {"message": "Profesor eliminado exitosamente"}
+
+@router.get("/slug/{slug}", response_model=ProfesoresOut)
+def get_profesor_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un profesor por slug"""
+    profesor = db.query(Profesores).filter(Profesores.slug == slug).first()
+    if not profesor:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Profesor no encontrado"
+        )
+    return profesor

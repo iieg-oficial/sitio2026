@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session, joinedload
-
+from slugify import slugify
 from app.api.deps import get_db
 from app.models import Flashes    
 from app.schemas.flashes import FlashesResponse
@@ -30,3 +30,16 @@ def read_last_flashes(
         "flashes": flashes,
         "total": len(flashes),
     }
+
+@router.get("/slug/{slug}", response_model=FlashesOut)
+def get_flashes_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un flash por slug"""
+    flash = db.query(Flashes).filter(Flashes.slug == slug).first()
+    if not flash:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Flash no encontrado"
+        )
+    return flash

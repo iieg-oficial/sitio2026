@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Documentacion, Usuario
 from app.schemas import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
@@ -82,3 +82,16 @@ async def eliminar_documentacion(
     db.delete(documentacion)
     db.commit()
     return {"message": "Documentación eliminada exitosamente"}
+
+@router.get("/slug/{slug}", response_model=DocumentacionOut)
+def get_documentacion_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener una documentación por slug"""
+    documentacion = db.query(Documentacion).filter(Documentacion.slug == slug).first()
+    if not documentacion:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
+        )
+    return documentacion

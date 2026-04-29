@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session, joinedload
 from typing import Optional
-
+from slugify import slugify
 from app.api.deps import get_db
 from app.models import Cursos
 from app.schemas.cursos import CursosOut, CursosResponse
@@ -25,7 +25,7 @@ def get_cursos(
     )
     return {"cursos": cursos, "total": len(cursos)}
 
-@router.get("/{slug}", response_model=CursosOut)
+@router.get("/slug/{slug}", response_model=CursosOut)
 def get_cursos_slug(
     slug: str,
     db: Session = Depends(get_db),

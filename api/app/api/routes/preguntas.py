@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-
+from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Preguntas, Usuario
 from app.schemas import PreguntasCreate, PreguntasOut, PreguntasResponse, PreguntasListResponse
@@ -75,3 +75,16 @@ def eliminar_pregunta(
     db.delete(pregunta)
     db.commit()
     return {"message": "Pregunta eliminada exitosamente"}
+
+@router.get("/slug/{slug}", response_model=PreguntasOut)
+def get_pregunta_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener una pregunta por slug"""
+    pregunta = db.query(Preguntas).filter(Preguntas.slug == slug).first()
+    if not pregunta:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Pregunta no encontrada"
+        )
+    return pregunta

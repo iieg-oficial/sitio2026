@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from slugify import slugify
 from app.api.deps import get_db
 from app.models import Plataformas
 from app.schemas.plataformas import PlataformasResponse
@@ -28,6 +28,17 @@ def get_plataforma(
 ):
     """Obtener una plataforma por ID"""
     plataforma = db.query(Plataformas).filter(Plataformas.id == plataforma_id).first()
+    if not plataforma:
+        raise HTTPException(status_code=404, detail="Plataforma no encontrada")
+    return plataforma
+
+@router.get("/slug/{slug}", response_model=PlataformasResponse)
+def get_plataformas_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener una plataforma por slug"""
+    plataforma = db.query(Plataformas).filter(Plataformas.slug == slug).first()
     if not plataforma:
         raise HTTPException(status_code=404, detail="Plataforma no encontrada")
     return plataforma
