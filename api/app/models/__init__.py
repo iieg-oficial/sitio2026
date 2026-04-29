@@ -10,10 +10,6 @@ from app.models.plaformas import Plataformas
 from app.models.datos_nuevos import DatosNuevos
 from app.models.flashes import Flashes
 from app.models.mapa import Mapa
-from app.models.valores import Valores
-from app.models.normatividad import Normatividad
-from app.models.plan_institucional import PlanInstitucional
-from app.models.plan_trabajo import PlanTrabajo
 from app.models.directorio import Directorio
 from app.models.organos import Organos
 from app.models.archivos import Archivos
@@ -43,10 +39,6 @@ __all__ = [
     "DatosNuevos",
     "Flashes",
     "Mapa",
-    "Valores",
-    "Normatividad",
-    "PlanInstitucional",
-    "PlanTrabajo",
     "Directorio",
     "Organos",
     "Archivos",
