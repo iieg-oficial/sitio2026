@@ -124,35 +124,10 @@ export default function MainLayout() {
             label: 'Conocenos',
             children: [
                 {
-                    key: '/iieg',
+                    key: '/docs_iieg',
                     icon: <MenuOutlined />,
-                    label: 'IIEG',
-                    children:[
-                        {
-                            key: '/valores',
-                            icon: <MenuOutlined />,
-                            label: 'Valores',
-                            onClick: () => navigate('/valores')
-                        },
-                        {
-                            key: '/normatividad',
-                            icon: <MenuOutlined />,
-                            label: 'Normatividad',
-                            onClick: () => navigate('/normatividad')
-                        },
-                        {
-                            key: '/plan-trabajo',
-                            icon: <MenuOutlined />,
-                            label: 'Plan de Trabajo',
-                            onClick: () => navigate('/plan-trabajo')
-                        },
-                        {
-                            key: '/plan-institucional',
-                    icon: <MenuOutlined />,
-                    label: 'Plan Institucional',
-                    onClick: () => navigate('/plan-institucional')
-                        }
-                    ],
+                    label: 'Documentos IIEG',
+                    onClick: () => navigate('/docs_iieg')
                 },
                 {
                     key: '/organigrama',
