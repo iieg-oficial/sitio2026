@@ -80,7 +80,7 @@ def delete_docs_iieg(
         )
     db.delete(db_docs_iieg)
     db.commit()
-    return {"message": "Documento del IIEG eliminado correctamente"}    
+    return db_docs_iieg
 
 @router.get("/slug/{slug}", response_model=DocsIIEGOut)
 def get_docs_iieg_slug(

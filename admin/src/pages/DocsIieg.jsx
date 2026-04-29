@@ -45,7 +45,7 @@ export default function DocsIieg() {
     const handleDelete = (record) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar este documento del IIEG?',
-            content: `Se eliminará el documento: ${record.titulo}`,
+            content: `Se eliminará el documento: ${record.nombre}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
@@ -55,6 +55,7 @@ export default function DocsIieg() {
                     message.success('Documento del IIEG eliminado exitosamente');
                     fetchDocsIieg();
                 } catch (error) {
+                    console.log(error);
                     message.error('Error al eliminar el documento del IIEG');
                 }
             }
