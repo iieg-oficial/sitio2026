@@ -7,10 +7,6 @@ import Plataformas from '../pages/Plataformas';
 import DatosNuevos from '../pages/DatosNuevos';
 import Flashes from '../pages/Flashes';
 import Mapas from '../pages/Mapas';
-import Valores from '../pages/Valores';
-import PlanTrabajo from '../pages/PlanTrabajo';
-import PlanInstitucional from '../pages/PlanInstitucional';
-import Normatividad from '../pages/Normatividad';
 import Directorio from '../pages/Directorio';
 import Organos from '../pages/Organos';
 import Archivos from '../pages/Archivos';
@@ -39,10 +35,6 @@ export const editorRoutes = [
   protectedRoute('datos-nuevos', <DatosNuevos />, ADMIN_EDITOR),
   protectedRoute('flashes', <Flashes />, ADMIN_EDITOR),
   protectedRoute('mapas', <Mapas />, ADMIN_EDITOR),
-  protectedRoute('valores', <Valores />, ADMIN_EDITOR),
-  protectedRoute('plan-trabajo', <PlanTrabajo />, ADMIN_EDITOR),
-  protectedRoute('plan-institucional', <PlanInstitucional />, ADMIN_EDITOR),
-  protectedRoute('normatividad', <Normatividad />, ADMIN_EDITOR),
   protectedRoute('directorio', <Directorio />, ADMIN_EDITOR),
   protectedRoute('organos', <Organos />, ADMIN_EDITOR),
   protectedRoute('archivos', <Archivos />, ADMIN_EDITOR),
@@ -56,4 +48,5 @@ export const editorRoutes = [
   protectedRoute('modulos', <Modulos />, ADMIN_EDITOR),
   protectedRoute('perfiles', <Perfiles />, ADMIN_EDITOR),
   protectedRoute('cursos', <Cursos />, ADMIN_EDITOR),
+  protectedRoute('docs_iieg', <DocsIieg />, ADMIN_EDITOR),
 ];
