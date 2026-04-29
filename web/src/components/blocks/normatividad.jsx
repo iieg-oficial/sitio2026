@@ -8,8 +8,8 @@ export default function Normatividad() {
 
     useEffect(() => {
         const fetchNormatividad = async () => {
-            const response = await api.get('/normatividad')
-            setNormatividad(response.data.normatividad)
+            const response = await api.get('/docs_iieg/tipo/normatividad')
+            setNormatividad(response.data.docs_iieg)
         }
         fetchNormatividad()
     }, [location])
