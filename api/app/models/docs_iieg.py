@@ -1,6 +1,7 @@
 import enum
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, DateTime, Enum
+from slugify import slugify
 
 from app.core.database import Base
 
@@ -22,3 +23,4 @@ class DocsIIEG(Base):
     link = Column(String(255), nullable=True)
     documento = Column(String(255), nullable=True)
     fecha = Column(DateTime, default=datetime.utcnow, nullable=True)
+    slug = Column(String(255), nullable=False)
