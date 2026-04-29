@@ -12,10 +12,6 @@ from app.schemas.plataformas import PlataformasCreate, PlataformasOut, Plataform
 from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosResponse, DatosNuevosOut
 from app.schemas.flashes import FlashesCreate, FlashesOut, FlashesResponse
 from app.schemas.mapa import MapaResponse, MapaCreate, MapaOut
-from app.schemas.valores import ValoresCreate, ValoresOut, ValoresResponse
-from app.schemas.normatividad import NormatividadCreate, NormatividadOut, NormatividadResponse
-from app.schemas.plan_institucional import PlanInstitucionalCreate, PlanInstitucionalOut, PlanInstitucionalResponse
-from app.schemas.plan_trabajo import PlanTrabajoCreate, PlanTrabajoOut, PlanTrabajoResponse
 from app.schemas.directorio import DirectorioCreate, DirectorioOut, DirectorioResponse
 from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse
@@ -63,18 +59,6 @@ __all__ = [
     "MapaCreate",
     "MapaOut",
     "MapaResponse",
-    "ValoresCreate",
-    "ValoresOut",
-    "ValoresResponse",
-    "NormatividadCreate",
-    "NormatividadOut",
-    "NormatividadResponse",
-    "PlanInstitucionalCreate",
-    "PlanInstitucionalOut",
-    "PlanInstitucionalResponse",
-    "PlanTrabajoCreate",
-    "PlanTrabajoOut",
-    "PlanTrabajoResponse",
     "DirectorioCreate",
     "DirectorioOut",
     "DirectorioResponse",
