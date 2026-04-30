@@ -77,7 +77,17 @@ async def actualizar_post(
     if not post:
         raise HTTPException(status_code=404, detail="Post no encontrado")
     
-    for campo, valor in post_in.model_dump().items():
+    update_data = post_in.dict(exclude_unset=True)
+    if "titulo" in update_data and update_data["titulo"] != post.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Posts).filter(Posts.slug == slug).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    
+    for campo, valor in update_data.items():
         setattr(post, campo, valor)
     
     db.commit()
@@ -98,4 +108,4 @@ async def eliminar_post(
         )
     db.delete(post)
     db.commit()
-    return {"message": "Post eliminado exitosamente"}
+    return post

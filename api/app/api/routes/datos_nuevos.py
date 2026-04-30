@@ -23,12 +23,20 @@ def read_datos_nuevos(
 def create_datos_nuevos(
     datos_nuevos: DatosNuevosCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(str(datos_nuevos.numero))
+    base_slug = slug
+    contador = 1
+    while db.query(DatosNuevos).filter(DatosNuevos.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     """Crear un nuevo dato"""
     db_datos_nuevos = DatosNuevos(
         numero=datos_nuevos.numero,
         descripcion=datos_nuevos.descripcion,
+        slug=slug,
     )
     db.add(db_datos_nuevos)
     db.commit()
@@ -40,7 +48,7 @@ def update_datos_nuevos(
     id: int,
     datos_nuevos: DatosNuevosCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Actualizar un dato"""
     db_datos_nuevos = db.query(DatosNuevos).filter(DatosNuevos.id == id).first()
@@ -49,8 +57,20 @@ def update_datos_nuevos(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Dato no encontrado",
         )
-    db_datos_nuevos.numero = datos_nuevos.numero
-    db_datos_nuevos.descripcion = datos_nuevos.descripcion
+    
+    update_data = datos_nuevos.dict(exclude_unset=True)
+    if "numero" in update_data and update_data["numero"] != db_datos_nuevos.numero:
+        slug = slugify(str(update_data["numero"]))
+        base_slug = slug
+        contador = 1
+        while db.query(DatosNuevos).filter(DatosNuevos.slug == slug).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    
+    for campo, valor in update_data.items():
+        setattr(db_datos_nuevos, campo, valor)
+    
     db.commit()
     db.refresh(db_datos_nuevos)
     return db_datos_nuevos
@@ -59,7 +79,7 @@ def update_datos_nuevos(
 def delete_datos_nuevos(
     id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Eliminar un dato"""
     db_datos_nuevos = db.query(DatosNuevos).filter(DatosNuevos.id == id).first()

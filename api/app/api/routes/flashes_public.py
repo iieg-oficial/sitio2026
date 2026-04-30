@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Flashes    
-from app.schemas.flashes import FlashesResponse
+from app.schemas.flashes import FlashesResponse, FlashesOut
 
 router = APIRouter(prefix="/flashes", tags=["flashes-public"])  
 

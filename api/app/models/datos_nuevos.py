@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, event
 from app.core.database import Base
 from slugify import slugify
 
@@ -9,3 +9,8 @@ class DatosNuevos(Base):
     numero = Column(Integer, nullable=False)
     descripcion = Column(String, nullable=False)
     slug = Column(String(200), nullable=False)
+
+@event.listens_for(DatosNuevos, "before_insert")
+def generate_slug(mapper, connection, target):
+    target.slug = str(target.numero)  # slug = "123"
+    target.slug = slugify(f"dato-{target.numero}")

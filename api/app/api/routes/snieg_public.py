@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from slugify import slugify
-from app.schemas.snieg import SniegResponse
+from app.schemas.snieg import SniegResponse, SniegOut
 from app.models import Snieg
 from app.api.deps import get_db
 

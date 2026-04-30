@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from slugify import slugify
+from typing import Optional
 
 class PlataformasCreate(BaseModel):
     titulo: str

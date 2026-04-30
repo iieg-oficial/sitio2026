@@ -190,7 +190,7 @@ export default function Flashes() {
                         <Select placeholder="Selecciona la periocidad" options={[
                             { value: 'diaria', label: 'Diaria'},
                             { value: 'mensual', label: 'Mensual'},
-                            { value: 'Anual', label: 'Anual'},
+                            { value: 'anual', label: 'Anual'},
                         ]}
                         />
                     </Form.Item>

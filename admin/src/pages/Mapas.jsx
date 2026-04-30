@@ -155,6 +155,13 @@ export default function Mapas() {
                         <Input />
                     </Form.Item>
                     <Form.Item
+                        name="autor"
+                        label="Autor"
+                        rules={[{ required: false, message: 'Por favor selecciona el autor' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
                         name="medida"
                         label="Medidas"
                         rules={[{ required: false, message: 'Por favor selecciona las medidas' }]}

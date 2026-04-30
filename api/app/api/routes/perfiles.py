@@ -25,11 +25,19 @@ def create_perfil(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(perfil.nombre)
+    base_slug = slug
+    contador = 1
+    while db.query(Perfiles).filter(Perfiles.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     """Crear un nuevo perfil"""
     perfil_db = Perfiles(
         nombre=perfil.nombre,
         descripcion=perfil.descripcion,
         area=perfil.area,
+        slug=slug,
     )
     db.add(perfil_db)
     db.commit()
@@ -50,9 +58,23 @@ def update_perfil(
             status_code=404, 
             detail="Perfil no encontrado"
         )
-    perfil_db.nombre = perfil.nombre
-    perfil_db.descripcion = perfil.descripcion
-    perfil_db.area = perfil.area
+
+    update_data = perfil.model_dump(exclude_unset=True)
+
+    if "nombre" in update_data and update_data["nombre"] != perfil_db.nombre:
+        slug = slugify(update_data["nombre"])
+        base_slug = slug
+        contador = 1
+        while db.query(Perfiles).filter(Perfiles.slug == slug, Perfiles.id != id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
+
+    for campo, valor in update_data.items():
+        setattr(perfil_db, campo, valor)
+
     db.commit()
     db.refresh(perfil_db)
     return perfil_db

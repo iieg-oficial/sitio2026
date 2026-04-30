@@ -106,25 +106,17 @@ def create_cursos(
         destacado=cursos.destacado,
         slug=slug,
     )
-    # Asignar relaciones many-to-many como objetos ORM
-    print(">>> ASIGNANDO RELACIONES:")
-    print(f"Modulos ORM: {modulos}")
-    print(f"Instituciones ORM: {instituciones}")
     
     db_cursos.modulos = modulos
     db_cursos.instituciones = instituciones
     db_cursos.perfiles = perfiles
     db_cursos.profesores = profesores
 
-    print(f">>> db_cursos.modulos ANTES de commit: {db_cursos.modulos}")
-
     db.add(db_cursos)
     db.flush()
-    print(f">>> db_cursos ID recien creado (despues de flush): {db_cursos.id}")
     
     db.commit()
     db.refresh(db_cursos)
-    print(f">>> Relaciones despues de refresh: {db_cursos.modulos}")
 
     # Recargar con joinedload para serializar correctamente
     db_cursos = (
@@ -244,6 +236,17 @@ def update_cursos(
                 detail="Uno o más profesores no encontrados",
             )
         db_cursos.profesores = profesores
+
+    update_data = cursos.dict(exclude_unset=True)
+    
+    if "titulo" in update_data and update_data["titulo"] != db_cursos.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Cursos).filter(Cursos.slug == slug).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
 
     # Actualizar solo campos escalares (NO incluir las relaciones many-to-many)
     campos_escalares = [

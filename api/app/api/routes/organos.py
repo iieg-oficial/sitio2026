@@ -22,7 +22,19 @@ def create_organos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
     ):
-    db_organos = Organos(**organos.dict())
+    slug = slugify(organos.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Organos).filter(Organos.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
+    db_organos = Organos(
+        titulo=organos.titulo,
+        descripcion=organos.descripcion,
+        link=organos.link,
+        slug=slug,
+    )
     db.add(db_organos)
     db.commit()
     db.refresh(db_organos)
@@ -41,9 +53,22 @@ def update_organos(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Organo no encontrado",
         )
-    db_organos.titulo = organos.titulo
-    db_organos.descripcion = organos.descripcion
-    db_organos.link = organos.link
+    update_data = organos.model_dump(exclude_unset=True)
+
+    if "titulo" in update_data and update_data["titulo"] != db_organos.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Organos).filter(Organos.slug == slug, Organos.id != id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
+
+    for campo, valor in update_data.items():
+        setattr(db_organos, campo, valor)
+
     db.commit()
     db.refresh(db_organos)
     return db_organos

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from enum import Enum
-from typing import List
+from typing import List, Optional
 from slugify import slugify
 
 class AreaEnum(str, Enum):

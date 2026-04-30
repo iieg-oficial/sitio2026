@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from slugify import slugify
-from app.schemas.organos import OrganosResponse
+from app.schemas.organos import OrganosResponse, OrganosOut
 from app.models import Organos
 from app.api.deps import get_db
 

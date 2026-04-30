@@ -4,7 +4,7 @@ from app.schemas.menu_item import (
     MenuItemTree,
     MenuItemUpdate,
 )
-from app.schemas.page import PageCreate, PageResponse, PageUpdate, BlockSchema
+from app.schemas.page import PageCreate, PageResponse, PageUpdate
 from app.schemas.user import LoginRequest, LoginResponse, UsuarioCreate, UsuarioResponse, UsuarioUpdate
 from app.schemas.posts import PostCreate, PostOut, PostResponse
 from app.schemas.subject import SubjectCreate, SubjectOut, SubjectResponse
@@ -33,7 +33,6 @@ __all__ = [
     "UsuarioResponse",
     "LoginRequest",
     "LoginResponse",
-    "BlockSchema",
     "PageCreate",
     "PageUpdate",
     "PageResponse",

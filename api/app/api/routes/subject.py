@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models.subject import Subject
+from app.models import Subject, Usuario
 from app.schemas.subject import SubjectCreate, SubjectOut, SubjectResponse
 
 router = APIRouter(prefix="/subject", tags=["subject"])
@@ -28,10 +28,18 @@ async def obtener_subject(subject_id: int, db: Session = Depends(get_db)):
 async def crear_subject(
     subject_in: SubjectCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(verify_csrf),
 ):
+    slug = slugify(subject_in.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Subject).filter(Subject.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     nuevo = Subject(
         titulo=subject_in.titulo,
+        slug=slug,
     )
     db.add(nuevo)
     db.commit()
@@ -48,8 +56,21 @@ async def actualizar_subject(
     subject = db.query(Subject).filter(Subject.id == subject_id).first()
     if not subject:
         raise HTTPException(status_code=404, detail="Subject no encontrado")
+
+    update_data = subject_in.model_dump(exclude_unset=True)
+
+    if "titulo" in update_data and update_data["titulo"] != subject.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Subject).filter(Subject.slug == slug, Subject.id != subject_id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
     
-    for campo, valor in subject_in.model_dump().items():
+    for campo, valor in update_data.items():
         setattr(subject, campo, valor)
     
     db.commit()
@@ -60,7 +81,7 @@ async def actualizar_subject(
 async def eliminar_subject(
     subject_id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     subject = db.query(Subject).filter(Subject.id == subject_id).first()
     if not subject:
@@ -69,7 +90,7 @@ async def eliminar_subject(
         )
     db.delete(subject)
     db.commit()
-    return {"message": "Subject eliminado exitosamente"}
+    return subject
 
 @router.get("/slug/{slug}", response_model=SubjectOut)
 def get_subject_slug(

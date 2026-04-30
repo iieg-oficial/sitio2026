@@ -37,10 +37,18 @@ def create_modulo(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(modulo.nombre)
+    base_slug = slug
+    contador = 1
+    while db.query(Modulos).filter(Modulos.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     """Crear un nuevo modulo"""
     db_modulo = Modulos(
         nombre=modulo.nombre,
         descripcion=modulo.descripcion,
+        slug=slug,
     )
     db.add(db_modulo)
     db.commit()
@@ -59,7 +67,20 @@ def update_modulo(
     if not db_modulo:
         raise HTTPException(status_code=404, detail="Modulo no encontrado")
     
-    for campo, valor in modulo.model_dump().items():
+    update_data = modulo.model_dump(exclude_unset=True)
+
+    if "nombre" in update_data and update_data["nombre"] != db_modulo.nombre:
+        slug = slugify(update_data["nombre"])
+        base_slug = slug
+        contador = 1
+        while db.query(Modulos).filter(Modulos.slug == slug, Modulos.id != id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
+
+    for campo, valor in update_data.items():
         setattr(db_modulo, campo, valor)
     db.commit()
     db.refresh(db_modulo)

@@ -24,6 +24,13 @@ async def crear_reporte(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(reporte_in.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Reportes).filter(Reportes.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     nuevo = Reportes(
         titulo=reporte_in.titulo,
         fecha=reporte_in.fecha,
@@ -32,6 +39,7 @@ async def crear_reporte(
         periocidad=reporte_in.periocidad,
         archivo=reporte_in.archivo,
         subtema=reporte_in.subtema,
+        slug=slug,
     )
     db.add(nuevo)
     db.commit()
@@ -63,8 +71,20 @@ async def actualizar_reporte(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Reporte no encontrado"
         )
-    for campo, valor in reporte_in.model_dump().items():
+    
+    update_data = reporte_in.dict(exclude_unset=True)
+    if "titulo" in update_data and update_data["titulo"] != reporte.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Reportes).filter(Reportes.slug == slug).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    
+    for campo, valor in update_data.items():
         setattr(reporte, campo, valor)
+
     db.commit()
     db.refresh(reporte)
     return db.query(Reportes).options(joinedload(Reportes.subject)).filter(Reportes.id == reporte.id).first()
@@ -82,7 +102,7 @@ async def eliminar_reporte(
         )
     db.delete(reporte)
     db.commit()
-    return {"message": "Reporte eliminado exitosamente"}
+    return reporte
 
 @router.get("/slug/{slug}", response_model=ReporteOut)
 def get_reporte_slug(

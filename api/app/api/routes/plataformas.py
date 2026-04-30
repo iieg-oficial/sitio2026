@@ -22,10 +22,25 @@ def list_plataformas(
 def create_plataforma(
     plataforma: PlataformasCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user : Usuario = Depends(get_current_user),
 ):
+    slug = slugify(plataforma.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Plataformas).filter(Plataformas.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     """Crear una nueva plataforma"""
-    db_plataforma = Plataformas(**plataforma.dict())
+    db_plataforma = Plataformas(
+        titulo=plataforma.titulo,
+        descripcion=plataforma.descripcion,
+        url=plataforma.url,
+        imagen=plataforma.imagen,
+        destacada=plataforma.destacada,
+        orden=plataforma.orden,
+        slug=slug,
+    )
     db.add(db_plataforma)
     db.commit()
     db.refresh(db_plataforma)
@@ -36,14 +51,28 @@ def update_plataforma(
     plataforma_id: int,
     plataforma: PlataformasCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Actualizar una plataforma"""
     db_plataforma = db.query(Plataformas).filter(Plataformas.id == plataforma_id).first()
     if not db_plataforma:
         raise HTTPException(status_code=404, detail="Plataforma no encontrada")
-    for campo, valor in plataforma.dict().items():
+    
+    update_data = plataforma.dict(exclude_unset=True)
+
+    if "titulo" in update_data and update_data["titulo"] != db_plataforma.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Plataformas).filter(Plataformas.slug == slug).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+        
+
+    for campo, valor in update_data.items():
         setattr(db_plataforma, campo, valor)
+
     db.commit()
     db.refresh(db_plataforma)
     return db_plataforma
@@ -52,7 +81,7 @@ def update_plataforma(
 def delete_plataforma(
     plataforma_id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Eliminar una plataforma"""
     db_plataforma = db.query(Plataformas).filter(Plataformas.id == plataforma_id).first()

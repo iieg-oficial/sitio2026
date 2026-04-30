@@ -22,10 +22,22 @@ def list_directorio(
 def create_directorio(
     directorio: DirectorioCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(directorio.nombre)
+    base_slug = slug
+    contador = 1
+    while db.query(Directorio).filter(Directorio.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+
     """Crear un nuevo directorio"""
-    db_directorio = Directorio(**directorio.dict())
+    db_directorio = Directorio(
+        nombre=directorio.nombre,
+        cargo=directorio.cargo,
+        director=directorio.director,
+        slug=slug,
+    )
     db.add(db_directorio)
     db.commit()
     db.refresh(db_directorio)
@@ -36,14 +48,29 @@ def update_directorio(
     directorio_id: int,
     directorio: DirectorioCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Actualizar un directorio"""
     db_directorio = db.query(Directorio).filter(Directorio.id == directorio_id).first()
     if not db_directorio:
         raise HTTPException(status_code=404, detail="Directorio no encontrado")
-    for campo, valor in directorio.dict().items():
+
+    update_data = directorio.model_dump(exclude_unset=True)
+
+    if "nombre" in update_data and update_data["nombre"] != db_directorio.nombre:
+        slug = slugify(update_data["nombre"])
+        base_slug = slug
+        contador = 1
+        while db.query(Directorio).filter(Directorio.slug == slug, Directorio.id != directorio_id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
+
+    for campo, valor in update_data.items():
         setattr(db_directorio, campo, valor)
+
     db.commit()
     db.refresh(db_directorio)
     return db_directorio
@@ -52,7 +79,7 @@ def update_directorio(
 def delete_directorio(
     directorio_id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     """Eliminar un directorio"""
     db_directorio = db.query(Directorio).filter(Directorio.id == directorio_id).first()

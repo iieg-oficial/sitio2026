@@ -25,6 +25,13 @@ async def crear_archivo(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(archivo_in.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Archivos).filter(Archivos.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     nuevo = Archivos(
         titulo=archivo_in.titulo,
         fecha=archivo_in.fecha,
@@ -32,6 +39,7 @@ async def crear_archivo(
         subject_id=archivo_in.subject_id,
         periocidad=archivo_in.periocidad,
         archivo=archivo_in.archivo,
+        slug=slug,
     )
     db.add(nuevo)
     db.commit()
@@ -63,8 +71,22 @@ async def actualizar_archivo(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Archivo no encontrado"
         )
-    for campo, valor in archivo_in.model_dump().items():
+    update_data = archivo_in.model_dump(exclude_unset=True)
+    
+    if "titulo" in update_data and update_data["titulo"] != archivo.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Archivos).filter(Archivos.slug == slug, Archivos.id != archivo_id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
+    
+    for campo, valor in update_data.items():
         setattr(archivo, campo, valor)
+
     db.commit()
     db.refresh(archivo)
     return db.query(Archivos).options(joinedload(Archivos.subject)).filter(Archivos.id == archivo_id).first()

@@ -1,15 +1,8 @@
 from datetime import datetime
 from slugify import slugify
-from typing import Any, Literal
+from typing import Optional
 
-from pydantic import BaseModel, Field, ConfigDict
-
-
-class BlockSchema(BaseModel):
-    type: Literal["hero", "text", "image"]
-    order: int
-    content: dict[str, Any]
-    props: dict[str, Any]
+from pydantic import BaseModel, Field
 
 
 class PageCreate(BaseModel):
@@ -17,27 +10,24 @@ class PageCreate(BaseModel):
     slug_custom: str = Field(..., min_length=1)
     title: str = Field(..., min_length=1)
     description: str | None = Field(default=None)
-    sections: list[dict] = Field(default_factory=list)
     meta_description: str | None = Field(default=None, serialization_alias="metaDescription")
     meta_keywords: str | None = Field(default=None, serialization_alias="metaKeywords")
     published_at: datetime | None = Field(default=None, serialization_alias="publishedAt")
     updated_at: datetime | None = Field(default=None, serialization_alias="updatedAt")
-    blocks: list[BlockSchema] = []
     slug: Optional[str] = None
 
 
 class PageUpdate(BaseModel):
+    id: int
+    menu_item_id: str | None = Field(default=None, serialization_alias="menuItemId")
     title: str | None = None
     slug_custom: str | None = None
     description: str | None = None
-    sections: list[dict] | None = None
     meta_description: str | None = Field(default=None, serialization_alias="metaDescription")
     meta_keywords: str | None = Field(default=None, serialization_alias="metaKeywords")
-    expected_updated_at: datetime | None = Field(default=None, alias="expectedUpdatedAt")
+    published_at: datetime | None = Field(default=None, serialization_alias="publishedAt")
+    updated_at: datetime | None = Field(default=None, serialization_alias="updatedAt")
     slug: Optional[str] = None
-
-    blocks: list[BlockSchema] = []
-
 
 class PageResponse(PageCreate):
     id: int

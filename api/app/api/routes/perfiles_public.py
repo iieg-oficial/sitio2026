@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Perfiles
-from app.schemas.perfiles import PerfilesResponse
+from app.schemas.perfiles import PerfilesResponse, PerfilesOut
 
 router = APIRouter(prefix="/perfiles", tags=["perfiles - public"])
 

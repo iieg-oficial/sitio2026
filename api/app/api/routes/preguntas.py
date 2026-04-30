@@ -24,7 +24,19 @@ def crear_pregunta(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
-    db_pregunta = Preguntas(**pregunta_in.dict())
+    slug = slugify(pregunta_in.pregunta)
+    base_slug = slug
+    contador = 1
+    while db.query(Preguntas).filter(Preguntas.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
+    db_pregunta = Preguntas(
+        pregunta=pregunta_in.pregunta,
+        respuesta=pregunta_in.respuesta,
+        subject_id=pregunta_in.subject_id,
+        slug=slug,
+    )
     db.add(db_pregunta)
     db.commit()
     db.refresh(db_pregunta)
@@ -55,8 +67,22 @@ def actualizar_pregunta(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Pregunta no encontrada"
         )
-    for campo, valor in pregunta_in.dict().items():
+
+    update_data = pregunta_in.model_dump(exclude_unset=True)
+    if "pregunta" in update_data and update_data["pregunta"] != pregunta.pregunta:
+        slug = slugify(update_data["pregunta"])
+        base_slug = slug
+        contador = 1
+        while db.query(Preguntas).filter(Preguntas.slug == slug, Preguntas.id != pregunta_id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
+    
+    for campo, valor in update_data.items():
         setattr(pregunta, campo, valor)
+    
     db.commit()
     db.refresh(pregunta)
     return db.query(Preguntas).options(joinedload(Preguntas.subject)).filter(Preguntas.id == pregunta_id).first()

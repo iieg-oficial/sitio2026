@@ -45,7 +45,7 @@ export default function Paginas() {
         const handleDelete = (record) => {
             Modal.confirm({
                 title: '¿Está seguro de eliminar esta página?',
-                content: `Se eliminará la página: ${record.titulo}`,
+                content: `Se eliminará la página: ${record.title}`,
                 okText: 'Eliminar',
                 okType: 'danger',
                 cancelText: 'Cancelar',
@@ -92,9 +92,9 @@ export default function Paginas() {
             },
             {
                 title: 'Slug',
-                dataIndex: 'slug',
-                key: 'slug',
-                sorter: (a, b) => a.slug.localeCompare(b.slug)
+                dataIndex: 'slug_custom',
+                key: 'slug_custom',
+                sorter: (a, b) => a.slug_custom.localeCompare(b.slug_custom)
             },
             {
                 title: 'Publicado el',
@@ -192,7 +192,7 @@ export default function Paginas() {
 
                     <Form.Item
                         label="Slug"
-                        name="slug"
+                        name="slug_custom"
                         rules={[{ required: true, message: 'Por favor ingrese el slug' }]}
                     >
                         <Input />

@@ -27,6 +27,13 @@ def create_flashes(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(flashes.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Flashes).filter(Flashes.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+
     """Crear un nuevo flash"""
     db_flashes = Flashes(
         titulo=flashes.titulo,
@@ -37,6 +44,7 @@ def create_flashes(
         fuente=flashes.fuente,
         link=flashes.link,
         subject_id=flashes.subject_id,
+        slug=slug,
     )
     db.add(db_flashes)
     db.commit()
@@ -57,26 +65,32 @@ def update_flashes(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Flash no encontrado",
         )
-    db_flashes.titulo = flashes.titulo
-    db_flashes.desc_jal = flashes.desc_jal
-    db_flashes.desc_nac = flashes.desc_nac
-    db_flashes.periocidad = flashes.periocidad
-    db_flashes.fecha_publicacion = flashes.fecha_publicacion
-    db_flashes.fuente = flashes.fuente
-    db_flashes.link = flashes.link
-    db_flashes.subject_id = flashes.subject_id
+    
+    update_data = flashes.dict(exclude_unset=True)
+    if "titulo" in update_data and update_data["titulo"] != db_flashes.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Flashes).filter(Flashes.slug == slug).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    
+    for campo, valor in update_data.items():
+        setattr(db_flashes, campo, valor)
+
     db.commit()
     db.refresh(db_flashes)
     return db.query(Flashes).options(joinedload(Flashes.subject)).filter(Flashes.id == db_flashes.id).first()
 
-@router.delete("/{id}", response_model=FlashesOut)
+@router.delete("/{flashes_id}")
 def delete_flashes( 
-    id: int,
+    flashes_id: int,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
     """Eliminar un flash"""
-    db_flashes = db.query(Flashes).filter(Flashes.id == id).first()
+    db_flashes = db.query(Flashes).filter(Flashes.id == flashes_id).first()
     if not db_flashes:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -84,7 +98,7 @@ def delete_flashes(
         )
     db.delete(db_flashes)
     db.commit()
-    return {"message": "Flash eliminado exitosamente"}
+    return db_flashes
 
 @router.get("/slug/{slug}", response_model=FlashesOut)
 def get_flashes_slug(

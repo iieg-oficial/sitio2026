@@ -24,6 +24,13 @@ async def crear_documentacion(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(documentacion_in.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Documentacion).filter(Documentacion.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     nuevo = Documentacion(
         titulo=documentacion_in.titulo,
         descripcion=documentacion_in.descripcion,
@@ -31,6 +38,7 @@ async def crear_documentacion(
         codigo=documentacion_in.codigo,
         claves=documentacion_in.claves,
         subject_id=documentacion_in.subject_id,
+        slug=slug,
     )
     db.add(nuevo)
     db.commit()
@@ -62,8 +70,20 @@ async def actualizar_documentacion(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
         )
-    for campo, valor in documentacion_in.model_dump().items():
+
+    update_data = documentacion_in.dict(exclude_unset=True)
+    if "titulo" in update_data and update_data["titulo"] != documentacion.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Documentacion).filter(Documentacion.slug == slug).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+
+    for campo, valor in update_data.items():
         setattr(documentacion, campo, valor)
+
     db.commit()
     db.refresh(documentacion)
     return db.query(Documentacion).options(joinedload(Documentacion.subject)).filter(Documentacion.id == documentacion.id).first()
@@ -81,7 +101,7 @@ async def eliminar_documentacion(
         )
     db.delete(documentacion)
     db.commit()
-    return {"message": "Documentación eliminada exitosamente"}
+    return documentacion
 
 @router.get("/slug/{slug}", response_model=DocumentacionOut)
 def get_documentacion_slug(

@@ -7,7 +7,7 @@ class Preguntas(Base):
     __tablename__ = "preguntas"
 
     id = Column(Integer, primary_key=True, index=True)
-    titulo = Column(String(255), nullable=False)
+    pregunta = Column(String(255), nullable=False)
     respuesta = Column(Text, nullable=False)
     slug = Column(String(200), nullable=False)
     subject_id = Column(Integer, ForeignKey("subject.id"), nullable=True)

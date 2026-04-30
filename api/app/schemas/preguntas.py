@@ -4,14 +4,14 @@ from app.schemas.subject import SubjectOut
 from slugify import slugify
 
 class PreguntasCreate(BaseModel):
-    titulo: str
+    pregunta: str
     respuesta: str
     subject_id: int
     slug: Optional[str] = None
 
 class PreguntasOut(BaseModel):
     id: int
-    titulo: str
+    pregunta: str
     respuesta: str
     subject_id: int
     subject: SubjectOut
@@ -22,7 +22,7 @@ class PreguntasOut(BaseModel):
 
 class PreguntasResponse(BaseModel):
     id: int
-    titulo: str
+    pregunta: str
     respuesta: str
     subject_id: Optional[int]
     subject: Optional[SubjectOut]

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Documentacion
-from app.schemas import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
+from app.schemas import DocumentacionOut, DocumentacionResponse, DocumentacionList
 
 router = APIRouter(prefix="/documentacion", tags=["documentacion - public"])
 
