@@ -60,7 +60,7 @@ export default function Organos() {
         });
     };
 
-    const handleSave = async (values) => {
+    const handleSubmit = async (values) => {
         try {
             if (editingOrgano) {
                 await api.put(`/organos/${editingOrgano.id}`, values);
@@ -146,8 +146,10 @@ export default function Organos() {
             open={modalVisible}
             onOk={form.submit}
             onCancel={() => setModalVisible(false)}
+            okText={editingOrgano ? 'Actualizar' : 'Crear'}
+            cancelText="Cancelar"
         >
-            <Form form={form} onFinish={handleSave}>
+            <Form form={form} onFinish={handleSubmit} layout="vertical">
                 <Form.Item name="titulo" label="Título" rules={[{ required: true }]}>
                     <Input />
                 </Form.Item>

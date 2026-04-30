@@ -44,7 +44,7 @@ export default function DatosNuevos() {
     const handleDelete = (record) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar este dato nuevo?',
-            content: `Se eliminará el dato nuevo: ${record.titulo}`,
+            content: `Se eliminará el dato nuevo: ${record.numero}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',

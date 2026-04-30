@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Preguntas
-from app.schemas import PreguntasListResponse
+from app.schemas import PreguntasListResponse, PreguntasOut
 
 router = APIRouter(prefix="/preguntas", tags=["preguntas-public"])
 

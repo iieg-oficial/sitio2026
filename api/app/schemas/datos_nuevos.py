@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from slugify import slugify
 
 
@@ -7,6 +7,7 @@ class DatosNuevosCreate(BaseModel):
     numero: int
     descripcion: str
     slug: Optional[str] = None
+
 
 class DatosNuevosOut(BaseModel):
     id: int

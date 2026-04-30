@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Plataformas
-from app.schemas.plataformas import PlataformasResponse
+from app.schemas.plataformas import PlataformasResponse, PlataformasOut
 
 router = APIRouter(prefix="/plataformas", tags=["plataformas -public"])
 

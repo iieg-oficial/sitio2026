@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Sistemas
-from app.schemas.sistemas import SistemasResponse
+from app.schemas.sistemas import SistemasResponse, SistemasOut
 
 router = APIRouter(prefix="/sistemas", tags=["sistemas-public"])
 

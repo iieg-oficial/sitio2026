@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Modulos
-from app.schemas.modulos import ModulosResponse
+from app.schemas.modulos import ModulosResponse, ModulosOut
 
 router = APIRouter(prefix="/modulos", tags=["modulos - public"])
 

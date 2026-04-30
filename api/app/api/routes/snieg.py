@@ -24,7 +24,20 @@ def create_snieg(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
     ):
-    db_snieg = Snieg(**snieg.dict())
+    slug = slugify(snieg.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Snieg).filter(Snieg.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
+    db_snieg = Snieg(
+        titulo=snieg.titulo,
+        descripcion=snieg.descripcion,
+        imagen=snieg.imagen,
+        enlace=snieg.enlace,
+        slug=slug,
+    )
     db.add(db_snieg)
     db.commit()
     db.refresh(db_snieg)
@@ -37,16 +50,30 @@ def update_snieg(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
     ):
+
     db_snieg = db.query(Snieg).filter(Snieg.id == id).first()
     if not db_snieg:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Snieg no encontrado",
         )
-    db_snieg.titulo = snieg.titulo
-    db_snieg.descripcion = snieg.descripcion
-    db_snieg.imagen = snieg.imagen
-    db_snieg.enlace = snieg.enlace
+
+    update_data = snieg.model_dump(exclude_unset=True)
+
+    if "titulo" in update_data and update_data["titulo"] != db_snieg.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Snieg).filter(Snieg.slug == slug, Snieg.id != id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
+    
+    for campo, valor in update_data.items():
+        setattr(db_snieg, campo, valor)
+    
     db.commit()
     db.refresh(db_snieg)
     return db_snieg

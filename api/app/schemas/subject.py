@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from slugify import slugify
+from typing import Optional
 
 class SubjectCreate(BaseModel):
     titulo: str

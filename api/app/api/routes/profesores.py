@@ -37,11 +37,19 @@ async def crear_profesor(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user)
 ):
+    slug = slugify(profesor_in.nombre)
+    base_slug = slug
+    contador = 1
+    while db.query(Profesores).filter(Profesores.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     nuevo = Profesores(
         nombre=profesor_in.nombre,
         descripcion=profesor_in.descripcion,
         puesto=profesor_in.puesto,
         foto=profesor_in.foto,
+        slug=slug,
     )
     db.add(nuevo)
     db.commit()
@@ -59,7 +67,20 @@ async def actualizar_profesor(
     if not profesor:
         raise HTTPException(status_code=404, detail="Profesor no encontrado")
     
-    for campo, valor in profesor_in.model_dump().items():
+    update_data = profesor_in.model_dump(exclude_unset=True)
+
+    if "nombre" in update_data and update_data["nombre"] != profesor.nombre:
+        slug = slugify(update_data["nombre"])
+        base_slug = slug
+        contador = 1
+        while db.query(Profesores).filter(Profesores.slug == slug, Profesores.id != profesor_id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
+
+    for campo, valor in update_data.items():
         setattr(profesor, campo, valor)
     
     db.commit()

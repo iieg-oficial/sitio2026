@@ -54,7 +54,7 @@ export default function Preguntas() {
     const handleDelete = (record) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar esta pregunta?',
-            content: `Se eliminará la pregunta: ${record.titulo}`,
+            content: `Se eliminará la pregunta: ${record.pregunta}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
@@ -89,9 +89,9 @@ export default function Preguntas() {
     const columns = [
         {
             title: 'Pregunta',
-            dataIndex: 'titulo',
-            key: 'titulo',
-            sorter: (a, b) => a.titulo.localeCompare(b.titulo)
+            dataIndex: 'pregunta',
+            key: 'pregunta',
+            sorter: (a, b) => a.pregunta.localeCompare(b.pregunta)
         },
         {
             title: 'Respuesta',
@@ -168,7 +168,7 @@ export default function Preguntas() {
             >
                 <Form form={form} onFinish={handleSubmit} layout="vertical">
                     <Form.Item
-                        name="titulo"
+                        name="pregunta"
                         label="Pregunta"
                         rules={[{ required: true, message: 'Por favor ingrese la pregunta' }]}
                     >

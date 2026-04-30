@@ -25,6 +25,13 @@ def create_sistemas(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(sistemas.titulo)
+    base_slug = slug
+    contador = 1
+    while db.query(Sistemas).filter(Sistemas.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     """Crear un nuevo sistema"""
     db_sistemas = Sistemas(
         titulo=sistemas.titulo,
@@ -32,6 +39,7 @@ def create_sistemas(
         link=sistemas.link,
         tipo=sistemas.tipo,
         imagen=sistemas.imagen,
+        slug=slug,
     )
     db.add(db_sistemas)
     db.commit()
@@ -52,11 +60,21 @@ def update_sistemas(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Sistema no encontrado",
         )
-    db_sistemas.titulo = sistemas.titulo
-    db_sistemas.descripcion = sistemas.descripcion
-    db_sistemas.link = sistemas.link
-    db_sistemas.tipo = sistemas.tipo
-    db_sistemas.imagen = sistemas.imagen
+
+    update_data = sistemas.dict(exclude_unset=True)
+    
+    if "titulo" in update_data and update_data["titulo"] != db_sistemas.titulo:
+        slug = slugify(update_data["titulo"])
+        base_slug = slug
+        contador = 1
+        while db.query(Sistemas).filter(Sistemas.slug == slug).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+
+    for campo, valor in update_data.items():
+        setattr(db_sistemas, campo, valor)
+
     db.commit()
     db.refresh(db_sistemas)
     return db.query(Sistemas).filter(Sistemas.id == db_sistemas.id).first()
@@ -76,7 +94,7 @@ def delete_sistemas(
         )
     db.delete(db_sistemas)
     db.commit()
-    return {"message": "Sistema eliminado exitosamente"}
+    return db_sistemas
 
 @router.get("/slug/{slug}", response_model=SistemasResponse)
 def get_sistemas_slug(

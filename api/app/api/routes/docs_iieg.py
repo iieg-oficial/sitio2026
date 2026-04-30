@@ -23,6 +23,13 @@ def create_docs_iieg(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
+    slug = slugify(docs_iieg.nombre)
+    base_slug = slug
+    contador = 1
+    while db.query(DocsIIEG).filter(DocsIIEG.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+
     """Crear un nuevo documento del IIEG"""
     db_docs_iieg = DocsIIEG(
         nombre=docs_iieg.nombre,
@@ -32,7 +39,7 @@ def create_docs_iieg(
         link=docs_iieg.link,
         documento=docs_iieg.documento,
         fecha=docs_iieg.fecha,
-        slug=slugify(docs_iieg.nombre),
+        slug=slug,
     )
     db.add(db_docs_iieg)
     db.commit()
@@ -61,6 +68,7 @@ def update_docs_iieg(
     db_docs_iieg.documento = docs_iieg.documento
     db_docs_iieg.fecha = docs_iieg.fecha
     db_docs_iieg.slug = slugify(docs_iieg.nombre)
+    
     db.commit()
     db.refresh(db_docs_iieg)
     return db_docs_iieg

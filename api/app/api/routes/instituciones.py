@@ -31,10 +31,18 @@ async def crear_institucion(
     institucion_in: InstitucionesCreate,
     db: Session = Depends(get_db),
 ):
+    slug = slugify(institucion_in.nombre)
+    base_slug = slug
+    contador = 1
+    while db.query(Instituciones).filter(Instituciones.slug == slug).first():
+        slug = f"{base_slug}-{contador}"
+        contador += 1
+    
     nuevo = Instituciones(
         nombre=institucion_in.nombre,
         descripcion=institucion_in.descripcion,
         logo=institucion_in.logo,
+        slug=slug,
     )
     db.add(nuevo)
     db.commit()
@@ -50,8 +58,21 @@ async def actualizar_institucion(
     institucion = db.query(Instituciones).filter(Instituciones.id == institucion_id).first()
     if not institucion:
         raise HTTPException(status_code=404, detail="Institucion no encontrada")
-    
-    for campo, valor in institucion_in.model_dump().items():
+
+    update_data = institucion_in.model_dump(exclude_unset=True)
+
+    if "nombre" in update_data and update_data["nombre"] != institucion.nombre:
+        slug = slugify(update_data["nombre"])
+        base_slug = slug
+        contador = 1
+        while db.query(Instituciones).filter(Instituciones.slug == slug, Instituciones.id != institucion_id).first():
+            slug = f"{base_slug}-{contador}"
+            contador += 1
+        update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
+
+    for campo, valor in update_data.items():
         setattr(institucion, campo, valor)
     
     db.commit()
