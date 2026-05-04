@@ -2,7 +2,6 @@ from typing import Optional, List
 from app.schemas.subject import SubjectOut
 from pydantic import BaseModel, field_validator
 from app.schemas.subject import SubjectOut
-from slugify import slugify
 
 class DocumentacionCreate(BaseModel):
     titulo: str

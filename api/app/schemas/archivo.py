@@ -2,7 +2,6 @@ from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional, List
 from app.schemas.subject import SubjectOut
-from slugify import slugify
 
 class ArchivoCreate(BaseModel):
     titulo: str

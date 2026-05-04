@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional
-from slugify import slugify
 from app.schemas.modulos import ModulosOut
 from app.schemas.instituciones import InstitucionesOut
 from app.schemas.perfiles import PerfilesOut

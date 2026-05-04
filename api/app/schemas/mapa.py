@@ -1,7 +1,6 @@
 from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional, List
-from slugify import slugify
 
 from app.core.database import Base
 

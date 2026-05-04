@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
 from app.schemas.subject import SubjectOut
-from slugify import slugify
 
 class PreguntasCreate(BaseModel):
     pregunta: str

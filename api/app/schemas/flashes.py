@@ -3,7 +3,6 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 from app.schemas.subject import SubjectOut
-from slugify import slugify
 
 class PeriocidadEnum(str, Enum):
     diaria = "diaria"
