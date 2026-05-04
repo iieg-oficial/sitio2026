@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, event
 from app.core.database import Base
-from slugify import slugify
 
 class DatosNuevos(Base):
     __tablename__ = "datos_nuevos"

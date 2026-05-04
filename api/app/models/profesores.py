@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from slugify import slugify
 from app.core.database import Base
 
 class Profesores(Base):

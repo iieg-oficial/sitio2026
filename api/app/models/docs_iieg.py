@@ -1,7 +1,6 @@
 import enum
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, DateTime, Enum
-from slugify import slugify
 
 from app.core.database import Base
 

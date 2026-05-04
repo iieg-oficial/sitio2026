@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from slugify import slugify
 from app.core.database import Base
 
 class Documentacion(Base):

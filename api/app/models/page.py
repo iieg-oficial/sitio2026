@@ -1,5 +1,4 @@
 from datetime import datetime
-from slugify import slugify
 from sqlalchemy import Column, DateTime, Integer, JSON, String, Text
 
 from app.core.database import Base

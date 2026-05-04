@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from app.core.database import Base
-from slugify import slugify
 
 class Plataformas(Base):
     __tablename__ = "plataformas"

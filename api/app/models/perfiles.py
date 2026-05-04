@@ -1,7 +1,6 @@
 import enum
 from sqlalchemy import Column, Integer, String, Enum
 from sqlalchemy.orm import relationship
-from slugify import slugify
 from app.core.database import Base
 
 class AreaEnum(str, enum.Enum):
