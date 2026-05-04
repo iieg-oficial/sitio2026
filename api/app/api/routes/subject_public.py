@@ -5,13 +5,18 @@ from app.api.deps import get_db
 from app.models.subject import Subject
 from app.schemas.subject import SubjectOut, SubjectResponse
 
-router = APIRouter(prefix="/subject", tags=["portal - subject"])
+router = APIRouter(prefix="/subject", tags=["public - temas"])
 
+
+
+@router.get("/tree", response_model=list[SubjectResponse])
+async def obtener_temas_tree(db: Session = Depends(get_db)):
+    temas = db.execute(select(Subject).where(Subject.parent_id == None)).scalars().all()
+    return temas
 
 @router.get("", response_model=list[SubjectResponse])
-async def listar_subjects(
-    db: Session = Depends(get_db)):
-    subjects = db.query(Subject).all()
+async def listar_subjects(db: Session = Depends(get_db)):
+    subjects = db.execute(select(Subject)).scalars().all()
     return subjects 
 
 
@@ -23,6 +28,7 @@ async def obtener_subject(subject_id: int, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND, detail="Subject no encontrado"
         )
     return subject
+
 
 @router.get("/slug/{slug}", response_model=SubjectOut)
 def get_subject_slug(
