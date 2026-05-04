@@ -1,16 +1,22 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Subject, Usuario
 from app.schemas.subject import SubjectCreate, SubjectOut, SubjectResponse
 
-router = APIRouter(prefix="/subject", tags=["subject"])
+router = APIRouter(prefix="/subject", tags=["temas"])
 
+
+@router.get("/tree", response_model=list[SubjectResponse])
+async def obtener_temas_tree(db: Session = Depends(get_db)):
+    temas = db.execute(select(Subject).where(Subject.parent_id == None)).scalars().all()
+    return temas
 
 @router.get("", response_model=list[SubjectResponse])
 async def listar_subjects(db: Session = Depends(get_db)):
-    subjects = db.query(Subject).all()
+    subjects = db.execute(select(Subject)).scalars().all()
     return subjects 
 
 
@@ -24,23 +30,30 @@ async def obtener_subject(subject_id: int, db: Session = Depends(get_db)):
     return subject
 
 
+
+
 @router.post("/create", response_model=SubjectOut, status_code=status.HTTP_201_CREATED)
 async def crear_subject(
     subject_in: SubjectCreate,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    slug = slugify(subject_in.titulo)
-    base_slug = slug
+    if subject_in.parent_id:
+        parent_exists = db.get(Subject, subject_in.parent_id)
+        if not parent_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Parent no encontrado"
+            )
+        
+    base_slug = slugify(subject_in.titulo)
+    slug = base_slug
     contador = 1
-    while db.query(Subject).filter(Subject.slug == slug).first():
+
+    while db.execute(select(Subject).where(Subject.slug == slug)).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
     
-    nuevo = Subject(
-        titulo=subject_in.titulo,
-        slug=slug,
-    )
+    nuevo = Subject(**subject_in.model_dump(exclude={"slug"}), slug=slug)
     db.add(nuevo)
     db.commit()
     db.refresh(nuevo)
@@ -53,20 +66,24 @@ async def actualizar_subject(
     subject_in: SubjectCreate,
     db: Session = Depends(get_db),
 ):
-    subject = db.query(Subject).filter(Subject.id == subject_id).first()
+    subject = db.get(Subject, subject_id)
     if not subject:
         raise HTTPException(status_code=404, detail="Subject no encontrado")
+
+    if(subject_in.parent_id == subject.id):
+        raise HTTPException(status_code=400, detail="No se puede asignar un subject como su propio padre")
 
     update_data = subject_in.model_dump(exclude_unset=True)
 
     if "titulo" in update_data and update_data["titulo"] != subject.titulo:
-        slug = slugify(update_data["titulo"])
-        base_slug = slug
+        base_slug = slugify(update_data["titulo"])
+        slug = base_slug
         contador = 1
-        while db.query(Subject).filter(Subject.slug == slug, Subject.id != subject_id).first():
+        while db.execute(select(Subject).where(Subject.slug == slug, Subject.id != subject_id)).first():
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
+
     elif "slug" in update_data and not update_data["slug"]:
         del update_data["slug"]
     

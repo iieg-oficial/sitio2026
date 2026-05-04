@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from slugify import slugify
 from app.core.database import Base
 
 
@@ -9,6 +8,8 @@ class Subject(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
+    descripcion = Column(String, nullable=True)
+    parent_id = Column(Integer, ForeignKey("subject.id"), nullable=True)
 
     posts = relationship("Posts", back_populates="subject")
     archivos = relationship("Archivos", back_populates="subject")
@@ -16,4 +17,8 @@ class Subject(Base):
     flashes = relationship("Flashes", back_populates="subject")
     reportes = relationship("Reportes", back_populates="subject")
     documentacion = relationship("Documentacion", back_populates="subject")
+
     slug = Column(String(200), nullable=False)
+
+    parent = relationship("Subject", remote_side=[id], back_populates="subtemas")
+    subtemas = relationship("Subject", back_populates="parent", lazy="selectin", cascade="all, delete-orphan")

@@ -20,7 +20,7 @@ export default function Subject() {
         setLoading(true);
         try {
             const response = await api.get('/subject');
-            setSubjects(response.data);
+            setSubjects((flattenTree(response.data)));
         } catch {
             message.error('Error al cargar subjects');
         } finally {
@@ -83,6 +83,12 @@ export default function Subject() {
             sorter: (a, b) => a.titulo.localeCompare(b.titulo)
         },
         {
+            title: 'Parent',
+            dataIndex: 'parent_id',
+            key: 'parent_id',
+            render: (parent_id) => subjects.find((s) => s.id === parent_id)?.titulo || 'Sin padre'
+        },
+        {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (
@@ -129,13 +135,13 @@ export default function Subject() {
                     pagination={{
                         pageSize: 10,
                         showSizeChanger: true,
-                        showTotal: (total) => `Total ${total} subjects`
+                        showTotal: (total) => `Total ${total} temas`
                     }}
                 />
             </Card>
 
             <Modal
-                title={editingSubject ? 'Editar Subject' : 'Nuevo Subject'}
+                title={editingSubject ? 'Editar tema' : 'Nuevo tema'}
                 open={modalVisible}
                 onCancel={() => setModalVisible(false)}
                 onOk={() => form.submit()}
@@ -154,10 +160,33 @@ export default function Subject() {
                     >
                         <Input />
                     </Form.Item>
-
+                    <Form.Item
+                        label="Padre"
+                        name="parent_id"
+                        rules={[{ required: true, message: 'Por favor ingrese el padre' }]}
+                    >
+                        <Select
+                            value={editingSubject?.parent_id}
+                            onChange={(value) => form.setFieldsValue({ parent_id: value })}
+                        >
+                            <Option value="">Sin padre</Option>
+                            {subjects.map((s) => (
+                                <Option key={s.id} value={s.id}>
+                                    {"   ".repeat(s.depth) + s.titulo}
+                                </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
 
                 </Form>
             </Modal>
         </div>
     )
+}
+
+function flattenTree(subjects, depth = 0) {
+    return subjects.flatMap( t => [
+        {...t, depth},
+        ...flattenTree(t.subtemas ?? [], depth + 1),
+    ]);
 }
