@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 from app.schemas.subject import SubjectOut
-from slugify import slugify
 
 class PostCreate(BaseModel):
     titulo: str

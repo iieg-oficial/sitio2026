@@ -1,5 +1,4 @@
 from typing import List, Optional
-from slugify import slugify
 from pydantic import BaseModel
 
 

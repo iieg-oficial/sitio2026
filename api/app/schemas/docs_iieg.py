@@ -4,7 +4,6 @@ from app.models.docs_iieg import TipoDocsEnum
 from datetime import datetime
 from enum import Enum
 from app.models.docs_iieg import TipoDocsEnum
-from slugify import slugify
 
 class DocsIIEGCreate(BaseModel):
     nombre: str

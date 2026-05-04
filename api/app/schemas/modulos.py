@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from typing import List, Optional
-from slugify import slugify
 
 class ModulosCreate(BaseModel):    
     nombre: str
