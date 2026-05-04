@@ -2,7 +2,6 @@ from datetime import datetime
 import enum
 from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
-from slugify import slugify
 from app.core.database import Base
 
 class PeriocidadEnum(str, enum.Enum):

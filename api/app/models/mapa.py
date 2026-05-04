@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String
-from slugify import slugify
+from slugi  fy import slugify
 from app.core.database import Base
 
 class Mapa(Base):

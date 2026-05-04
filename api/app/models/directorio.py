@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, Text, Boolean
-from slugify import slugify
 from app.core.database import Base
 
 class Directorio(Base):

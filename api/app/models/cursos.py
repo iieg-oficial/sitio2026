@@ -1,6 +1,5 @@
 import enum
 from datetime import datetime
-from slugify import slugify
 from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey, Enum, Boolean, Table
 from sqlalchemy.orm import relationship
 

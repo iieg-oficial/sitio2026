@@ -1,5 +1,4 @@
 from datetime import datetime
-from slugify import slugify
 from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 

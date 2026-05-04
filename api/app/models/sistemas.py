@@ -2,7 +2,6 @@ import enum
 
 from sqlalchemy import Column, Integer, String, Text, Enum
 from sqlalchemy.orm import relationship
-from slugify import slugify
 from app.core.database import Base
 
 class TipoSistemaEnum(str, enum.Enum):

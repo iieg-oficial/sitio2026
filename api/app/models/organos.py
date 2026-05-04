@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, Text
-from slugify import slugify
 from app.core.database import Base
 
 class Organos(Base):
