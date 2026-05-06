@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import List, Optional
 from app.schemas.modulos import ModulosOut
@@ -6,6 +6,7 @@ from app.schemas.instituciones import InstitucionesOut
 from app.schemas.perfiles import PerfilesOut
 from app.schemas.profesores import ProfesoresOut
 from app.models.cursos import TipoCurso
+from app.schemas.subject import SubjectFlat
 
 class CursosCreate(BaseModel):
     
@@ -18,17 +19,27 @@ class CursosCreate(BaseModel):
     p_ingreso: str = None
     p_egreso: str = None
     tipo_curso: TipoCurso
-    modulos: Optional[List[int]] = None
-    instituciones: Optional[List[int]] = None
-    perfiles: Optional[List[int]] = None
-    profesores: Optional[List[int]] = None
+    modulo_ids: Optional[List[int]] = None
+    instituciones_ids: Optional[List[int]] = None
+    perfiles_ids: Optional[List[int]] = None
+    profesores_ids: Optional[List[int]] = None
     inscripcion: str = None
     acreditacion: str = None
     vigencia: str = None
     contacto: str = None
     claves: Optional[str] = None    
     destacado: bool = False
+    tema_ids: Optional[List[int]] = None
     slug: Optional[str] = None
+
+    @field_validator('tema_ids', mode='before')
+    @classmethod
+    def clean_temas(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return [x for x in v if x is not None and x != 0]
+        return v
 
 class CursosOut(BaseModel):
     id: int
@@ -41,7 +52,7 @@ class CursosOut(BaseModel):
     p_ingreso: str | None = None
     p_egreso: str | None = None
     tipo_curso: TipoCurso | None = None
-    modulos: List[ModulosOut] = None
+    modulo: List[ModulosOut] = None
     instituciones: List[InstitucionesOut] = None
     perfiles: List[PerfilesOut] = None
     profesores: List[ProfesoresOut] = None
@@ -51,11 +62,39 @@ class CursosOut(BaseModel):
     contacto: str | None = None
     claves: Optional[str] = None    
     destacado: bool | None = None
+    temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
 
     class Config:
         from_attributes = True
 
 class CursosResponse(BaseModel):
-    cursos: List[CursosOut]
+    id: int
+    titulo: str | None = None
+    descripcion: str | None = None
+    inicio: datetime | None = None
+    formato: str | None = None
+    Horario: str | None = None
+    Objetivo: str | None = None
+    p_ingreso: str | None = None
+    p_egreso: str | None = None
+    tipo_curso: TipoCurso | None = None
+    modulo: List[ModulosOut] = None
+    instituciones: List[InstitucionesOut] = None
+    perfiles: List[PerfilesOut] = None
+    profesores: List[ProfesoresOut] = None
+    inscripcion: str | None = None
+    acreditacion: str | None = None
+    vigencia: str | None = None
+    contacto: str | None = None
+    claves: Optional[str] = None    
+    destacado: bool | None = None
+    temas: Optional[List[SubjectFlat]] = []
+    slug: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class CursosList(BaseModel):
+    cursos: List[CursosResponse]
     total: int

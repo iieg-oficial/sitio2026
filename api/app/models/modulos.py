@@ -10,4 +10,4 @@ class Modulos(Base):
     descripcion = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
     
-    cursos = relationship("Cursos", secondary="curso_modulos", back_populates="modulos")
+    cursos = relationship("Cursos", secondary="curso_modulos", back_populates="modulo")
