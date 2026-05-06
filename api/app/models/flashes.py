@@ -1,9 +1,16 @@
 import enum
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
+
+flash_temas_table = Table(
+    "flash_temas",
+    Base.metadata,
+    Column("flash_id", Integer, ForeignKey("flashes.id"), primary_key=True),
+    Column("tema_id", Integer, ForeignKey("subject.id"), primary_key=True),
+)
 
 class PeriocidadEnum(str, enum.Enum):
     diaria = "diaria"
@@ -23,5 +30,9 @@ class Flashes(Base):
     link = Column(String, nullable=True)
     slug = Column(String(200), nullable=False)
     
-    subject_id = Column(Integer, ForeignKey("subject.id"), nullable=True)
-    subject = relationship("Subject", back_populates="flashes")
+    temas = relationship(
+        "Subject",
+        secondary=flash_temas_table,
+        back_populates="flashes",
+        lazy="selectin",
+    )

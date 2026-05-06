@@ -1,27 +1,36 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.orm.attributes import flag_modified
+from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.core.cache import get_cache, redis_client, set_cache
-from app.models import Flashes, Usuario     
-from app.schemas.flashes import FlashesOut, FlashesResponse, FlashesCreate
+from app.models import Flashes, Usuario, Subject   
+from app.schemas.flashes import FlashesOut, FlashesResponse, FlashesCreate, FlashesList
 
 router = APIRouter(prefix="/flashes", tags=["flashes"])  
 
-@router.get("/", response_model=FlashesResponse)
+def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
+    """Carga los objetos Subject dado una lista de IDs, ignorando IDs inválidos."""
+    if not tema_ids:
+        return []
+    return db.execute(
+        select(Subject).where(Subject.id.in_(tema_ids))
+    ).scalars().all()
+
+@router.get("/", response_model=FlashesList)
 def read_flashes(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los flashes"""
-    flashes = db.query(Flashes).all()
+    flashes = db.execute(select(Flashes)).scalars().all()
     return {
         "flashes": flashes,
         "total": len(flashes),
     }
 
-@router.post("/create", response_model=FlashesOut)
+@router.post("/create", response_model=FlashesOut, status_code=status.HTTP_201_CREATED)
 def create_flashes(
     flashes: FlashesCreate,
     db: Session = Depends(get_db),
@@ -46,10 +55,26 @@ def create_flashes(
         subject_id=flashes.subject_id,
         slug=slug,
     )
+    db_flashes.temas = _load_temas(db, flashes.tema_ids or [])
     db.add(db_flashes)
     db.commit()
     db.refresh(db_flashes)
     return db.query(Flashes).options(joinedload(Flashes.subject)).filter(Flashes.id == db_flashes.id).first()
+
+@router.get("/{id}", response_model=FlashesResponse)
+def get_flashes_by_id(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
+):
+    """Obtener un flash por ID"""
+    db_flashes = db.get(Flashes, id)
+    if not db_flashes:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Flash no encontrado",
+        )
+    return db_flashes
 
 @router.put("/{id}", response_model=FlashesOut)
 def update_flashes(
@@ -59,7 +84,7 @@ def update_flashes(
     current_user: Usuario = Depends(get_current_user),
 ):
     """Actualizar un flash"""
-    db_flashes = db.query(Flashes).options(joinedload(Flashes.subject)).filter(Flashes.id == id).first()
+    db_flashes = db.get(Flashes, id)
     if not db_flashes:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -75,13 +100,16 @@ def update_flashes(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
+
+    if "tema_ids" in update_data:
+        db_flashes.temas = _load_temas(db, update_data.pop("tema_ids") or [])
     
     for campo, valor in update_data.items():
         setattr(db_flashes, campo, valor)
 
     db.commit()
     db.refresh(db_flashes)
-    return db.query(Flashes).options(joinedload(Flashes.subject)).filter(Flashes.id == db_flashes.id).first()
+    return db_flashes
 
 @router.delete("/{flashes_id}")
 def delete_flashes( 
@@ -106,7 +134,7 @@ def get_flashes_slug(
     db: Session = Depends(get_db),
 ):
     """Obtener un flash por slug"""
-    flash = db.query(Flashes).filter(Flashes.slug == slug).first()
+    flash = db.execute(select(Flashes).where(Flashes.slug == slug)).scalar_one_or_none()
     if not flash:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

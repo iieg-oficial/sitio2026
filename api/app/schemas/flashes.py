@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
-from app.schemas.subject import SubjectOut
+from app.schemas.subject import SubjectFlat
 
 class PeriocidadEnum(str, Enum):
     diaria = "diaria"
@@ -17,7 +17,7 @@ class FlashesCreate(BaseModel):
     fecha_publicacion: datetime = None
     fuente: str = None
     link: str = None
-    subject_id: Optional[int] = None
+    tema_ids: Optional[List[int]] = None
     slug: Optional[str] = None
 
 class FlashesOut(BaseModel):
@@ -29,13 +29,27 @@ class FlashesOut(BaseModel):
     fecha_publicacion: datetime = None
     fuente: str = None
     link: str = None
-    subject_id: Optional[int] = None
-    subject: Optional[SubjectOut] = None
+    temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
 
     class Config:
         from_attributes = True
 
 class FlashesResponse(BaseModel):
-    flashes: list[FlashesOut]
+    id: int
+    titulo: str
+    desc_jal: str
+    desc_nac: str
+    periocidad: PeriocidadEnum = None
+    fecha_publicacion: datetime = None
+    fuente: str = None
+    link: str = None
+    temas: Optional[List[SubjectFlat]] = []
+    slug: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class FlashesList(BaseModel):
+    flashes: List[FlashesResponse]
     total: int
