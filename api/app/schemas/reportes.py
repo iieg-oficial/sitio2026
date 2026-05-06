@@ -34,8 +34,7 @@ class ReporteOut(BaseModel):
     titulo: str
     descripcion: str
     fecha: Optional[datetime] = None
-    periocidad: PeriocidadEnum = None
-    subtema: Optional[str] = None
+    periocidad: PeriocidadEnum = None    
     archivo: Optional[str] = None
     slug: Optional[str] = None
     claves: Optional[str] = None    
@@ -50,7 +49,6 @@ class ReporteResponse(BaseModel):
     descripcion: str
     fecha: Optional[datetime] = None
     periocidad: PeriocidadEnum = None
-    subtema: Optional[str] = None
     archivo: Optional[str] = None
     slug: Optional[str] = None
     claves: Optional[str] = None    

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
-
+import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 const { Title } = Typography;
 
 export default function Reportes() {
@@ -12,6 +12,7 @@ export default function Reportes() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingReporte, setEditingReporte] = useState(null);
     const [subjects, setSubjects] = useState([]);
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
 
     useEffect(() => {
         fetchReportes();
@@ -20,7 +21,7 @@ export default function Reportes() {
 
     const fetchSubjects = async () => {
         try {
-            const response = await api.get('/subject');
+            const response = await api.get('/subject/tree');
             setSubjects(response.data);
         } catch {
             message.error('Error al cargar temas');
@@ -41,12 +42,15 @@ export default function Reportes() {
 
     const handleCreate = () => {
         setEditingReporte(null);
+        setSelectedSubjects([]);
         form.resetFields();
         setModalVisible(true);
     };
 
     const handleEdit = (record) => {
         setEditingReporte(record);
+        const ids = (record.temas ?? []).map((t) => t.id);
+        setSelectedSubjects(ids);
         form.setFieldsValue(record);
         setModalVisible(true);
     };
@@ -72,11 +76,12 @@ export default function Reportes() {
 
     const handleSubmit = async (values) => {
         try {
+            const payload = { ...values, tema_ids: selectedSubjects };
             if (editingReporte) {
-                await api.put(`/reportes/${editingReporte.id}`, values);
+                await api.put(`/reportes/${editingReporte.id}`, payload);
                 message.success('Reporte actualizado exitosamente');
             } else {
-                await api.post('/reportes/create', values);
+                await api.post('/reportes/create', payload);
                 message.success('Reporte creado exitosamente');
             }
             setModalVisible(false);
@@ -95,16 +100,10 @@ export default function Reportes() {
         },
         {
             title: 'Tema',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
-            render: (subject_id) => subjects.find((s) => s.id === subject_id)?.titulo,
-            sorter: (a, b) => a.subject.titulo.localeCompare(b.subject.titulo)
-        },
-        {
-            title: 'Subtema',
-            dataIndex: 'subtema',
-            key: 'subtema',            
-            sorter: (a, b) => a.subtema.localeCompare(b.subtema)
+            dataIndex: 'temas',
+            key: 'temas',
+            render: (temas) => temas.map((t) => t.titulo).join(', '),
+            sorter: (a, b) => a.temas.map((t) => t.titulo).join(', ').localeCompare(b.temas.map((t) => t.titulo).join(', '))
         },
         {
             title: 'Fecha',
@@ -195,19 +194,13 @@ export default function Reportes() {
                     >
                         <Input type="date" />
                     </Form.Item>
-                    <Form.Item
-                        name="subject_id"
-                        label="Tema"
-                        rules={[{ required: true, message: 'Por favor seleccione el tema' }]}
-                    >
-                        <Select
-                            placeholder="Selecciona un tema"
-                            options={subjects.map((s) => ({
-                                value: s.id,
-                                label: s.titulo
-                            }))}
-                        />
-                    </Form.Item>
+                    <TemaSelector
+                        temas={subjects}
+                        seleccionados={selectedSubjects}
+                        onChange={(ids) => {                                    
+                            setSelectedSubjects(ids);
+                        }}
+                    />
                     <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingresa la periocidad' }]}>
                         <Select placeholder="Selecciona la periocidad" options={[
                             { value: 'diaria', label: 'Diaria'},
@@ -215,13 +208,6 @@ export default function Reportes() {
                             { value: 'anual', label: 'Anual'},
                         ]}
                         />
-                    </Form.Item>
-                    <Form.Item
-                        name="subtema"
-                        label="Subtema"
-                        rules={[{ required: true, message: 'Por favor ingrese el subtema' }]}
-                    >
-                        <Input />
                     </Form.Item>
                     <Form.Item
                         name="archivo"

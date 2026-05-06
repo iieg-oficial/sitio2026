@@ -88,7 +88,6 @@ async def actualizar_archivo(
 
     update_data = archivo_in.model_dump(exclude_unset=True)
 
-    # Manejar slug si el título cambia
     if "titulo" in update_data and update_data["titulo"] != archivo.titulo:
         slug = slugify(update_data["titulo"])
         base_slug = slug
