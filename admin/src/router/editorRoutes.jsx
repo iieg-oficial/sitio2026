@@ -3,7 +3,6 @@ import PageEditor from '../pages/PageEditor';
 import Media from '../pages/Media';
 import Posts from '../pages/Posts';
 import Subject from '../pages/Subject';
-import Plataformas from '../pages/Plataformas';
 import DatosNuevos from '../pages/DatosNuevos';
 import Flashes from '../pages/Flashes';
 import Mapas from '../pages/Mapas';
@@ -32,7 +31,6 @@ export const editorRoutes = [
   protectedRoute('media', <Media />, ADMIN_EDITOR),
   protectedRoute('posts', <Posts />, ADMIN_EDITOR),
   protectedRoute('subjects', <Subject />, ADMIN_EDITOR),
-  protectedRoute('plataformas', <Plataformas />, ADMIN_EDITOR),
   protectedRoute('datos-nuevos', <DatosNuevos />, ADMIN_EDITOR),
   protectedRoute('flashes', <Flashes />, ADMIN_EDITOR),
   protectedRoute('mapas', <Mapas />, ADMIN_EDITOR),
