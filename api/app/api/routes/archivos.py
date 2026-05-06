@@ -129,3 +129,15 @@ async def eliminar_archivo(
     db.delete(archivo)
     db.commit()
     return {"message": "Archivo eliminado exitosamente"}
+
+@router.get("/slug/{slug}", response_model=ArchivoOut)
+async def obtener_archivo_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    archivo = db.execute(select(Archivos).where(Archivos.slug == slug)).scalar_one_or_none()
+    if not archivo:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Archivo no encontrado"
+        )
+    return archivo

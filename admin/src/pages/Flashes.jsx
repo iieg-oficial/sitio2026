@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 const { Title } = Typography;
 
@@ -12,6 +13,7 @@ export default function Flashes() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingFlash, setEditingFlash] = useState(null);
     const [subjects, setSubjects] = useState([]);  
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
 
     useEffect(() => {
         fetchFlashes();
@@ -20,7 +22,7 @@ export default function Flashes() {
 
     const fetchSubjects = async () => {
         try {
-            const response = await api.get('/subject');
+            const response = await api.get('/subject/tree');
             setSubjects(response.data);
         } catch {
             message.error('Error al cargar temas');
@@ -41,12 +43,16 @@ export default function Flashes() {
 
     const handleCreate = () => {
         setEditingFlash(null);
+        setSelectedSubjects([]);
         form.resetFields();
         setModalVisible(true);
     };
 
     const handleEdit = (record) => {
         setEditingFlash(record);
+        // Pre-cargar los temas seleccionados desde el registro
+        const ids = (record.temas ?? []).map((t) => t.id);
+        setSelectedSubjects(ids);
         form.setFieldsValue(record);
         setModalVisible(true);
     };
@@ -203,15 +209,14 @@ export default function Flashes() {
                     <Form.Item name="link" label="Link" rules={[{ required: true, message: 'Por favor ingresa el link' }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Tema" name="subject_id" rules={[{ required: true, message: 'Por favor seleccione un tema' }]}>
-                        <Select
-                            placeholder="Selecciona un tema"
-                            options={subjects.map((s) => ({
-                                value: s.id,
-                                label: s.titulo
-                            }))}
-                        />
-                    </Form.Item>
+                    <TemaSelector
+                        temas={subjects}
+                        seleccionados={selectedSubjects}
+                        onChange={(ids) => {
+                            console.log(ids);
+                            setSelectedSubjects(ids);
+                        }}
+                    />
                 </Form>
             </Modal>
         </div>
