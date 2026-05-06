@@ -25,6 +25,7 @@ class Reportes(Base):
     fecha = Column(DateTime, default=datetime.utcnow, nullable=True)
     periocidad = Column(Enum(PeriocidadEnum), nullable=True)    
     archivo = Column(String(200), nullable=True)
+    claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
 
     temas = relationship(

@@ -14,7 +14,7 @@ class Posts(Base):
     contenido = Column(Text, nullable=False)
     autor = Column(String(100), default="IIEG")
     fecha = Column(DateTime, default=datetime.utcnow)
-    keywords = Column(String(200))
+    claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
 
     subject_id = Column(Integer, ForeignKey("subject.id"), nullable=True)

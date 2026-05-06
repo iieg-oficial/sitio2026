@@ -17,6 +17,7 @@ class ReporteCreate(BaseModel):
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     tema_ids: Optional[List[int]] = None
+    
     slug: Optional[str] = None
 
     @field_validator('tema_ids', mode='before')

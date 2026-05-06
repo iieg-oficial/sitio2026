@@ -58,6 +58,7 @@ class Cursos(Base):
 
     vigencia = Column(String(200), nullable=True)
     contacto = Column(String(200), nullable=True)
+    claves = Column(String(200), nullable=True)
 
     modulos = relationship("Modulos", secondary=curso_modulos, back_populates="cursos")
     instituciones = relationship("Instituciones", secondary=curso_instituciones, back_populates="cursos")

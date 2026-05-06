@@ -28,6 +28,7 @@ class Flashes(Base):
     fecha_publicacion = Column(DateTime, default=datetime.utcnow)
     fuente = Column(String, nullable=True)
     link = Column(String, nullable=True)
+    claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
     
     temas = relationship(
