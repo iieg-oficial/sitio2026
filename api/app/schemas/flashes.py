@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
@@ -19,6 +19,15 @@ class FlashesCreate(BaseModel):
     link: str = None
     tema_ids: Optional[List[int]] = None
     slug: Optional[str] = None
+
+    @field_validator('tema_ids', mode='before')
+    @classmethod
+    def clean_tema_ids(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return [x for x in v if x is not None and x != 0]
+        return v
 
 class FlashesOut(BaseModel):
     id: int
