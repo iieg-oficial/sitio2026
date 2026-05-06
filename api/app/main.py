@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import (
     auth, borradores, media, menu, pages, pages_public, preview, public, users, posts, posts_public, subject, subject_public, 
-    plataformas, plataformas_public, datos_nuevos, datos_nuevos_public, flashes, flashes_public, mapa_public, mapa, 
+    datos_nuevos, datos_nuevos_public, flashes, flashes_public, mapa_public, mapa, 
     directorio, directorio_public, organos, organos_public, archivos, archivos_public, snieg, snieg_public, preguntas, preguntas_public, 
     sistemas, sistemas_public, reportes, reportes_public, documentacion, documentacion_public, profesores, profesores_public, 
     instituciones, instituciones_public, profesores, profesores_public, modulos, modulos_public, perfiles, perfiles_public,
@@ -53,8 +53,6 @@ def create_app() -> FastAPI:
     app.include_router(posts_public.router,prefix=settings.web_prefix) 
     app.include_router(subject.router,prefix=settings.admin_prefix) 
     app.include_router(subject_public.router,prefix=settings.web_prefix) 
-    app.include_router(plataformas.router,prefix=settings.admin_prefix) 
-    app.include_router(plataformas_public.router,prefix=settings.web_prefix) 
     app.include_router(datos_nuevos.router,prefix=settings.admin_prefix) 
     app.include_router(datos_nuevos_public.router,prefix=settings.web_prefix)
     app.include_router(flashes.router,prefix=settings.admin_prefix) 
