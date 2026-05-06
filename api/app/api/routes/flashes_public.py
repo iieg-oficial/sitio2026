@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_db
-from app.models import Flashes, Subject
-from app.schemas.flashes import FlashesResponse, FlashesOut, FlashesList
+from app.models import Flashes
+from app.schemas.flashes import FlashesResponse, FlashesOut
 
 router = APIRouter(prefix="/flashes", tags=["flashes-public"])  
 
