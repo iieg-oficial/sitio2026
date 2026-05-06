@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models.posts import Posts
+from app.models import Posts, Usuario
 from app.schemas.posts import PostCreate, PostOut, PostResponse
 from slugify import slugify
 
@@ -29,11 +29,12 @@ async def obtener_post(post_id: int, db: Session = Depends(get_db)):
 async def crear_post(
     post_in: PostCreate,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(post_in.titulo)
     base_slug = slug
     contador = 1
+
     while db.query(Posts).filter(Posts.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
@@ -99,7 +100,7 @@ async def actualizar_post(
 async def eliminar_post(
     post_id: int,
     db: Session = Depends(get_db),
-    current_user=Depends(verify_csrf),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     post = db.query(Posts).filter(Posts.id == post_id).first()
     if not post:

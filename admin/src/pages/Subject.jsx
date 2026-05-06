@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 
@@ -42,18 +42,18 @@ export default function Subject() {
 
     const handleDelete = (record) => {
         Modal.confirm({
-            title: '¿Está seguro de eliminar este subject?',
-            content: `Se eliminará el subject: ${record.titulo}`,
+            title: '¿Está seguro de eliminar este tema?',
+            content: `Se eliminará el tema: ${record.titulo}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
                     await api.delete(`/subject/${record.id}`);
-                    message.success('Subject eliminado exitosamente');
+                    message.success('Tema eliminado exitosamente');
                     fetchSubjects();
                 } catch {
-                    message.error('Error al eliminar subject');
+                    message.error('Error al eliminar tema');
                 }
             }
         });
@@ -63,15 +63,15 @@ export default function Subject() {
         try {
             if (editingSubject) {
                 await api.put(`/subject/${editingSubject.id}`, values);
-                message.success('Subject actualizado exitosamente');
+                message.success('Tema actualizado exitosamente');
             } else {
                 await api.post('/subject/create', values);
-                message.success('Subject creado exitosamente');
+                message.success('Tema creado exitosamente');
             }
             setModalVisible(false);
             fetchSubjects();
         } catch {
-            message.error(editingSubject ? 'Error al actualizar subject' : 'Error al crear subject');
+            message.error(editingSubject ? 'Error al actualizar tema' : 'Error al crear tema');
         }
     };
 
@@ -83,10 +83,11 @@ export default function Subject() {
             sorter: (a, b) => a.titulo.localeCompare(b.titulo)
         },
         {
-            title: 'Parent',
+            title: 'Padre',
             dataIndex: 'parent_id',
             key: 'parent_id',
-            render: (parent_id) => subjects.find((s) => s.id === parent_id)?.titulo || 'Sin padre'
+            render: (parent_id) => subjects.find((s) => s.id === parent_id)?.titulo,
+            sorter: (a, b) => a.parent_id.localeCompare(b.parent_id)
         },
         {
             title: 'Acciones',
@@ -116,13 +117,13 @@ export default function Subject() {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <Title level={2} style={{ margin: 0 }}>Administración de Subjects</Title>
+                <Title level={2} style={{ margin: 0 }}>Administración de temas</Title>
                 <Button
                     type="primary"
                     icon={<PlusOutlined />}
                     onClick={handleCreate}
                 >
-                    Nuevo Subject
+                    Nuevo tema
                 </Button>
             </div>
 
@@ -161,15 +162,22 @@ export default function Subject() {
                         <Input />
                     </Form.Item>
                     <Form.Item
+                        label="Descripción"
+                        name="descripcion"
+                        rules={[{ required: false, message: 'Por favor ingrese la descripción' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
                         label="Padre"
                         name="parent_id"
-                        rules={[{ required: true, message: 'Por favor ingrese el padre' }]}
+                        rules={[{ required: false, message: 'Por favor ingrese el padre' }]}
                     >
                         <Select
                             value={editingSubject?.parent_id}
                             onChange={(value) => form.setFieldsValue({ parent_id: value })}
                         >
-                            <Option value="">Sin padre</Option>
+                            <Option value={null}>Sin padre</Option>
                             {subjects.map((s) => (
                                 <Option key={s.id} value={s.id}>
                                     {"   ".repeat(s.depth) + s.titulo}

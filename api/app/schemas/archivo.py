@@ -1,23 +1,27 @@
 from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional, List
-from app.schemas.subject import SubjectOut
+from app.schemas.subject import SubjectFlat
+
 
 class ArchivoCreate(BaseModel):
     titulo: str
     fecha: Optional[datetime] = None
     tipo: str = None
     archivo: Optional[str] = None
-    subject_id: Optional[int] = None
+    tema_ids: Optional[List[int]] = None
     periocidad: Optional[str] = None
     slug: Optional[str] = None
-    
-    @field_validator('subject_id', mode='before')
+
+    @field_validator('tema_ids', mode='before')
     @classmethod
-    def zero_to_none(cls, v):
-        if v == 0:
-            return None
+    def clean_tema_ids(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return [x for x in v if x is not None and x != 0]
         return v
+
 
 class ArchivoOut(BaseModel):
     id: int
@@ -25,8 +29,7 @@ class ArchivoOut(BaseModel):
     fecha: Optional[datetime] = None
     tipo: str = None
     archivo: Optional[str] = None
-    subject_id: Optional[int] = None
-    subject: Optional[SubjectOut] = None
+    temas: Optional[List[SubjectFlat]] = []
     periocidad: Optional[str] = None
     slug: Optional[str] = None
 
@@ -40,13 +43,13 @@ class ArchivoResponse(BaseModel):
     fecha: Optional[datetime] = None
     tipo: str = None
     archivo: Optional[str] = None
-    subject_id: Optional[int] = None
-    subject: Optional[SubjectOut] = None
+    temas: Optional[List[SubjectFlat]] = []
     periocidad: Optional[str] = None
     slug: Optional[str] = None
 
     class Config:
         from_attributes = True
+
 
 class ArchivoList(BaseModel):
     archivos: List[ArchivoResponse]

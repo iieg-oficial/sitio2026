@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -13,6 +14,7 @@ export default function Archivos() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingArchivo, setEditingArchivo] = useState(null);
     const [subjects, setSubjects] = useState([]);
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
 
     useEffect(() => {
         fetchArchivos();
@@ -21,7 +23,7 @@ export default function Archivos() {
 
     const fetchSubjects = async () => {
         try {
-            const response = await api.get('/subject');
+            const response = await api.get('/subject/tree');
             setSubjects(response.data);
         } catch {
             message.error('Error al cargar temas');
@@ -42,12 +44,16 @@ export default function Archivos() {
 
     const handleCreate = () => {
         setEditingArchivo(null);
+        setSelectedSubjects([]);
         form.resetFields();
         setModalVisible(true);
     };
 
     const handleEdit = (record) => {
         setEditingArchivo(record);
+        // Pre-cargar los temas seleccionados desde el registro
+        const ids = (record.temas ?? []).map((t) => t.id);
+        setSelectedSubjects(ids);
         form.setFieldsValue(record);
         setModalVisible(true);
     };
@@ -73,11 +79,13 @@ export default function Archivos() {
 
     const handleSubmit = async (values) => {
         try {
+            // Incluir los temas seleccionados (fuera del Form) en el payload
+            const payload = { ...values, tema_ids: selectedSubjects };
             if (editingArchivo) {
-                await api.put(`/archivos/${editingArchivo.id}`, values);
+                await api.put(`/archivos/${editingArchivo.id}`, payload);
                 message.success('Archivo actualizado exitosamente');
             } else {
-                await api.post('/archivos/create', values);
+                await api.post('/archivos/create', payload);
                 message.success('Archivo creado exitosamente');
             }
             setModalVisible(false);
@@ -194,15 +202,14 @@ export default function Archivos() {
                             <Form.Item name="fecha" label="Fecha" rules={[{ required: false, message: 'Por favor ingrese la fecha' }]}>
                                 <Input type="date" />
                             </Form.Item>
-                            <Form.Item name="subject_id" label="Tema" rules={[{ required: false, message: 'Por favor seleccione el tema' }]}>
-                                <Select>
-                                    {subjects.map((subject) => (
-                                        <Option key={subject.id} value={subject.id}>
-                                            {subject.titulo}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            </Form.Item>
+                            <TemaSelector
+                                temas={subjects}
+                                seleccionados={selectedSubjects}
+                                onChange={(ids) => {
+                                    console.log(ids);
+                                    setSelectedSubjects(ids);
+                                }}
+                            />
                             <Form.Item name="archivo" label="Archivo" rules={[{ required: false, message: 'Por favor ingrese el archivo' }]}>
                                 <Input />                        
                             </Form.Item>
