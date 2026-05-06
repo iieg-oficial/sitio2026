@@ -99,6 +99,8 @@ def update_flashes(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
+    elif "slug" in update_data and not update_data["slug"]:
+        del update_data["slug"]
 
     if "tema_ids" in update_data:
         db_flashes.temas = _load_temas(db, update_data.pop("tema_ids") or [])
