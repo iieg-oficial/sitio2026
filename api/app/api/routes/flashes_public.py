@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Flashes    
@@ -8,12 +9,12 @@ from app.schemas.flashes import FlashesResponse, FlashesOut
 router = APIRouter(prefix="/flashes", tags=["flashes-public"])  
 
 
-@router.get("/", response_model=FlashesResponse)
+@router.get("", response_model=FlashesResponse)
 def read_flashes(
     db: Session = Depends(get_db),
 ):
     """Obtener todos los flashes"""
-    flashes = db.query(Flashes).options(joinedload(Flashes.subject)).all()
+    flashes = db.execute(select(Flashes)).scalars().all()
     return {
         "flashes": flashes,
         "total": len(flashes),
@@ -25,7 +26,7 @@ def read_last_flashes(
     limit: int = 1,
 ):
     """Obtener el ultimo flash"""
-    flashes = db.query(Flashes).order_by(Flashes.id.desc()).limit(limit).all()
+    flashes = db.execute(select(Flashes).order_by(Flashes.id.desc()).limit(limit)).scalars().all()
     return {
         "flashes": flashes,
         "total": len(flashes),
@@ -37,7 +38,7 @@ def get_flashes_slug(
     db: Session = Depends(get_db),
 ):
     """Obtener un flash por slug"""
-    flash = db.query(Flashes).filter(Flashes.slug == slug).first()
+    flash = db.execute(select(Flashes).where(Flashes.slug == slug)).scalar_one_or_none()
     if not flash:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Flash no encontrado"

@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 
 from app.core.database import Base
 
-flash_temas_table = Table(
+flash_temas = Table(
     "flash_temas",
     Base.metadata,
     Column("flash_id", Integer, ForeignKey("flashes.id"), primary_key=True),
@@ -32,7 +32,7 @@ class Flashes(Base):
     
     temas = relationship(
         "Subject",
-        secondary=flash_temas_table,
+        secondary=flash_temas,
         back_populates="flashes",
         lazy="selectin",
     )

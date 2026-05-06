@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Select, Typography } from 'antd';
 
 const { Text } = Typography;
@@ -14,21 +15,32 @@ const { Text } = Typography;
  *   onChange     - callback(nuevosIds: number[])
  */
 export function TemaSelector({ temas = [], seleccionados = [], onChange }) {
+  // Estado interno para padres e hijos — necesario para manejar la race condition
+  // donde `seleccionados` llega antes que `temas` (fetch aún en curso)
+  const [padresSeleccionados, setPadresSeleccionados] = useState([]);
+  const [subtemasSeleccionados, setSubtemasSeleccionados] = useState([]);
+
+  // Re-sincronizar cuando llegan los temas o cambia la lista seleccionada externamente
+  useEffect(() => {
+    if (temas.length === 0) return; // Esperar a que los temas carguen
+
+    const idsPadres = temas.map((t) => t.id);
+    const idsSubtemas = temas.flatMap((t) => (t.subtemas ?? []).map((s) => s.id));
+
+    const nuevosPadres = seleccionados.filter((id) => idsPadres.includes(id));
+    const nuevosSubtemas = seleccionados.filter((id) => idsSubtemas.includes(id));
+
+    setPadresSeleccionados(nuevosPadres);
+    setSubtemasSeleccionados(nuevosSubtemas);
+  }, [temas, seleccionados]);
+
   // IDs de todos los temas raíz
   const idsPadres = temas.map((t) => t.id);
-
-  // Cuáles padres están seleccionados
-  const padresSeleccionados = seleccionados.filter((id) => idsPadres.includes(id));
 
   // Reunir subtemas solo de los padres seleccionados
   const subtemasDisponibles = temas
     .filter((t) => padresSeleccionados.includes(t.id))
     .flatMap((t) => t.subtemas ?? []);
-
-  const idsSubtemas = subtemasDisponibles.map((s) => s.id);
-
-  // Cuáles subtemas (de los disponibles) están seleccionados
-  const subtemasSeleccionados = seleccionados.filter((id) => idsSubtemas.includes(id));
 
   // Al cambiar los padres: conservar solo los subtemas que sigan siendo válidos
   const handlePadresChange = (nuevosIds) => {
@@ -40,11 +52,14 @@ export function TemaSelector({ temas = [], seleccionados = [], onChange }) {
     const subtemasConservados = subtemasSeleccionados.filter((id) =>
       nuevosSubtemasValidos.has(id)
     );
+    setPadresSeleccionados(nuevosIds);
+    setSubtemasSeleccionados(subtemasConservados);
     onChange([...nuevosIds, ...subtemasConservados]);
   };
 
   // Al cambiar los subtemas: mantener los padres seleccionados intactos
   const handleSubtemasChange = (nuevosSubIds) => {
+    setSubtemasSeleccionados(nuevosSubIds);
     onChange([...padresSeleccionados, ...nuevosSubIds]);
   };
 

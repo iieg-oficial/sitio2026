@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy.orm.attributes import flag_modified
+from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.core.cache import get_cache, redis_client, set_cache
+from app.api.deps import get_current_user, get_db
 from app.models import Flashes, Usuario, Subject   
 from app.schemas.flashes import FlashesOut, FlashesResponse, FlashesCreate, FlashesList
 
@@ -18,7 +16,7 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
         select(Subject).where(Subject.id.in_(tema_ids))
     ).scalars().all()
 
-@router.get("/", response_model=FlashesList)
+@router.get("", response_model=FlashesList)
 def read_flashes(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
@@ -52,14 +50,14 @@ def create_flashes(
         fecha_publicacion=flashes.fecha_publicacion,
         fuente=flashes.fuente,
         link=flashes.link,
-        subject_id=flashes.subject_id,
         slug=slug,
     )
     db_flashes.temas = _load_temas(db, flashes.tema_ids or [])
+    
     db.add(db_flashes)
     db.commit()
     db.refresh(db_flashes)
-    return db.query(Flashes).options(joinedload(Flashes.subject)).filter(Flashes.id == db_flashes.id).first()
+    return db_flashes
 
 @router.get("/{id}", response_model=FlashesResponse)
 def get_flashes_by_id(
@@ -92,6 +90,7 @@ def update_flashes(
         )
     
     update_data = flashes.dict(exclude_unset=True)
+
     if "titulo" in update_data and update_data["titulo"] != db_flashes.titulo:
         slug = slugify(update_data["titulo"])
         base_slug = slug
@@ -118,7 +117,7 @@ def delete_flashes(
     current_user: Usuario = Depends(get_current_user),
 ):
     """Eliminar un flash"""
-    db_flashes = db.query(Flashes).filter(Flashes.id == flashes_id).first()
+    db_flashes = db.get(Flashes, flashes_id)
     if not db_flashes:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

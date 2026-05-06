@@ -205,8 +205,7 @@ export default function Archivos() {
                             <TemaSelector
                                 temas={subjects}
                                 seleccionados={selectedSubjects}
-                                onChange={(ids) => {
-                                    console.log(ids);
+                                onChange={(ids) => {                                    
                                     setSelectedSubjects(ids);
                                 }}
                             />
