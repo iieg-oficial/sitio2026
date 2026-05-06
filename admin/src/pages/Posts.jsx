@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 const { Title } = Typography;
 
@@ -12,6 +13,7 @@ export default function Posts() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingPost, setEditingPost] = useState(null);
     const [subjects, setSubjects] = useState([]);  
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
 
     useEffect(() => {
         fetchPosts();
@@ -22,7 +24,7 @@ export default function Posts() {
     const fetchSubjects = async () => {
         
         try {
-            const response = await api.get('/subject');
+            const response = await api.get('/subject/tree');
             setSubjects(response.data);
         } catch {
             message.error('Error al cargar temas');
@@ -33,7 +35,7 @@ export default function Posts() {
         setLoading(true);
         try {
             const response = await api.get('/posts');
-            setPosts(response.data);
+            setPosts(response.data.posts);
         } catch {
             message.error('Error al cargar posts');
         } finally {
@@ -43,12 +45,15 @@ export default function Posts() {
 
     const handleCreate = () => {
         setEditingPost(null);
+        setSelectedSubjects([]);
         form.resetFields();
         setModalVisible(true);
     };
 
     const handleEdit = (record) => {
         setEditingPost(record);
+        const ids = record.temas.map((tema) => tema.id);
+        setSelectedSubjects(ids);
         form.setFieldsValue(record);
         setModalVisible(true);
     };
@@ -74,11 +79,15 @@ export default function Posts() {
 
     const handleSubmit = async (values) => {
         try {
+            const payload = {
+                ...values,
+                tema_ids: selectedSubjects
+            };
             if (editingPost) {
-                await api.put(`/posts/${editingPost.id}`, values);
+                await api.put(`/posts/${editingPost.id}`, payload);
                 message.success('Post actualizado exitosamente');
             } else {
-                await api.post('/posts/create', values);
+                await api.post('/posts/create', payload);
                 message.success('Post creado exitosamente');
             }
             setModalVisible(false);
@@ -121,17 +130,17 @@ export default function Posts() {
             sorter: (a, b) => new Date(a.fecha) - new Date(b.fecha)
         },
         {
-            title: 'Keywords',
-            dataIndex: 'keywords',
-            key: 'keywords',
-            sorter: (a, b) => a.keywords.localeCompare(b.keywords)                   
+            title: 'Claves',
+            dataIndex: 'claves',
+            key: 'claves',
+            sorter: (a, b) => a.claves.localeCompare(b.claves)                   
         },
         {
             title: 'Tema',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
-            render: (subject_id) => subjects.find((s) => s.id === subject_id)?.titulo,
-            sorter: (a, b) => a.subject.titulo.localeCompare(b.subject.titulo)                   
+            dataIndex: 'temas',
+            key: 'temas',
+            render: (temas) => temas.map((t) => t.titulo).join(', '),
+            sorter: (a, b) => a.temas.map((t) => t.titulo).join(', ').localeCompare(b.temas.map((t) => t.titulo).join(', '))
         },
         {
             title: 'Acciones',
@@ -245,15 +254,13 @@ export default function Posts() {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="Tema" name="subject_id" rules={[{ required: true, message: 'Por favor seleccione un tema' }]}>
-                        <Select
-                            placeholder="Selecciona un tema"
-                            options={subjects.map((s) => ({
-                                value: s.id,
-                                label: s.titulo
-                            }))}
-                        />
-                    </Form.Item>
+                    <TemaSelector
+                        temas={subjects}
+                        seleccionados={selectedSubjects}
+                        onChange={(ids) => {                                    
+                            setSelectedSubjects(ids);
+                        }}
+                    />
 
                 </Form>
             </Modal>
