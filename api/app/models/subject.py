@@ -27,3 +27,4 @@ class Subject(Base):
     flashes = relationship("Flashes", secondary="flash_temas", back_populates="temas")
     reportes = relationship("Reportes", secondary="reporte_temas", back_populates="temas")
     documentacion = relationship("Documentacion", secondary="documentacion_temas", back_populates="temas")
+    sistemas = relationship("Sistemas", secondary="sistema_temas", back_populates="temas")

@@ -18,8 +18,8 @@ class SistemasCreate(BaseModel):
     claves: Optional[str] = None    
     slug: Optional[str] = None
     tema_ids: Optional[List[int]] = None
-    destacado: Optional[bool] = False
-    orden: Optional[int]
+    destacado: bool = False
+    orden: int
 
     @field_validator('tema_ids', mode='before')
     @classmethod
@@ -40,8 +40,8 @@ class SistemasOut(BaseModel):
     claves: Optional[str] = None    
     slug: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
-    destacado: Optional[bool] = False
-    orden: Optional[int]
+    destacado: bool = False
+    orden: int
 
     class Config:
         from_attributes = True
@@ -55,8 +55,8 @@ class SistemasResponse(BaseModel):
     imagen: Optional[str] = None
     claves: Optional[str] = None    
     slug: Optional[str] = None
-    destacado: Optional[bool] = False
-    orden: Optional[int]
+    destacado: bool = False
+    orden: int
     temas: Optional[List[SubjectFlat]] = []
 
     class Config:

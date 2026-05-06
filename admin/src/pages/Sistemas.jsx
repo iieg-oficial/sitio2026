@@ -207,12 +207,14 @@ export default function Sistemas() {
                         name="destacada"
                         label="Destacada"
                         valuePropName="checked"
+                        rules={[{ required: false, message: 'Por favor seleccione si es destacada' }]}
                     >
                         <Checkbox>Destacada</Checkbox>
                     </Form.Item>
                     <Form.Item
                         name="orden"
                         label="Orden"
+                        rules={[{ required: true, message: 'Por favor ingrese el orden' }]}
                     >
                         <Input type="number" />
                     </Form.Item>

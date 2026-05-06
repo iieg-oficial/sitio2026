@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Reportes, Usuario
+from app.api.deps import get_current_user, get_db
+from app.models import Reportes, Usuario, Subject
 from app.schemas import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
 
 router = APIRouter(prefix="/reportes", tags=["reportes"])

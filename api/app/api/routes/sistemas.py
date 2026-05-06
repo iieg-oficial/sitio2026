@@ -18,7 +18,7 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
     ).scalars().all()
 
     
-@router.get("", response_model=SistemasList)
+@router.get("/", response_model=SistemasList)
 def read_sistemas(
     db: Session = Depends(get_db),
     skip: int = 0,
@@ -27,10 +27,10 @@ def read_sistemas(
 ):
     """Obtener todos los sistemas"""
     sistemas = db.execute(select(Sistemas).offset(skip).limit(limit)).scalars().all()
-    total = db.execute(select(Sistemas).count()).scalar_one()
+    
     return {
         "sistemas": sistemas,
-        "total": total,
+        "total": len(sistemas),
     }
 
 @router.post("/create", response_model=SistemasOut, status_code=status.HTTP_201_CREATED)
