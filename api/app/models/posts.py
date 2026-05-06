@@ -1,9 +1,15 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
 
+post_temas = Table(
+    "post_temas",
+    Base.metadata,
+    Column("post_id", Integer, ForeignKey("posts.id"), primary_key=True),
+    Column("subject_id", Integer, ForeignKey("subject.id"), primary_key=True),
+)
 
 class Posts(Base):
     __tablename__ = "posts"
@@ -17,5 +23,9 @@ class Posts(Base):
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
 
-    subject_id = Column(Integer, ForeignKey("subject.id"), nullable=True)
-    subject = relationship("Subject", back_populates="posts")
+    temas = relationship(
+        "Subject",
+        secondary=post_temas,
+        back_populates="posts",
+        lazy="selectin",
+    )

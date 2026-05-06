@@ -21,7 +21,7 @@ class Subject(Base):
     )
 
     # Relaciones con otros modelos (many-to-many o FK en el otro lado)
-    posts = relationship("Posts", back_populates="subject")
+    posts = relationship("Posts", secondary="post_temas", back_populates="temas")
     archivos = relationship("Archivos", secondary="archivo_temas", back_populates="temas")
     preguntas = relationship("Preguntas", secondary="pregunta_temas", back_populates="temas")
     flashes = relationship("Flashes", secondary="flash_temas", back_populates="temas")

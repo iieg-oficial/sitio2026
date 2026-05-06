@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
-from typing import Optional
-from app.schemas.subject import SubjectOut
+from typing import Optional, List
+from app.schemas.subject import SubjectFlat
 
 class PostCreate(BaseModel):
     titulo: str
@@ -10,8 +10,17 @@ class PostCreate(BaseModel):
     autor: str = "IIEG"
     fecha: Optional[datetime] = None
     claves: Optional[str] = None    
-    subject_id: int
+    tema_ids: Optional[List[int]] = None
     slug: Optional[str] = None
+
+    @field_validator('tema_ids', mode='before')
+    @classmethod
+    def clean_temas(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return [x for x in v if x is not None and x != 0]
+        return v
 
 class PostOut(BaseModel):
     id: int
@@ -21,8 +30,7 @@ class PostOut(BaseModel):
     autor: str
     fecha: datetime
     claves: Optional[str] = None    
-    subject_id: int
-    subject: SubjectOut
+    temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
 
     class Config:
@@ -37,10 +45,12 @@ class PostResponse(BaseModel):
     autor: str
     fecha: datetime
     claves: Optional[str] = None    
-    subject_id: int
-    subject: SubjectOut
+    temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
 
     class Config:                              
         from_attributes = True
     
+class PostList(BaseModel):
+    posts: List[PostResponse]
+    total: int
