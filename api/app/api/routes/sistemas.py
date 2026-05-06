@@ -39,6 +39,7 @@ def create_sistemas(
         link=sistemas.link,
         tipo=sistemas.tipo,
         imagen=sistemas.imagen,
+        claves=sistemas.claves,
         slug=slug,
     )
     db.add(db_sistemas)

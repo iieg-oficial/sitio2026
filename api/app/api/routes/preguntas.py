@@ -43,6 +43,7 @@ def crear_pregunta(
     db_pregunta = Preguntas(
         pregunta=pregunta_in.pregunta,
         respuesta=pregunta_in.respuesta,
+        claves=pregunta_in.claves,
         slug=slug,
     )
     db_pregunta.temas = _load_temas(db, pregunta_in.tema_ids or [])

@@ -38,7 +38,7 @@ async def crear_reporte(
         subject_id=reporte_in.subject_id,
         periocidad=reporte_in.periocidad,
         archivo=reporte_in.archivo,
-        subtema=reporte_in.subtema,
+        claves=reporte_in.claves,
         slug=slug,
     )
     db.add(nuevo)

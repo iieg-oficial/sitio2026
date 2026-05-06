@@ -50,6 +50,7 @@ def create_flashes(
         fecha_publicacion=flashes.fecha_publicacion,
         fuente=flashes.fuente,
         link=flashes.link,
+        claves=flashes.claves,
         slug=slug,
     )
     db_flashes.temas = _load_temas(db, flashes.tema_ids or [])

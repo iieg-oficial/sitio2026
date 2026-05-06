@@ -104,6 +104,7 @@ def create_cursos(
         vigencia=cursos.vigencia,
         contacto=cursos.contacto,
         destacado=cursos.destacado,
+        claves=cursos.claves,
         slug=slug,
     )
     
