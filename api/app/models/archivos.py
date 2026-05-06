@@ -1,8 +1,14 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Integer, String, ForeignKey
+from sqlalchemy import Column, DateTime, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
-
 from app.core.database import Base
+
+archivo_temas = Table(
+    "archivo_temas",
+    Base.metadata,
+    Column("archivo_id", Integer, ForeignKey("archivos.id"), primary_key=True),
+    Column("subject_id", Integer, ForeignKey("subject.id"), primary_key=True),
+)
 
 class Archivos(Base):
     __tablename__ = "archivos"
@@ -14,7 +20,10 @@ class Archivos(Base):
     periocidad = Column(String(200), nullable=True)
     archivo = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
-    
-    subject_id = Column(Integer, ForeignKey("subject.id"), nullable=True)
-    subject = relationship("Subject", back_populates="archivos")
-    
+
+    temas = relationship(
+        "Subject",
+        secondary=archivo_temas,
+        back_populates="archivos",
+        lazy="selectin",
+    )

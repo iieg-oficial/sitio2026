@@ -3,27 +3,41 @@ from pydantic import BaseModel
 
 from typing import Optional, List
 
+
 class SubjectBase(BaseModel):
     titulo: str
     descripcion: Optional[str] = None
     slug: Optional[str] = None
-    
-
-class SubjectCreate(SubjectBase):
     parent_id: Optional[int] = None
-
-
-class SubjectOut(SubjectBase):
-    id: int
-    subtemas: Optional[List[SubjectOut]] = []
-    profundidad: int = 0
 
     class Config:
         from_attributes = True
-    
+
+
+class SubjectCreate(SubjectBase):
+    pass
+
+
+# Flat schema for the list endpoint — no nested subtemas to avoid cyclic refs
+class SubjectFlat(SubjectBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+# Recursive schema for the tree endpoint
+class SubjectOut(SubjectBase):
+    id: int
+    subtemas: Optional[List[SubjectOut]] = []
+
+    class Config:
+        from_attributes = True
+
 
 class SubjectResponse(SubjectOut):
     subtemas: Optional[List[SubjectResponse]] = []
-    pass
 
-SubjectOut.model_rebuild()  
+
+SubjectOut.model_rebuild()
+SubjectResponse.model_rebuild()
