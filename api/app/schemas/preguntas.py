@@ -1,19 +1,27 @@
-from pydantic import BaseModel
-from typing import Optional
-from app.schemas.subject import SubjectOut
+from pydantic import BaseModel, field_validator
+from typing import Optional, List
+from app.schemas.subject import SubjectFlat
 
 class PreguntasCreate(BaseModel):
     pregunta: str
     respuesta: str
-    subject_id: int
+    tema_ids: Optional[List[int]] = None
     slug: Optional[str] = None
+
+    @field_validator('tema_ids', mode='before')
+    @classmethod
+    def clean_tema_ids(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return [x for x in v if x is not None and x != 0]
+        return v
 
 class PreguntasOut(BaseModel):
     id: int
     pregunta: str
     respuesta: str
-    subject_id: int
-    subject: SubjectOut
+    temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
 
     class Config:
@@ -23,13 +31,12 @@ class PreguntasResponse(BaseModel):
     id: int
     pregunta: str
     respuesta: str
-    subject_id: Optional[int]
-    subject: Optional[SubjectOut]
+    temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
 
     class Config:
         from_attributes = True
 
-class PreguntasListResponse(BaseModel):
-    preguntas: list[PreguntasResponse]
+class PreguntasList(BaseModel):
+    preguntas: List[PreguntasResponse]
     total: int

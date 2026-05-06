@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 const { Title } = Typography;
 
@@ -9,6 +10,7 @@ export default function Preguntas() {
     const [form] = Form.useForm();
     const [preguntas, setPreguntas] = useState([]);
     const [subjects, setSubjects] = useState([]);
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingPregunta, setEditingPregunta] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ export default function Preguntas() {
 
     const fetchSubjects = async () => {
         try {
-            const response = await api.get('/subject');
+            const response = await api.get('/subject/tree');
             setSubjects(response.data);
         } catch {
             message.error('Error al cargar temas');
@@ -41,12 +43,15 @@ export default function Preguntas() {
 
     const handleCreate = () => {
         setEditingPregunta(null);
+        setSelectedSubjects([]);
         form.resetFields();
         setIsModalVisible(true);
     };
 
     const handleEdit = (record) => {
         setEditingPregunta(record);
+        const ids = record.temas.map((t) => t.id);
+        setSelectedSubjects(ids);
         form.setFieldsValue(record);
         setIsModalVisible(true);
     };
@@ -72,11 +77,15 @@ export default function Preguntas() {
 
     const handleSubmit = async (values) => {
         try {
+            const payload = {
+                ...values,
+                tema_ids: selectedSubjects
+            };
             if (editingPregunta) {
-                await api.put(`/preguntas/${editingPregunta.id}`, values);
+                await api.put(`/preguntas/${editingPregunta.id}`, payload);
                 message.success('Pregunta actualizada exitosamente');
             } else {
-                await api.post('/preguntas/create', values);
+                await api.post('/preguntas/create', payload);
                 message.success('Pregunta creada exitosamente');
             }
             setIsModalVisible(false);
@@ -101,10 +110,10 @@ export default function Preguntas() {
         },
         {
             title: 'Tema',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
-            render: (subject_id) => subjects.find((s) => s.id === subject_id)?.titulo,
-            sorter: (a, b) => a.subject.titulo.localeCompare(b.subject.titulo)
+            dataIndex: 'temas',
+            key: 'temas',
+            render: (temas) => temas.map((t) => t.titulo).join(', '),
+            sorter: (a, b) => a.temas.map((t) => t.titulo).join(', ').localeCompare(b.temas.map((t) => t.titulo).join(', '))
         },
         {
             title: 'Acciones',
@@ -181,15 +190,13 @@ export default function Preguntas() {
                     >
                         <Input.TextArea rows={3} />
                     </Form.Item>
-                    <Form.Item label="Tema" name="subject_id" rules={[{ required: true, message: 'Por favor seleccione un tema' }]}>
-                        <Select
-                            placeholder="Selecciona un tema"
-                            options={subjects.map((s) => ({
-                                value: s.id,
-                                label: s.titulo
-                            }))}
-                        />
-                    </Form.Item>
+                    <TemaSelector
+                        temas={subjects}
+                        seleccionados={selectedSubjects}
+                        onChange={(ids) => {                                    
+                            setSelectedSubjects(ids);
+                        }}
+                    />
                 </Form>
             </Modal>
         </div>

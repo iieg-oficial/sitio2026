@@ -16,7 +16,7 @@ from app.schemas.directorio import DirectorioCreate, DirectorioOut, DirectorioRe
 from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse
 from app.schemas.snieg import SniegCreate, SniegOut, SniegResponse
-from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasResponse, PreguntasListResponse
+from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasResponse, PreguntasList
 from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse
 from app.schemas.reportes import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
 from app.schemas.documentacion import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
@@ -46,6 +46,7 @@ __all__ = [
     "SubjectCreate",
     "SubjectOut",
     "SubjectResponse",
+    "SubjectFlat",
     "PlataformasCreate",
     "PlataformasOut",
     "PlataformasResponse",
@@ -55,6 +56,7 @@ __all__ = [
     "FlashesCreate",
     "FlashesOut",
     "FlashesResponse",
+    "FlashesList",
     "MapaCreate",
     "MapaOut",
     "MapaResponse",
@@ -67,13 +69,14 @@ __all__ = [
     "ArchivoCreate",
     "ArchivoOut",
     "ArchivoResponse",
+    "ArchivoList",
     "SniegCreate",
     "SniegOut",
     "SniegResponse",
     "PreguntasCreate",
     "PreguntasOut",
     "PreguntasResponse",
-    "PreguntasListResponse",
+    "PreguntasList",
     "SistemasCreate",
     "SistemasOut",
     "SistemasResponse",
