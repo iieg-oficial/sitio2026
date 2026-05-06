@@ -44,7 +44,7 @@ async def crear_post(
         resumen=post_in.resumen,
         contenido=post_in.contenido,
         autor=post_in.autor,
-        keywords=post_in.keywords,
+        claves=post_in.claves,
         fecha=post_in.fecha,
         subject_id=post_in.subject_id,
         slug=slug,
