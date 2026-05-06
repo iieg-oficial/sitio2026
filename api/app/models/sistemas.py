@@ -19,5 +19,6 @@ class Sistemas(Base):
     link = Column(String, nullable=False)
     tipo = Column(Enum(TipoSistemaEnum), nullable=False)
     imagen = Column(String, nullable=True)
+    claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
     

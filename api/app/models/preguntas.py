@@ -15,6 +15,7 @@ class Preguntas(Base):
     id = Column(Integer, primary_key=True, index=True)
     pregunta = Column(String(255), nullable=False)
     respuesta = Column(Text, nullable=False)
+    claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
 
     temas = relationship(
