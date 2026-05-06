@@ -6,6 +6,7 @@ class PreguntasCreate(BaseModel):
     pregunta: str
     respuesta: str
     tema_ids: Optional[List[int]] = None
+    claves: Optional[str] = None    
     slug: Optional[str] = None
 
     @field_validator('tema_ids', mode='before')
@@ -22,6 +23,7 @@ class PreguntasOut(BaseModel):
     pregunta: str
     respuesta: str
     temas: Optional[List[SubjectFlat]] = []
+    claves: Optional[str] = None    
     slug: Optional[str] = None
 
     class Config:
@@ -32,6 +34,7 @@ class PreguntasResponse(BaseModel):
     pregunta: str
     respuesta: str
     temas: Optional[List[SubjectFlat]] = []
+    claves: Optional[str] = None    
     slug: Optional[str] = None
 
     class Config:

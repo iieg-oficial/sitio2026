@@ -18,6 +18,7 @@ class FlashesCreate(BaseModel):
     fuente: str = None
     link: str = None
     tema_ids: Optional[List[int]] = None
+    claves: Optional[str] = None    
     slug: Optional[str] = None
 
     @field_validator('tema_ids', mode='before')
@@ -39,6 +40,7 @@ class FlashesOut(BaseModel):
     fuente: str = None
     link: str = None
     temas: Optional[List[SubjectFlat]] = []
+    claves: Optional[str] = None    
     slug: Optional[str] = None
 
     class Config:
@@ -54,6 +56,7 @@ class FlashesResponse(BaseModel):
     fuente: str = None
     link: str = None
     temas: Optional[List[SubjectFlat]] = []
+    claves: Optional[str] = None    
     slug: Optional[str] = None
 
     class Config:
