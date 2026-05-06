@@ -14,6 +14,7 @@ class SistemasCreate(BaseModel):
     link: str
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None 
+    claves: Optional[str] = None    
     slug: Optional[str] = None
 
 class SistemasOut(BaseModel):
@@ -23,6 +24,7 @@ class SistemasOut(BaseModel):
     link: str
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
+    claves: Optional[str] = None    
     slug: Optional[str] = None
 
     class Config:

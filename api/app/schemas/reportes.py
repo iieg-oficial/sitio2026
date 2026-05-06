@@ -17,7 +17,7 @@ class ReporteCreate(BaseModel):
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     tema_ids: Optional[List[int]] = None
-    
+    claves: Optional[str] = None    
     slug: Optional[str] = None
 
     @field_validator('tema_ids', mode='before')
@@ -38,7 +38,7 @@ class ReporteOut(BaseModel):
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     slug: Optional[str] = None
-
+    claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
 
     class Config:
@@ -53,7 +53,7 @@ class ReporteResponse(BaseModel):
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     slug: Optional[str] = None
-
+    claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
 
     class Config:

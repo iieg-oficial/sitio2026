@@ -26,6 +26,7 @@ class CursosCreate(BaseModel):
     acreditacion: str = None
     vigencia: str = None
     contacto: str = None
+    claves: Optional[str] = None    
     destacado: bool = False
     slug: Optional[str] = None
 
@@ -48,6 +49,7 @@ class CursosOut(BaseModel):
     acreditacion: str | None = None
     vigencia: str | None = None
     contacto: str | None = None
+    claves: Optional[str] = None    
     destacado: bool | None = None
     slug: Optional[str] = None
 

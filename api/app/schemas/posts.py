@@ -9,7 +9,7 @@ class PostCreate(BaseModel):
     contenido: str
     autor: str = "IIEG"
     fecha: Optional[datetime] = None
-    keywords: str = ""
+    claves: Optional[str] = None    
     subject_id: int
     slug: Optional[str] = None
 
@@ -20,7 +20,7 @@ class PostOut(BaseModel):
     contenido: str
     autor: str
     fecha: datetime
-    keywords: str
+    claves: Optional[str] = None    
     subject_id: int
     subject: SubjectOut
     slug: Optional[str] = None
@@ -36,7 +36,7 @@ class PostResponse(BaseModel):
     contenido: str
     autor: str
     fecha: datetime
-    keywords: str
+    claves: Optional[str] = None    
     subject_id: int
     subject: SubjectOut
     slug: Optional[str] = None
