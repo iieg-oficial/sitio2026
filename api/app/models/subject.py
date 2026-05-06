@@ -25,5 +25,5 @@ class Subject(Base):
     archivos = relationship("Archivos", secondary="archivo_temas", back_populates="temas")
     preguntas = relationship("Preguntas", secondary="pregunta_temas", back_populates="temas")
     flashes = relationship("Flashes", secondary="flash_temas", back_populates="temas")
-    reportes = relationship("Reportes", back_populates="subject")
-    documentacion = relationship("Documentacion", back_populates="subject")
+    reportes = relationship("Reportes", secondary="reporte_temas", back_populates="temas")
+    documentacion = relationship("Documentacion", secondary="documentacion_temas", back_populates="temas")
