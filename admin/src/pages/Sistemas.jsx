@@ -166,6 +166,12 @@ export default function Sistemas() {
                 <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
                     <Input />
                 </Form.Item>
+                <Form.Item name="claves"
+                    label="Palabras clave"
+                    rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
+                >
+                    <Input />
+                </Form.Item>
             </Form>
         </Modal>
        </div>

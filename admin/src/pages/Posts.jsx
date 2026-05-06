@@ -238,10 +238,9 @@ export default function Posts() {
                         <Input type="date" />
                     </Form.Item>
 
-                    <Form.Item
-                        label="Keywords"
-                        name="keywords"
-                        rules={[{ message: 'Por favor ingrese los keywords' }]}
+                    <Form.Item name="claves"
+                        label="Palabras clave"
+                        rules={[{ required: true, message: 'Por favor ingrese las palabras clave' }]}
                     >
                         <Input />
                     </Form.Item>
