@@ -28,3 +28,4 @@ class Subject(Base):
     reportes = relationship("Reportes", secondary="reporte_temas", back_populates="temas")
     documentacion = relationship("Documentacion", secondary="documentacion_temas", back_populates="temas")
     sistemas = relationship("Sistemas", secondary="sistema_temas", back_populates="temas")
+    cursos = relationship("Cursos", secondary="curso_temas", back_populates="temas")
