@@ -181,20 +181,7 @@ export default function MainLayout() {
             key: '/sistemas_i',
             icon: <MenuOutlined />,
             label: 'Sistemas',
-            children: [
-                {
-                    key: '/plataformas',
-                    icon: <MenuOutlined />,
-                    label: 'Plataformas',
-                    onClick: () => navigate('/plataformas')
-                },
-                {
-                    key: '/sistemas',
-                    icon: <MenuOutlined />,
-                    label: 'Sistemas',
-                    onClick: () => navigate('/sistemas')
-                }
-            ],
+            onClick: () => navigate('/sistemas')
         });
 
         menuItems.push({
