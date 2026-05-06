@@ -17,7 +17,7 @@ from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse
 from app.schemas.snieg import SniegCreate, SniegOut, SniegResponse
 from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasResponse, PreguntasList
-from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse
+from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse, SistemasList
 from app.schemas.reportes import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
 from app.schemas.documentacion import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
 from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresResponse
@@ -80,6 +80,7 @@ __all__ = [
     "SistemasCreate",
     "SistemasOut",
     "SistemasResponse",
+    "SistemasList",
     "ReporteCreate",
     "ReporteOut",
     "ReporteResponse",

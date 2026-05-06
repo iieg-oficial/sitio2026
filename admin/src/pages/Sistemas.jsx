@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Checkbox} from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -12,9 +13,12 @@ export default function Sistemas() {
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [editingSistema, setEditingSistema] = useState(null);
+    const [subjects, setSubjects] = useState([]);
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
 
     useEffect(() => {
         fetchSistemas();
+        fetchSubjects();
     }, []);
 
     const fetchSistemas = async () => {
@@ -29,14 +33,26 @@ export default function Sistemas() {
         }
     };
 
+    const fetchSubjects = async () => {
+        try {
+            const response = await api.get('/subject/tree');
+            setSubjects(response.data);
+        } catch {
+            message.error('Error al cargar temas');
+        }
+    };
+
     const handleCreate = () => {
         setEditingSistema(null);
+        setSelectedSubjects([]);
         form.resetFields();
         setModalVisible(true);
     };
 
     const handleEdit = (record) => {
         setEditingSistema(record);
+        const ids = (record.temas ?? []).map((t) => t.id);
+        setSelectedSubjects(ids);
         form.setFieldsValue(record);
         setModalVisible(true);
     };
@@ -62,11 +78,12 @@ export default function Sistemas() {
 
     const handleSubmit = async (values) => {
         try {
+            const payload = { ...values, tema_ids: selectedSubjects };
             if (editingSistema) {
-                await api.put(`/sistemas/${editingSistema.id}`, values);
+                await api.put(`/sistemas/${editingSistema.id}`, payload);
                 message.success('Sistema actualizado exitosamente');
             } else {
-                await api.post('/sistemas/create', values);
+                await api.post('/sistemas/create', payload);
                 message.success('Sistema creado exitosamente');
             }
             setModalVisible(false);
@@ -93,6 +110,13 @@ export default function Sistemas() {
             dataIndex: 'tipo',
             key: 'tipo',
             sorter: (a, b) => a.tipo.localeCompare(b.tipo),
+        },
+        {
+            title: 'Destacado',
+            dataIndex: 'destacado',
+            key: 'destacado',
+            render: (val) => val ? 'Sí' : 'No',
+            sorter: (a, b) => Number(a.destacado) - Number(b.destacado)
         },
         {
             title: 'Acciones',
@@ -166,12 +190,32 @@ export default function Sistemas() {
                 <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
                     <Input />
                 </Form.Item>
+                <TemaSelector
+                    temas={subjects}
+                    seleccionados={selectedSubjects}
+                    onChange={(ids) => {                                    
+                        setSelectedSubjects(ids);
+                    }}
+                />
                 <Form.Item name="claves"
                     label="Palabras clave"
                     rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
                 >
                     <Input />
                 </Form.Item>
+                <Form.Item
+                        name="destacada"
+                        label="Destacada"
+                        valuePropName="checked"
+                    >
+                        <Checkbox>Destacada</Checkbox>
+                    </Form.Item>
+                    <Form.Item
+                        name="orden"
+                        label="Orden"
+                    >
+                        <Input type="number" />
+                    </Form.Item>
             </Form>
         </Modal>
        </div>

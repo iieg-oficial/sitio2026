@@ -136,3 +136,7 @@ volumes:
 networks:
   portal_network:
     driver: bridge
+  webnet:
+    driver: bridge
+  ckannet:
+    driver: bridge

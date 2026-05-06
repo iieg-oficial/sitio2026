@@ -1,6 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from enum import Enum
 from typing import List, Optional
+from app.schemas.subject import SubjectFlat
 
 class TipoSistemaEnum(str, Enum):
     plataforma = "plataforma"
@@ -16,6 +17,18 @@ class SistemasCreate(BaseModel):
     imagen: Optional[str] = None 
     claves: Optional[str] = None    
     slug: Optional[str] = None
+    tema_ids: Optional[List[int]] = None
+    destacado: Optional[bool] = False
+    orden: Optional[int]
+
+    @field_validator('tema_ids', mode='before')
+    @classmethod
+    def clean_tema_ids(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return [x for x in v if x is not None and x != 0]
+        return v
 
 class SistemasOut(BaseModel):
     id: int
@@ -26,10 +39,29 @@ class SistemasOut(BaseModel):
     imagen: Optional[str] = None
     claves: Optional[str] = None    
     slug: Optional[str] = None
+    temas: Optional[List[SubjectFlat]] = []
+    destacado: Optional[bool] = False
+    orden: Optional[int]
 
     class Config:
         from_attributes = True
 
 class SistemasResponse(BaseModel):
-    sistemas: list[SistemasOut]
+    id: int
+    titulo: str
+    descripcion: str
+    link: str
+    tipo: TipoSistemaEnum
+    imagen: Optional[str] = None
+    claves: Optional[str] = None    
+    slug: Optional[str] = None
+    destacado: Optional[bool] = False
+    orden: Optional[int]
+    temas: Optional[List[SubjectFlat]] = []
+
+    class Config:
+        from_attributes = True
+
+class SistemasList(BaseModel):
+    sistemas: List[SistemasResponse]
     total: int

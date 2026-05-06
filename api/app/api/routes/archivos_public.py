@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_db
-from app.models import Archivos, Subject
-from app.schemas.archivo import ArchivoOut, ArchivoResponse, ArchivoList
+from app.models import Archivos
+from app.schemas.archivo import ArchivoOut, ArchivoResponse
 
 router = APIRouter(prefix="/archivos", tags=["archivos -publicos"])
 
