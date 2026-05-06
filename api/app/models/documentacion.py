@@ -1,6 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from app.core.database import Base
+
+documentacion_temas = Table(
+    "documentacion_temas",
+    Base.metadata,
+    Column("documentacion_id", Integer, ForeignKey("documentacion.id"), primary_key=True),
+    Column("subject_id", Integer, ForeignKey("subject.id"), primary_key=True),
+)
 
 class Documentacion(Base):
     __tablename__ = "documentacion"
@@ -13,5 +20,9 @@ class Documentacion(Base):
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=True)
     
-    subject_id = Column(Integer, ForeignKey("subject.id"), nullable=True)
-    subject = relationship("Subject", back_populates="documentacion")
+    temas = relationship(
+        "Subject",
+        secondary=documentacion_temas,
+        back_populates="documentacion",
+        lazy="selectin",
+    )
