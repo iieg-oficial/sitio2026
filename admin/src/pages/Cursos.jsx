@@ -232,6 +232,7 @@ export default function Cursos() {
 
           {SECCIONES[tipoCurso] ?? null}
 
+          
           <Form.Item
             name="vigencia"
             label="Vigencia"

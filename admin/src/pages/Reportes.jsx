@@ -230,6 +230,12 @@ export default function Reportes() {
                     >
                         <Input />
                     </Form.Item>
+                    <Form.Item name="claves"
+                        label="Palabras clave"
+                        rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>

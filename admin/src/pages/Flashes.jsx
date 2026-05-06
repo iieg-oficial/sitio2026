@@ -218,6 +218,12 @@ export default function Flashes() {
                             setSelectedSubjects(ids);
                         }}
                     />
+                    <Form.Item name="claves"
+                        label="Palabras clave"
+                        rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>
