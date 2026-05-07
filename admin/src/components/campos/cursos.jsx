@@ -26,7 +26,7 @@ export const CamposCapacitaciones = ({ modulos, profesores }) => (
             <Input />
         </Form.Item>
         <Form.Item
-            name="claves"
+            name="clave"
             label="Palabras clave"
             rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
         >

@@ -85,6 +85,7 @@ export default function Cursos() {
     setEditingCurso(record);
     const formValues = {
       ...record,
+      inicio: record.inicio ? record.inicio.split('T')[0] : '',
       modulos: record.modulos ? record.modulos.map(m => m.id) : [],
       instituciones: record.instituciones ? record.instituciones.map(i => i.id) : [],
       perfiles: record.perfiles ? record.perfiles.map(p => p.id) : [],
@@ -153,6 +154,7 @@ export default function Cursos() {
       title: 'Fecha de inicio',
       dataIndex: 'inicio',
       key: 'inicio',
+      render: (date) => new Date(date).toLocaleDateString('es-MX'),
       sorter: (a, b) => a.inicio.localeCompare(b.inicio)
     },
     {
@@ -232,7 +234,6 @@ export default function Cursos() {
 
           {SECCIONES[tipoCurso] ?? null}
 
-          
           <Form.Item
             name="vigencia"
             label="Vigencia"
@@ -255,4 +256,3 @@ export default function Cursos() {
     </div>
   );
 }
-

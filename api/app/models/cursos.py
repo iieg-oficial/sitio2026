@@ -33,13 +33,6 @@ curso_profesores = Table(
     Column("profesor_id", Integer, ForeignKey("profesores.id"), primary_key=True),
 )
 
-curso_temas = Table(
-    "curso_temas",
-    Base.metadata,
-    Column("curso_id", Integer, ForeignKey("cursos.id"), primary_key=True),
-    Column("subject_id", Integer, ForeignKey("subject.id"), primary_key=True),
-)
-
 class TipoCurso(enum.Enum):
     capacitacion = "capacitacion"
     convocatoria = "convocatoria"
@@ -65,15 +58,9 @@ class Cursos(Base):
 
     vigencia = Column(String(200), nullable=True)
     contacto = Column(String(200), nullable=True)
-    claves = Column(String(200), nullable=True)
+    clave = Column(String(200), nullable=True)
 
-    temas = relationship(
-        "Subject",
-        secondary=curso_temas,
-        back_populates="cursos",
-        lazy="selectin",
-    )
-    modulo = relationship("Modulos", secondary=curso_modulos, back_populates="cursos")
+    modulos = relationship("Modulos", secondary=curso_modulos, back_populates="cursos")
     instituciones = relationship("Instituciones", secondary=curso_instituciones, back_populates="cursos")
     perfiles = relationship("Perfiles", secondary=curso_perfiles, back_populates="cursos")
     profesores = relationship("Profesores", secondary=curso_profesores, back_populates="cursos")
