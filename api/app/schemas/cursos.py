@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import List, Optional
 from app.schemas.modulos import ModulosOut
@@ -6,6 +6,7 @@ from app.schemas.instituciones import InstitucionesOut
 from app.schemas.perfiles import PerfilesOut
 from app.schemas.profesores import ProfesoresOut
 from app.models.cursos import TipoCurso
+from app.schemas.subject import SubjectFlat
 
 class CursosCreate(BaseModel):
     
@@ -22,6 +23,7 @@ class CursosCreate(BaseModel):
     instituciones: Optional[List[int]] = None
     perfiles: Optional[List[int]] = None
     profesores: Optional[List[int]] = None
+    tema_ids: Optional[List[int]] = None
     inscripcion: str = None
     acreditacion: str = None
     vigencia: str = None
@@ -29,6 +31,15 @@ class CursosCreate(BaseModel):
     destacado: bool = False
     clave: str = None
     slug: Optional[str] = None
+
+    @field_validator('tema_ids', mode='before')
+    @classmethod
+    def clean_temas(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return [x for x in v if x is not None and x != 0]
+        return v
 
 class CursosOut(BaseModel):
     id: int
@@ -45,6 +56,7 @@ class CursosOut(BaseModel):
     instituciones: List[InstitucionesOut] = []
     perfiles: List[PerfilesOut] = []
     profesores: List[ProfesoresOut] = []
+    temas: Optional[List[SubjectFlat]] = []
     inscripcion: str | None = None
     acreditacion: str | None = None
     vigencia: str | None = None

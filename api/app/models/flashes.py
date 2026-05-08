@@ -1,6 +1,6 @@
 import enum
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Table, Text
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -22,8 +22,8 @@ class Flashes(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String, nullable=False)
-    desc_jal = Column(String, nullable=False)
-    desc_nac = Column(String, nullable=False)
+    desc_jal = Column(Text, nullable=False)
+    desc_nac = Column(Text, nullable=False)
     periocidad = Column(Enum(PeriocidadEnum), nullable=False)
     fecha_publicacion = Column(DateTime, default=datetime.utcnow)
     fuente = Column(String, nullable=True)

@@ -2,11 +2,21 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_current_user, get_db
-from app.models import Cursos, Usuario, Modulos, Instituciones, Perfiles, Profesores
+from app.models import Cursos, Usuario, Modulos, Instituciones, Perfiles, Profesores, Subject
 from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 from slugify import slugify
+from sqlalchemy import select
 
 router = APIRouter(prefix="/cursos", tags=["cursos"])
+
+
+def _load_temas(db: Session, tema_ids: list[int] | None) -> list[Subject]:
+    """Carga los objetos Subject dado una lista de IDs usando execute como se solicitó."""
+    if not tema_ids:
+        return []
+    return db.execute(
+        select(Subject).where(Subject.id.in_(tema_ids))
+    ).scalars().all()
 
 
 @router.get("/", response_model=CursosResponse)
@@ -22,6 +32,7 @@ def get_cursos(
             joinedload(Cursos.instituciones),
             joinedload(Cursos.perfiles),
             joinedload(Cursos.profesores),
+            joinedload(Cursos.temas),
         )
         .all()
     )
@@ -112,6 +123,7 @@ def create_cursos(
     db_cursos.instituciones = instituciones
     db_cursos.perfiles = perfiles
     db_cursos.profesores = profesores
+    db_cursos.temas = _load_temas(db, cursos.tema_ids)
 
     db.add(db_cursos)
     db.flush()
@@ -148,6 +160,7 @@ def get_cursos_slug(
             joinedload(Cursos.instituciones),
             joinedload(Cursos.perfiles),
             joinedload(Cursos.profesores),
+            joinedload(Cursos.temas),
         )
         .filter(Cursos.slug == slug)
         .first()
@@ -175,6 +188,7 @@ def update_cursos(
             joinedload(Cursos.instituciones),
             joinedload(Cursos.perfiles),
             joinedload(Cursos.profesores),
+            joinedload(Cursos.temas),
         )
         .filter(Cursos.id == curso_id)
         .first()
@@ -238,7 +252,10 @@ def update_cursos(
             )
         db_cursos.profesores = profesores
 
-    update_data = cursos.dict(exclude_unset=True)
+    if cursos.tema_ids is not None:
+        db_cursos.temas = _load_temas(db, cursos.tema_ids)
+
+    update_data = dict(cursos)
     
     if "titulo" in update_data and update_data["titulo"] != db_cursos.titulo:
         slug = slugify(update_data["titulo"])
@@ -271,6 +288,7 @@ def update_cursos(
             joinedload(Cursos.instituciones),
             joinedload(Cursos.perfiles),
             joinedload(Cursos.profesores),
+            joinedload(Cursos.temas),
         )
         .filter(Cursos.id == curso_id)
         .first()
@@ -292,6 +310,7 @@ def delete_cursos(
             joinedload(Cursos.instituciones),
             joinedload(Cursos.perfiles),
             joinedload(Cursos.profesores),
+            joinedload(Cursos.temas),
         )
         .filter(Cursos.id == curso_id)
         .first()

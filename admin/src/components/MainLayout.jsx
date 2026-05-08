@@ -244,6 +244,13 @@ export default function MainLayout() {
             onClick: () => navigate('/mapas')
         });
 
+        menuItems.push({
+            key: '/banners',
+            icon: <MenuOutlined />,
+            label: 'Banners',
+            onClick: () => navigate('/banners')
+        });
+
     }
 
     const userMenuItems = [

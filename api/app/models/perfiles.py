@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, Integer, String, Enum
+from sqlalchemy import Column, Integer, String, Enum, Text
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -16,7 +16,7 @@ class Perfiles(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(200), nullable=False)
-    descripcion = Column(String(200), nullable=True)
+    descripcion = Column(Text, nullable=True)
     area = Column(Enum(AreaEnum), nullable=True)
     slug = Column(String(200), nullable=False)
 

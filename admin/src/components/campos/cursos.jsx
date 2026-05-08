@@ -1,5 +1,6 @@
 import { Form, Input, Select, Checkbox } from 'antd';
 
+
 const { Option } = Select;
 
 export const CamposCapacitaciones = ({ modulos, profesores }) => (
@@ -133,6 +134,7 @@ export const CamposConvocatorias = ({ instituciones, perfiles }) => (
 
 export const CamposComunes = () => (
     <>
+
         <Form.Item
             name="titulo"
             label="Titulo"
