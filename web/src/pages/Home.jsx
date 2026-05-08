@@ -89,11 +89,30 @@ function HomePage() {
                 <Link to="/mapas" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Ver todos los mapas</Link>
             </section>
             <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 my-14 gap-4 relative">
-                <Link to="/transparencia" className="btn btn-primary ">Transparencia</Link>
-                <Link to="/licitaciones" className="btn btn-primary ">Licitaciones</Link>
-                <Link to="/contabilidad-gubernamental" className="btn btn-primary ">Contabilidad Gubernamental</Link>
-                <Link to="/capacitaciones" className="btn btn-primary md:col-start-2 md:col-span-1 xl:col-start-4">Capacitaciones</Link>
-                <Link to="/comunidad" className="btn btn-primary ">Comunidad</Link>
+                
+                <Link to="/transparencia" className="btn btn-primary text-center">
+                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <span className="block mt-2">Transparencia</span>
+                </Link>
+                
+                <Link to="/licitaciones" className="btn btn-primary text-center">
+                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <span className="block mt-2">Licitaciones</span>
+                </Link>
+                
+                <Link to="/contabilidad-gubernamental" className="btn btn-primary text-center">
+                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <span className="block mt-2">Contabilidad Gubernamental</span>
+                </Link>
+                
+                <Link to="/capacitaciones" className="btn btn-primary md:col-start-2 md:col-span-1 xl:col-start-4 text-center">
+                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <span className="block mt-2">Capacitaciones</span>
+                </Link>
+                <Link to="/comunidad" className="btn btn-primary text-center">
+                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <span className="block mt-2">Comunidad</span>
+                </Link>
             </section>
             <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-2">
                 <BlockRenderer block={{ type: 'contacto' }} />
