@@ -29,7 +29,6 @@ function Navbar() {
                 <div className="flex justify-between items-center h-16">
                     <Link to="/" className="flex items-center space-x-3">
                         <img src="/logo_iieg.svg" alt="IIEG" className="h-12 w-auto" />
-                        <span className="font-bold text-lg text-gray-800">IIEG</span>
                     </Link>
 
                     <button

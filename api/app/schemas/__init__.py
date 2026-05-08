@@ -26,6 +26,7 @@ from app.schemas.perfiles import PerfilesCreate, PerfilesOut, PerfilesResponse
 from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 from app.schemas.docs_iieg import DocsIIEGCreate, DocsIIEGOut, DocsIIEGResponse
 from app.schemas.banner import BannerCreate, BannerOut, BannerResponse
+from app.schemas.contacto import ContactoCreate, ContactoOut, ContactoResponse
 
 __all__ = [ 
     "UsuarioCreate",
@@ -107,4 +108,5 @@ __all__ = [
     "BannerCreate",
     "BannerOut",
     "BannerResponse",
+    "ContactForm",
 ]

@@ -3,13 +3,14 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+
 from app.api.routes import (
     auth, borradores, media, menu, pages, pages_public, preview, public, users, posts, posts_public, subject, subject_public, 
     datos_nuevos, datos_nuevos_public, flashes, flashes_public, mapa_public, mapa, 
     directorio, directorio_public, organos, organos_public, archivos, archivos_public, snieg, snieg_public, preguntas, preguntas_public, 
     sistemas, sistemas_public, reportes, reportes_public, documentacion, documentacion_public, profesores, profesores_public, 
     instituciones, instituciones_public, profesores, profesores_public, modulos, modulos_public, perfiles, perfiles_public,
-    cursos, cursos_public, docs_iieg, docs_iieg_public, banner, banner_public
+    cursos, cursos_public, docs_iieg, docs_iieg_public, banner, banner_public, contacto
 )
 from app.core.settings import get_settings
 
@@ -38,6 +39,8 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+
 
     app.include_router(auth.router, prefix=settings.admin_prefix)
     app.include_router(users.router, prefix=settings.admin_prefix)
@@ -89,6 +92,7 @@ def create_app() -> FastAPI:
     app.include_router(docs_iieg_public.router,prefix=settings.web_prefix)
     app.include_router(banner.router,prefix=settings.admin_prefix) 
     app.include_router(banner_public.router,prefix=settings.web_prefix)
+    app.include_router(contacto.router,prefix=settings.web_prefix)
 
     @app.get("/", tags=["health"])
     async def healthcheck():
