@@ -10,7 +10,8 @@ RUN apk add --no-cache \
     postgresql-client \
     gcc \
     musl-dev \
-    git
+    git \
+    && chown -R ckan:ckan /srv/app/src/ckan/ckan/public/base/i18n || true
 
 # Volver al usuario de CKAN
 USER ckan
