@@ -11,7 +11,6 @@ class PeriocidadEnum(str, Enum):
 
 class ReporteCreate(BaseModel):
     titulo: str
-    descripcion: str
     fecha: Optional[datetime] = None
     periocidad: PeriocidadEnum = None
     subtema: Optional[str] = None
@@ -32,7 +31,6 @@ class ReporteCreate(BaseModel):
 class ReporteOut(BaseModel):
     id: int
     titulo: str
-    descripcion: str
     fecha: Optional[datetime] = None
     periocidad: PeriocidadEnum = None    
     archivo: Optional[str] = None
@@ -46,7 +44,6 @@ class ReporteOut(BaseModel):
 class ReporteResponse(BaseModel):
     id: int
     titulo: str
-    descripcion: str
     fecha: Optional[datetime] = None
     periocidad: PeriocidadEnum = None
     archivo: Optional[str] = None
