@@ -1,4 +1,4 @@
-import Carousel from './pageComponents/Carousel'
+import Banners from './home/banners'
 import Plataformas from './pageComponents/Plataformas'
 import HeroBlock from './blocks/HeroBlock'
 import TextBlock from './blocks/TextBlock'
@@ -10,7 +10,7 @@ import Flashes from './home/flash'
 import Mapas from './home/mapas'
 
 const COMPONENT_MAP = {
-    'carousel': Carousel,
+    'banners': Banners,
     'plataformas': Plataformas,
     'hero': HeroBlock,
     'text': TextBlock,
