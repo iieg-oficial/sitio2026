@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, DatePicker } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 
@@ -201,14 +202,14 @@ export default function Mapas() {
                         label="Ubicación"
                         rules={[{ required: true, message: 'Por favor ingresa la ubicación' }]}
                         >
-                        <Input.TextArea rows={4} />
+                        <Input />
                     </Form.Item>
                     <Form.Item 
                         name="informacion" 
                         label="Información"
                         rules={[{ required: true, message: 'Por favor ingresa la información' }]}
                         >
-                        <Input.TextArea rows={4} />
+                        <RichTextEditor />
                     </Form.Item>
                 </Form>
             </Modal>

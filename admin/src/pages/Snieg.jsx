@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 
@@ -136,7 +137,7 @@ export default function Snieg() {
                         <Input />
                     </Form.Item>
                     <Form.Item name="descripcion" label="Descripción" rules={[{ required: true }]}>
-                        <Input.TextArea rows={4}/>
+                        <RichTextEditor />
                     </Form.Item>
                     <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
                         <Input />

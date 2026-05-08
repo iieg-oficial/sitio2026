@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 
@@ -162,7 +163,7 @@ export default function DatosNuevos() {
                         label="Descripción"
                         rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
                     >
-                        <Input.TextArea rows={4} />
+                        <RichTextEditor />
                     </Form.Item>
                 </Form>
             </Modal>

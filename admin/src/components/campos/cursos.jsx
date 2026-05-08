@@ -1,4 +1,5 @@
 import { Form, Input, Select, Checkbox } from 'antd';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 
 const { Option } = Select;
@@ -17,14 +18,14 @@ export const CamposCapacitaciones = ({ modulos, profesores }) => (
             label="Inscripción"
             rules={[{ required: true, message: 'Por favor seleccione un estado de inscripción' }]}
         >
-            <Input />
+            <RichTextEditor />
         </Form.Item>
         <Form.Item
             name="acreditacion"
             label="Acreditación"
             rules={[{ required: true, message: 'Por favor seleccione un estado de acreditación' }]}
         >
-            <Input />
+            <RichTextEditor />
         </Form.Item>
         <Form.Item
             name="clave"
@@ -147,7 +148,7 @@ export const CamposComunes = () => (
             label="Descripción"
             rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
         >
-            <Input.TextArea rows={4} />
+            <RichTextEditor />
         </Form.Item>
         <Form.Item
             name="inicio"
@@ -182,14 +183,14 @@ export const CamposComunes = () => (
             label="P. Ingreso"
             rules={[{ required: true, message: 'Por favor seleccione un p. ingreso' }]}
         >
-            <Input.TextArea rows={4} />
+            <RichTextEditor />
         </Form.Item>
         <Form.Item
             name="p_egreso"
             label="P. Egreso"
             rules={[{ required: true, message: 'Por favor seleccione un p. egreso' }]}
         >
-            <Input.TextArea rows={4} />
+            <RichTextEditor />
         </Form.Item>
     </>
 );

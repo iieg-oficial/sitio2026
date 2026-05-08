@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 
@@ -220,7 +221,7 @@ export default function Posts() {
                         name="resumen"
                         rules={[{ message: 'Por favor ingrese el resumen' }]}
                     >
-                        <Input.TextArea rows={3} />
+                        <RichTextEditor />
                     </Form.Item>
 
                     <Form.Item
@@ -228,7 +229,7 @@ export default function Posts() {
                         name="contenido"
                         rules={[{ required: true, message: 'Por favor ingrese el contenido' }]}
                     >
-                        <Input.TextArea rows={5} />
+                        <RichTextEditor />
                     </Form.Item>
 
                     <Form.Item

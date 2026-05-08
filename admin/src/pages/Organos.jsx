@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 
@@ -154,7 +155,7 @@ export default function Organos() {
                     <Input />
                 </Form.Item>
                 <Form.Item name="descripcion" label="Descripción">
-                    <Input />
+                    <RichTextEditor />
                 </Form.Item>
                 <Form.Item name="link" label="Link">
                     <Input />

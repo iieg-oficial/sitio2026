@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 
@@ -188,7 +189,7 @@ export default function Preguntas() {
                         label="Respuesta"
                         rules={[{ required: true, message: 'Por favor ingrese la respuesta' }]}
                     >
-                        <Input.TextArea rows={3} />
+                        <RichTextEditor />
                     </Form.Item>
                     <TemaSelector
                         temas={subjects}
