@@ -27,12 +27,13 @@ export default function PlataformasSlider() {
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000 }}
             spaceBetween={20}
-            slidesPerView={3}
+            slidesPerView={4}
             >
             {plataformas.map(plataforma => (
                         <SwiperSlide key={plataforma.id}>
-                            <a href={plataforma.url} target="_blank" rel="noopener noreferrer">
-                                <img src={plataforma.imagen} alt={plataforma.titulo} />
+                            <a href={plataforma.link} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
+                                <img src={plataforma.imagen} alt={plataforma.titulo} className="w-full object-cover"/>
+                                <h3 className="mt-2 text-center">{plataforma.titulo}</h3>
                             </a>
                         </SwiperSlide>
                     ))} 

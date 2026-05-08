@@ -23,9 +23,10 @@ def read_mapas(
 @router.get("/random", response_model=MapaOut)
 def read_mapa_random(
     db: Session = Depends(get_db),
+    limit: int = 3,
 ):
     """Obtener un mapa aleatorio"""
-    mapa = db.query(Mapa).order_by(func.random()).first()
+    mapa = db.query(Mapa).order_by(func.random()).limit(limit).all()
 
     if not mapa:
         raise HTTPException(status_code=404, detail="No hay mapas disponibles")

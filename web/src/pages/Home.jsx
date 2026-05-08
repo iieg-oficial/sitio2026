@@ -61,38 +61,39 @@ function HomePage() {
                 <Navbardinamic />
             </section>
             <section className="" role="banner">
-                <h1>Home</h1>
-                <a href="/datos-abiertos" className="cursor-pointer underline primary-blue text-white hover:bg-emerald-900 px-4 py-2 rounded-md">Portal de Datos</a>
+                <a href="/datos-abiertos" className="cursor-pointer underline bg-amber-900 text-white hover:bg-emerald-900 px-4 py-2 rounded-md">Portal de Datos</a>
                 <div style={{ paddingTop: 37 }}>
                     <BlockRenderer block={{ type: 'banners' }} />
                 </div>
             </section>
-            <section className="container mx-auto border rounded-lg bg-amber-300">                
+            <section className="container-fluid relative">
+                <div className="relative z-0 pt-12">                    
+                    <Link to="/mapalab" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Quiero explorar MapaLab</Link>
+                    <img src="/demo.jpg" alt="MapaLab" className="w-full h-full object-cover" />
+                </div>
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
-            <section className="container-fluid relative">
-                <Link to="/mapalab" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Quiero explorar MapaLab</Link>
-                <img src="/demo.jpg" alt="MapaLab" className="w-full h-full object-cover" />
-            </section>
-            <section className="w-10/12 mx-auto h-96 bg-pink-50">
+            <section className="w-10/12 mx-auto h-96 bg-pink-300 ">
                 <BlockRenderer block={{ type: 'datos_nuevos' }} />
             </section>
-            <section className="w-8/12 mx-auto h-96 bg-green-50 relative">
+            <section className="w-8/12 mx-auto h-96 bg-green-300 relative">
                 <BlockRenderer block={{ type: 'flashes' }} />
                 <Link to="/flashes" className="bg-red-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Ver todos los flashes</Link>
             </section>
-            <section className="w-11/12 mx-auto border rounded-lg bg-amber-300 h-5">
+            <section className="w-11/12 mx-auto border rounded-lg bg-amber-300 h-5 ">
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
             </section>
-            <section className="w-6/12 mx-auto h-96">
+            <section className="w-11/12 mx-auto h-96 bg-blue-300 relative">
             <h2>Mapas</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <Link to="/mapas" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Ver todos los mapas</Link>
             </section>
-            <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-3 my-14 gap-4">
-                <Link to="/transparencia" className="btn btn-primary">Transparencia</Link>
-                <Link to="/licitaciones" className="btn btn-primary">Licitaciones</Link>
-                <Link to="/contabilidad-gubernamental" className="btn btn-primary">Contabilidad Gubernamental</Link>
+            <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 my-14 gap-4 relative">
+                <Link to="/transparencia" className="btn btn-primary ">Transparencia</Link>
+                <Link to="/licitaciones" className="btn btn-primary ">Licitaciones</Link>
+                <Link to="/contabilidad-gubernamental" className="btn btn-primary ">Contabilidad Gubernamental</Link>
+                <Link to="/capacitaciones" className="btn btn-primary md:col-start-2 md:col-span-1 xl:col-start-4">Capacitaciones</Link>
+                <Link to="/comunidad" className="btn btn-primary ">Comunidad</Link>
             </section>
             <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-2">
                 <BlockRenderer block={{ type: 'contacto' }} />
