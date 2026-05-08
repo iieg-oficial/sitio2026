@@ -20,8 +20,7 @@ class Reportes(Base):
     __tablename__ = "reportes"
 
     id = Column(Integer, primary_key=True, index=True)
-    titulo = Column(String(200), nullable=False)
-    descripcion = Column(Text, nullable=False)
+    titulo = Column(Text, nullable=False)
     fecha = Column(DateTime, default=datetime.utcnow, nullable=True)
     periocidad = Column(Enum(PeriocidadEnum), nullable=True)    
     archivo = Column(String(200), nullable=True)

@@ -46,8 +46,7 @@ async def crear_reporte(
     
     nuevo = Reportes(
         titulo=reporte_in.titulo,
-        fecha=reporte_in.fecha,
-        descripcion=reporte_in.descripcion,        
+        fecha=reporte_in.fecha,    
         periocidad=reporte_in.periocidad,
         archivo=reporte_in.archivo,
         claves=reporte_in.claves,

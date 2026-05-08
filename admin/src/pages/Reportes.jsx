@@ -179,14 +179,7 @@ export default function Reportes() {
                         rules={[{ required: true, message: 'Por favor ingrese el titulo' }]}
                     >
                         <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="descripcion"
-                        label="Descripción"
-                        rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
-                    >
-                        <Input />
-                    </Form.Item>                    
+                    </Form.Item>                   
                     <Form.Item
                         name="fecha"
                         label="Fecha"
