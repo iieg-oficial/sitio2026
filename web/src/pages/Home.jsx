@@ -62,7 +62,7 @@ function HomePage() {
             </section>
             <section className="" role="banner">
                 <h1>Home</h1>
-                <a href="/datos-abiertos">Portal de Datos</a>
+                <a href="/datos-abiertos" className="cursor-pointer underline primary-blue text-white hover:bg-emerald-900 px-4 py-2 rounded-md">Portal de Datos</a>
                 <div style={{ paddingTop: 37 }}>
                     <BlockRenderer block={{ type: 'banners' }} />
                 </div>
@@ -72,7 +72,7 @@ function HomePage() {
             </section>
             <section className="container-fluid relative">
                 <Link to="/mapalab" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Quiero explorar MapaLab</Link>
-                <img src="/logo_iieg.svg" alt="MapaLab" className="w-full h-full object-cover" />
+                <img src="/demo.jpg" alt="MapaLab" className="w-full h-full object-cover" />
             </section>
             <section className="w-10/12 mx-auto h-96 bg-pink-50">
                 <BlockRenderer block={{ type: 'datos_nuevos' }} />
