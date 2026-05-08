@@ -10,9 +10,10 @@ router = APIRouter(prefix="/banner", tags=["public - banner"])
 @router.get("/", response_model=BannerResponse)
 def read_banner(
     db: Session = Depends(get_db),
+    limit: int = 5,
 ):
     """Obtener todos los banners"""
-    banner = db.query(Banner).all()
+    banner = db.query(Banner).limit(limit).all()
     return {
         "banners": banner,
         "total": len(banner),

@@ -38,6 +38,7 @@ def create_banner(
         descripcion=banner.descripcion,
         imagen_desktop=banner.imagen_desktop,
         imagen_mobile=banner.imagen_mobile,
+        imagen=banner.imagen,
         link=banner.link,
         boton=banner.boton,
         color_fondo=banner.color_fondo,

@@ -9,6 +9,7 @@ class Banner(Base):
     descripcion = Column(Text, nullable=True)
     imagen_desktop = Column(String(200), nullable=True)
     imagen_mobile = Column(String(200), nullable=True)
+    imagen = Column(String(200), nullable=True)
     link = Column(String(200), nullable=True)
     boton = Column(String(200), nullable=True)
     color_fondo = Column(String(200), nullable=True)

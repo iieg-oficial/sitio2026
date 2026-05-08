@@ -12,6 +12,7 @@ class BannerCreate(BaseModel):
     descripcion: Optional[str] = None
     imagen_desktop: Optional[str] = None
     imagen_mobile: Optional[str] = None
+    imagen: Optional[str] = None
     link: Optional[str] = None
     boton: Optional[str] = None
     color_fondo: Optional[str] | None = None
@@ -30,6 +31,7 @@ class BannerOut(BaseModel):
     descripcion: Optional[str] = None
     imagen_desktop: Optional[str] = None
     imagen_mobile: Optional[str] = None
+    imagen: Optional[str] = None
     link: Optional[str] = None
     boton: Optional[str] = None
     color_fondo: Optional[str] | None = None
