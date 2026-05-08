@@ -15,11 +15,11 @@ export default function Mapas() {
     }, [location])
 
     return (
-        <div className="">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {mapas.map(mapa => (
                 <div key={mapa.id} className="border rounded-lg p-4">
                     <h3>{mapa.titulo}</h3>
-                    <p>{mapa.descripcion}</p>
+                    <div dangerouslySetInnerHTML={{ __html: mapa.descripcion }} />
                     <p>{mapa.ubicacion}</p>
                     {mapa.anyo && <p><strong>Año:</strong> {mapa.anyo}</p>}
                     <p>imagen: {mapa.imagen}</p>
