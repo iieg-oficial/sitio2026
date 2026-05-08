@@ -18,8 +18,8 @@ export default function DatosNuevos() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {datosNuevos.map(datoNuevo => (
                 <div key={datoNuevo.id}>
-                    <h3>{datoNuevo.numero}</h3>
-                    <p>{datoNuevo.descripcion}</p>
+                    <h3>{datoNuevo.cifras}</h3>
+                    <div dangerouslySetInnerHTML={{ __html: datoNuevo.descripcion }}  />
                 </div>
             ))}
         </div>
