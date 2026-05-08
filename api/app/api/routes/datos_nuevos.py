@@ -25,16 +25,16 @@ def create_datos_nuevos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
-    slug = slugify(str(datos_nuevos.numero))
+    slug = slugify(datos_nuevos.cifras)
     base_slug = slug
     contador = 1
     while db.query(DatosNuevos).filter(DatosNuevos.slug == slug).first():
-        slug = f"{base_slug}-{contador}"
+        slug = slugify(f"{base_slug}-{contador}")
         contador += 1
     
     """Crear un nuevo dato"""
     db_datos_nuevos = DatosNuevos(
-        numero=datos_nuevos.numero,
+        cifras=datos_nuevos.cifras,
         descripcion=datos_nuevos.descripcion,
         slug=slug,
     )
@@ -59,8 +59,9 @@ def update_datos_nuevos(
         )
     
     update_data = datos_nuevos.dict(exclude_unset=True)
-    if "numero" in update_data and update_data["numero"] != db_datos_nuevos.numero:
-        slug = slugify(str(update_data["numero"]))
+
+    if "cifras" in update_data and update_data["cifras"] != db_datos_nuevos.cifras:
+        slug = slugify(str(update_data["cifras"]))
         base_slug = slug
         contador = 1
         while db.query(DatosNuevos).filter(DatosNuevos.slug == slug).first():

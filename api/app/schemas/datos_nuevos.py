@@ -3,14 +3,14 @@ from typing import List, Optional
 
 
 class DatosNuevosCreate(BaseModel):
-    numero: int
+    cifras: str
     descripcion: str
     slug: Optional[str] = None
 
 
 class DatosNuevosOut(BaseModel):
     id: int
-    numero: int
+    cifras: str
     descripcion: str
     slug: Optional[str] = None
 
