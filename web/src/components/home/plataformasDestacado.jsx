@@ -8,8 +8,8 @@ export default function PlataformasDestacado() {
 
     useEffect(() => {
         const fetchPlataformas = async () => {
-            const response = await api.get('/plataformas', { params: { destacado: true } })
-            setPlataformas(response.data)
+            const response = await api.get('/sistemas/destacados')
+            setPlataformas(response.data.sistemas)
         }
         fetchPlataformas()
     }, [location])
@@ -17,9 +17,10 @@ export default function PlataformasDestacado() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             {plataformas.map(plataforma => (
-                <div key={plataforma.id}>
-                    <a href={plataforma.url} target="_blank" rel="noopener noreferrer">
-                        <img src={plataforma.imagen} alt={plataforma.titulo} />
+                <div key={plataforma.id} className="flex flex-col items-center">
+                    <a href={plataforma.link} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
+                        <img src={plataforma.imagen} alt={plataforma.titulo} className="w-full object-cover"/>
+                        <h3 className="mt-2 text-center">{plataforma.titulo}</h3>
                     </a>
                 </div>
             ))}

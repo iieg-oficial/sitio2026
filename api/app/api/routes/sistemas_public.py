@@ -30,7 +30,7 @@ def read_sistemas(
 def read_sistemas_destacados(
     db: Session = Depends(get_db),
     skip: int = 0,
-    limit: int = 100,
+    limit: int = 4,
 ):
     """Obtener todos los sistemas destacados"""
     sistemas = db.query(Sistemas).filter(Sistemas.destacado == True).offset(skip).limit(limit).all()
