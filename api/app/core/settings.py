@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     redoc_url: str | None = None
     openapi_url: str
 
+    smtp_user: str | None = None
+    smtp_password: str | None = None
+    contact_dest_email: str | None = None
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def parse_cors_origins(cls, v):
@@ -41,7 +45,11 @@ class Settings(BaseSettings):
             return json.loads(v)
         return v
 
-    model_config = SettingsConfigDict(env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
 
 
 @lru_cache

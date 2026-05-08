@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router'
 import { getPageBySlug, getPreviewPage } from '@services/pageService'
 import BlockRenderer from '@components/BlockRenderer'
-import { Navbardinamic } from '@components/Navbardinamic'
 
 function HomePage() {
     const [searchParams] = useSearchParams()
@@ -57,9 +56,6 @@ function HomePage() {
 
     return (
         <>  
-            <section className="w-11/12 mx-auto border rounded-lg bg-amber-300">
-                <Navbardinamic />
-            </section>
             <section className="" role="banner">
                 <a href="/datos-abiertos" className="cursor-pointer underline bg-amber-900 text-white hover:bg-emerald-900 px-4 py-2 rounded-md">Portal de Datos</a>
                 <div style={{ paddingTop: 37 }}>
@@ -114,7 +110,7 @@ function HomePage() {
                     <span className="block mt-2">Comunidad</span>
                 </Link>
             </section>
-            <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-2">
+            <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
                 <BlockRenderer block={{ type: 'contacto' }} />
             </section>
         </>
