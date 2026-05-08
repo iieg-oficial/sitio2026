@@ -60,8 +60,8 @@ class Cursos(Base):
     tipo_curso = Column(Enum(TipoCurso), nullable=False)
     destacado = Column(Boolean, default=False, nullable=True)
 
-    inscripcion = Column(String(200), nullable=True)
-    acreditacion = Column(String(200), nullable=True)
+    inscripcion = Column(Text, nullable=True)
+    acreditacion = Column(Text, nullable=True)
 
     vigencia = Column(String(200), nullable=True)
     contacto = Column(String(200), nullable=True)

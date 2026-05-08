@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 
@@ -189,10 +190,10 @@ export default function Flashes() {
                         <Input />
                     </Form.Item>
                     <Form.Item name="desc_jal" label="Descripción Jalisco" rules={[{ required: true, message: 'Por favor ingresa la descripción para Jalisco' }]}>
-                        <Input.TextArea rows={3} />
+                        <RichTextEditor />
                     </Form.Item>
                     <Form.Item name="desc_nac" label="Descripción Nacional" rules={[{ required: true, message: 'Por favor ingresa la descripción para Nacional' }]}>
-                        <Input.TextArea rows={3} />
+                        <RichTextEditor />
                     </Form.Item>
                     <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingresa la periocidad' }]}>
                         <Select placeholder="Selecciona la periocidad" options={[

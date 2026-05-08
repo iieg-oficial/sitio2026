@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -174,7 +175,7 @@ export default function Sistemas() {
                     <Input />
                 </Form.Item>
                 <Form.Item name="descripcion" label="Descripción" rules={[{ required: true }]}>
-                    <Input.TextArea rows={3} />
+                    <RichTextEditor />
                 </Form.Item>
                 <Form.Item name="link" label="Link" rules={[{ required: true }]}>
                     <Input />

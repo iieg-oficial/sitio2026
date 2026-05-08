@@ -5,6 +5,7 @@ import api from '@services/api';
 import { CamposCapacitaciones, CamposConvocatorias, CamposComunes } from '@components/campos/cursos';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
+
 const { Title } = Typography;
 const { Option } = Select;
 

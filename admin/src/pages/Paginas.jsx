@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 
@@ -187,7 +188,7 @@ export default function Paginas() {
                         name="description"
                         rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
                     >
-                        <Input />
+                        <RichTextEditor />
                     </Form.Item>
 
                     <Form.Item
@@ -227,7 +228,7 @@ export default function Paginas() {
                         name="meta_description"
                         rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
                     >
-                        <Input />
+                        <RichTextEditor />
                     </Form.Item>
 
                 </Form>
