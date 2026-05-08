@@ -16,7 +16,7 @@ class Posts(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
-    resumen = Column(String(300))
+    resumen = Column(Text)
     contenido = Column(Text, nullable=False)
     autor = Column(String(100), default="IIEG")
     fecha = Column(DateTime, default=datetime.utcnow)

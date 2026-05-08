@@ -14,8 +14,8 @@ class Documentacion(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
-    descripcion = Column(String(200), nullable=False)
-    metodologia = Column(String(200), nullable=True)
+    descripcion = Column(Text, nullable=False)
+    metodologia = Column(Text, nullable=True)
     codigo = Column(String(200), nullable=True)
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=True)

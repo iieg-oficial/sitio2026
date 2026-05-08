@@ -20,6 +20,7 @@ import Modulos from '../pages/Modulos';
 import Perfiles from '../pages/Perfiles';
 import Cursos from '../pages/Cursos';
 import DocsIieg from '../pages/DocsIieg';
+import Banners from '../pages/Banner';
 
 import { protectedRoute } from './helpers';
 
@@ -48,4 +49,5 @@ export const editorRoutes = [
   protectedRoute('perfiles', <Perfiles />, ADMIN_EDITOR),
   protectedRoute('cursos', <Cursos />, ADMIN_EDITOR),
   protectedRoute('docs_iieg', <DocsIieg />, ADMIN_EDITOR),
+  protectedRoute('banners', <Banners />, ADMIN_EDITOR),
 ];

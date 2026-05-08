@@ -5,6 +5,13 @@ from sqlalchemy.orm import relationship
 
 from app.core.database import Base
 
+curso_temas = Table(
+    "curso_temas",
+    Base.metadata,
+    Column("curso_id", Integer, ForeignKey("cursos.id"), primary_key=True),
+    Column("subject_id", Integer, ForeignKey("subject.id"), primary_key=True),
+)
+
 curso_modulos = Table(
     "curso_modulos",
     Base.metadata,
@@ -42,13 +49,13 @@ class Cursos(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
-    descripcion = Column(String(300), nullable=True)
+    descripcion = Column(Text, nullable=True)
     inicio = Column(DateTime, default=datetime.utcnow, nullable=True)
     formato = Column(String(100), nullable=True)
     Horario = Column(String(100), nullable=True)
-    Objetivo = Column(String(300), nullable=True)
-    p_ingreso = Column(String(100), nullable=True)
-    p_egreso = Column(String(100), nullable=True)
+    Objetivo = Column(Text, nullable=True)
+    p_ingreso = Column(Text, nullable=True)
+    p_egreso = Column(Text, nullable=True)
 
     tipo_curso = Column(Enum(TipoCurso), nullable=False)
     destacado = Column(Boolean, default=False, nullable=True)
@@ -60,6 +67,12 @@ class Cursos(Base):
     contacto = Column(String(200), nullable=True)
     clave = Column(String(200), nullable=True)
 
+    temas = relationship(
+        "Subject",
+        secondary=curso_temas,
+        back_populates="cursos",
+        lazy="selectin",
+    )
     modulos = relationship("Modulos", secondary=curso_modulos, back_populates="cursos")
     instituciones = relationship("Instituciones", secondary=curso_instituciones, back_populates="cursos")
     perfiles = relationship("Perfiles", secondary=curso_perfiles, back_populates="cursos")

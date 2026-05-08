@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -8,7 +8,7 @@ class Subject(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
-    descripcion = Column(String, nullable=True)
+    descripcion = Column(Text, nullable=True)
     parent_id = Column(Integer, ForeignKey("subject.id"), nullable=True)
     slug = Column(String(200), nullable=False)
 
@@ -28,4 +28,4 @@ class Subject(Base):
     reportes = relationship("Reportes", secondary="reporte_temas", back_populates="temas")
     documentacion = relationship("Documentacion", secondary="documentacion_temas", back_populates="temas")
     sistemas = relationship("Sistemas", secondary="sistema_temas", back_populates="temas")
-    
+    cursos = relationship("Cursos", secondary="curso_temas", back_populates="temas")

@@ -23,6 +23,7 @@ from app.models.modulos import Modulos
 from app.models.perfiles import Perfiles
 from app.models.cursos import Cursos
 from app.models.docs_iieg import DocsIIEG
+from app.models.banner import Banner
 
 __all__ = [
     "Base",
@@ -51,4 +52,5 @@ __all__ = [
     "Perfiles",
     "Cursos",
     "DocsIIEG",
+    "Banner",
 ]

@@ -1,6 +1,6 @@
 from datetime import datetime
 import enum
-from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Enum, Table
+from sqlalchemy import Column, DateTime, Integer, String, ForeignKey, Enum, Table, Text
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -21,7 +21,7 @@ class Reportes(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
-    descripcion = Column(String(200), nullable=False)
+    descripcion = Column(Text, nullable=False)
     fecha = Column(DateTime, default=datetime.utcnow, nullable=True)
     periocidad = Column(Enum(PeriocidadEnum), nullable=True)    
     archivo = Column(String(200), nullable=True)

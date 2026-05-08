@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { CamposCapacitaciones, CamposConvocatorias, CamposComunes } from '@components/campos/cursos';
+import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -17,6 +18,8 @@ export default function Cursos() {
   const [modulos, setModulos] = useState([]);
   const [profesores, setProfesores] = useState([]);
   const [perfiles, setPerfiles] = useState([]);
+  const [temas, setTemas] = useState([]);
+  const [selectedTemas, setSelectedTemas] = useState([]);
   const [tipoCurso, setTipoCurso] = useState([]);
 
   useEffect(() => {
@@ -25,6 +28,7 @@ export default function Cursos() {
     fetchModulos();
     fetchProfesores();
     fetchPerfiles();
+    fetchTemas();
   }, []);
 
   const fetchCursos = async () => {
@@ -75,8 +79,18 @@ export default function Cursos() {
     }
   };
 
+  const fetchTemas = async () => {
+    try {
+      const response = await api.get('/subject/tree');
+      setTemas(response.data);
+    } catch (error) {
+      console.error('Error al obtener temas:', error);
+    }
+  };
+
   const handleCreate = () => {
     setEditingCurso(null);
+    setSelectedTemas([]);
     form.resetFields();
     setModalVisible(true);
   };
@@ -91,6 +105,7 @@ export default function Cursos() {
       perfiles: record.perfiles ? record.perfiles.map(p => p.id) : [],
       profesores: record.profesores ? record.profesores.map(p => p.id) : [],
     };
+    setSelectedTemas(record.temas ? record.temas.map(t => t.id) : []);
     form.setFieldsValue(formValues);
     setModalVisible(true);
   };
@@ -117,11 +132,12 @@ export default function Cursos() {
 
   const handleSubmit = async (values) => {
     try {
+      const payload = { ...values, tema_ids: selectedTemas };
       if (editingCurso) {
-        await api.put(`/cursos/${editingCurso.id}`, values);
+        await api.put(`/cursos/${editingCurso.id}`, payload);
         message.success('Curso actualizado exitosamente');
       } else {
-        await api.post('/cursos/create', values);
+        await api.post('/cursos/create', payload);
         message.success('Curso creado exitosamente');
       }
       setModalVisible(false);
@@ -250,6 +266,11 @@ export default function Cursos() {
             <Input />
           </Form.Item>
         
+          <TemaSelector
+              temas={temas}
+              seleccionados={selectedTemas}
+              onChange={(ids) => setSelectedTemas(ids)}
+          />
 
         </Form>
       </Modal>
