@@ -152,10 +152,10 @@ export default function Users() {
         },
         {
             title: 'Fecha de Creación',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
+            dataIndex: 'created_at',
+            key: 'created_at',
             render: (date) => new Date(date).toLocaleDateString('es-MX'),
-            sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+            sorter: (a, b) => new Date(a.created_at) - new Date(b.created_at)
         },
         {
             title: 'Acciones',
