@@ -20,18 +20,23 @@ async def get_current_user(
     )
 
     if access_token is None:
+        print(f"DEBUG: access_token is None for cookie {settings.cookie_name}")
+        print(f"DEBUG: Cookies in request: {request.cookies}")
         raise credentials_exception
 
     payload = decodificar_token(access_token)
     if payload is None:
+        print(f"DEBUG: payload is None for token {access_token[:10]}...")
         raise credentials_exception
 
     username: str | None = payload.get("sub")
     if username is None:
+        print(f"DEBUG: username is None in payload")
         raise credentials_exception
 
     usuario = db.query(Usuario).filter(Usuario.username == username).first()
     if usuario is None:
+        print(f"DEBUG: usuario {username} not found in DB")
         raise credentials_exception
 
     return usuario
