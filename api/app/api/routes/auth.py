@@ -41,6 +41,7 @@ async def login(
         secure=settings.cookie_secure,
         samesite=settings.cookie_samesite,
         domain=settings.cookie_domain,
+        path="/",
     )
 
     csrf_token = crear_csrf_token(usuario.username)
@@ -62,6 +63,7 @@ async def logout(
         secure=settings.cookie_secure,
         samesite=settings.cookie_samesite,
         domain=settings.cookie_domain,
+        path="/",
     )
     return {"message": "Sesión cerrada exitosamente"}
 

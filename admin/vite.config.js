@@ -16,6 +16,12 @@ export default defineConfig(({ mode }) => {
             host: VITE_ADMIN_HOST ?? '0.0.0.0',
             port: Number(VITE_ADMIN_PORT ?? '3011'),
             strictPort: true,
+            proxy: {
+                '/api': {
+                    target: 'http://api:8000',
+                    changeOrigin: true,
+                },
+            },
             watch: {
                 usePolling: true
             }

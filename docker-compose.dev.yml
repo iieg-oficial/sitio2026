@@ -161,6 +161,7 @@ services:
       - VITE_GOOGLE_ANALYTICS_ID=${VITE_GOOGLE_ANALYTICS_ID}
     networks:
       - portal_network_dev
+      - webnet
 
   admin:
     image: node:24-alpine

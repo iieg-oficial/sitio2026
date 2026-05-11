@@ -15,6 +15,19 @@ export default defineConfig(({ mode }) => {
             host: env.VITE_WEB_HOST ?? '0.0.0.0',
             port: Number(env.VITE_WEB_PORT ?? '3010'),
             strictPort: true,
+            proxy: {
+                '/datos-abiertos': {
+                    target: 'http://ckan:5000',
+                    changeOrigin: true,
+                    headers: {
+                        'X-Script-Name': '/datos-abiertos',
+                    }
+                },
+                '/api': {
+                    target: 'http://api:8000',
+                    changeOrigin: true,
+                },
+            },
             watch: {
                 usePolling: true
             }
