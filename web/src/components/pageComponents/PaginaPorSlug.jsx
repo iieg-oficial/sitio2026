@@ -38,8 +38,8 @@ function PaginaPorSlug({ slug }) {
     <>    
     <Helmet>
         <title>{page.title}</title>
-        {page.meta_description && <meta name="description" content={page.meta_description} />}
-        {page.meta_keywords && <meta name="keywords" content={page.meta_keywords} />}
+        {page.description_meta && <meta name="description" content={page.description_meta} />}
+        {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
     </Helmet>
     <article>
         <h1>{page.title}</h1>
