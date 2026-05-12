@@ -65,7 +65,7 @@ def create_page(
         title=data.title,
         description=data.description,
         slug_custom=data.slug_custom,
-        published_at=data.published_at,
+        link_interno=data.link_interno,
         updated_at=data.updated_at,
         description_meta=data.description_meta,
         keywords_meta=data.keywords_meta,       
