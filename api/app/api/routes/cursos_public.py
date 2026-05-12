@@ -8,7 +8,7 @@ from app.schemas.cursos import CursosOut, CursosResponse
 
 router = APIRouter(prefix="/cursos-public", tags=["cursos-public"])
 
-@router.get("/", response_model=CursosResponse)
+@router.get("", response_model=CursosResponse)
 def get_cursos(
     db: Session = Depends(get_db),
 ):

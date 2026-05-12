@@ -7,17 +7,14 @@ from app.schemas.banner import BannerOut, BannerResponse
 
 router = APIRouter(prefix="/banner", tags=["public - banner"])
 
-@router.get("/", response_model=BannerResponse)
+@router.get("", response_model=list[BannerOut])
 def read_banner(
     db: Session = Depends(get_db),
     limit: int = 5,
 ):
     """Obtener todos los banners"""
-    banner = db.query(Banner).limit(limit).all()
-    return {
-        "banners": banner,
-        "total": len(banner),
-    }
+    banners = db.query(Banner).limit(limit).all()
+    return banners
 
 @router.get("/{slug}", response_model=BannerOut)
 def get_banner_slug(

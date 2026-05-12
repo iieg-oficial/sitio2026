@@ -8,6 +8,10 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // Detecta si una ruta debe abrirse como navegación completa (CKAN u otro servicio externo)
+    const isExternalSubpath = (path) =>
+        typeof path === 'string' && path.startsWith('/datos-abiertos');
+
     useEffect(() => {
         return () => {
             if (timeoutRef.current) {
@@ -75,6 +79,17 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
                 >
                     {item.name}
                 </span>
+            );
+        }
+        // Enlace a CKAN u otro sub-servicio: navegación completa del navegador
+        if (isExternalSubpath(item.path)) {
+            return (
+                <a
+                    href={item.path}
+                    className="px-4 py-2 text-sm font-medium text-white bg-purple-800 hover:bg-purple-700 transition-colors duration-200 rounded-sm whitespace-nowrap"
+                >
+                    {item.name}
+                </a>
             );
         }
         return (
@@ -145,6 +160,20 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
                             }
 
                             const isHashLink = subItem.path.startsWith('/#');
+                            const isCkanLink = isExternalSubpath(subItem.path);
+
+                            if (isCkanLink) {
+                                return (
+                                    <a
+                                        key={index}
+                                        href={subItem.path}
+                                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-800 transition-colors"
+                                    >
+                                        <span className="text-lg flex-shrink-0">{subItem.icon}</span>
+                                        <span className="flex-1">{subItem.name}</span>
+                                    </a>
+                                );
+                            }
 
                             if (isHashLink) {
                                 return (

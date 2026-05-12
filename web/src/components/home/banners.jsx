@@ -12,7 +12,7 @@ export default function Banners() {
 
     useEffect(() => {
         const fetchBanners = async () => {
-            const response = await api.get('/banners', { params: { activo: true } })
+            const response = await api.get('/banner', { params: { activo: true } })
             setBanners(response.data)
         }
         fetchBanners()

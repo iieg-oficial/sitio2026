@@ -4,6 +4,11 @@ import { useSearchParams, Link } from 'react-router'
 export default function ClasificadorCultivos() {
     return (
         <>
+        <Helmet>
+            <title>Clasificador de Cultivos</title>
+            <meta name="description" content="Instrumento que ofrece una representación geoespacial de los cultivos en Jalisco del año 2021." />
+            <meta name="keywords" content="Clasificador de Cultivos, Jalisco, 2021, Geoespacial, Cultivos, Imágenes satelitales" />
+        </Helmet>
         <section className="container mx-auto grid grid-cols-1 md:grid-cols-2">
             <div>
                 <img src="/logo_iieg.svg" alt="MapaLab" className="w-full h-full object-cover" />

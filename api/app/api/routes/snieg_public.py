@@ -7,7 +7,7 @@ from app.api.deps import get_db
 
 router = APIRouter(prefix="/snieg", tags=["snieg - public"])
 
-@router.get("/", response_model=SniegResponse)
+@router.get("", response_model=SniegResponse)
 def read_snieg(
     db: Session = Depends(get_db),
     ):

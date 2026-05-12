@@ -7,7 +7,7 @@ from app.api.deps import get_db
 
 router = APIRouter(prefix="/organos", tags=["organos - publico"])
 
-@router.get("/", response_model=OrganosResponse)
+@router.get("", response_model=OrganosResponse)
 def read_organos(
     db: Session = Depends(get_db),
 ):

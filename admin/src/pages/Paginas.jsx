@@ -17,7 +17,7 @@ export default function Paginas() {
         setLoading(true);
         try {
             const res = await api.get('/paginas');
-            setPages(res.data);
+            setPages(res.data.pages);
         } catch (err) {
             console.error("Error fetching pages:", err);
         }
@@ -106,9 +106,15 @@ export default function Paginas() {
             },
             {
                 title: 'Keywords',
-                dataIndex: 'meta_keywords',
-                key: 'meta_keywords',
-                sorter: (a, b) => a.meta_keywords.localeCompare(b.meta_keywords)                   
+                dataIndex: 'keywords_meta',
+                key: 'keywords_meta',
+                sorter: (a, b) => a.keywords_meta.localeCompare(b.keywords_meta)                   
+            },
+            {
+                title: 'Descripción',
+                dataIndex: 'description_meta',
+                key: 'description_meta',
+                sorter: (a, b) => a.description_meta.localeCompare(b.description_meta)                   
             },
             {
                 title: 'Acciones',
@@ -217,7 +223,7 @@ export default function Paginas() {
 
                     <Form.Item
                         label="Keywords"
-                        name="meta_keywords"
+                        name="keywords_meta"
                         rules={[{ required: true, message: 'Por favor ingrese el titulo' }]}
                     >
                         <Input />
@@ -225,7 +231,7 @@ export default function Paginas() {
 
                     <Form.Item
                         label="Meta Descripción"
-                        name="meta_description"
+                        name="description_meta"
                         rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
                     >
                         <RichTextEditor />

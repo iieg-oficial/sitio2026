@@ -7,7 +7,7 @@ from app.schemas.docs_iieg import DocsIIEGResponse, DocsIIEGOut
 
 router = APIRouter(prefix="/docs_iieg", tags=["docs_iieg_public"])
 
-@router.get("/", response_model=DocsIIEGResponse)
+@router.get("", response_model=DocsIIEGResponse)
 def get_docs_iieg(
     db: Session = Depends(get_db),
 ):

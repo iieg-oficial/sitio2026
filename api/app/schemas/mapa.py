@@ -1,7 +1,6 @@
 from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional, List
-
 from app.core.database import Base
 
 class MapaCreate(BaseModel):
@@ -27,7 +26,7 @@ class MapaCreate(BaseModel):
             raise ValueError(f"El año debe estar entre 0 y {anio_actual}")
         return v
 
-from typing import Optional
+
 
 class MapaOut(BaseModel):
     id: int

@@ -12,7 +12,7 @@ function PaginaPorSlug({ slug }) {
     const fetchPage = async () => {
       if (!slug) return;
       try {
-        const response = await api.get(`/paginas/${slug}`);
+        const response = await api.get(`/paginas/slug/${slug}`);
         setPage(response.data);
       } catch(error) {
         if (error.response?.status === 404) {
