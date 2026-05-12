@@ -76,8 +76,7 @@ function HomePage() {
                 {page.description_meta && <meta name="description" content={page.description_meta} />}
                 {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
             </Helmet>
-            <section className="" role="banner">
-                <a href="/datos-abiertos" className="cursor-pointer underline bg-amber-900 text-white hover:bg-emerald-900 px-4 py-2 rounded-md">Portal de Datos</a>
+            <section className="" role="banner">                
                 <div style={{ paddingTop: 37 }}>
                     <BlockRenderer block={{ type: 'banners' }} />
                 </div>

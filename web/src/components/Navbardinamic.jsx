@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import api from '@services/apiService'
+import TrackedLink from '@components/blocks/boton'
 
 export const Navbardinamic = () => {
   const [menuItems, setMenuItems] = useState([])
@@ -10,7 +11,7 @@ export const Navbardinamic = () => {
     const fetchMenuItems = async () => {
       try {
         const response = await api.get('/paginas');
-        setMenuItems(response.data);
+        setMenuItems(response.data.pages);
       } catch (error) {
         console.error('Error al obtener los items del menú:', error);
       }
@@ -23,16 +24,17 @@ export const Navbardinamic = () => {
       {menuItems.map(item => {
         const href = `/${item.slug}`
         const isActive = location.pathname === href
+        const linkinterno = item.link_interno ? item.link_interno : false
 
         return (
-          <Link
+          <TrackedLink
             key={item.slug}
-            to={href}
+            to={item.slug_custom}
             className={`nav-link ${isActive ? 'active' : ''}`}
-            target={item.open_in_new_tab ? '_blank' : '_self'}
+            target={linkinterno ? '_self' : '_blank'}
           >
             {item.title}
-          </Link>
+          </TrackedLink>
         )
       })}
     </nav>
