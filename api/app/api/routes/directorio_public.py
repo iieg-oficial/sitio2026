@@ -9,7 +9,7 @@ from app.schemas.directorio import DirectorioOut
 
 router = APIRouter(prefix="/directorio", tags=["directorio - public"])
 
-@router.get("/", response_model=List[DirectorioOut])
+@router.get("", response_model=List[DirectorioOut])
 def list_directorio(
     db: Session = Depends(get_db),
     skip: int = 0,

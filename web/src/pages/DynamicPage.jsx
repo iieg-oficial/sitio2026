@@ -50,18 +50,10 @@ export default function DynamicPage() {
                 </div>
             )}
             <article>
-                {/* SEO: meta description dinámica */}
-                {page.meta_description && (
-                    <meta name="description" content={page.meta_description} />
-                )}
-
-                {/* El título visible en página (viene del campo title del admin) */}
                 <header className="page-header">
                     <h1>{page.title}</h1>
                     <p>{page.description}</p>
                 </header>
-
-                {/* Bloques dinámicos renderizados según su tipo */}
                 <main>
                     <div style={previewToken ? { paddingTop: 37 } : undefined}>
                         {(page.titulo || []).map((block, index) => (

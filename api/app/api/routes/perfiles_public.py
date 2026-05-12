@@ -7,7 +7,7 @@ from app.schemas.perfiles import PerfilesResponse, PerfilesOut
 
 router = APIRouter(prefix="/perfiles", tags=["perfiles - public"])
 
-@router.get("/", response_model=PerfilesResponse)
+@router.get("", response_model=PerfilesResponse)
 def read_perfiles(
     db: Session = Depends(get_db),
 ):

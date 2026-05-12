@@ -9,7 +9,7 @@ from app.schemas.datos_nuevos import DatosNuevosResponse, DatosNuevosOut
 
 router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos-public"])  
 
-@router.get("/", response_model=DatosNuevosResponse)
+@router.get("", response_model=DatosNuevosResponse)
 def read_datos_nuevos(
     db: Session = Depends(get_db),
 ):

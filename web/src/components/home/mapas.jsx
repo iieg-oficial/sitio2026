@@ -9,7 +9,7 @@ export default function Mapas() {
     useEffect(() => {
         const fetchMapas = async () => {
             const response = await api.get('/mapas/random')
-            setMapas([response.data]) // Assuming the API returns a single mapa object
+            setMapas(response.data.mapas)
         }
         fetchMapas()
     }, [location])
