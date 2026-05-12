@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router'
 import { getPageBySlug, getPreviewPage } from '@services/pageService'
 import BlockRenderer from '@components/BlockRenderer'
+import TrackedLink from '@components/blocks/boton'
 
 function HomePage() {
     const [searchParams] = useSearchParams()
@@ -56,6 +57,11 @@ function HomePage() {
 
     return (
         <>  
+            <Helmet>
+                <title>{page.title}</title>
+                {page.meta_description && <meta name="description" content={page.meta_description} />}
+                {page.meta_keywords && <meta name="keywords" content={page.meta_keywords} />}
+            </Helmet>
             <section className="" role="banner">
                 <a href="/datos-abiertos" className="cursor-pointer underline bg-amber-900 text-white hover:bg-emerald-900 px-4 py-2 rounded-md">Portal de Datos</a>
                 <div style={{ paddingTop: 37 }}>
@@ -64,7 +70,9 @@ function HomePage() {
             </section>
             <section className="container-fluid relative">
                 <div className="relative z-0 pt-12">                    
-                    <Link to="/mapalab" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Quiero explorar MapaLab</Link>
+                    <TrackedLink to="/mapalab" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        Quiero explorar MapaLab
+                    </TrackedLink>
                     <img src="/demo.jpg" alt="MapaLab" className="w-full h-full object-cover" />
                 </div>
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
@@ -73,8 +81,10 @@ function HomePage() {
                 <BlockRenderer block={{ type: 'datos_nuevos' }} />
             </section>
             <section className="w-8/12 mx-auto h-96 bg-green-300 relative">
-                <BlockRenderer block={{ type: 'flashes' }} />
-                <Link to="/flashes" className="bg-red-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Ver todos los flashes</Link>
+                <BlockRenderer block={{ type: 'flashes' }} />               
+                <TrackedLink to="/flashes" className="bg-red-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    Ver todos los flashes
+                </TrackedLink>
             </section>
             <section className="w-11/12 mx-auto border rounded-lg bg-amber-300 h-5 ">
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />

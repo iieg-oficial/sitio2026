@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 from slugify import slugify
@@ -8,7 +8,7 @@ from app.schemas.mapa import MapaResponse, MapaOut
 
 router = APIRouter(prefix="/mapas", tags=["mapa-public"])
 
-@router.get("/", response_model=MapaResponse)
+@router.get("", response_model=MapaResponse)
 def read_mapas(
     db: Session = Depends(get_db),
 ):
@@ -20,18 +20,17 @@ def read_mapas(
     }   
 
 
-@router.get("/random", response_model=MapaOut)
+@router.get("/random", response_model=MapaResponse)
 def read_mapa_random(
     db: Session = Depends(get_db),
     limit: int = 3,
 ):
     """Obtener un mapa aleatorio"""
     mapa = db.query(Mapa).order_by(func.random()).limit(limit).all()
-
-    if not mapa:
-        raise HTTPException(status_code=404, detail="No hay mapas disponibles")
-
-    return mapa
+    return {
+        "mapas": mapa,
+        "total": len(mapa),
+    }
 
 @router.get("/slug/{slug}", response_model=MapaOut)
 def get_mapa_slug(

@@ -44,6 +44,12 @@ function Post() {
     }, [searchTerm]);
 
     return (
+        <>
+    <Helmet>
+        <title>{page.title}</title>
+        {page.meta_description && <meta name="description" content={page.meta_description} />}
+        {page.meta_keywords && <meta name="keywords" content={page.meta_keywords} />}
+    </Helmet>
         <div>
             <h1>Comunidad</h1>       
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -64,6 +70,7 @@ function Post() {
                 forcePage={Math.floor(itemOffset / itemsPerPage)}
             />
         </div>
+        </>
     )
 }
 

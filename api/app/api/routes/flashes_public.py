@@ -20,17 +20,14 @@ def read_flashes(
         "total": len(flashes),
     }
 
-@router.get("/last", response_model=FlashesResponse)
+@router.get("/last", response_model=list[FlashesOut])
 def read_last_flashes(
     db: Session = Depends(get_db),
     limit: int = 1,
 ):
     """Obtener el ultimo flash"""
     flashes = db.execute(select(Flashes).order_by(Flashes.id.desc()).limit(limit)).scalars().all()
-    return {
-        "flashes": flashes,
-        "total": len(flashes),
-    }
+    return flashes
 
 @router.get("/slug/{slug}", response_model=FlashesOut)
 def get_flashes_slug(
@@ -38,7 +35,7 @@ def get_flashes_slug(
     db: Session = Depends(get_db),
 ):
     """Obtener un flash por slug"""
-    flash = db.execute(select(Flashes).where(Flashes.slug == slug)).scalar_one_or_none()
+    flash = db.execute(select(Flashes).where(Flashes.slug == slug)).scalars().first()
     if not flash:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Flash no encontrado"

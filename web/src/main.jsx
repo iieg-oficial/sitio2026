@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { createRoot } from 'react-dom/client'
 import ReactGA from 'react-ga4';
+import TagManager from 'react-gtm-module';
 import './index.css'
 import MainProvider from '@providers/MainProvider';
 import Home from '@pages/Home';
@@ -14,6 +15,7 @@ const env = import.meta.env;
 const MODE = env.VITE_NODE_ENV
 const isDev = MODE === 'development';
 const trackingID = env.VITE_GOOGLE_ANALYTICS_ID;
+const gtmId = env.VITE_GOOGLE_TAG_MANAGER_ID;
 
 isDev && console.info('¡Tú estás viendo esto, porque estás en modo de desarrollo!');
 
@@ -27,6 +29,13 @@ if (trackingID && trackingID.startsWith('G-')) {
 } else if (isDev) {
     console.info('Google Analytics no inicializado: VITE_GOOGLE_ANALYTICS_ID no definido o inválido');
 }
+
+if (gtmId && gtmId.startsWith('GTM-')) {
+    TagManager.initialize({ gtmId });
+} else if (isDev) {
+    console.info('Google Tag Manager no inicializado: VITE_GOOGLE_TAG_MANAGER_ID no definido o inválido');
+}
+
 
 const router = createBrowserRouter([
     {
