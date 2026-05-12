@@ -3,6 +3,7 @@ import PostList from '@components/pageComponents/PostList'
 import Searcher from '@components/pageComponents/searcher'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
+import { Helmet } from 'react-helmet-async'
 
 function Resultados() {
     const [posts, setPosts] = useState([]);
@@ -11,6 +12,25 @@ function Resultados() {
 
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
+
+    const [page, setPage] = useState(null);
+
+    const fetchPageHome = async () => {
+        setLoading(true)
+        try {
+            const res = await api.get('/paginas/slug/comunidad')
+            setPage(res.data)
+        } catch (err) {
+            console.error("Error fetching page community:", err)
+        }
+        finally {
+            setLoading(false)
+        }
+    }
+    
+    useEffect(() => {
+        fetchPageHome()
+    }, [])
 
     const showData = async () => {
         const response = await api.get('/posts');
@@ -47,8 +67,8 @@ function Resultados() {
         <>
             <Helmet>
                 <title>{page.title}</title>
-                {page.meta_description && <meta name="description" content={page.meta_description} />}
-                {page.meta_keywords && <meta name="keywords" content={page.meta_keywords} />}
+                {page.description_meta && <meta name="description" content={page.description_meta} />}
+                {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
             </Helmet>
         <div>
             <h1>Comunidad</h1>       

@@ -3,6 +3,8 @@ import { useSearchParams, Link } from 'react-router'
 import { getPageBySlug, getPreviewPage } from '@services/pageService'
 import BlockRenderer from '@components/BlockRenderer'
 import TrackedLink from '@components/blocks/boton'
+import { Helmet } from 'react-helmet-async'
+import api from '@services/apiService'
 
 function HomePage() {
     const [searchParams] = useSearchParams()
@@ -10,10 +12,22 @@ function HomePage() {
     const [page, setPage] = useState(null)
     const [loading, setLoading] = useState(true)
 
+    const fetchPageHome = async () => {
+        setLoading(true)
+        try {
+            const res = await api.get('/paginas/slug/home')
+            setPage(res.data)            
+        } catch (err) {
+            console.error("Error fetching page home:", err)
+        }
+        finally {
+            setLoading(false)
+        }
+    }
     useEffect(() => {
         const loadPage = previewToken
             ? getPreviewPage(previewToken)
-            : getPageBySlug('home')
+            : fetchPageHome()
 
         loadPage
             .then(data => {
@@ -59,15 +73,15 @@ function HomePage() {
         <>  
             <Helmet>
                 <title>{page.title}</title>
-                {page.meta_description && <meta name="description" content={page.meta_description} />}
-                {page.meta_keywords && <meta name="keywords" content={page.meta_keywords} />}
+                {page.description_meta && <meta name="description" content={page.description_meta} />}
+                {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
             </Helmet>
             <section className="" role="banner">
                 <a href="/datos-abiertos" className="cursor-pointer underline bg-amber-900 text-white hover:bg-emerald-900 px-4 py-2 rounded-md">Portal de Datos</a>
                 <div style={{ paddingTop: 37 }}>
                     <BlockRenderer block={{ type: 'banners' }} />
                 </div>
-            </section>
+            </section>            
             <section className="container-fluid relative">
                 <div className="relative z-0 pt-12">                    
                     <TrackedLink to="/mapalab" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

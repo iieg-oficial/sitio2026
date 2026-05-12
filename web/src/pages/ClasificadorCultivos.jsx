@@ -1,14 +1,35 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router'
+import { Helmet } from 'react-helmet-async'
+import api from '@services/apiService'
 
 export default function ClasificadorCultivos() {
+    const [page, setPage] = useState(null);
+
+    const fetchPageHome = async () => {
+        setLoading(true)
+        try {
+            const res = await api.get('/paginas/slug/clasificador-cultivos')
+            setPage(res.data)
+        } catch (err) {
+            console.error("Error fetching page clasificador-cultivos:", err)
+        }
+        finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchPageHome()
+    }, [])
+
     return (
         <>
-        <Helmet>
-            <title>Clasificador de Cultivos</title>
-            <meta name="description" content="Instrumento que ofrece una representación geoespacial de los cultivos en Jalisco del año 2021." />
-            <meta name="keywords" content="Clasificador de Cultivos, Jalisco, 2021, Geoespacial, Cultivos, Imágenes satelitales" />
-        </Helmet>
+            <Helmet>
+                <title>{page.title}</title>
+                {page.description_meta && <meta name="description" content={page.description_meta} />}
+                {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
+            </Helmet>
         <section className="container mx-auto grid grid-cols-1 md:grid-cols-2">
             <div>
                 <img src="/logo_iieg.svg" alt="MapaLab" className="w-full h-full object-cover" />
