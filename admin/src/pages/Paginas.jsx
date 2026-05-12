@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
@@ -98,24 +98,11 @@ export default function Paginas() {
                 sorter: (a, b) => a.slug_custom.localeCompare(b.slug_custom)
             },
             {
-                title: 'Publicado el',
-                dataIndex: 'published_at',
-                key: 'published_at',
-                render: (date) => new Date(date).toLocaleDateString('es-MX'),
-                sorter: (a, b) => new Date(a.published_at) - new Date(b.published_at)
-            },
-            {
-                title: 'Keywords',
-                dataIndex: 'keywords_meta',
-                key: 'keywords_meta',
-                sorter: (a, b) => a.keywords_meta.localeCompare(b.keywords_meta)                   
-            },
-            {
-                title: 'Descripción',
-                dataIndex: 'description_meta',
-                key: 'description_meta',
-                sorter: (a, b) => a.description_meta.localeCompare(b.description_meta)                   
-            },
+                title: '¿Es link interno?',
+                dataIndex: 'link_interno',
+                key: 'link_interno',
+                render: (text) => text ? 'Sí' : 'No'
+            },          
             {
                 title: 'Acciones',
                 key: 'actions',
@@ -196,21 +183,19 @@ export default function Paginas() {
                     >
                         <RichTextEditor />
                     </Form.Item>
-
+                    <Form.Item 
+                        name="link_interno" 
+                        valuePropName="checked"
+                        initialValue={true}
+                        >
+                        <Checkbox>¿Es link interno?</Checkbox>
+                    </Form.Item>
                     <Form.Item
                         label="Slug"
                         name="slug_custom"
                         rules={[{ required: true, message: 'Por favor ingrese el slug' }]}
                     >
                         <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Fecha de publicación"
-                        name="published_at"
-                        rules={[{ required: true, message: 'Por favor ingrese la fecha de publicación' }]}
-                    >
-                        <Input type="date" />
                     </Form.Item>
 
                     <Form.Item

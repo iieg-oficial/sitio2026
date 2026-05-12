@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 import TagManager from 'react-gtm-module'
 
-const TrackedLink = ({ to, children, className, eventData = {} }) => {
+const TrackedLink = ({ to, children, className, eventData = {}, target = '_self', rel = 'noopener noreferrer' }) => {
   const handleClick = () => {
     TagManager.dataLayer({
       dataLayer: {
@@ -14,7 +14,7 @@ const TrackedLink = ({ to, children, className, eventData = {} }) => {
   }
 
   return (
-    <Link to={to} className={className} onClick={handleClick}>
+    <Link to={to} className={className} onClick={handleClick} target={target} rel="noopener noreferrer">
       {children}
     </Link>
   )
