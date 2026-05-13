@@ -15,9 +15,9 @@ export default function DatosNuevos() {
     }, [location])
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-10">
             {datosNuevos.map(datoNuevo => (
-                <div key={datoNuevo.id}>
+                <div key={datoNuevo.id} className="border border-gray-300 rounded-3xl p-4">
                     <h3>{datoNuevo.cifras}</h3>
                     <div dangerouslySetInnerHTML={{ __html: datoNuevo.descripcion }}  />
                 </div>

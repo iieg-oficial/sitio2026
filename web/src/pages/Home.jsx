@@ -76,10 +76,8 @@ function HomePage() {
                 {page.description_meta && <meta name="description" content={page.description_meta} />}
                 {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
             </Helmet>
-            <section className="" role="banner">                
-                <div style={{ paddingTop: 37 }}>
-                    <BlockRenderer block={{ type: 'banners' }} />
-                </div>
+            <section className="h-96" role="banner">                
+                <BlockRenderer block={{ type: 'banners' }} />
             </section>            
             <section className="container-fluid relative">
                 <div className="relative z-0 pt-12">                    
@@ -90,48 +88,71 @@ function HomePage() {
                 </div>
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
-            <section className="w-10/12 mx-auto h-96 bg-pink-300 ">
+            <section className="w-10/12 mx-auto ">
+                <h2>Datos nuevos</h2>
                 <BlockRenderer block={{ type: 'datos_nuevos' }} />
             </section>
-            <section className="w-8/12 mx-auto h-96 bg-green-300 relative">
+            <section className="w-10/12 mx-auto my-10 relative">
+                <h2>Flashes</h2>
                 <BlockRenderer block={{ type: 'flashes' }} />               
-                <TrackedLink to="/flashes" className="bg-red-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <TrackedLink to="/flashes" className="bg-red-500 text-white z-10 mx-auto text-center block w-60">
                     Ver todos los flashes
                 </TrackedLink>
             </section>
-            <section className="w-11/12 mx-auto border rounded-lg bg-amber-300 h-5 ">
+            <section className="w-11/12 mx-auto border rounded-lg bg-amber-300 ">
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
             </section>
-            <section className="w-11/12 mx-auto h-96 bg-blue-300 relative">
-            <h2>Mapas</h2>
+            <section className="w-11/12 mx-auto relative my-14">
+                <h2>Mapas</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
-                <Link to="/mapas" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">Ver todos los mapas</Link>
+                <TrackedLink 
+                to="/mapas" 
+                target="_self"
+                className="bg-blue-500 text-white mx-auto w-60 text-center block mt-5">
+                    Ver todos los mapas
+                </TrackedLink>
             </section>
             <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 my-14 gap-4 relative">
                 
-                <Link to="/transparencia" className="btn btn-primary text-center">
+                <TrackedLink 
+                to="/transparencia" 
+                target="_blank"
+                className="btn btn-primary text-center">
                     <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Transparencia</span>
-                </Link>
-                
-                <Link to="/licitaciones" className="btn btn-primary text-center">
-                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                </TrackedLink>
+
+                 <TrackedLink 
+                to="/licitaciones" 
+                target="_blank"
+                className="btn btn-primary text-center">
+                    <img src="/demo.jpg" alt="Licitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Licitaciones</span>
-                </Link>
-                
-                <Link to="/contabilidad-gubernamental" className="btn btn-primary text-center">
-                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                </TrackedLink>
+
+                 <TrackedLink 
+                to="/contabilidad-gubernamental" 
+                target="_self"
+                className="btn btn-primary text-center">
+                    <img src="/demo.jpg" alt="Contabilidad Gubernamental" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Contabilidad Gubernamental</span>
-                </Link>
-                
-                <Link to="/capacitaciones" className="btn btn-primary md:col-start-2 md:col-span-1 xl:col-start-4 text-center">
-                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                </TrackedLink>
+
+                <TrackedLink 
+                to="/capacitaciones" 
+                target="_self"
+                className="btn btn-primary text-center">
+                    <img src="/demo.jpg" alt="Capacitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Capacitaciones</span>
-                </Link>
-                <Link to="/comunidad" className="btn btn-primary text-center">
-                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                </TrackedLink>
+
+                <TrackedLink 
+                to="/comunidad" 
+                target="_self"
+                className="btn btn-primary text-center">
+                    <img src="/demo.jpg" alt="Comunidad" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Comunidad</span>
-                </Link>
+                </TrackedLink>
             </section>
             <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
                 <BlockRenderer block={{ type: 'contacto' }} />

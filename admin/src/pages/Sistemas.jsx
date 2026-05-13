@@ -116,8 +116,7 @@ export default function Sistemas() {
             title: 'Destacado',
             dataIndex: 'destacado',
             key: 'destacado',
-            render: (val) => val ? 'Sí' : 'No',
-            sorter: (a, b) => Number(a.destacado) - Number(b.destacado)
+            render: (val) => val ? 'Sí' : 'No',            
         },
         {
             title: 'Acciones',
@@ -205,7 +204,7 @@ export default function Sistemas() {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                        name="destacada"
+                        name="destacado"
                         label="Destacada"
                         valuePropName="checked"
                         rules={[{ required: false, message: 'Por favor seleccione si es destacada' }]}

@@ -79,10 +79,10 @@ export default function DatosNuevos() {
 
     const columns = [
         {
-            title: 'Número',
-            dataIndex: 'numero',
-            key: 'numero',
-            sorter: (a, b) => a.numero - b.numero
+            title: 'Cifras',
+            dataIndex: 'cifras',
+            key: 'cifras',
+            sorter: (a, b) => a.cifras - b.cifras
         },
         {
             title: 'Descripción',
@@ -152,11 +152,11 @@ export default function DatosNuevos() {
             >
                 <Form form={form} onFinish={handleSubmit} layout="vertical">
                     <Form.Item
-                        name="numero"
-                        label="Número"
-                        rules={[{ required: true, message: 'Por favor ingrese el número' }]}
+                        name="cifras"
+                        label="Cifras"
+                        rules={[{ required: true, message: 'Por favor ingrese las cifras' }]}
                     >
-                        <Input type="number" />
+                        <Input />
                     </Form.Item>
                     <Form.Item
                         name="descripcion"

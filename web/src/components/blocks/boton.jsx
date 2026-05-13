@@ -12,11 +12,12 @@ const TrackedLink = ({ to, children, className, eventData = {}, target = '_self'
       }
     })
   }
-
   return (
-    <Link to={to} className={className} onClick={handleClick} target={target} rel="noopener noreferrer">
-      {children}
-    </Link>
+    
+      <Link to={to} className={className} onClick={handleClick} target={target} rel="noopener noreferrer">
+        {children}
+      </Link>
+    
   )
 }
 

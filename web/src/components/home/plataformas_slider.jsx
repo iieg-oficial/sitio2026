@@ -20,17 +20,36 @@ export default function PlataformasSlider() {
     }, [location])
 
     return (
-        <div className="">
+        <div >
             <Swiper
             modules={[Navigation, Pagination, Autoplay]}
+            className="!pb-14"
             navigation
             pagination={{ clickable: true }}
-            autoplay={{ delay: 3000 }}
+            autoplay={{ delay: 10000, pauseOnMouseEnter: true }}
             spaceBetween={20}
-            slidesPerView={4}
+            slidesPerView={1}
+            lazy={true}
+            a11y={{
+                enabled: true,
+                prevSlideMessage: 'Anterior',               
+                nextSlideMessage: 'Siguiente',
+                
+            }}
+            breakpoints={{
+                640: {
+                    slidesPerView: 2,
+                },
+                1024: {
+                    slidesPerView: 3,
+                },
+                1280: {
+                    slidesPerView: 4,
+                },
+            }}
             >
             {plataformas.map(plataforma => (
-                        <SwiperSlide key={plataforma.id}>
+                        <SwiperSlide key={plataforma.id} className="border place-items-center p-2 pb-14" >
                             <a href={plataforma.link} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
                                 <img src={plataforma.imagen} alt={plataforma.titulo} className="w-full object-cover"/>
                                 <h3 className="mt-2 text-center">{plataforma.titulo}</h3>
