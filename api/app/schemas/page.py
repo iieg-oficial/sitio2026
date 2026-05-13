@@ -1,17 +1,39 @@
+from __future__ import annotations
 from datetime import datetime
-from typing import Optional, List  
+from typing import Optional, List 
+from pydantic import BaseModel
 
-from pydantic import BaseModel, Field
-
-
-class PageCreate(BaseModel):
-    slug_custom: str
+class PageBase(BaseModel):
     title: str
-    description: Optional[str]
+    description: Optional[str] = None
     link_interno: Optional[bool] = True
-    description_meta: Optional[str]
-    keywords_meta: Optional[str]
-    updated_at: Optional[datetime]
+    slug_custom: str
+    description_meta: Optional[str] = None
+    keywords_meta: Optional[str] = None
+    updated_at: Optional[datetime] = None
+    slug: Optional[str] = None
+    parent_id: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+class PageCreate(PageBase):
+    pass
+
+
+class PageFlat(PageBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class PageTreeOut(PageBase):
+    id: int
+    subpages: Optional[List[PageTreeOut]] = []
+
+    class Config:
+        from_attributes = True
 
 
 class PageUpdate(BaseModel):
@@ -19,19 +41,24 @@ class PageUpdate(BaseModel):
     title: str
     slug_custom: str
     link_interno: Optional[bool] = True
-    description: Optional[str]
-    description_meta: Optional[str]
-    keywords_meta: Optional[str]
-    updated_at: Optional[datetime]
-    slug: Optional[str]
+    description: Optional[str] = None
+    description_meta: Optional[str] = None
+    keywords_meta: Optional[str] = None
+    updated_at: Optional[datetime] | None = None
+    slug: Optional[str] = None
+    parent_id: Optional[int] = None
 
-class PageResponse(PageCreate):
-    id: int
-   
     class Config:
         from_attributes = True
+
+class PageResponse(PageTreeOut):
+    subpages: Optional[List[PageResponse]] = []
 
 
 class PageResponseList(BaseModel):
     pages: List[PageResponse]
     total: int  
+
+
+PageTreeOut.model_rebuild()
+PageResponse.model_rebuild()

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
+from app.api.deps import get_current_user, get_db
 from app.models import Subject, Usuario
 from app.schemas.subject import SubjectCreate, SubjectFlat, SubjectOut, SubjectResponse
 
@@ -10,18 +10,25 @@ router = APIRouter(prefix="/subject", tags=["temas"])
 
 
 @router.get("/tree", response_model=list[SubjectOut])
-async def obtener_temas_tree(db: Session = Depends(get_db)):
+async def obtener_temas_tree(
+    current_user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db)):
     temas = db.execute(select(Subject).where(Subject.parent_id == None)).scalars().all()
     return temas
 
 @router.get("", response_model=list[SubjectFlat])
-async def listar_subjects(db: Session = Depends(get_db)):
+async def listar_subjects(
+    db: Session = Depends(get_db)
+):
     subjects = db.execute(select(Subject)).scalars().all()
     return subjects 
 
 
 @router.get("/{subject_id}", response_model=SubjectOut)
-async def obtener_subject(subject_id: int, db: Session = Depends(get_db)):
+async def obtener_subject(
+    subject_id: int, 
+    db: Session = Depends(get_db)
+):
     subject = db.execute(select(Subject).where(Subject.id == subject_id)).scalar_one_or_none()
     if not subject:
         raise HTTPException(
@@ -34,7 +41,7 @@ async def obtener_subject(subject_id: int, db: Session = Depends(get_db)):
 async def crear_subject(
     subject_in: SubjectCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     if subject_in.parent_id:
         parent_exists = db.get(Subject, subject_in.parent_id)
@@ -96,7 +103,7 @@ async def actualizar_subject(
 async def eliminar_subject(
     subject_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(verify_csrf),
+    current_user: Usuario = Depends(get_current_user),
 ):
     subject = db.execute(select(Subject).where(Subject.id == subject_id)).scalar_one_or_none()
     if not subject:

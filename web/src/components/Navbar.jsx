@@ -1,11 +1,25 @@
 import { Link } from 'react-router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useGlobal } from '@hooks/useGlobal'
 import DropdownMenu from './DropdownMenu'
+import api from '@services/apiService'
 
 function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const { navigation, loading } = useGlobal()
+    const [menuItems, setMenuItems] = useState([])
+
+    useEffect(() => {
+        const fetchMenuItems = async () => {
+            try {
+                const response = await api.get('/paginas');
+                setMenuItems(response.data.pages);
+            } catch (error) {
+                console.error('Error al obtener los items del menú:', error);
+            }
+        }
+        fetchMenuItems();
+    }, [])
 
     if (loading) {
         return (
@@ -46,7 +60,7 @@ function Navbar() {
                     </button>
 
                     <div className="hidden lg:flex items-center space-x-1">
-                        {navigation.menuItems.map((item) => (
+                        {menuItems.map((item) => (
                             <DropdownMenu
                                 key={item.id}
                                 item={item}
@@ -59,7 +73,7 @@ function Navbar() {
                 {mobileMenuOpen && (
                     <div className="lg:hidden py-4 border-t border-gray-200">
                         <div className="flex flex-col space-y-2">
-                            {navigation.menuItems.map((item) => (
+                            {menuItems.map((item) => (
                                 <DropdownMenu
                                     key={item.id}
                                     item={item}
