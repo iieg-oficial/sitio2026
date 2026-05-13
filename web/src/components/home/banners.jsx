@@ -25,22 +25,29 @@ export default function Banners() {
           dynamicBullets: true,
         }}
         modules={[Pagination, Autoplay ]}
-        className="mySwiper"
-        autoplay={{ delay: 3000 }}
+        className="mySwiper h-full"
+        autoplay={{ delay: 10000, pauseOnMouseEnter: true }}
+        lazy={true}
+        a11y={{
+                enabled: true,
+                prevSlideMessage: 'Anterior',               
+                nextSlideMessage: 'Siguiente',
+                
+            }}
       >
         {banners.map(banner => (
-            <SwiperSlide key={banner.id} className={`relative w-full min-h-8/12 grid place-items-center bg-[${!banner.full_screen ? '' : banner.color_fondo}]`}>
-                {banner.full_screen ? (
+            <SwiperSlide key={banner.id} className="relative w-full h-full content-center " style={{ backgroundColor: banner.color_fondo}}>
+              {banner.full_screen ? (
                     <>
                         <img src={banner.imagen_desktop} alt={banner.titulo} className="hidden md:block w-full object-cover"/>
                         <img src={banner.imagen_mobile} alt={banner.titulo} className="md:hidden w-full object-cover"/>
                     </>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 place-items-center gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto h-56 px-2 md:px-0">
                         <div>
-                            <h2>{banner.titulo}</h2>
-                            <p>{banner.descripcion}</p>
-                            <Link to={banner.link} className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white px-4 py-2 rounded-md">{banner.boton}</Link>
+                            <h2>{banner.titulo}</h2>                            
+                            <div dangerouslySetInnerHTML={{__html: banner.descripcion}} className='mt-5 prose max-w-none' />
+                            <Link to={banner.link} className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white px-4 py-2 rounded-md mt-3 block">{banner.boton}</Link>
                         </div>
                         <div>
                             <img src={banner.imagen} alt={banner.titulo} className="w-full object-cover"/>
