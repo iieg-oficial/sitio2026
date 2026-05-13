@@ -1,15 +1,12 @@
-from datetime import datetime
 from slugify import slugify
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.attributes import flag_modified
-
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.core.cache import get_cache, redis_client, set_cache
+from sqlalchemy import select
+from app.api.deps import get_current_user, get_db
 from app.models.menu_item import MenuItem
 from app.models.page import Page
 from app.models.user import Usuario
-from app.schemas.page import PageCreate, PageResponse, PageUpdate, PageResponseList  
+from app.schemas.page import PageCreate, PageResponse, PageUpdate, PageResponseList, PageTreeOut, PageFlat
 
 router = APIRouter(prefix="/paginas", tags=["páginas"])
 
@@ -37,62 +34,59 @@ def list_pages(
     }
 
 
-@router.get("/{page_id}", response_model=PageResponse)
-def get_page_admin(
-    page_id: int, db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
-):
-    page = db.query(Page).get(page_id)
-    if not page:
-        raise HTTPException(404)
-    return page
-
-
 @router.post("/create", response_model=PageResponse)
 def create_page(
     data: PageCreate, 
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
-    slug = slugify(data.slug_custom)
-    base_slug = slug
+    if data.parent_id:
+        parent = db.query(Page).get(data.parent_id)
+        if not parent:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Página padre no encontrada"
+            )
+        if parent.parent_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="No se pueden crear páginas hijas de páginas hijas"
+            )
+    
+    base_slug = slugify(data.slug_custom)
+    slug = base_slug
     contador = 1
+
     while db.query(Page).filter(Page.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
     
-    page = Page(
-        title=data.title,
-        description=data.description,
-        slug_custom=data.slug_custom,
-        link_interno=data.link_interno,
-        updated_at=data.updated_at,
-        description_meta=data.description_meta,
-        keywords_meta=data.keywords_meta,       
-        slug=slug,
-    )
+    page_data = data.model_dump(exclude={"slug"})
+    page = Page(**page_data, slug=slug)
     db.add(page)
     db.commit()
     db.refresh(page)
     return page
 
 
-@router.put("/{page_id}", response_model=PageResponse)
+@router.put("/{page_id}", response_model=PageUpdate)
 def update_page(
     page_id: int, 
     data: PageCreate, 
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
-    page = db.query(Page).get(page_id)
+    page = db.get(Page, page_id)
     if not page:
         raise HTTPException(404, "Página no encontrada")
 
+    if (data.parent_id == page.id):
+        raise HTTPException(400, "No se puede asignar una página como su propio padre")
+    
+    
     update_data = data.model_dump(exclude_unset=True)
 
     if "title" in update_data and update_data["title"] != page.title:
-        slug = slugify(update_data["title"])
-        base_slug = slug
+        base_slug = slugify(update_data["title"])
+        slug = base_slug
         contador = 1
         while db.query(Page).filter(Page.slug == slug, Page.id != page_id).first():
             slug = f"{base_slug}-{contador}"
@@ -133,4 +127,34 @@ def get_page_slug(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Página no encontrada"
         )
+    return page
+
+
+@router.get("/tree", response_model=list[PageFlat])
+def get_pages_tree(
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
+):
+    """Obtener páginas en formato tree"""
+    pages = db.execute(select(Page).where(Page.parent_id == None)).scalars().all()
+    return pages
+
+
+@router.get("/padres", response_model=list[PageFlat])
+async def obtener_paginas_padres(
+    current_user: Usuario = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    pages = db.execute(select(Page)).scalars().all()
+    return pages
+
+
+@router.get("/{page_id}", response_model=PageResponse)
+def get_page_admin(
+    page_id: int, db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
+):
+    page = db.query(Page).get(page_id)
+    if not page:
+        raise HTTPException(404)
     return page

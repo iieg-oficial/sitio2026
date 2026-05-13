@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Checkbox } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Checkbox, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
@@ -8,6 +8,7 @@ const { Title } = Typography;
 
 export default function Paginas() {
     const [pages, setPages] = useState([]);
+    const [pagesTree, setPagesTree] = useState([]);
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [editingPage, setEditingPage] = useState(null);
@@ -26,8 +27,22 @@ export default function Paginas() {
         }
     };
 
+    const fetchPagesTree = async () => {
+        setLoading(true);
+        try {
+            const res = await api.get('/paginas/tree');
+            setPagesTree(flattenTree(res.data));
+        } catch (err) {
+            console.error("Error fetching pages tree:", err);
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchPages();
+        fetchPagesTree();
     }, []);
 
 
@@ -39,7 +54,12 @@ export default function Paginas() {
     
         const handleEdit = (record) => {
             setEditingPage(record);
-            form.setFieldsValue(record);
+            const formattedRecord = { ...record };
+            if (formattedRecord.updated_at) {
+                // Format "YYYY-MM-DDTHH:mm:ss" to "YYYY-MM-DD" for the date input
+                formattedRecord.updated_at = formattedRecord.updated_at.split('T')[0];
+            }
+            form.setFieldsValue(formattedRecord);
             setModalVisible(true);
         };
     
@@ -55,6 +75,7 @@ export default function Paginas() {
                         await api.delete(`/paginas/${record.id}`);
                         message.success('Página eliminada exitosamente');
                         fetchPages();
+                        fetchPagesTree();
                     } catch {
                         message.error('Error al eliminar página');
                     }
@@ -73,6 +94,7 @@ export default function Paginas() {
                 }
                 setModalVisible(false);
                 fetchPages();
+                fetchPagesTree();
             } catch {
                 message.error(editingPage ? 'Error al actualizar página' : 'Error al crear página');
             }
@@ -86,10 +108,11 @@ export default function Paginas() {
                 sorter: (a, b) => a.title.localeCompare(b.title)
             },
             {
-                title: 'Descripción',
-                dataIndex: 'description',
-                key: 'description',
-                sorter: (a, b) => a.description.localeCompare(b.description)
+                title: 'Padre',
+                dataIndex: 'parent_id',
+                key: 'parent_id',
+                render: (parent_id) => pages.find((p) => p.id === parent_id)?.title,
+                sorter: (a, b) => a.parent_id.localeCompare(b.parent_id)
             },
             {
                 title: 'Slug',
@@ -221,9 +244,32 @@ export default function Paginas() {
                     >
                         <RichTextEditor />
                     </Form.Item>
+                    <Form.Item label="Padre" name="parent_id"
+                        rules={[{ required: false, message: 'Por favor seleccione el padre' }]}
+                    >
+                        <Select
+                        value={pagesTree?.parent_id}
+                        onChange={(value) => form.setFieldValue('parent_id', value)}
+                        >
+                            <Select.Option value={null}>Sin Padre</Select.Option>
+                            {pagesTree.map((p) => (
+                                <Select.Option key={p.id} value={p.id}>
+                                    {"--".repeat(p.depth)} {p.title}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                        
 
                 </Form>
             </Modal>
         </div>
     )
+}
+
+function flattenTree(pagesTree, depth = 0) {
+    return pagesTree.flatMap((page) => {
+        const { children = [], ...rest } = page;
+        return [{ ...rest, depth }, ...flattenTree(children, depth + 1)];
+    });
 }
