@@ -112,12 +112,12 @@ function HomePage() {
                     Ver todos los mapas
                 </TrackedLink>
             </section>
-            <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 my-14 gap-4 relative">
+            <section className="container-fluid mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 my-14 gap-4 relative">
                 
                 <TrackedLink 
                 to="/transparencia" 
                 target="_blank"
-                className="btn btn-primary text-center">
+                className="btn btn-primary text-center md:col-span-2 xl:col-span-1">
                     <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Transparencia</span>
                 </TrackedLink>
@@ -125,7 +125,7 @@ function HomePage() {
                  <TrackedLink 
                 to="/licitaciones" 
                 target="_blank"
-                className="btn btn-primary text-center">
+                className="btn btn-primary text-center md:col-span-2 xl:col-span-1">
                     <img src="/demo.jpg" alt="Licitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Licitaciones</span>
                 </TrackedLink>
@@ -133,7 +133,7 @@ function HomePage() {
                  <TrackedLink 
                 to="/contabilidad-gubernamental" 
                 target="_self"
-                className="btn btn-primary text-center">
+                className="btn btn-primary text-center md:col-span-2 xl:col-span-1">
                     <img src="/demo.jpg" alt="Contabilidad Gubernamental" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Contabilidad Gubernamental</span>
                 </TrackedLink>
@@ -141,7 +141,7 @@ function HomePage() {
                 <TrackedLink 
                 to="/capacitaciones" 
                 target="_self"
-                className="btn btn-primary text-center">
+                className="btn btn-primary text-center col-span-1 md:col-span-2 md:col-start-2 xl:col-span-1">
                     <img src="/demo.jpg" alt="Capacitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Capacitaciones</span>
                 </TrackedLink>
@@ -149,7 +149,7 @@ function HomePage() {
                 <TrackedLink 
                 to="/comunidad" 
                 target="_self"
-                className="btn btn-primary text-center">
+                className="btn btn-primary text-center col-span-2 md:col-span-2 xl:col-span-1">
                     <img src="/demo.jpg" alt="Comunidad" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Comunidad</span>
                 </TrackedLink>
