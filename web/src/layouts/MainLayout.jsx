@@ -17,7 +17,7 @@ const MainLayout = () => {
             <div style={isMenuPreview ? { paddingTop: 37 } : undefined}>
                 <Navbar />
             </div>
-            <main id="main" className="flex-1 p-2 overflow-hidden">
+            <main id="main" className="">
                 <Outlet />
             </main>
             <Footer />

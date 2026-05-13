@@ -16,9 +16,9 @@ export default function Flashes() {
     }, [location])
 
     return (
-        <div className="">
+        <div className="grid grid-cols-1 gap-4 mb-4">
             {flashes.map(flash => (
-                <div className='grid grid-cols-1 gap-4' key={flash.id}>
+                <div className='border border-gray-300 rounded-3xl p-4' key={flash.id}>
                     <div><h3>{flash.titulo}</h3></div>
                     <div>
                         <h3>Jalisco</h3>
