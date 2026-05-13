@@ -77,7 +77,7 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
                     className="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-200 cursor-not-allowed rounded-sm whitespace-nowrap"
                     title="No disponible"
                 >
-                    {item.name}
+                    {item.title}
                 </span>
             );
         }
@@ -88,17 +88,17 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
                     href={item.path}
                     className="px-4 py-2 text-sm font-medium text-white bg-purple-800 hover:bg-purple-700 transition-colors duration-200 rounded-sm whitespace-nowrap"
                 >
-                    {item.name}
+                    {item.title}
                 </a>
             );
         }
         return (
             <Link
-                to={item.path}
+                to={item.slug_custom}
                 onClick={onItemClick}
                 className="px-4 py-2 text-sm font-medium text-white bg-purple-800 hover:bg-purple-700 transition-colors duration-200 rounded-sm whitespace-nowrap"
             >
-                {item.name}
+                {item.title}
             </Link>
         );
     }
@@ -109,7 +109,7 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
                 className="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-200 cursor-not-allowed rounded-sm whitespace-nowrap flex items-center gap-1"
                 title="No disponible"
             >
-                {item.name}
+                {item.title}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -128,7 +128,7 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
                 onClick={handleClick}
                 className="px-4 py-2 text-sm font-medium text-white bg-purple-800 hover:bg-purple-700 transition-colors duration-200 rounded-sm whitespace-nowrap flex items-center gap-1"
             >
-                {item.name}
+                {item.title}
                 <svg
                     className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                     fill="none"
@@ -154,23 +154,23 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
                                         title="No disponible"
                                     >
                                         <span className="text-lg flex-shrink-0 opacity-50">{subItem.icon}</span>
-                                        <span className="flex-1">{subItem.name}</span>
+                                        <span className="flex-1">{subItem.title}</span>
                                     </span>
                                 );
                             }
 
                             const isHashLink = subItem.path.startsWith('/#');
-                            const isCkanLink = isExternalSubpath(subItem.path);
+                            const isCkanLink = isExternalSubpath(subItem.slug_custom);
 
                             if (isCkanLink) {
                                 return (
                                     <a
                                         key={index}
-                                        href={subItem.path}
+                                        href={subItem.slug_custom}
                                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-800 transition-colors"
                                     >
                                         <span className="text-lg flex-shrink-0">{subItem.icon}</span>
-                                        <span className="flex-1">{subItem.name}</span>
+                                        <span className="flex-1">{subItem.title}</span>
                                     </a>
                                 );
                             }
@@ -179,12 +179,12 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
                                 return (
                                     <a
                                         key={index}
-                                        href={subItem.path}
-                                        onClick={(e) => handleSubmenuClick(e, subItem.path)}
+                                        href={subItem.slug_custom}
+                                        onClick={(e) => handleSubmenuClick(e, subItem.slug_custom)}
                                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-800 transition-colors"
                                     >
                                         <span className="text-lg flex-shrink-0">{subItem.icon}</span>
-                                        <span className="flex-1">{subItem.name}</span>
+                                        <span className="flex-1">{subItem.title}</span>
                                     </a>
                                 );
                             }
@@ -192,12 +192,12 @@ function DropdownMenu({ item, isMobile = false, onItemClick }) {
                             return (
                                 <Link
                                     key={index}
-                                    to={subItem.path}
-                                    onClick={(e) => handleSubmenuClick(e, subItem.path)}
+                                    to={subItem.slug_custom}
+                                    onClick={(e) => handleSubmenuClick(e, subItem.slug_custom)}
                                     className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-800 transition-colors"
                                 >
                                     <span className="text-lg flex-shrink-0">{subItem.icon}</span>
-                                    <span className="flex-1">{subItem.name}</span>
+                                    <span className="flex-1">{subItem.title}</span>
                                 </Link>
                             );
                         })}
