@@ -50,13 +50,9 @@ export default function DynamicPage() {
                 </div>
             )}
             <article>
-                <header className="page-header">
-                    <h1>{page.title}</h1>
-                    <p>{page.description}</p>
-                </header>
                 <main>
                     <div style={previewToken ? { paddingTop: 37 } : undefined}>
-                        {(page.titulo || []).map((block, index) => (
+                        {(page.title || []).map((block, index) => (
                             <BlockRenderer key={block.id || index} block={block} />
                         ))}
                     </div>

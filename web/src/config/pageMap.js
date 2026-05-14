@@ -1,5 +1,5 @@
 export const pageMap = {
-    "conocenos": ['valores', 'normatividad', 'plan_institucional', 'plan_trabajo'],
+    "conocenos": ['informacion', 'mision_vision','valores', 'normatividad', 'plan_institucional', 'plan_trabajo'],
     "organigrama": ['director', 'directorio'],
     "organos-de-gobierno": ['organos'],
     "sistema-institucional-de-archivo": ['archivo'],
