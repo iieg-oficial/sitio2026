@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
+import './mapas.css'
 
 export default function Mapas() {
     const [mapas, setMapas] = useState([])
@@ -29,11 +30,11 @@ export default function Mapas() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {mapasFiltrados.map(mapa => (
-                <div key={mapa.id} className="border rounded-lg p-4">
+                <div key={mapa.id} className="border rounded-lg p-4 overflow-hidden mapa">
                     <h3>{mapa.titulo}</h3>
                     <p>{mapa.ubicacion}</p>
                     {mapa.anyo && <p><strong>Año:</strong> {mapa.anyo}</p>}
-                    <p>imagen: {mapa.imagen}</p>
+                    <img src={mapa.imagen ? mapa.imagen : "/demo.jpg"} alt={mapa.titulo} className='image-mapa'/>
                 </div>
             ))}
         </div>

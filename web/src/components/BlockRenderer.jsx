@@ -7,7 +7,7 @@ import PlataformasDestacado from './home/plataformasDestacado'
 import PlataformasSlider from './home/plataformas_slider'
 import DatosNuevos from './home/datos_nuevos'
 import Flashes from './home/flash'
-import Mapas from './home/mapas'
+import Mapas from './home/mapa/mapas'
 
 const COMPONENT_MAP = {
     'banners': Banners,
