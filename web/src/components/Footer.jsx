@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 
-import { Navbardinamic } from '@components/Navbardinamic'
+import NavbarFooter from '@components/menu/NavbarFooter'
 
 function Footer() {
     const currentYear = new Date().getFullYear()
@@ -19,7 +19,7 @@ function Footer() {
 
                     <div>
                         <h3 className="font-bold text-lg mb-4">Enlaces</h3>
-                        <Navbardinamic />
+                        <NavbarFooter />
                     </div>
 
                     <div>
