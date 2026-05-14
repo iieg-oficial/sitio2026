@@ -42,7 +42,10 @@ function PaginaPorSlug({ slug }) {
         {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
     </Helmet>
     <article>
-        <h1>{page.title}</h1>
+        <section className="page-header text-center">
+            <h1>{page.title}</h1>
+            <div dangerouslySetInnerHTML={{__html: page.description}} className='prose prose-slate max-w-none' />            
+        </section>
         <PaginaDinamica />
     </article>
     </>
