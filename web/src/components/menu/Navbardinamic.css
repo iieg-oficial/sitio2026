@@ -11,18 +11,14 @@
   margin: 0;
   padding-left: 0;
   list-style: none;
-  text-align: center;
+  text-align: right;
 }
 .menu-wrapper .menu > li {
   position: relative;
   padding: 0.7em 0;
   display: inline-block;
 }
-.menu-wrapper ul.menu,
-.menu-wrapper a.menu-link {
-  border-top: 1px dashed #6618a2;
-  border-bottom: 1px dashed #6618a2;
-}
+
 .menu-wrapper a.menu-link {
   display: none;
   padding: 0.7em 0;
