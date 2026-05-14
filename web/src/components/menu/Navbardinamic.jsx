@@ -47,8 +47,8 @@ const Navbardinamic = () => {
   }, [location]);
 
   return (
-    <div className="menu-wrapper grid grid-cols-2 lg:grid-cols-12">
-      <Link to="/" className="lg:col-span-3">
+    <div className="menu-wrapper grid grid-cols-2 lg:grid-cols-12 container mx-auto">
+      <Link to="/" className="lg:col-span-3 content-center">
         <img src="/logo_iieg.svg" alt="IIEG" className="h-12 w-auto" />
       </Link>
       <a href="#menu" className={`menu-link text-right ${isOpen ? 'active' : ''}`} onClick={toggleMenu}>

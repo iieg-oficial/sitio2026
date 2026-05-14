@@ -1,0 +1,8 @@
+
+.image-mapa {
+  transition: transform 0.5s ease;
+}
+
+.mapa:hover .image-mapa {
+  transform: scale(1.2);
+}
