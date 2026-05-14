@@ -126,6 +126,9 @@
     /* styling the toggle menu */
     /* arrow to indicate that we have subnav*/
   }
+  .menu-wrapper .menu {
+    text-align: center ;
+  }
   .menu-wrapper a.menu-link {
     display: block;
     width: auto;
