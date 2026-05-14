@@ -72,9 +72,9 @@ function HomePage() {
     return (
         <>  
             <Helmet>
-                <title>{page.title}</title>
-                {page.description_meta && <meta name="description" content={page.description_meta} />}
-                {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
+                <title>{page?.title || 'Inicio - IIEG'}</title>
+                {page?.description_meta && <meta name="description" content={page.description_meta} />}
+                {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
             </Helmet>
             <section className="h-96" role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
