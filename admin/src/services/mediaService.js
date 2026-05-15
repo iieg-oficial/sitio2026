@@ -77,6 +77,7 @@ export const getMediaFiles = async (filters = {}) => {
         if (filters.folder) params.append('folder', filters.folder);
         if (filters.type) params.append('type', filters.type);
         if (filters.search) params.append('search', filters.search);
+        if (filters.bucket) params.append('bucket', filters.bucket);
 
         const response = await api.get(`/multimedia?${params.toString()}`);
         return response.data;
@@ -107,6 +108,10 @@ export const uploadMediaFile = async (file, options = {}) => {
 
         if (options.alt) {
             formData.append('alt', options.alt);
+        }
+
+        if (options.bucket) {
+            formData.append('bucket', options.bucket);
         }
 
         const response = await api.post('/multimedia', formData, {
@@ -174,9 +179,10 @@ export const updateMediaFile = async (id, updates) => {
     }
 };
 
-export const deleteMediaFile = async (id) => {
+export const deleteMediaFile = async (id, bucket) => {
     try {
-        await api.delete(`/multimedia/${id}`);
+        const params = bucket ? `?bucket=${encodeURIComponent(bucket)}` : '';
+        await api.delete(`/multimedia/${encodeURIComponent(id)}${params}`);
 
         await deleteFromIndexedDB(id);
 
@@ -187,9 +193,9 @@ export const deleteMediaFile = async (id) => {
     }
 };
 
-export const deleteMultipleFiles = async (ids) => {
+export const deleteMultipleFiles = async (ids, bucket) => {
     try {
-        const deletePromises = ids.map(id => deleteMediaFile(id));
+        const deletePromises = ids.map(id => deleteMediaFile(id, bucket));
         await Promise.all(deletePromises);
         return true;
     } catch (error) {
