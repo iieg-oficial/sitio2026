@@ -1,174 +1,115 @@
 # Guía de Contribución
 
-¡Gracias por tu interés en contribuir al Portal IIEG! Este documento proporciona las directrices para contribuir al proyecto.
+¡Gracias por tu interés en contribuir al Portal IIEG! Antes de empezar, asegúrate de leer los siguientes documentos:
 
-## Tabla de Contenidos
+- **[docs/AMBIENTES.md](./docs/AMBIENTES.md)** — cómo levantar dev/prod localmente
+- **[docs/INFRAESTRUCTURA.md](./docs/INFRAESTRUCTURA.md)** — stack, redes, arquitectura
+- **[docs/FLOW_COMPONENTE.md](./docs/FLOW_COMPONENTE.md)** — crear un componente end-to-end
+- **[docs/MEDIA_ACERVO.md](./docs/MEDIA_ACERVO.md)** — subir/listar archivos al S3
+- **[docs/DRAFTS.md](./docs/DRAFTS.md)** — sistema de borradores
 
-- [Código de Conducta](#código-de-conducta)
-- [Cómo Contribuir](#cómo-contribuir)
-- [Configuración del Entorno](#configuración-del-entorno)
-- [Proceso de Desarrollo](#proceso-de-desarrollo)
-- [Estándares de Código](#estándares-de-código)
-- [Commits y Mensajes](#commits-y-mensajes)
-- [Pull Requests](#pull-requests)
-
-## Código de Conducta
-
-Este proyecto adhiere a un [Código de Conducta](./CODE_OF_CONDUCT.md). Al participar, se espera que mantengas este código.
-
-## Cómo Contribuir
-
-1. **Reportar Bugs**: Si encuentras un bug, abre un issue
-2. **Sugerir Features**: Propón nuevas características o mejoras
-3. **Mejorar Documentación**: Ayuda a mejorar la documentación
-4. **Escribir Código**: Implementa features o arregla bugs
-5. **Revisar Pull Requests**: Ayuda revisando código de otros
-
-## Configuración del Entorno
-
-### Prerrequisitos
-
-- Node.js >= 18 (frontend y cms)
-- Python 3.10+ (backend)
-- Docker y Docker Compose
-- Git
-
-### Setup Inicial
+## Setup
 
 ```bash
-git clone https://github.com/IIEG/portal.git
-cd portal
-
-# Opción 1: Desarrollo con Docker
-docker compose -f docker-compose.dev.yml up
-
-# Opción 2: Desarrollo local
-# Backend
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
-
-# Frontend
-cd ../frontend
-npm install
-npm run dev
-
-# CMS
-cd ../cms
-npm install
-npm run dev
+git clone <repo> sitio2026 && cd sitio2026
+make setup    # crea .env.development y .env.production con secretos generados
+make up       # levanta dev local (incluye acervo embebido)
 ```
 
-## Proceso de Desarrollo
+> URLs y credenciales por defecto: [docs/AMBIENTES.md](./docs/AMBIENTES.md).
 
-### Branching Strategy
+Prerrequisitos: Docker + Docker Compose, `make`, `openssl` (para secretos).
 
-- `main`: Código listo para producción
-- `develop`: Rama principal de desarrollo
-- `feature/*`: Nuevas características
-- `fix/*`: Correcciones de bugs
-- `hotfix/*`: Correcciones críticas para producción
+## Branching
 
-### Workflow
+- `main` — código listo para producción
+- `develop` — rama principal de desarrollo
+- `epic/<nombre>` — épicas grandes
+- `feature/<nombre>` — features
+- `fix/<nombre>` — bugs
 
-1. Crear issue describiendo el cambio
-2. Crear rama desde `main` o `develop`
-3. Desarrollar siguiendo los estándares
-4. Escribir tests para tu código
-5. Ejecutar tests y linters
-6. Commit con mensajes descriptivos
-7. Push a tu fork
-8. Crear Pull Request
+## Workflow
 
-## Estándares de Código
+1. Crear issue o sumarte a una épica activa
+2. Rama desde `develop` (`feature/` o `fix/`)
+3. Implementar siguiendo las convenciones
+4. Commits con [Conventional Commits](https://www.conventionalcommits.org/)
+5. PR contra `develop`
 
-### Backend (Python)
+## Convenciones de código
 
-- Seguir PEP 8
-- Nombres de clases: PascalCase
-- Funciones y variables: snake_case
-- Máximo 300 líneas por archivo
-- Ejecutar: `ruff format` y `ruff check`
+### Backend (Python — `api/`)
 
-### Frontend/CMS (JavaScript/React)
+- PEP 8
+- Type hints requeridos
+- `snake_case` funciones y variables, `PascalCase` clases
+- Lint: `ruff check` y `ruff format`
+- Endpoints en **español** (`autenticacion`, `multimedia`, `elementos-menu`, etc.)
+- Métodos mutables protegidos con `verify_csrf`
 
-- Usar ESLint configurado
-- Nombres de componentes: PascalCase
-- Funciones y variables: camelCase
-- Ejecutar: `npm run lint`
+### Frontend (JS/JSX — `web/` y `admin/`)
 
-### Sin comentarios innecesarios
+- ESLint: **4 espacios** de indent, **comillas simples**
+- Componentes: `PascalCase`. Funciones/vars: `camelCase`
+- Usar siempre los **alias de Vite** (`@components`, `@pages`, `@services`, etc.)
+- **Tailwind only** en `web/` (sin dark mode). **Ant Design** en `admin/`
+- Lint: `npm run lint`
 
-El código debe ser auto-explicativo. Comentarios solo para lógica de negocio compleja.
+### Reglas generales
 
-## Commits y Mensajes
+- Reutilizar componentes/hooks/helpers/servicios existentes antes de crear nuevos
+- Evitar comentarios que solo describan *qué* hace el código; añadirlos cuando expliquen un *por qué* no evidente
+- Evitar crear markdowns explicando actividades a menos que se solicite
+- Conventional commits sin referencias a agentes
 
-### Formato
+## Commits
 
 ```
-tipo(alcance): descripción corta
+tipo(scope): descripción corta
 
-Descripción detallada (opcional)
-
-Fixes #123
+Body opcional con el "por qué".
 ```
 
-### Tipos de Commit
+Tipos: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`.
 
-- `feat`: Nueva característica
-- `fix`: Corrección de bug
-- `docs`: Cambios en documentación
-- `style`: Formato (no cambia lógica)
-- `refactor`: Refactorización
-- `test`: Tests
-- `chore`: Mantenimiento
-
-### Ejemplos
-
-```bash
-feat(auth): agregar endpoint de refresh token
-fix(media): corregir validación de tipos de archivo
-docs(readme): actualizar instrucciones de instalación
+Ejemplos:
+```
+feat(media): agregar selector de bucket portal/iieg
+fix(ckan): corregir 404 alternante por DNS colision en iieg-network
+docs(ambientes): documentar troubleshooting de puertos ocupados
 ```
 
 ## Pull Requests
 
-### Antes de Crear PR
+Antes de abrir un PR:
 
-- [ ] Código formateado
-- [ ] Pasa linting
-- [ ] Todos los tests pasan
-- [ ] Agregaste tests para código nuevo
-- [ ] Actualizaste documentación si es necesario
+- [ ] `make build && make logs` corre sin errores
+- [ ] Lint pasa (`ruff check api/` y `npm run lint` en web/ y admin/)
+- [ ] Tests pasan si hay (`pytest` en api/)
+- [ ] Documentación actualizada si tocaste algo de los docs
+- [ ] `.env.*.example` actualizado si agregaste/quitaste vars
+- [ ] No hay secretos commiteados (`.env` reales están gitignored)
 
-### Template de PR
+Template del PR:
 
 ```markdown
-## Descripción
-Breve descripción del cambio
+## Resumen
+Qué cambia y por qué.
 
-## Tipo de cambio
-- [ ] Bug fix
-- [ ] Nueva característica
-- [ ] Breaking change
-- [ ] Documentación
-
-## ¿Cómo se ha probado?
-Describe cómo probaste los cambios
+## Cómo probarlo
+Pasos concretos.
 
 ## Checklist
-- [ ] Mi código sigue las convenciones del proyecto
-- [ ] He realizado self-review de mi código
-- [ ] He agregado tests que prueban mi cambio
+- [ ] Lint OK
+- [ ] Probado en dev (`make up`)
+- [ ] Probado en prod local (`make up ENV=gcp`) si aplica
+- [ ] Docs actualizados
 ```
 
-## Recursos
+## Seguridad
 
-- [FastAPI Docs](https://fastapi.tiangolo.com/)
-- [React Docs](https://react.dev/)
-- [Conventional Commits](https://www.conventionalcommits.org/)
+Ver [SECURITY.md](./SECURITY.md). Si encuentras una vulnerabilidad, te pedimos reportarla por canal privado en lugar de un issue público — ahí están los detalles.
 
 ---
 
-**¡Gracias por contribuir al Portal IIEG!** 🎉
+¡Gracias por contribuir! Cualquier duda, abre un issue o pregunta en el equipo.
