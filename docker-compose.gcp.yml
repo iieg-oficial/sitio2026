@@ -1,0 +1,24 @@
+name: portal
+
+services:
+  nginx:
+    networks:
+      iieg-network:
+        aliases:
+          - portal-nginx
+
+  api:
+    networks:
+      iieg-network:
+        aliases:
+          - portal-api
+
+  ckan:
+    networks:
+      iieg-network:
+        aliases:
+          - portal-ckan
+
+networks:
+  iieg-network:
+    external: true
