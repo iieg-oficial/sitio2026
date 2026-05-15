@@ -13,6 +13,9 @@ const { Dragger } = Upload;
 const { Search } = Input;
 const { Option } = Select;
 
+const BUCKET_PORTAL = 'portal';
+const BUCKET_IIEG = 'iieg';
+
 const Media = () => {
     const [loading, setLoading] = useState(false);
     const [mediaFiles, setMediaFiles] = useState([]);
@@ -21,6 +24,7 @@ const Media = () => {
     const [selectedType, setSelectedType] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [viewMode, setViewMode] = useState('grid');
+    const [bucket, setBucket] = useState(BUCKET_PORTAL);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [uploadModalVisible, setUploadModalVisible] = useState(false);
     const [folderModalVisible, setFolderModalVisible] = useState(false);
@@ -34,7 +38,12 @@ const Media = () => {
     useEffect(() => {
         loadMediaFiles();
         loadFolders();
-    }, [selectedFolder, selectedType, searchText]);
+    }, [selectedFolder, selectedType, searchText, bucket]);
+
+    useEffect(() => {
+        setSelectedFiles([]);
+        setSelectedFolder(null);
+    }, [bucket]);
 
     const loadMediaFiles = async () => {
         try {
@@ -42,7 +51,8 @@ const Media = () => {
             const filters = {
                 folder: selectedFolder,
                 type: selectedType,
-                search: searchText
+                search: searchText,
+                bucket
             };
             const data = await mediaService.getMediaFiles(filters);
             setMediaFiles(data);
@@ -76,6 +86,7 @@ const Media = () => {
             const uploadOptions = {
                 folder: form.getFieldValue('folder') || '/',
                 alt: form.getFieldValue('alt') || '',
+                bucket,
                 onProgress: (percent) => {
                     onProgress({ percent });
                 }
@@ -93,7 +104,7 @@ const Media = () => {
 
     const handleDelete = async (id) => {
         try {
-            await mediaService.deleteMediaFile(id);
+            await mediaService.deleteMediaFile(id, bucket);
             message.success('Archivo eliminado exitosamente');
             loadMediaFiles();
         } catch {
@@ -108,7 +119,7 @@ const Media = () => {
         }
 
         try {
-            await mediaService.deleteMultipleFiles(selectedFiles);
+            await mediaService.deleteMultipleFiles(selectedFiles, bucket);
             message.success(`${selectedFiles.length} archivos eliminados`);
             setSelectedFiles([]);
             loadMediaFiles();
@@ -263,11 +274,13 @@ const Media = () => {
                         icon={<CopyOutlined />}
                         onClick={() => handleCopyUrl(record.url)}
                     />
-                    <Button
-                        type="text"
-                        icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)}
-                    />
+                    {isPortalBucket && (
+                        <Button
+                            type="text"
+                            icon={<EditOutlined />}
+                            onClick={() => handleEdit(record)}
+                        />
+                    )}
                     <Popconfirm
                         title="¿Eliminar este archivo?"
                         onConfirm={() => handleDelete(record.id)}
@@ -310,7 +323,7 @@ const Media = () => {
                         actions={[
                             <EyeOutlined key="view" onClick={() => handlePreview(file)} />,
                             <CopyOutlined key="copy" onClick={() => handleCopyUrl(file.url)} />,
-                            <EditOutlined key="edit" onClick={() => handleEdit(file)} />,
+                            ...(isPortalBucket ? [<EditOutlined key="edit" onClick={() => handleEdit(file)} />] : []),
                             <Popconfirm
                                 key="delete"
                                 title="¿Eliminar?"
@@ -343,10 +356,24 @@ const Media = () => {
         </Row>
     );
 
+    const isPortalBucket = bucket === BUCKET_PORTAL;
+
     return (
         <div>
             <Card
-                title="Media Manager"
+                title={
+                    <Space size="large">
+                        <span>Media Manager</span>
+                        <Segmented
+                            options={[
+                                { label: 'Portal', value: BUCKET_PORTAL },
+                                { label: 'IIEG', value: BUCKET_IIEG }
+                            ]}
+                            value={bucket}
+                            onChange={setBucket}
+                        />
+                    </Space>
+                }
                 extra={
                     <Space>
                         <Button
@@ -356,12 +383,14 @@ const Media = () => {
                         >
                             Subir Archivos
                         </Button>
-                        <Button
-                            icon={<FolderAddOutlined />}
-                            onClick={() => setFolderModalVisible(true)}
-                        >
-                            Nueva Carpeta
-                        </Button>
+                        {isPortalBucket && (
+                            <Button
+                                icon={<FolderAddOutlined />}
+                                onClick={() => setFolderModalVisible(true)}
+                            >
+                                Nueva Carpeta
+                            </Button>
+                        )}
                         {selectedFiles.length > 0 && (
                             <Popconfirm
                                 title={`¿Eliminar ${selectedFiles.length} archivos?`}
@@ -404,21 +433,23 @@ const Media = () => {
                             style={{ width: '100%' }}
                         />
                     </Col>
-                    <Col>
-                        <Select
-                            placeholder="Carpeta"
-                            allowClear
-                            style={{ width: 200 }}
-                            onChange={setSelectedFolder}
-                            value={selectedFolder}
-                        >
-                            {folders.map(folder => (
-                                <Option key={folder.id} value={folder.path}>
-                                    <FolderOutlined /> {folder.name}
-                                </Option>
-                            ))}
-                        </Select>
-                    </Col>
+                    {isPortalBucket && (
+                        <Col>
+                            <Select
+                                placeholder="Carpeta"
+                                allowClear
+                                style={{ width: 200 }}
+                                onChange={setSelectedFolder}
+                                value={selectedFolder}
+                            >
+                                {folders.map(folder => (
+                                    <Option key={folder.id} value={folder.path}>
+                                        <FolderOutlined /> {folder.name}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </Col>
+                    )}
                     <Col>
                         <Select
                             placeholder="Tipo"
