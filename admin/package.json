@@ -3,7 +3,7 @@
     "description": "Portal web del administrador del portal para el IIEG",
     "license": "MIT",
     "author": "Edgar Alejandro Villarreal Padilla <edgar.villarreal@iieg.gob.mx>",
-    "version": "1.0.0",
+    "version": "1.8.0",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -36,12 +36,6 @@
         "eslint-plugin-react": "7.37.5",
         "eslint-plugin-react-hooks": "7.0.1",
         "eslint-plugin-react-refresh": "0.4.26",
-        "msw": "2.12.7",
         "vite": "7.3.1"
-    },
-    "msw": {
-        "workerDirectory": [
-            "public"
-        ]
     }
 }

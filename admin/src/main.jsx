@@ -71,7 +71,7 @@ const router = createBrowserRouter([
             }
         ],
     },
-], { basename: '/administrador' });
+], { basename: '/portal-admin' });
 
 createRoot(document.getElementById('root')).render(
     <AuthProvider>
