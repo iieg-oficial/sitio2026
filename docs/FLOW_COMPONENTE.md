@@ -360,6 +360,51 @@ const COMPONENT_MAP = {
 
 Después, una página dinámica con bloque `{ type: 'banners' }` lo renderiza.
 
+### 8.2.1 Mapeo de bloques dinamicos y paginas
+
+El componente antes mencionado tambien funciona para mostrar de manera dinamica componentes en las paginas. Estas mismas hacen un mapeo en "/config/pageMap.js" donde se hace una relacion de "slug" y nombre de componente.
+
+```
+export const pageMap = {
+    "conocenos": ['informacion', 'mision_vision','valores', 'normatividad', 'plan_institucional', 'plan_trabajo'],
+    "organigrama": ['director', 'directorio'],
+    "organos-de-gobierno": ['organos'],
+    "sistema-institucional-de-archivo": ['archivo'],
+    "contabilidad-gubernamental": ['contabilidad'],
+    "snieg": ['snieg'], 
+    "preguntas-frecuentes": ['preguntas'],
+    "sistemas-de-informacion": ['sistemas'],
+    "flashes": ['flashes'],
+    "reportes": ['reportes'],
+    "galeria-de-mapas": ['mapas'],
+    "documentacion": ['documentacion'],
+    "capacitaciones": ['capacitaciones'],
+    "convocatorias": ['convocatorias']
+};
+```
+
+Del mismo modo se utiliza para elementos dinamicos dentro de las paginas internas - pageComponentMap.js:
+
+
+export const pageComponentMap = {
+    "blog": ['blog'],
+    "convocatorias": ['convocatorias'],
+    "capacitaciones": ['capacitaciones'],
+};
+```
+
+El funcionamiento del componente "dinamico" puede verse dentro de PaginaIndividual.js y Pagina Dinamica,jsx
+
+```
+const blocks = blockNames.map((name) => ({
+        name,
+        Component: lazy(() =>
+          import(`../interComponents/${name}.jsx`).catch(() => import('../blocks/NotFound'))
+        ),
+      }));
+```
+
+
 ### 8.3 Usar directo en una página
 
 ```jsx
