@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, DatePicker } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, DatePicker, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 
@@ -96,6 +97,12 @@ export default function Mapas() {
             render: (text) => text ? <span>{text.length > 100 ? `${text.substring(0, 100)}...` : text}</span> : <span style={{ fontStyle: 'italic', color: '#888' }}>Sin información</span>
         },
         {
+            title: 'Imagen',
+            dataIndex: 'imagen',
+            key: 'imagen',
+            render: (url) => url ? <Image src={url} alt="Mapa" style={{ maxWidth: 100 }} /> : 'Sin imagen'
+        },
+        {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (
@@ -146,14 +153,53 @@ export default function Mapas() {
                         label="Imagen"
                         rules={[{ required: false, message: 'Por favor selecciona la imagen' }]}
                     >
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/mapas"
+                                label="Subir imagen"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('imagen', media.url);
+                                }}
+                            />
+                            <Form.Item name="imagen" noStyle>
+                                <Input placeholder="URL de la imagen" />
+                            </Form.Item>
+                            {form.getFieldValue('imagen') ? (
+                                <Image src={form.getFieldValue('imagen')} alt="Vista previa" style={{ maxWidth: 260, borderRadius: 6 }} />
+                            ) : null}
+                        </Space>
                     </Form.Item>
+                    <Form.Item
+                        name="informacion"
+                        label="Información"
+                        rules={[{ required: false, message: 'Por favor ingresa la información' }]}
+                    >
+                        <RichTextEditor />
+                     </Form.Item>
                     <Form.Item
                         name="archivo"
                         label="Archivo"
                         rules={[{ required: false, message: 'Por favor selecciona el archivo' }]}
                     >
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/mapas"
+                                label="Subir archivo"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('archivo', media.url);
+                                }}
+                            />
+                            <Form.Item name="archivo" noStyle>
+                                <Input placeholder="Subir archivo" />
+                            </Form.Item>
+                            {form.getFieldValue('archivo') ? (
+                                <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">
+                                    Ver archivo
+                                </a>
+                            ) : null}
+                        </Space>
                     </Form.Item>
                     <Form.Item
                         name="autor"
