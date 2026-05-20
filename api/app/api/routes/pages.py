@@ -2,7 +2,7 @@ from slugify import slugify
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models.menu_item import MenuItem
 from app.models.page import Page
 from app.models.user import Usuario
@@ -26,7 +26,6 @@ def _slug_from_menu_item(page_id: str, db: Session) -> tuple[str, str]:
 @router.get("", response_model=PageResponseList)
 def list_pages(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     return {
         "pages": db.query(Page).all(), 
@@ -38,7 +37,7 @@ def list_pages(
 def create_page(
     data: PageCreate, 
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     if data.parent_id:
         parent = db.query(Page).get(data.parent_id)
@@ -72,7 +71,7 @@ def update_page(
     page_id: int, 
     data: PageCreate, 
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     page = db.get(Page, page_id)
     if not page:
@@ -106,7 +105,7 @@ def update_page(
 @router.delete("/{page_id}")
 def delete_page(
     page_id: int, db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     page = db.query(Page).get(page_id)
     if not page:
@@ -133,7 +132,6 @@ def get_page_slug(
 @router.get("/tree", response_model=list[PageFlat])
 def get_pages_tree(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener páginas en formato tree"""
     pages = db.execute(select(Page).where(Page.parent_id == None)).scalars().all()
@@ -142,7 +140,6 @@ def get_pages_tree(
 
 @router.get("/padres", response_model=list[PageFlat])
 async def obtener_paginas_padres(
-    current_user: Usuario = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     pages = db.execute(select(Page)).scalars().all()
@@ -152,7 +149,6 @@ async def obtener_paginas_padres(
 @router.get("/{page_id}", response_model=PageResponse)
 def get_page_admin(
     page_id: int, db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     page = db.query(Page).get(page_id)
     if not page:

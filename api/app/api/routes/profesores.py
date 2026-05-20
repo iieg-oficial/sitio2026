@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_db, get_current_user
+from app.api.deps import get_db, get_current_user, verify_csrf
 from app.models import Profesores, Usuario
 from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresResponse
 
@@ -10,7 +10,6 @@ router = APIRouter(prefix="/profesores", tags=["profesores"])
 @router.get("", response_model=ProfesoresResponse)
 async def listar_profesores(
     db: Session = Depends(get_db), 
-    current_user: Usuario = Depends(get_current_user)
 ):
     profesores = db.query(Profesores).all()
     return {
@@ -22,7 +21,6 @@ async def listar_profesores(
 async def obtener_profesor(
     profesor_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user)
 ):
     profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
     if not profesor:
@@ -35,7 +33,7 @@ async def obtener_profesor(
 async def crear_profesor(
     profesor_in: ProfesoresCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user)
+    current_user: Usuario = Depends(verify_csrf)
 ):
     slug = slugify(profesor_in.nombre)
     base_slug = slug
@@ -61,7 +59,7 @@ async def actualizar_profesor(
     profesor_id: int,
     profesor_in: ProfesoresCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user)
+    current_user: Usuario = Depends(verify_csrf)
 ):
     profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
     if not profesor:
@@ -91,7 +89,7 @@ async def actualizar_profesor(
 async def eliminar_profesor(
     profesor_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user)
+    current_user: Usuario = Depends(verify_csrf)
 ):
     profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
     if not profesor:

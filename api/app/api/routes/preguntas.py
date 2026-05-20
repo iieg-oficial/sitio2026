@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Preguntas, Usuario, Subject
 from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasResponse, PreguntasList
 
@@ -19,7 +19,6 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 @router.get("", response_model=PreguntasList)
 def listar_preguntas(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     preguntas = db.execute(select(Preguntas)).scalars().all()
     return {
@@ -31,7 +30,7 @@ def listar_preguntas(
 def crear_pregunta(
     pregunta_in: PreguntasCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(pregunta_in.pregunta)
     base_slug = slug
@@ -57,7 +56,6 @@ def crear_pregunta(
 def obtener_pregunta(
     pregunta_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     pregunta = db.get(Preguntas, pregunta_id)
     if not pregunta:
@@ -71,7 +69,7 @@ def actualizar_pregunta(
     pregunta_id: int,
     pregunta_in: PreguntasCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     pregunta = db.get(Preguntas, pregunta_id)
     if not pregunta:
@@ -106,7 +104,7 @@ def actualizar_pregunta(
 def eliminar_pregunta(
     pregunta_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     pregunta = db.get(Preguntas, pregunta_id)
     if not pregunta:
