@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 
@@ -210,7 +211,24 @@ export default function Flashes() {
                         <Input />
                     </Form.Item>
                     <Form.Item name="link" label="Link" rules={[{ required: true, message: 'Por favor ingresa el link' }]}>
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/flashes"
+                                label="Subir flash"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('link', media.url);
+                                }}
+                            />
+                            <Form.Item name="link" noStyle>
+                                <Input placeholder="Subir flash" />
+                            </Form.Item>
+                            {form.getFieldValue('link') ? (
+                                <a href={form.getFieldValue('link')} target="_blank" rel="noopener noreferrer">
+                                    Ver flash
+                                </a>
+                            ) : null}
+                        </Space>
                     </Form.Item>
                     <TemaSelector
                         temas={subjects}
