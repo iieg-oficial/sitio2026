@@ -12,7 +12,6 @@ router = APIRouter(prefix="/directorio", tags=["directorio"])
 @router.get("/", response_model=List[DirectorioOut])
 def list_directorio(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener lista de directorio"""
     directorio = db.query(Directorio).all()
@@ -22,7 +21,7 @@ def list_directorio(
 def create_directorio(
     directorio: DirectorioCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(directorio.nombre)
     base_slug = slug
@@ -48,7 +47,7 @@ def update_directorio(
     directorio_id: int,
     directorio: DirectorioCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Actualizar un directorio"""
     db_directorio = db.query(Directorio).filter(Directorio.id == directorio_id).first()
@@ -79,7 +78,7 @@ def update_directorio(
 def delete_directorio(
     directorio_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un directorio"""
     db_directorio = db.query(Directorio).filter(Directorio.id == directorio_id).first()

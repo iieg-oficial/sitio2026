@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 
@@ -140,7 +141,22 @@ export default function Snieg() {
                         <RichTextEditor />
                     </Form.Item>
                     <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/snieg"
+                                label="Subir imagen"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('imagen', media.url);
+                                }}
+                            />
+                            <Form.Item name="imagen" noStyle>
+                                <Input placeholder="URL de la imagen" />
+                            </Form.Item>
+                            {form.getFieldValue('imagen') ? (
+                                <Image src={form.getFieldValue('imagen')} alt="Imagen del snieg" style={{ maxWidth: 200, borderRadius: 6 }} />
+                            ) : null}
+                        </Space>
                     </Form.Item>
                     <Form.Item name="enlace" label="Enlace" rules={[{ required: false }]}>
                         <Input />

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -189,7 +190,26 @@ export default function DocsIieg() {
                         label="Imagen"
                         rules={[{ required: false, message: 'Por favor ingrese la imagen' }]}
                     >
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/imagenes"
+                                label="Subir imagen"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('imagen', media.url);
+                                }}
+                            />
+                            <Form.Item name="imagen" noStyle>
+                                <Input placeholder="URL imagen" />
+                            </Form.Item>
+                            {form.getFieldValue('imagen') ? (
+                                <Image
+                                    src={form.getFieldValue('imagen')}
+                                    alt="Vista previa imagen"
+                                    style={{ maxWidth: 260, borderRadius: 6 }}
+                                />
+                            ) : null}
+                        </Space>
                     </Form.Item>
                     <Form.Item
                         name="link"
@@ -203,7 +223,24 @@ export default function DocsIieg() {
                         label="Documento"
                         rules={[{ required: false, message: 'Por favor ingrese el documento' }]}
                     >
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/documentos"
+                                label="Subir documento"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('documento', media.url);
+                                }}
+                            />
+                            <Form.Item name="documento" noStyle>
+                                <Input placeholder="Subir documento" />
+                            </Form.Item>
+                            {form.getFieldValue('documento') ? (
+                                <a href={form.getFieldValue('documento')} target="_blank" rel="noopener noreferrer">
+                                    Ver documento
+                                </a>
+                            ) : null}
+                        </Space>
                     </Form.Item>
                     <Form.Item
                         name="fecha"

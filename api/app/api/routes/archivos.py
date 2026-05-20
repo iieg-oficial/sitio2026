@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Archivos, Usuario, Subject
 from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse, ArchivoList
 
@@ -21,7 +21,6 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 @router.get("", response_model=ArchivoList)
 async def listar_archivos(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     archivos = db.execute(select(Archivos)).scalars().all()
     return {
@@ -34,7 +33,7 @@ async def listar_archivos(
 async def crear_archivo(
     archivo_in: ArchivoCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(archivo_in.titulo)
     base_slug = slug
@@ -63,7 +62,6 @@ async def crear_archivo(
 async def obtener_archivo(
     archivo_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     archivo = db.get(Archivos, archivo_id)
     if not archivo:
@@ -78,7 +76,7 @@ async def actualizar_archivo(
     archivo_id: int,
     archivo_in: ArchivoCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     archivo = db.get(Archivos, archivo_id)
     if not archivo:
@@ -117,7 +115,7 @@ async def actualizar_archivo(
 async def eliminar_archivo(
     archivo_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     archivo = db.get(Archivos, archivo_id)
     if not archivo:

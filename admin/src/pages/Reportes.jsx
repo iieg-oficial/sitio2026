@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
+import { UploadAcervo } from '@components/UploadAcervo';
 const { Title } = Typography;
 
 export default function Reportes() {
@@ -207,7 +208,22 @@ export default function Reportes() {
                         label="Archivo"
                         rules={[{ required: true, message: 'Por favor ingrese el archivo' }]}
                     >
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                             <UploadAcervo
+                                bucket="portal"
+                                folder="/reportes"
+                                label="Subir archivo"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('archivo', media.url);
+                                }}
+                            />
+                            <Form.Item name="archivo" noStyle>
+                                <Input placeholder="Subir archivo" />
+                            </Form.Item>
+                            {form.getFieldValue('archivo') ? (
+                                <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">Ver archivo</a>
+                            ) : null}
+                        </Space>
                     </Form.Item>
                     <Form.Item name="claves"
                         label="Palabras clave"
