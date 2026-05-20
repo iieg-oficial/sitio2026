@@ -50,8 +50,8 @@ server {
         return 301 /datos-abiertos/user/register;
     }
 
-    location ^~ /datos-abiertos/ {
-        proxy_pass http://ckan_backend/;
+    location ^~ /datos-abiertos {
+        proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
