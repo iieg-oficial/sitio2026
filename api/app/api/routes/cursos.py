@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Cursos, Usuario, Modulos, Instituciones, Perfiles, Profesores, Subject
 from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 from slugify import slugify
@@ -22,7 +22,6 @@ def _load_temas(db: Session, tema_ids: list[int] | None) -> list[Subject]:
 @router.get("/", response_model=CursosResponse)
 def get_cursos(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los cursos con sus relaciones"""
     cursos = (
@@ -43,7 +42,7 @@ def get_cursos(
 def create_cursos(
     cursos: CursosCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Crear un nuevo curso"""
 
@@ -150,7 +149,6 @@ def create_cursos(
 def get_cursos_slug(
     slug: str,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener un curso por slug con sus relaciones"""
     db_cursos = (
@@ -178,7 +176,7 @@ def update_cursos(
     curso_id: int,
     cursos: CursosCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Actualizar un curso"""
     db_cursos = (
@@ -300,7 +298,7 @@ def update_cursos(
 def delete_cursos(
     curso_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un curso"""
     db_cursos = (

@@ -10,7 +10,6 @@ router = APIRouter(prefix="/snieg", tags=["snieg"])
 @router.get("/", response_model=SniegResponse)
 def read_snieg(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
     ):
     snieg = db.query(Snieg).all()
     return {
@@ -22,7 +21,7 @@ def read_snieg(
 def create_snieg(
     snieg: SniegCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
     ):
     slug = slugify(snieg.titulo)
     base_slug = slug
@@ -48,7 +47,7 @@ def update_snieg(
     id: int,
     snieg: SniegCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
     ):
 
     db_snieg = db.query(Snieg).filter(Snieg.id == id).first()
@@ -82,7 +81,7 @@ def update_snieg(
 def delete_snieg(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
     ):
     db_snieg = db.query(Snieg).filter(Snieg.id == id).first()
     if not db_snieg:

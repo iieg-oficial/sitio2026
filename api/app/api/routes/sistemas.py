@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Sistemas, Usuario, Subject
 from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse, SistemasList
 
@@ -23,7 +23,6 @@ def read_sistemas(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los sistemas"""
     sistemas = db.execute(select(Sistemas).offset(skip).limit(limit)).scalars().all()
@@ -37,7 +36,7 @@ def read_sistemas(
 def create_sistemas(
     sistemas: SistemasCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(sistemas.titulo)
     base_slug = slug
@@ -69,7 +68,6 @@ def create_sistemas(
 def get_sistemas_id(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener un sistema por ID"""
     db_sistemas = db.get(Sistemas, id)
@@ -85,7 +83,7 @@ def update_sistemas(
     id: int,
     sistemas: SistemasCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Actualizar un sistema"""
     db_sistemas = db.get(Sistemas, id)
@@ -123,7 +121,7 @@ def update_sistemas(
 def delete_sistemas(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un sistema"""
     db_sistemas = db.get(Sistemas, id)
