@@ -1,0 +1,87 @@
+{% ckan_extends %}
+
+{% block header_logo %}
+  {% if g.site_logo %}
+  {% set logo_path = g.site_logo %}
+  {% if logo_path.startswith('/datos-abiertos/') %}
+  {% set logo_path = logo_path.replace('/datos-abiertos', '', 1) %}
+  {% endif %}
+  <a class="logo" href="{{ h.url_for('home.index') }}">
+    <img
+      src="{{ h.url_for_static_or_external(logo_path) }}"
+      alt="{{ g.site_title }}"
+      title="{{ g.site_title }}"
+    />
+  </a>
+  {% else %}
+  <h1>
+    <a href="{{ h.url_for('home.index') }}">{{ g.site_title }}</a>
+  </h1>
+  {% if g.site_description %}
+  <h2>{{ g.site_description }}</h2>
+  {% endif %}
+  {% endif %}
+
+  {% if h.iieg_show_debug_badge() %}
+  <span class="label label-info" style="margin-left:8px;">iieg theme</span>
+  {% endif %}
+
+  
+{% endblock %}
+
+{% block header_site_navigation %}
+  <nav class="collapse navbar-collapse" id="main-navigation">
+    <ul class="nav navbar-nav">
+      {# Link a Conjuntos de datos (Dataset) #}
+      <li><a href="{% url_for 'dataset.search' %}">Datos</a></li>
+      
+      {# Link a Organizaciones #}
+      <li><a href="{% url_for 'organization.index' %}">Organizaciones</a></li>
+      
+      {# TU NUEVO LINK PERSONALIZADO #}
+      <li><a href="https://iieg.gob.mx" target="_blank">Sitio Principal IIEG</a></li>
+      <li><a href="/acerca-de">Acerca de</a></li>
+    </ul>
+  </nav>
+{% endblock %}
+
+{% block header_account %}
+  {# Esta sección controla lo que sale arriba a la derecha (Login/Registro o Perfil de usuario) #}
+  <div class="header-account-wrapper ">
+    <nav class="account navbar-right">
+      <ul class="nav navbar-nav">
+        {% if c.userobj %}
+          {# Si el usuario YA inició sesión #}
+          <li>
+            <a href="{% url_for 'user.read', id=c.userobj.name %}">
+              <i class="fa fa-user"></i> Mi Perfil ({{ c.userobj.display_name }})
+            </a>
+          </li>
+          
+          {# Solo el administrador del sitio puede ver el enlace de registro #}
+          {% if c.userobj.sysadmin %}
+          <li>
+            <a href="{% url_for 'user.register' %}">
+              <i class="fa fa-user-plus"></i> Registrar Nuevo Usuario
+            </a>
+          </li>
+          {% endif %}
+
+          <li>
+            <a href="{% url_for 'user.logout' %}" title="Cerrar sesión">
+              <i class="fa fa-sign-out"></i> Salir
+            </a>
+          </li>
+        {% else %}
+          {# Si el usuario NO ha iniciado sesión #}
+          <li>
+            <a href="{% url_for 'user.login' %}">
+              <i class="fa fa-sign-in"></i> Iniciar Sesión
+            </a>
+          </li>
+          {# El enlace de registro fue movido arriba para que solo lo vea el admin #}
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+{% endblock %}
