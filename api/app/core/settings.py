@@ -14,11 +14,16 @@ class Settings(BaseSettings):
     redis_url: str
     acervo_endpoint: str
     acervo_public_endpoint: str
+    acervo_s3_url: str
+    acervo_region: str = "us-east-1"
     acervo_access_key: str
     acervo_secret_key: str
     acervo_bucket_name: str
     acervo_use_ssl: bool
     acervo_verify_ssl: bool = True
+    acervo_iieg_access_key: str
+    acervo_iieg_secret_key: str
+    acervo_iieg_bucket_name: str
     cors_origins: list[str]
     admin_prefix: str
     web_prefix: str

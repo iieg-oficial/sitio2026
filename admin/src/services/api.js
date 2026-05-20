@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:8000/api/administrador';
+const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:8000/api/portal-admin';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -34,7 +34,7 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             sessionStorage.removeItem('csrf_token');
             if (!window.location.pathname.endsWith('/login')) {
-                window.location.href = '/administrador/login';
+                window.location.href = '/portal-admin/login';
             }
         }
         return Promise.reject(error);
