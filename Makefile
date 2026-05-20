@@ -27,7 +27,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan setup
+.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec setup
 
 help:
 	@echo ''
@@ -53,6 +53,7 @@ help:
 	@echo '  ${YELLOW}make shell-ckan${RESET}  - bash en ckan'
 	@echo '  ${YELLOW}make shell-web${RESET}   - sh en web (sólo ENV=dev)'
 	@echo '  ${YELLOW}make shell-admin${RESET} - sh en admin (sólo ENV=dev)'
+	@echo '  ${YELLOW}make ckan-exec CMD="..."${RESET} - Ejecuta un comando ckan en el contenedor. Ej: make ckan-exec CMD="ckan generate extension"'
 	@echo ''
 	@echo '${GREEN}Setup inicial:${RESET}'
 	@echo '  ${YELLOW}make setup${RESET}       - Crea .env.development y .env.production desde los .example si no existen'
@@ -98,6 +99,10 @@ shell-web:
 
 shell-admin:
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec admin /bin/sh
+
+ckan-exec:
+	@test -n "$(CMD)" || { echo "${RED}Uso: make ckan-exec CMD=\"ckan generate extension\"${RESET}"; exit 1; }
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec ckan $(CMD)
 
 setup:
 	@./scripts/init-env.sh
