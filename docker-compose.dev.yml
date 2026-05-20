@@ -162,13 +162,14 @@ services:
       CKAN_REDIS_URL: redis://redis:6379/1
       CKAN___DEBUG: "False"
       CKAN__UPLOADS_ENABLED: "True"
+      CKAN__AUTH__CREATE_USER_VIA_WEB: "false"
       CKAN___BEAKER__SESSION__SECRET: ${CKAN_BEAKER_SESSION_SECRET:?CKAN_BEAKER_SESSION_SECRET is required}
       CKAN___API_TOKEN__JWT__ENCODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET:?CKAN_API_TOKEN_JWT_SECRET is required}
       CKAN___API_TOKEN__JWT__DECODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET}
       CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME:?CKAN_SYSADMIN_NAME is required}
       CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD:?CKAN_SYSADMIN_PASSWORD is required}
       CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
-      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore
+      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg
       CKAN__ROOT_PATH: /datos-abiertos
       CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
       CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
@@ -181,6 +182,7 @@ services:
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
     volumes:
       - ckan_storage_dev:/var/lib/ckan
+      - ./ckan/extensions/ckanext-iieg:/srv/app/src/ckanext-iieg
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:5000/api/3/action/status_show"]
       interval: 30s
