@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Subject, Usuario
 from app.schemas.subject import SubjectCreate, SubjectFlat, SubjectOut, SubjectResponse
 
@@ -10,8 +10,7 @@ router = APIRouter(prefix="/subject", tags=["temas"])
 
 
 @router.get("/tree", response_model=list[SubjectOut])
-async def obtener_temas_tree(
-    current_user: Usuario = Depends(get_current_user),
+async def obtener_temas_tree(    
     db: Session = Depends(get_db)):
     temas = db.execute(select(Subject).where(Subject.parent_id == None)).scalars().all()
     return temas
@@ -41,7 +40,7 @@ async def obtener_subject(
 async def crear_subject(
     subject_in: SubjectCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     if subject_in.parent_id:
         parent_exists = db.get(Subject, subject_in.parent_id)
@@ -70,6 +69,7 @@ async def actualizar_subject(
     subject_id: int,
     subject_in: SubjectCreate,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     subject = db.get(Subject, subject_id)
     if not subject:
@@ -103,7 +103,7 @@ async def actualizar_subject(
 async def eliminar_subject(
     subject_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     subject = db.execute(select(Subject).where(Subject.id == subject_id)).scalar_one_or_none()
     if not subject:

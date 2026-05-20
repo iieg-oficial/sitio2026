@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models.instituciones import Instituciones
+from app.models import Instituciones, Usuario
 from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
 
 router = APIRouter(prefix="/instituciones", tags=["instituciones"])
@@ -30,6 +30,7 @@ async def obtener_institucion(
 async def crear_institucion(
     institucion_in: InstitucionesCreate,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(institucion_in.nombre)
     base_slug = slug
@@ -53,7 +54,8 @@ async def crear_institucion(
 async def actualizar_institucion(
     institucion_id: int,
     institucion_in: InstitucionesCreate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db),    
+    current_user: Usuario = Depends(verify_csrf),
 ):
     institucion = db.query(Instituciones).filter(Instituciones.id == institucion_id).first()
     if not institucion:
@@ -83,6 +85,7 @@ async def actualizar_institucion(
 async def eliminar_institucion(
     institucion_id: int,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     institucion = db.query(Instituciones).filter(Instituciones.id == institucion_id).first()
     if not institucion:
