@@ -42,6 +42,10 @@ server {
         return 301 /datos-abiertos/user/login;
     }
 
+    location = /datos-abiertos {
+        return 301 /datos-abiertos/;
+    }
+
     location = /datos-abiertos/logout {
         return 301 /datos-abiertos/user/logout;
     }
@@ -57,6 +61,8 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Script-Name /datos-abiertos;
+        proxy_set_header X-Forwarded-Prefix /datos-abiertos;
         proxy_connect_timeout 60;
         proxy_send_timeout 60;
         proxy_read_timeout 60;
@@ -67,6 +73,8 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Script-Name /datos-abiertos;
+        proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
 
     location ^~ /webassets/ {
@@ -74,6 +82,8 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Script-Name /datos-abiertos;
+        proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
 
     location ^~ /_debug_toolbar/ {
@@ -81,6 +91,8 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Script-Name /datos-abiertos;
+        proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
 
     location ^~ /acervo/ {
