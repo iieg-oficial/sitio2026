@@ -10,7 +10,6 @@ router = APIRouter(prefix="/organos", tags=["organos"])
 @router.get("/", response_model=OrganosResponse)
 def read_organos(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
     ):
     organos = db.query(Organos).all()
     return {"organos": organos, "total": len(organos)}
@@ -20,7 +19,7 @@ def read_organos(
 def create_organos(
     organos: OrganosCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
     ):
     slug = slugify(organos.titulo)
     base_slug = slug
@@ -45,7 +44,7 @@ def update_organos(
     id: int,
     organos: OrganosCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
     ):
     db_organos = db.query(Organos).filter(Organos.id == id).first()
     if not db_organos:
@@ -77,7 +76,7 @@ def update_organos(
 def delete_organos(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
     ):
     db_organos = db.query(Organos).filter(Organos.id == id).first()
     if not db_organos:

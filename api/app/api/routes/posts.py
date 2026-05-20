@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Posts, Usuario, Subject
 from app.schemas.posts import PostCreate, PostOut, PostResponse, PostList
 from slugify import slugify
@@ -20,7 +20,6 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 @router.get("", response_model=PostList)
 async def listar_posts(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     posts = db.execute(select(Posts)).scalars().all()
     return {
@@ -33,7 +32,6 @@ async def listar_posts(
 async def obtener_post(
     post_id: int, 
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     post = db.get(Posts, post_id)
     if not post:
@@ -47,7 +45,7 @@ async def obtener_post(
 async def crear_post(
     post_in: PostCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(post_in.titulo)
     base_slug = slug
@@ -92,7 +90,7 @@ async def actualizar_post(
     post_id: int,
     post_in: PostCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     post = db.get(Posts, post_id)
     if not post:
@@ -125,7 +123,7 @@ async def actualizar_post(
 async def eliminar_post(
     post_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     post = db.get(Posts, post_id)
     if not post:
