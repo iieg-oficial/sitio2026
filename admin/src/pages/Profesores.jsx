@@ -190,6 +190,9 @@ export default function Profesores() {
                                     form.setFieldValue('foto', media.url);
                                 }}
                             />
+                            <Form.Item name="foto" noStyle>
+                                <Input placeholder="URL de la foto" />
+                            </Form.Item>
                             {form.getFieldValue('foto') ? (
                                 <Image src={form.getFieldValue('foto')} alt="Foto del profesor" style={{ maxWidth: 200, borderRadius: 6 }} />
                             ) : null}
