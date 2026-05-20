@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models.instituciones import Instituciones
+from app.models import Instituciones, Usuario
 from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
 
 router = APIRouter(prefix="/instituciones", tags=["instituciones"])
