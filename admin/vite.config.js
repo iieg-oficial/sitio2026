@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
                 usePolling: true
             }
         },
-        base: '/administrador/',
+        base: '/portal-admin/',
         build: {
             outDir: 'dist',
             sourcemap: true

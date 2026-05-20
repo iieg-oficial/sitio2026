@@ -25,7 +25,7 @@ Si descubres una vulnerabilidad de seguridad, por favor **NO** la reportes públ
 - Confirmación de recepción en **48 horas**
 - Evaluación inicial en **7 días**
 - Actualizaciones periódicas sobre el progreso
-- Crédito en el CHANGELOG (si lo deseas)
+- Crédito en los release notes (si lo deseas)
 
 ### Alcance
 
@@ -33,6 +33,7 @@ Esta política aplica a:
 - Backend API (FastAPI)
 - Frontend (React)
 - CMS (React + Ant Design)
-- Infraestructura Docker
+- CKAN y extensiones (xloader, s3filestore)
+- Infraestructura Docker (compose, nginx, seaweedfs embebido)
 
 Agradecemos tu ayuda para mantener seguro el Portal IIEG.

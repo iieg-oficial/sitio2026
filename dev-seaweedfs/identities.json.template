@@ -1,0 +1,59 @@
+{
+  "identities": [
+    {
+      "name": "admin",
+      "credentials": [
+        {
+          "accessKey": "${ACERVO_ADMIN_ACCESS_KEY}",
+          "secretKey": "${ACERVO_ADMIN_SECRET_KEY}"
+        }
+      ],
+      "actions": [
+        "Admin",
+        "Read",
+        "Write",
+        "List",
+        "Tagging"
+      ]
+    },
+    {
+      "name": "portal-user",
+      "credentials": [
+        {
+          "accessKey": "${ACERVO_ACCESS_KEY}",
+          "secretKey": "${ACERVO_SECRET_KEY}"
+        }
+      ],
+      "actions": [
+        "Admin:portal",
+        "Read:portal",
+        "Write:portal",
+        "List:portal",
+        "Tagging:portal"
+      ]
+    },
+    {
+      "name": "iieg-user",
+      "credentials": [
+        {
+          "accessKey": "${ACERVO_IIEG_ACCESS_KEY}",
+          "secretKey": "${ACERVO_IIEG_SECRET_KEY}"
+        }
+      ],
+      "actions": [
+        "Admin:iieg",
+        "Read:iieg",
+        "Write:iieg",
+        "List:iieg",
+        "Tagging:iieg"
+      ]
+    },
+    {
+      "name": "anonymous",
+      "actions": [
+        "Read:portal",
+        "Read:iieg"
+      ]
+    }
+  ]
+}
