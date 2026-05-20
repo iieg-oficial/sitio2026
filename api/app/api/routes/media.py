@@ -27,6 +27,43 @@ def _validate_bucket(bucket: str) -> str:
     return bucket
 
 
+def _normalize_folder_path(folder: str | None) -> str:
+    folder = (folder or "/").strip()
+    if not folder:
+        return "/"
+    if not folder.startswith("/"):
+        folder = f"/{folder}"
+    while "//" in folder:
+        folder = folder.replace("//", "/")
+    if len(folder) > 1 and folder.endswith("/"):
+        folder = folder.rstrip("/")
+    return folder or "/"
+
+
+def _ensure_folder_path_exists(db: Session, folder_path: str) -> str:
+    folder_path = _normalize_folder_path(folder_path)
+
+    root = db.query(MediaFolder).filter(MediaFolder.path == "/").first()
+    if not root:
+        db.add(MediaFolder(name="Root", path="/", parent=None))
+        db.flush()
+
+    if folder_path == "/":
+        return folder_path
+
+    current_parent = "/"
+    current_path = ""
+    for part in [p for p in folder_path.split("/") if p]:
+        current_path = f"{current_path}/{part}"
+        existing = db.query(MediaFolder).filter(MediaFolder.path == current_path).first()
+        if not existing:
+            db.add(MediaFolder(name=part, path=current_path, parent=current_parent))
+            db.flush()
+        current_parent = current_path
+
+    return folder_path
+
+
 def _serialize_media(item: Media) -> dict:
     return {
         "id": str(item.id),
@@ -133,6 +170,7 @@ async def subir_archivo(
     current_user: Usuario = Depends(verify_csrf),
 ):
     bucket = _validate_bucket(bucket)
+    folder = _normalize_folder_path(folder)
 
     acervo_service = get_acervo_service()
 
@@ -143,6 +181,7 @@ async def subir_archivo(
         url = await acervo_service.upload_file(file, unique_name, bucket=bucket)
 
         if bucket == PORTAL_BUCKET:
+            folder = _ensure_folder_path_exists(db, folder)
             nuevo_media = Media(
                 name=unique_name,
                 original_name=file.filename,
