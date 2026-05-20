@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Documentacion, Usuario, Subject
 from app.schemas import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
 
@@ -19,7 +19,6 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     documentaciones = db.execute(
         select(Documentacion).order_by(Documentacion.titulo)
@@ -33,7 +32,7 @@ async def listar_documentaciones(
 async def crear_documentacion(
     documentacion_in: DocumentacionCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(documentacion_in.titulo)
     base_slug = slug
@@ -64,7 +63,6 @@ async def crear_documentacion(
 async def obtener_documentacion(
     documentacion_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     documentacion = db.get(Documentacion, documentacion_id)
     if not documentacion:
@@ -78,7 +76,7 @@ async def actualizar_documentacion(
     documentacion_id: int,
     documentacion_in: DocumentacionCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     documentacion = db.get(Documentacion, documentacion_id)
     if not documentacion:
@@ -115,7 +113,7 @@ async def actualizar_documentacion(
 async def eliminar_documentacion(
     documentacion_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     documentacion = db.get(Documentacion, documentacion_id)
     if not documentacion:

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -10,7 +11,7 @@ const { Option } = Select;
 export default function Archivos() {
     const [archivos, setArchivos] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [form] = Form.useForm();
+    const [form] = Form.useForm();    
     const [modalVisible, setModalVisible] = useState(false);
     const [editingArchivo, setEditingArchivo] = useState(null);
     const [subjects, setSubjects] = useState([]);
@@ -210,7 +211,26 @@ export default function Archivos() {
                                 }}
                             />
                             <Form.Item name="archivo" label="Archivo" rules={[{ required: false, message: 'Por favor ingrese el archivo' }]}>
-                                <Input />                        
+                                <Space direction="vertical" style={{ width: '100%' }}>
+                                    <UploadAcervo
+                                        bucket="portal"
+                                        folder="/archivos"
+                                        label="Subir archivo"
+                                        onUploaded={(media) => {
+                                            form.setFieldValue('archivo', media.url);
+                                        }}
+                                    />
+                                    <Form.Item name="archivo" noStyle>
+                                        <Input placeholder="URL archivo" />
+                                    </Form.Item>
+                                    {form.getFieldValue('archivo') ? (
+                                        <Image
+                                            src={form.getFieldValue('archivo')}
+                                            alt="Vista previa archivo"
+                                            style={{ maxWidth: 260, borderRadius: 6 }}
+                                        />
+                                    ) : null}
+                                </Space>
                             </Form.Item>
                         </Form>
                     </Modal>

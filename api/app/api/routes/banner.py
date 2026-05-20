@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Banner, Usuario
 from app.schemas.banner import BannerCreate, BannerOut, BannerResponse
 
@@ -10,7 +10,6 @@ router = APIRouter(prefix="/banner", tags=["banner"])
 @router.get("/", response_model=BannerResponse)
 def read_banner(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los banners"""
     banner = db.query(Banner).all()
@@ -23,7 +22,7 @@ def read_banner(
 def create_banner(
     banner: BannerCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(banner.titulo)
     base_slug = slug
@@ -55,7 +54,7 @@ def update_banner(
     id: int,
     banner: BannerCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Actualizar un banner"""
     db_banner = db.query(Banner).filter(Banner.id == id).first()
@@ -89,7 +88,7 @@ def update_banner(
 def delete_banner(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un banner"""
     db_banner = db.query(Banner).filter(Banner.id == id).first()

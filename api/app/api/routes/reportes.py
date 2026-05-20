@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Reportes, Usuario, Subject
 from app.schemas import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
 
@@ -19,7 +19,6 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 @router.get("", response_model=ReporteList)
 async def listar_reportes(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     reportes = db.execute(
         select(Reportes).order_by(Reportes.titulo)
@@ -33,7 +32,7 @@ async def listar_reportes(
 async def crear_reporte(
     reporte_in: ReporteCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(reporte_in.titulo)
     base_slug = slug
@@ -63,7 +62,6 @@ async def crear_reporte(
 async def obtener_reporte(
     reporte_id: int, 
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     reporte = db.get(Reportes, reporte_id)
     if not reporte:
@@ -77,7 +75,7 @@ async def actualizar_reporte(
     reporte_id: int,
     reporte_in: ReporteCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     reporte = db.get(Reportes, reporte_id)
     if not reporte:
@@ -114,7 +112,7 @@ async def actualizar_reporte(
 async def eliminar_reporte(
     reporte_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     reporte = db.get(Reportes, reporte_id)
     if not reporte:

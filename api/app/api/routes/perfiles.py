@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Perfiles, Usuario
 from app.schemas.perfiles import PerfilesCreate, PerfilesResponse, PerfilesOut
 
@@ -10,7 +10,6 @@ router = APIRouter(prefix="/perfiles", tags=["perfiles"])
 @router.get("", response_model=PerfilesResponse)
 def read_perfiles(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los perfiles"""
     perfiles = db.query(Perfiles).all()
@@ -23,7 +22,7 @@ def read_perfiles(
 def create_perfil(
     perfil: PerfilesCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(perfil.nombre)
     base_slug = slug
@@ -49,7 +48,7 @@ def update_perfil(
     id: int,
     perfil: PerfilesCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Actualizar un perfil"""
     perfil_db = db.query(Perfiles).filter(Perfiles.id == id).first()
@@ -83,7 +82,7 @@ def update_perfil(
 def delete_perfil(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un perfil"""
     perfil_db = db.query(Perfiles).filter(Perfiles.id == id).first()

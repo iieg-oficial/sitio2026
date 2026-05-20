@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 
@@ -82,6 +83,12 @@ export default function Instituciones() {
             dataIndex: 'nombre',
             key: 'nombre',
             sorter: (a, b) => a.nombre.localeCompare(b.nombre)
+        },
+        {
+            title: 'Logo',
+            dataIndex: 'logo',
+            key: 'logo',
+            render: (logo) => logo ? <Image src={logo} alt="Logo" style={{ maxWidth: 100 }} /> : 'Sin logo'
         },
         {
             title: 'Acciones',
@@ -167,7 +174,24 @@ export default function Instituciones() {
                         name="logo"
                         rules={[{ required: true, message: 'Por favor ingrese el logo' }]}
                     >
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/instituciones"
+                                label="Subir logo"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('logo', media.url);
+                                }}
+                            />
+                            <Input placeholder="URL del logo" />
+                            {form.getFieldValue('logo') && (
+                                 <Image
+                                    src={form.getFieldValue('logo')}
+                                    alt="Vista previa del logo"
+                                    style={{ maxWidth: 200, marginTop: 10 }}
+                                />
+                            )}
+                        </Space>
                     </Form.Item>
                 </Form>
             </Modal>

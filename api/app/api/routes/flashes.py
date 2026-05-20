@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Flashes, Usuario, Subject   
 from app.schemas.flashes import FlashesOut, FlashesResponse, FlashesCreate, FlashesList
 
@@ -19,7 +19,6 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 @router.get("", response_model=FlashesList)
 def read_flashes(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los flashes"""
     flashes = db.execute(select(Flashes)).scalars().all()
@@ -32,7 +31,7 @@ def read_flashes(
 def create_flashes(
     flashes: FlashesCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(flashes.titulo)
     base_slug = slug
@@ -64,7 +63,6 @@ def create_flashes(
 def get_flashes_by_id(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener un flash por ID"""
     db_flashes = db.get(Flashes, id)
@@ -80,7 +78,7 @@ def update_flashes(
     id: int,
     flashes: FlashesCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Actualizar un flash"""
     db_flashes = db.get(Flashes, id)
@@ -117,7 +115,7 @@ def update_flashes(
 def delete_flashes( 
     flashes_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un flash"""
     db_flashes = db.get(Flashes, flashes_id)
