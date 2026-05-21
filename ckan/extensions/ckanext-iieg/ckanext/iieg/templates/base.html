@@ -1,5 +1,9 @@
 {% ckan_extends %}
 
+{% block links %}
+  <link rel="shortcut icon" type="image/png" href="{{ h.url_for_static('/images/favicon.png') }}">
+{% endblock %}
+
 {% block styles %}
   {{ super() }}
   {% asset 'iieg/iieg-css' %}
