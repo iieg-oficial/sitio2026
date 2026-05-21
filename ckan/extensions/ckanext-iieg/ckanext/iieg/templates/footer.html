@@ -2,10 +2,16 @@
 
 {% block footer_content %}
   <div class="footer-custom">
-    <p>© 2026 IIEG. Todos los derechos reservados.</p>
+    <p>© 2026 IIEG. {{ _('All rights reserved.') }}</p>
     <ul>
-      <li><a href="/politica-de-privacidad">Privacidad</a></li>
-      <li><a href="/terminos">Términos</a></li>
+      <li><a href="/politica-de-privacidad">{{ _('Privacy') }}</a></li>
+      <li><a href="/terminos">{{ _('Terms') }}</a></li>
     </ul>
   </div>
+
+  {% block footer_lang %}
+  {% snippet "snippets/language_selector.html" %}
 {% endblock %}
+
+{% endblock %}
+

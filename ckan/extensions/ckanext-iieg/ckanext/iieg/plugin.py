@@ -6,6 +6,7 @@ from ckan.common import config
 class IIEGThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.ITranslation)
 
     def update_config(self, config_):
         # Keep CKAN defaults untouched; only provide extension resources.
@@ -18,6 +19,12 @@ class IIEGThemePlugin(plugins.SingletonPlugin):
             "iieg_site_title": self._site_title,
             "iieg_show_debug_badge": self._show_debug_badge,
         }
+
+    def i18n_directory(self):
+        return "i18n"
+
+    def i18n_domain(self):
+        return "ckanext-iieg"
 
     def _site_title(self):
         return config.get("ckanext.iieg.site_title", "Portal IIEG")
