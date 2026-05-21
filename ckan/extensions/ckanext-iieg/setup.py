@@ -14,4 +14,10 @@ setup(
             "iieg=ckanext.iieg.plugin:IIEGThemePlugin",
         ],
     },
+    message_extractors={
+        "ckanext": [
+            ("**.py", "python", None),
+            ("**/templates/**.html", "ckan", None),
+        ],
+    },
 )

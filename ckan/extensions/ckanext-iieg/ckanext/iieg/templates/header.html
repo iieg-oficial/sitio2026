@@ -33,28 +33,28 @@
   <nav class="collapse navbar-collapse" id="main-navigation">
     <ul class="nav navbar-nav">
       {# Link a Conjuntos de datos (Dataset) #}
-      <li><a href="{% url_for 'dataset.search' %}">Datos</a></li>
+      <li><a href="{% url_for 'dataset.search' %}">{{ _('Datasets') }}</a></li>
       
       {# Link a Organizaciones #}
-      <li><a href="{% url_for 'organization.index' %}">Organizaciones</a></li>
+      <li><a href="{% url_for 'organization.index' %}">{{ _('Organizations') }}</a></li>
       
       {# TU NUEVO LINK PERSONALIZADO #}
-      <li><a href="https://iieg.gob.mx" target="_blank">Sitio Principal IIEG</a></li>
-      <li><a href="/acerca-de">Acerca de</a></li>
+      <li><a href="https://iieg.gob.mx" target="_blank">{{ _('IIEG Main Site') }}</a></li>
+      <li><a href="/acerca-de">{{ _('About') }}</a></li>
     </ul>
   </nav>
 {% endblock %}
 
 {% block header_account %}
   {# Esta sección controla lo que sale arriba a la derecha (Login/Registro o Perfil de usuario) #}
-  <div class="header-account-wrapper ">
-    <nav class="account navbar-right">
-      <ul class="nav navbar-nav">
+  <div class="header-account-wrapper pt-2">
+    <nav class="account navbar-right container">
+      <ul class="nav navbar-nav float-end">
         {% if c.userobj %}
           {# Si el usuario YA inició sesión #}
           <li>
             <a href="{% url_for 'user.read', id=c.userobj.name %}">
-              <i class="fa fa-user"></i> Mi Perfil ({{ c.userobj.display_name }})
+              <i class="fa fa-user"></i> {{ _('My Profile') }} ({{ c.userobj.display_name }})
             </a>
           </li>
           
@@ -62,21 +62,21 @@
           {% if c.userobj.sysadmin %}
           <li>
             <a href="{% url_for 'user.register' %}">
-              <i class="fa fa-user-plus"></i> Registrar Nuevo Usuario
+              <i class="fa fa-user-plus"></i> {{ _('Register New User') }}
             </a>
           </li>
           {% endif %}
 
           <li>
-            <a href="{% url_for 'user.logout' %}" title="Cerrar sesión">
-              <i class="fa fa-sign-out"></i> Salir
+            <a href="{% url_for 'user.logout' %}" title="{{ _('Log out') }}">
+              <i class="fa fa-sign-out"></i> {{ _('Log out') }}
             </a>
           </li>
         {% else %}
           {# Si el usuario NO ha iniciado sesión #}
           <li>
             <a href="{% url_for 'user.login' %}">
-              <i class="fa fa-sign-in"></i> Iniciar Sesión
+              <i class="fa fa-sign-in"></i> {{ _('Log in') }}
             </a>
           </li>
           {# El enlace de registro fue movido arriba para que solo lo vea el admin #}
