@@ -27,7 +27,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec setup
+.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls setup
 
 help:
 	@echo ''
@@ -54,6 +54,7 @@ help:
 	@echo '  ${YELLOW}make shell-web${RESET}   - sh en web (sólo ENV=dev)'
 	@echo '  ${YELLOW}make shell-admin${RESET} - sh en admin (sólo ENV=dev)'
 	@echo '  ${YELLOW}make ckan-exec CMD="..."${RESET} - Ejecuta un comando ckan en el contenedor. Ej: make ckan-exec CMD="ckan generate extension"'
+	@echo '  ${YELLOW}make bucket-ls [PREFIX=datos-abiertos/]${RESET} - Lista archivos del bucket S3/SeaweedFS en consola'
 	@echo ''
 	@echo '${GREEN}Setup inicial:${RESET}'
 	@echo '  ${YELLOW}make setup${RESET}       - Crea .env.development y .env.production desde los .example si no existen'
@@ -103,6 +104,11 @@ shell-admin:
 ckan-exec:
 	@test -n "$(CMD)" || { echo "${RED}Uso: make ckan-exec CMD=\"ckan generate extension\"${RESET}"; exit 1; }
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec ckan $(CMD)
+
+bucket-ls:
+	@echo "${GREEN}Listando bucket ($(MSG_ENV))...${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python -c "import boto3, os; ep = os.environ.get('ACERVO_S3_URL') or ('http://' + os.environ.get('ACERVO_ENDPOINT')); bucket = os.environ.get('ACERVO_BUCKET_NAME'); prefix = os.environ.get('PREFIX', 'datos-abiertos/'); s3 = boto3.client('s3', endpoint_url=ep, aws_access_key_id=os.environ.get('ACERVO_ACCESS_KEY'), aws_secret_access_key=os.environ.get('ACERVO_SECRET_KEY'), verify=False); res = s3.list_objects_v2(Bucket=bucket, Prefix=prefix, MaxKeys=200); objs = res.get('Contents', []); print(f'Bucket: {bucket}'); print(f'Endpoint: {ep}'); print(f'Prefix: {prefix}'); print('---'); [print(f\"{o['LastModified']} | {o['Size']:>10} | {o['Key']}\") for o in objs] if objs else print('Sin archivos para ese prefijo')" \
+		PREFIX="$(PREFIX)"
 
 setup:
 	@./scripts/init-env.sh
