@@ -21,7 +21,7 @@ msgstr ""
 
 #: ckanext/iieg/examples/overrides/templates/organization/snippets/helper.html:16
 msgid "What are Organizations?"
-msgstr ""
+msgstr "¿Qué son las organizaciones?"
 
 #: ckanext/iieg/examples/overrides/templates/organization/snippets/helper.html:20
 msgid ""
@@ -29,82 +29,52 @@ msgid ""
 "datasets. Users can have different roles within an Organization, "
 "depending on their level of authorisation to create, edit and publish."
 msgstr ""
+"Las organizaciones de CKAN se utilizan para crear, administrar y publicar "
+"colecciones de conjuntos de datos. Las personas usuarias pueden tener "
+"diferentes roles dentro de una organización, según su nivel de "
+"autorización para crear, editar y publicar."
 
 #: ckanext/iieg/templates/footer.html:5
 msgid "All rights reserved."
-msgstr ""
+msgstr "Todos los derechos reservados."
 
 #: ckanext/iieg/templates/footer.html:7
-#, fuzzy
 msgid "Privacy"
-msgstr "Privacy"
+msgstr "Privacidad"
 
 #: ckanext/iieg/templates/footer.html:8
 msgid "Terms"
-msgstr ""
+msgstr "Términos"
 
 #: ckanext/iieg/templates/header.html:36
 msgid "Datasets"
-msgstr ""
+msgstr "Datos"
 
 #: ckanext/iieg/templates/header.html:39
 msgid "Organizations"
-msgstr ""
+msgstr "Organizaciones"
 
 #: ckanext/iieg/templates/header.html:42
 msgid "IIEG Main Site"
-msgstr ""
+msgstr "Sitio Principal IIEG"
 
 #: ckanext/iieg/templates/header.html:43
 msgid "About"
-msgstr ""
+msgstr "Acerca de"
 
 #: ckanext/iieg/templates/header.html:57
 msgid "My Profile"
-msgstr ""
+msgstr "Mi Perfil"
 
 #: ckanext/iieg/templates/header.html:65
 msgid "Register New User"
-msgstr ""
+msgstr "Registrar Nuevo Usuario"
 
 #: ckanext/iieg/templates/header.html:71 ckanext/iieg/templates/header.html:72
 msgid "Log out"
-msgstr ""
+msgstr "Cerrar sesión"
 
 #: ckanext/iieg/templates/header.html:79
 msgid "Log in"
-msgstr ""
-
-#~ msgid "Todos los derechos reservados."
-#~ msgstr ""
-
-#~ msgid "Términos"
-#~ msgstr ""
-
-#~ msgid "Datos"
-#~ msgstr ""
-
-#~ msgid "Organizaciones"
-#~ msgstr ""
-
-#~ msgid "Sitio Principal IIEG"
-#~ msgstr ""
-
-#~ msgid "Acerca de"
-#~ msgstr ""
-
-#~ msgid "Mi Perfil"
-#~ msgstr ""
-
-#~ msgid "Registrar Nuevo Usuario"
-#~ msgstr ""
-
-#~ msgid "Cerrar sesión"
-#~ msgstr ""
-
-#~ msgid "Salir"
-#~ msgstr ""
-
-#~ msgid "Iniciar Sesión"
-#~ msgstr ""
+msgstr "Iniciar sesión"
 
