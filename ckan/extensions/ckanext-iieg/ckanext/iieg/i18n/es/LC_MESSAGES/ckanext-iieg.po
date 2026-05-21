@@ -1,0 +1,110 @@
+# Spanish translations for ckanext-iieg.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the ckanext-iieg
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ckanext-iieg 0.0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-21 16:54+0000\n"
+"PO-Revision-Date: 2026-05-21 15:50+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.15.0\n"
+
+#: ckanext/iieg/examples/overrides/templates/organization/snippets/helper.html:16
+msgid "What are Organizations?"
+msgstr ""
+
+#: ckanext/iieg/examples/overrides/templates/organization/snippets/helper.html:20
+msgid ""
+"CKAN Organizations are used to create, manage and publish collections of "
+"datasets. Users can have different roles within an Organization, "
+"depending on their level of authorisation to create, edit and publish."
+msgstr ""
+
+#: ckanext/iieg/templates/footer.html:5
+msgid "All rights reserved."
+msgstr ""
+
+#: ckanext/iieg/templates/footer.html:7
+#, fuzzy
+msgid "Privacy"
+msgstr "Privacy"
+
+#: ckanext/iieg/templates/footer.html:8
+msgid "Terms"
+msgstr ""
+
+#: ckanext/iieg/templates/header.html:36
+msgid "Datasets"
+msgstr ""
+
+#: ckanext/iieg/templates/header.html:39
+msgid "Organizations"
+msgstr ""
+
+#: ckanext/iieg/templates/header.html:42
+msgid "IIEG Main Site"
+msgstr ""
+
+#: ckanext/iieg/templates/header.html:43
+msgid "About"
+msgstr ""
+
+#: ckanext/iieg/templates/header.html:57
+msgid "My Profile"
+msgstr ""
+
+#: ckanext/iieg/templates/header.html:65
+msgid "Register New User"
+msgstr ""
+
+#: ckanext/iieg/templates/header.html:71 ckanext/iieg/templates/header.html:72
+msgid "Log out"
+msgstr ""
+
+#: ckanext/iieg/templates/header.html:79
+msgid "Log in"
+msgstr ""
+
+#~ msgid "Todos los derechos reservados."
+#~ msgstr ""
+
+#~ msgid "Términos"
+#~ msgstr ""
+
+#~ msgid "Datos"
+#~ msgstr ""
+
+#~ msgid "Organizaciones"
+#~ msgstr ""
+
+#~ msgid "Sitio Principal IIEG"
+#~ msgstr ""
+
+#~ msgid "Acerca de"
+#~ msgstr ""
+
+#~ msgid "Mi Perfil"
+#~ msgstr ""
+
+#~ msgid "Registrar Nuevo Usuario"
+#~ msgstr ""
+
+#~ msgid "Cerrar sesión"
+#~ msgstr ""
+
+#~ msgid "Salir"
+#~ msgstr ""
+
+#~ msgid "Iniciar Sesión"
+#~ msgstr ""
+
