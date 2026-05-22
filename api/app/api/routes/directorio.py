@@ -35,6 +35,8 @@ def create_directorio(
         nombre=directorio.nombre,
         cargo=directorio.cargo,
         director=directorio.director,
+        telefono=directorio.telefono,
+        email=directorio.email,
         slug=slug,
     )
     db.add(db_directorio)

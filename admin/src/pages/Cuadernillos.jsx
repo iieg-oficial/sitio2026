@@ -140,7 +140,7 @@ export default function Cuadernillos() {
                     <Space direction="vertical" style={{ width: '100%' }}>
                         <UploadAcervo 
                             bucket="portal"
-                            folder="/archivos/cuadernillos"
+                            folder="/cuadernillos"
                             label="Subir Archivo"
                             onUploaded={(media) =>
                                 form.setFieldsValue({ archivo: media.url })
@@ -152,6 +152,9 @@ export default function Cuadernillos() {
                     <Select>
                         <Select.Option value="Acatic">Acatic</Select.Option>
                     </Select>
+                </Form.Item>
+                <Form.Item name="anyo" label="Año" rules={[{ required: true, message: 'Por favor ingresa el año' }]}>
+                    <Input />
                 </Form.Item>
             </Form>
         </Modal>
