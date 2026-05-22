@@ -1,5 +1,27 @@
 {% ckan_extends %}
 
+{% block header_account_container_content %}
+  {% if c.userobj %}
+    {{ super() }}
+  {% else %}
+    <nav class="account not-authed" aria-label="{{ _('Account') }}">
+      <ul class="list-unstyled">
+        {% block header_account_notlogged %}
+        {% endblock %}
+      </ul>
+    </nav>
+  {% endif %}
+  {% block top_links %}
+    <ul class="nav nav-pills">
+      <li><a href="https://www.stadt-zuerich.ch/opendata">Open Data Portal</a></li>
+      <li><a href="https://www.stadt-zuerich.ch/de/politik-und-verwaltung/statistik-und-daten/open-government-data/anwendungen.html">Anwendungen</a></li>
+      <li><a href="https://www.stadt-zuerich.ch/de/politik-und-verwaltung/statistik-und-daten/open-government-data/werkstatt.html">Werkstatt</a></li>
+      <li><a href="https://twitter.com/OpenDataZurich" target="_blank"><i class="fa-brands fa-twitter"></i></a></li>
+      <li><a href="mailto:opendata@zuerich.ch"><i class="fa fa-envelope header-icon"></i></a></li>
+    </ul>
+  {% endblock %}
+{% endblock %}
+
 {% block header_logo %}
   {% if g.site_logo %}
   {% set logo_path = g.site_logo %}

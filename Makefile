@@ -27,7 +27,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls setup
+.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-reportes import-posts setup
 
 help:
 	@echo ''
@@ -55,6 +55,9 @@ help:
 	@echo '  ${YELLOW}make shell-admin${RESET} - sh en admin (sólo ENV=dev)'
 	@echo '  ${YELLOW}make ckan-exec CMD="..."${RESET} - Ejecuta un comando ckan en el contenedor. Ej: make ckan-exec CMD="ckan generate extension"'
 	@echo '  ${YELLOW}make bucket-ls [PREFIX=datos-abiertos/]${RESET} - Lista archivos del bucket S3/SeaweedFS en consola'
+	@echo '  ${YELLOW}make import-data SCRIPT=api/scripts/import_reportes_data.py SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Ejecuta un importador genérico'
+	@echo '  ${YELLOW}make import-reportes SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Alias para el importador de reportes'
+	@echo '  ${YELLOW}make import-posts SOURCE=api/scripts/examples/posts_import_example.csv${RESET} - Alias para el importador de posts'
 	@echo ''
 	@echo '${GREEN}Setup inicial:${RESET}'
 	@echo '  ${YELLOW}make setup${RESET}       - Crea .env.development y .env.production desde los .example si no existen'
@@ -109,6 +112,18 @@ bucket-ls:
 	@echo "${GREEN}Listando bucket ($(MSG_ENV))...${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python -c "import boto3, os; ep = os.environ.get('ACERVO_S3_URL') or ('http://' + os.environ.get('ACERVO_ENDPOINT')); bucket = os.environ.get('ACERVO_BUCKET_NAME'); prefix = os.environ.get('PREFIX', 'datos-abiertos/'); s3 = boto3.client('s3', endpoint_url=ep, aws_access_key_id=os.environ.get('ACERVO_ACCESS_KEY'), aws_secret_access_key=os.environ.get('ACERVO_SECRET_KEY'), verify=False); res = s3.list_objects_v2(Bucket=bucket, Prefix=prefix, MaxKeys=200); objs = res.get('Contents', []); print(f'Bucket: {bucket}'); print(f'Endpoint: {ep}'); print(f'Prefix: {prefix}'); print('---'); [print(f\"{o['LastModified']} | {o['Size']:>10} | {o['Key']}\") for o in objs] if objs else print('Sin archivos para ese prefijo')" \
 		PREFIX="$(PREFIX)"
+
+import-data:
+	@test -n "$(SCRIPT)" || { echo "${RED}Uso: make import-data SCRIPT=api/scripts/importador.py SOURCE=api/scripts/examples/datos.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@test -n "$(SOURCE)" || { echo "${RED}Uso: make import-data SCRIPT=api/scripts/importador.py SOURCE=api/scripts/examples/datos.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@echo "${GREEN}Ejecutando importador $(SCRIPT) en $(MSG_ENV) con fuente $(SOURCE)...${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python $(patsubst api/%,%,$(SCRIPT)) $(patsubst api/%,%,$(SOURCE)) $(if $(MODE),--mode $(MODE),) $(if $(LIMIT),--limit $(LIMIT),) $(if $(DRY_RUN),--dry-run,) $(ARGS)
+
+import-reportes:
+	@$(MAKE) import-data ENV=$(ENV) SCRIPT=api/scripts/import_reportes_data.py SOURCE="$(SOURCE)" MODE="$(MODE)" LIMIT="$(LIMIT)" DRY_RUN="$(DRY_RUN)" ARGS="$(ARGS)"
+
+import-posts:
+	@$(MAKE) import-data ENV=$(ENV) SCRIPT=api/scripts/import_posts_data.py SOURCE="$(SOURCE)" MODE="$(MODE)" LIMIT="$(LIMIT)" DRY_RUN="$(DRY_RUN)" ARGS="$(ARGS)"
 
 setup:
 	@./scripts/init-env.sh

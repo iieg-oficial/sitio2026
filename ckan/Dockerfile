@@ -8,6 +8,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY ./extensions/ckanext-iieg /srv/app/src/ckanext-iieg
+COPY ./extensions/ckanext-stadtzh-theme-main /srv/app/src/ckanext-stadtzh-theme-main
 
 RUN cd /srv/app/src && \
     git clone --depth 1 -b 2.3.0 https://github.com/ckan/ckanext-xloader.git && \
@@ -18,6 +19,8 @@ RUN cd /srv/app/src && \
     pip install --no-cache-dir -r ckanext-s3filestore/requirements.txt
 
 RUN pip install --no-cache-dir cookiecutter && \
-    pip install --no-cache-dir -e /srv/app/src/ckanext-iieg
+    pip install --no-cache-dir -e /srv/app/src/ckanext-iieg && \
+    pip install --no-cache-dir -r /srv/app/src/ckanext-stadtzh-theme-main/pip-requirements.txt && \
+    pip install --no-cache-dir -e /srv/app/src/ckanext-stadtzh-theme-main
 
 USER ckan
