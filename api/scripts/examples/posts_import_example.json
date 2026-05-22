@@ -1,0 +1,102 @@
+[
+  {
+    "titulo": "Panorama economico trimestral",
+    "resumen": "Resumen ejecutivo con hallazgos clave del trimestre.",
+    "contenido": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Panorama economico trimestral"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "El crecimiento del empleo formal fue de "
+            },
+            {
+              "type": "text",
+              "text": "3.2%",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": " respecto al mismo periodo del ano anterior."
+            }
+          ]
+        },
+        {
+          "type": "bulletList",
+          "content": [
+            {
+              "type": "listItem",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Mercado laboral"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "listItem",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Inflacion y consumo"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "autor": "IIEG",
+    "fecha": "2026-03-31",
+    "claves": "economia|analisis|trimestral"
+  },
+  {
+    "titulo": "Nota sobre empleo municipal",
+    "slug": "nota-empleo-municipal",
+    "resumen": "Actualizacion breve sobre indicadores de empleo.",
+    "contenido": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Consulta el tablero interactivo para revisar series historicas."
+            }
+          ]
+        }
+      ]
+    },
+    "tema_ids": [1],
+    "claves": "empleo|municipal"
+  }
+]
