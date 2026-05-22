@@ -187,6 +187,8 @@ def _build_row_title(row) -> str:
             "name",
             "resource_type",
             "slug",
+            "pregunta",
+            "cifras",
         ],
     ) or f"Registro {getattr(row, 'id', '')}".strip()
 
@@ -210,6 +212,18 @@ def _build_row_description(row) -> str:
             "link",
             "url",
             "email",
+            "municipio",
+            "anyo",
+            "respuesta",
+            "area"
+            "informacion",
+            "ubicacion",
+            "desc_jal",
+            "desc_nal",
+            "fuente",
+            "Objetivo",
+            "p_ingreso",
+            "p_egreso",
         ],
     )
     return description[:240]
