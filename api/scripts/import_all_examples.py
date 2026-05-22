@@ -32,6 +32,7 @@ IMPORT_PLAN: list[dict[str, str | None]] = [
     {"name": "flashes", "script": "import_flashes.py", "example": "flashes_import_example.csv", "key_field": "slug"},
     {"name": "archivos", "script": "import_archivos.py", "example": "archivos_import_example.csv", "key_field": "slug"},
     {"name": "sistemas", "script": "import_sistemas.py", "example": "sistemas_import_example.csv", "key_field": "slug"},
+    {"name": "cuadernillos", "script": "import_cuadernillos.py", "example": "cuadernillos_import_example.csv", "key_field": "slug"},
     {"name": "posts", "script": "import_posts.py", "example": "posts_import_example.csv", "key_field": None},
     {"name": "reportes", "script": "import_reportes.py", "example": "reportes_import_example.csv", "key_field": None},
     {"name": "borrador", "script": "import_borrador.py", "example": "borrador_import_example.csv", "key_field": "resource_id"},
