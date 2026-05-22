@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import api from '@services/apiService'
 import TrackedLink from '@components/blocks/boton'
+import HeaderSearch from '@components/HeaderSearch'
 import './Navbardinamic.css'
 
 const Navbardinamic = () => {
@@ -9,6 +10,7 @@ const Navbardinamic = () => {
   const [isOpen, setIsOpen] = useState(false); // ESTADO: Controla si el menú se ve o no
   const [activeSubmenus, setActiveSubmenus] = useState({}); // Controla submenús abiertos
   const location = useLocation();
+  const navigate = useNavigate();
 
   // 1. Lógica de Carga de Datos
   useEffect(() => {
@@ -45,6 +47,15 @@ const Navbardinamic = () => {
     setIsOpen(false);
     setActiveSubmenus({});
   }, [location]);
+
+  const handleSearch = (term) => {
+    if (!term) {
+      navigate('/busqueda');
+      return;
+    }
+
+    navigate(`/busqueda?q=${encodeURIComponent(term)}`);
+  };
 
   return (
     <div className="menu-wrapper grid grid-cols-2 lg:grid-cols-12 container mx-auto">
@@ -98,6 +109,14 @@ const Navbardinamic = () => {
         </div>
           
       </nav>    
+
+      <div className="col-span-2 mt-2 lg:col-span-12 lg:mt-1">
+        <HeaderSearch
+          initialValue=""
+          onSubmit={handleSearch}
+          placeholder="Buscar en todo el sitio..."
+        />
+      </div>
     </div>
   );
 };

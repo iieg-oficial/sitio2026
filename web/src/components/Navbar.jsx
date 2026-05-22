@@ -1,11 +1,23 @@
 import { Link } from 'react-router'
+import { useNavigate } from 'react-router'
 import { useState } from 'react'
 import { useGlobal } from '@hooks/useGlobal'
 import DropdownMenu from './DropdownMenu'
+import HeaderSearch from './HeaderSearch'
 
 function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const { navigation, loading } = useGlobal()
+    const navigate = useNavigate()
+
+    const handleSearch = (term) => {
+        if (!term) {
+            navigate('/busqueda')
+            return
+        }
+
+        navigate(`/busqueda?q=${encodeURIComponent(term)}`)
+    }
 
     if (loading) {
         return (
@@ -53,11 +65,19 @@ function Navbar() {
                                 isMobile={false}
                             />
                         ))}
+
+                        <div className="ml-3 w-72">
+                            <HeaderSearch onSubmit={handleSearch} />
+                        </div>
                     </div>
                 </div>
 
                 {mobileMenuOpen && (
                     <div className="lg:hidden py-4 border-t border-gray-200">
+                        <div className="mb-3">
+                            <HeaderSearch onSubmit={handleSearch} />
+                        </div>
+
                         <div className="flex flex-col space-y-2">
                             {navigation.menuItems.map((item) => (
                                 <DropdownMenu
