@@ -1,0 +1,12 @@
+{% ckan_extends %}
+{# override nums- and follow-block as we do not use follow-option #}
+{% block nums %}
+  <div class="nums">
+    <dl>
+      <dt>{{ h.humanize_entity_type('package', dataset_type, 'facet label') or _('Datasets') }}</dt>
+      <dd>{{ h.SI_number_span(group.package_count) }}</dd>
+    </dl>
+  </div>
+{% endblock %}
+{% block follow %}
+{% endblock %}

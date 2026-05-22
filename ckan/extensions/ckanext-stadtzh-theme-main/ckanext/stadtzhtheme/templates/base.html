@@ -1,0 +1,20 @@
+{% ckan_extends %}
+
+{% block meta %}
+  {{ super() }}
+  <meta name="robots" content="noindex" />
+{% endblock %}
+
+{%- block title -%}
+  Open Data Zürich - Stadt Zürich
+{%- endblock -%}
+
+{% block links -%}
+  <link rel="shortcut icon" href="/favicon.svg" />
+{% endblock -%}
+
+{% block styles %}
+  {{ super() }}
+  {% asset 'stadtzh_theme/stadtzh_theme_css' %}
+  {% asset 'stadtzh_theme/stadtzh_theme_js' %}
+{% endblock %}

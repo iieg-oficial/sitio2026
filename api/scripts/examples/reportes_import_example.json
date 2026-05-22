@@ -1,0 +1,19 @@
+[
+  {
+    "titulo": "Anuario estadístico 2025",
+    "fecha": "2025-12-31",
+    "periocidad": "anual",
+    "archivo": "https://acervo.ejemplo.gob.mx/reportes/anuario-2025.pdf",
+    "claves": "anuario|estadistica|2025",
+    "tema_slugs": ["economia", "demografia"]
+  },
+  {
+    "titulo": "Boletín mensual de empleo",
+    "slug": "boletin-mensual-empleo",
+    "fecha": "2026-01-15T08:30:00",
+    "periocidad": "mensual",
+    "archivo": "/media/reportes/boletin-empleo-enero-2026.pdf",
+    "claves": "empleo|mercado laboral",
+    "tema_ids": [1, 4]
+  }
+]
