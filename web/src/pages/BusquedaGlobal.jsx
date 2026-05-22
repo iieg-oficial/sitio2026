@@ -45,7 +45,7 @@ function BusquedaGlobal() {
         return () => {
             isMounted = false
         }
-    }, [query])
+    }, [debouncedQuery])
 
     const groupedByType = useMemo(() => {
         return results.reduce((acc, item) => {
