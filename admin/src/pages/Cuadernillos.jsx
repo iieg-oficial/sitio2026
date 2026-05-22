@@ -149,8 +149,20 @@ export default function Cuadernillos() {
                     </Space>
                 </Form.Item>
                 <Form.Item name="municipio" label="Municipio" rules={[{ required: true, message: 'Por favor selecciona el municipio' }]}>
-                    <Select>
-                        <Select.Option value="Acatic">Acatic</Select.Option>
+                    <Select
+                        placeholder="Selecciona un municipio"
+                        allowClear
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().includes(input.toLowerCase())
+                        }
+                    >
+                        {municipios.map((municipio) => (
+                            <Option key={municipio.id} value={municipio.id}>
+                                {municipio.nombre}
+                            </Option>
+                        ))}
                     </Select>
                 </Form.Item>
                 <Form.Item name="anyo" label="Año" rules={[{ required: true, message: 'Por favor ingresa el año' }]}>
