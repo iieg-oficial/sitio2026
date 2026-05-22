@@ -251,6 +251,13 @@ export default function MainLayout() {
             onClick: () => navigate('/banners')
         });
 
+        menuItems.push({
+            key: '/cuadernillos',
+            icon: <MenuOutlined />,
+            label: 'Cuadernillos',
+            onClick: () => navigate('/cuadernillos')
+        });
+
     }
 
     const userMenuItems = [
