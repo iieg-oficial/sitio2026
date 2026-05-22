@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from enum import Enum
-from app.models import MunicipioEnum
+from app.models.cuadernillos import MunicipioEnum
 
 class CuadernilloCreate(BaseModel):
     titulo: str

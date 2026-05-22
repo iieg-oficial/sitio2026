@@ -11,10 +11,21 @@ export default function Cuadernillos() {
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [editingCuadernillo, setEditingCuadernillo] = useState(null);
+    const [municipios, setMunicipios] = useState([]);
     
     useEffect(() => {
         fetchCuadernillos();
+        fetchMunicipios();
     }, []);
+
+    const fetchMunicipios = async () => {
+        try {
+            const response = await api.get('/cuadernillos/municipios');
+            setMunicipios(response.data.municipios || {});
+        } catch (error) {
+            message.error('Error al obtener los municipios');
+        }
+    }
 
     const fetchCuadernillos = async () => {
         setLoading(true);
@@ -103,7 +114,7 @@ export default function Cuadernillos() {
 
     return (
         <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
                 <Title level={2}>Cuadernillos</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
                     Nuevo Cuadernillo
@@ -146,6 +157,14 @@ export default function Cuadernillos() {
                                 form.setFieldsValue({ archivo: media.url })
                             }
                         />
+                        <Form.Item name="archivo" noStyle>
+                            <Input placeholder="URL del archivo" />
+                        </Form.Item>
+                        {form.getFieldValue('archivo') ? (
+                            <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">
+                                Ver Archivo
+                            </a>
+                        ) : null}
                     </Space>
                 </Form.Item>
                 <Form.Item name="municipio" label="Municipio" rules={[{ required: true, message: 'Por favor selecciona el municipio' }]}>
@@ -153,17 +172,16 @@ export default function Cuadernillos() {
                         placeholder="Selecciona un municipio"
                         allowClear
                         showSearch
-                        optionFilterProp="children"
+                        optionFilterProp="label"
                         filterOption={(input, option) =>
-                            option.children.toLowerCase().includes(input.toLowerCase())
+                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
                         }
-                    >
-                        {municipios.map((municipio) => (
-                            <Option key={municipio.id} value={municipio.id}>
-                                {municipio.nombre}
-                            </Option>
-                        ))}
-                    </Select>
+                        options={Object.entries(municipios).map(([key, value]) => ({
+                            key,
+                            value,
+                            label: value,
+                        }))}
+                    />
                 </Form.Item>
                 <Form.Item name="anyo" label="Año" rules={[{ required: true, message: 'Por favor ingresa el año' }]}>
                     <Input />

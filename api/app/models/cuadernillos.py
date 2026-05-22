@@ -1,8 +1,9 @@
+import enum
 from sqlalchemy import Column, Integer, String, Enum
 from app.core.database import Base
 
 
-class MunicipioEnum(str, Enum):
+class MunicipioEnum(str, enum.Enum):
     acatic = "Acatic"
     acatlan_de_juarez = "Acatlán de Juárez"
     ahualulco_de_mercado = "Ahualulco de Mercado"
