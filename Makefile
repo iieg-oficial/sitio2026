@@ -27,7 +27,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-reportes import-posts setup
+.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-reportes import-posts install-api-dep install-slugify setup
 
 help:
 	@echo ''
@@ -58,6 +58,8 @@ help:
 	@echo '  ${YELLOW}make import-data SCRIPT=api/scripts/import_reportes_data.py SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Ejecuta un importador genérico'
 	@echo '  ${YELLOW}make import-reportes SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Alias para el importador de reportes'
 	@echo '  ${YELLOW}make import-posts SOURCE=api/scripts/examples/posts_import_example.csv${RESET} - Alias para el importador de posts'
+	@echo '  ${YELLOW}make install-api-dep DEP=python-slugify${RESET} - Instala una dependencia Python en el contenedor api'
+	@echo '  ${YELLOW}make install-slugify${RESET} - Instala python-slugify en el contenedor api'
 	@echo ''
 	@echo '${GREEN}Setup inicial:${RESET}'
 	@echo '  ${YELLOW}make setup${RESET}       - Crea .env.development y .env.production desde los .example si no existen'
@@ -124,6 +126,14 @@ import-reportes:
 
 import-posts:
 	@$(MAKE) import-data ENV=$(ENV) SCRIPT=api/scripts/import_posts_data.py SOURCE="$(SOURCE)" MODE="$(MODE)" LIMIT="$(LIMIT)" DRY_RUN="$(DRY_RUN)" ARGS="$(ARGS)"
+
+install-api-dep:
+	@test -n "$(DEP)" || { echo "${RED}Uso: make install-api-dep DEP=python-slugify [ENV=dev|prod|gcp]${RESET}"; exit 1; }
+	@echo "${GREEN}Instalando dependencia Python $(DEP) en api ($(MSG_ENV))...${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api pip install "$(DEP)"
+
+install-slugify:
+	@$(MAKE) install-api-dep ENV=$(ENV) DEP=python-slugify
 
 setup:
 	@./scripts/init-env.sh
