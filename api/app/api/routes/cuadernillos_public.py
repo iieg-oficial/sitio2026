@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from slugify import slugify
 from app.api.deps import get_db
 from app.models import Cuadernillo
 from app.schemas import CuadernilloOut, CuadernilloResponse
@@ -10,15 +9,15 @@ router = APIRouter(prefix="/cuadernillos", tags=["public - cuadernillos"])
 @router.get("", response_model=CuadernilloResponse)
 def read_cuadernillos(
     db: Session = Depends(get_db),
-    limit: int = 10,
-    offset: int = 0,
+    limit: int = 125,
+    skip: int = 0,
 ):
     """Obtener todos los cuadernillos"""
-    cuadernillos = db.query(Cuadernillo).offset(offset).limit(limit).all()
-    total = db.query(Cuadernillo).count()
+    cuadernillos = db.query(Cuadernillo).offset(skip).limit(limit).all()
+
     return {
         "cuadernillos": cuadernillos,
-        "total": total,
+        "total": len(cuadernillos),
     }
 
 @router.get("/{slug}", response_model=CuadernilloOut)
