@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Cuadernillo, Usuario
+from app.models.cuadernillos import MunicipioEnum
 from app.schemas import CuadernilloCreate, CuadernilloOut, CuadernilloResponse
 
 router = APIRouter(prefix="/cuadernillos", tags=["cuadernillos"])
@@ -18,7 +19,8 @@ def read_cuadernillos(
         "total": len(cuadernillos),
     }
 
-@router.post("/create", response_model=CuadernilloOut, status_code=status.HTTP_201_CREATED)
+
+@router.post("/", response_model=CuadernilloOut, status_code=status.HTTP_201_CREATED)
 def create_cuadernillo(
     cuadernillo: CuadernilloCreate,
     db: Session = Depends(get_db),
@@ -92,6 +94,16 @@ def delete_cuadernillo(
     db.commit()
     return {"message": "Cuadernillo eliminado correctamente"}
 
+@router.get("/municipios")
+def get_municipios(
+):
+    return {
+        "municipios": {
+            municipio.name: municipio.value for municipio in MunicipioEnum
+        }
+    }
+
+
 @router.get("/{slug}", response_model=CuadernilloOut)
 def get_cuadernillo_slug(
     slug: str,
@@ -104,4 +116,4 @@ def get_cuadernillo_slug(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Cuadernillo no encontrado",
         )
-    return cuadernillo  
+    return cuadernillo
