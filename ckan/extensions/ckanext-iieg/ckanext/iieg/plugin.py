@@ -1,12 +1,14 @@
+# pyrefly: ignore [missing-import]
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from ckan.common import config
-
+from ckanext.iieg.views import iieg_blueprint
 
 class IIEGThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.ITranslation)
+    plugins.implements(plugins.IBlueprint)
 
     def update_config(self, config_):
         # Keep CKAN defaults untouched; only provide extension resources.
@@ -31,3 +33,6 @@ class IIEGThemePlugin(plugins.SingletonPlugin):
 
     def _show_debug_badge(self):
         return toolkit.asbool(config.get("ckanext.iieg.show_debug_badge", False))
+
+    def get_blueprint(self):
+        return iieg_blueprint
