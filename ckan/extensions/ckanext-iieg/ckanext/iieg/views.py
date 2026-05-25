@@ -9,3 +9,7 @@ iieg_blueprint = Blueprint('iieg', __name__)
 def privacidad_page():
     # toolkit.render se encarga de buscar la plantilla en tu carpeta de templates
     return toolkit.render('pages/privacy.html')
+
+@iieg_blueprint.route('/terminos')
+def terminos_page():
+    return toolkit.render('pages/terms.html')
