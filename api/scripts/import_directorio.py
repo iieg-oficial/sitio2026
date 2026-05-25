@@ -17,8 +17,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--key-field",
-        default=None,
-        help="Campo para upsert. Si se omite, se detecta automáticamente",
+        default="slug",
+        help="Campo para upsert (por defecto: slug)",
     )
     parser.add_argument("--limit", type=int, default=None, help="Procesa solo los primeros N")
     parser.add_argument(
