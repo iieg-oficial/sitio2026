@@ -1,109 +1,96 @@
 {% ckan_extends %}
 
-{% block header_account_container_content %}
-  {% if c.userobj %}
-    {{ super() }}
-  {% else %}
-    <nav class="account not-authed" aria-label="{{ _('Account') }}">
-      <ul class="list-unstyled">
-        {% block header_account_notlogged %}
-        {% endblock %}
-      </ul>
-    </nav>
-  {% endif %}
-  {% block top_links %}
-    <ul class="nav nav-pills">
-      <li><a href="https://www.stadt-zuerich.ch/opendata">Open Data Portal</a></li>
-      <li><a href="https://www.stadt-zuerich.ch/de/politik-und-verwaltung/statistik-und-daten/open-government-data/anwendungen.html">Anwendungen</a></li>
-      <li><a href="https://www.stadt-zuerich.ch/de/politik-und-verwaltung/statistik-und-daten/open-government-data/werkstatt.html">Werkstatt</a></li>
-      <li><a href="https://twitter.com/OpenDataZurich" target="_blank"><i class="fa-brands fa-twitter"></i></a></li>
-      <li><a href="mailto:opendata@zuerich.ch"><i class="fa fa-envelope header-icon"></i></a></li>
-    </ul>
-  {% endblock %}
-{% endblock %}
+{% block header_wrapper %} 
 
-{% block header_logo %}
-  {% if g.site_logo %}
-  {% set logo_path = g.site_logo %}
-  {% if logo_path.startswith('/datos-abiertos/') %}
-  {% set logo_path = logo_path.replace('/datos-abiertos', '', 1) %}
-  {% endif %}
-  <a class="logo" href="{{ h.url_for('home.index') }}">
-    <img
-      src="{{ h.url_for_static_or_external(logo_path) }}"
-      alt="{{ g.site_title }}"
-      title="{{ g.site_title }}"
-    />
-  </a>
-  {% else %}
-  <h1>
-    <a href="{{ h.url_for('home.index') }}">{{ g.site_title }}</a>
-  </h1>
-  {% if g.site_description %}
-  <h2>{{ g.site_description }}</h2>
-  {% endif %}
-  {% endif %}
+  <header class="header-custom masthead">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <hgroup class="{{ g.header_class }} navbar-left">
+          {% block header_logo %}
+            {% if g.site_logo %}
+              {% set logo_path = g.site_logo %}
+              {% if logo_path.startswith('/datos-abiertos/') %}
+                {% set logo_path = logo_path.replace('/datos-abiertos', '', 1) %}
+              {% endif %}
+                <a class="logo" href="{{ h.url_for('home.index') }}">
+                  <img
+                    src="{{ h.url_for_static_or_external(logo_path) }}"
+                    alt="{{ g.site_title }}"
+                    title="{{ g.site_title }}"
+                  />
+                </a>
+            {% else %}
+              <h1>
+                <a href="{{ h.url_for('home.index') }}">{{ g.site_title }}</a>
+              </h1>
+              {% if g.site_description %}
+                <h2>{{ g.site_description }}</h2>
+              {% endif %}
+            {% endif %}
 
-  {% if h.iieg_show_debug_badge() %}
-  <span class="label label-info" style="margin-left:8px;">iieg theme</span>
-  {% endif %}
+            {% if h.iieg_show_debug_badge() %}
+              <span class="label label-info" style="margin-left:8px;">iieg theme</span>
+            {% endif %}    
+          {% endblock %}
+        </hgroup>
 
-  
-{% endblock %}
-
-{% block header_site_navigation %}
-  <nav class="collapse navbar-collapse" id="main-navigation">
-    <ul class="nav navbar-nav">
-      {# Link a Conjuntos de datos (Dataset) #}
-      <li><a href="{% url_for 'dataset.search' %}">{{ _('Datasets') }}</a></li>
-      
-      {# Link a Organizaciones #}
-      <li><a href="{% url_for 'organization.index' %}">{{ _('Organizations') }}</a></li>
-      
-      {# TU NUEVO LINK PERSONALIZADO #}
-      <li><a href="https://iieg.gob.mx" target="_blank">{{ _('IIEG Main Site') }}</a></li>
-      <li><a href="/acerca-de">{{ _('About') }}</a></li>
-    </ul>
-  </nav>
-{% endblock %}
-
-{% block header_account %}
-  {# Esta sección controla lo que sale arriba a la derecha (Login/Registro o Perfil de usuario) #}
-  <div class="header-account-wrapper pt-2">
-    <nav class="account navbar-right container">
-      <ul class="nav navbar-nav float-end">
-        {% if c.userobj %}
-          {# Si el usuario YA inició sesión #}
-          <li>
-            <a href="{% url_for 'user.read', id=c.userobj.name %}">
-              <i class="fa fa-user"></i> {{ _('My Profile') }} ({{ c.userobj.display_name }})
-            </a>
-          </li>
+    {% block header_site_navigation %}
+      <div class="main-navbar collapse navbar-collapse" id="main-navigation-toggle">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          {# Link a Conjuntos de datos (Dataset) #}
+          <li><a href="{% url_for 'dataset.search' %}">{{ _('Datasets') }}</a></li>
           
-          {# Solo el administrador del sitio puede ver el enlace de registro #}
-          {% if c.userobj.sysadmin %}
-          <li>
-            <a href="{% url_for 'user.register' %}">
-              <i class="fa fa-user-plus"></i> {{ _('Register New User') }}
-            </a>
-          </li>
-          {% endif %}
+          {# Link a Organizaciones #}
+          <li><a href="{% url_for 'organization.index' %}">{{ _('Organizations') }}</a></li>
+          
+          {# TU NUEVO LINK PERSONALIZADO #}
+          <li><a href="https://iieg.gob.mx" target="_blank">{{ _('IIEG Main Site') }}</a></li>
+          <li><a href="/acerca-de">{{ _('About') }}</a></li>      
+        </ul>
+      </div>
+    {% endblock %}
 
-          <li>
-            <a href="{% url_for 'user.logout' %}" title="{{ _('Log out') }}">
-              <i class="fa fa-sign-out"></i> {{ _('Log out') }}
-            </a>
-          </li>
-        {% else %}
-          {# Si el usuario NO ha iniciado sesión #}
-          <li>
-            <a href="{% url_for 'user.login' %}">
-              <i class="fa fa-sign-in"></i> {{ _('Log in') }}
-            </a>
-          </li>
-          {# El enlace de registro fue movido arriba para que solo lo vea el admin #}
-        {% endif %}
-      </ul>
-    </nav>
-  </div>
+    {% block header_account %}
+      {# Esta sección controla lo que sale arriba a la derecha (Login/Registro o Perfil de usuario) #}
+      <div class="header-account-wrapper pt-2">
+        <nav class="account navbar-right container">
+          <ul class="nav navbar-nav float-end">
+            {% if c.userobj %}
+              {# Si el usuario YA inició sesión #}
+              <li>
+                <a href="{% url_for 'user.read', id=c.userobj.name %}">
+                  <i class="fa fa-user"></i> {{ _('My Profile') }} ({{ c.userobj.display_name }})
+                </a>
+              </li>
+              
+              {# Solo el administrador del sitio puede ver el enlace de registro #}
+              {% if c.userobj.sysadmin %}
+              <li>
+                <a href="{% url_for 'user.register' %}">
+                  <i class="fa fa-user-plus"></i> {{ _('Register New User') }}
+                </a>
+              </li>
+              {% endif %}
+
+              <li>
+                <a href="{% url_for 'user.logout' %}" title="{{ _('Log out') }}">
+                  <i class="fa fa-sign-out"></i> {{ _('Log out') }}
+                </a>
+              </li>
+            {% else %}
+              {# Si el usuario NO ha iniciado sesión #}
+              <li>
+                <a href="{% url_for 'user.login' %}">
+                  <i class="fa fa-sign-in"></i> {{ _('Log in') }}
+                </a>
+              </li>
+              {# El enlace de registro fue movido arriba para que solo lo vea el admin #}
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    {% endblock %}
+
+    </div>
+  </header>
 {% endblock %}
