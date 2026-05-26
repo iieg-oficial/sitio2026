@@ -47,7 +47,8 @@ class MapaOut(BaseModel):
     sitio_web: Optional[str] = None
     informacion: Optional[str] = None
     imagen: Optional[str] = None
-    archivo: Optional[str] = Noneslug: Optional[str] = None
+    archivo: Optional[str] = None
+    slug: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -56,3 +57,7 @@ class MapaResponse(BaseModel):
     mapas: List[MapaOut]
     anyo: int = None
     total: int
+
+
+class MapaTiposResponse(BaseModel):
+    tipos: dict[str, str]
