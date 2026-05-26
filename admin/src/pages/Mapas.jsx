@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, DatePicker, Image } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, DatePicker, Image, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
@@ -13,9 +13,11 @@ export default function Mapas() {
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [editingMapa, setEditingMapa] = useState(null);
+    const [tipoMapa, setTipoMapa] = useState([]);
 
     useEffect(() => {
         fetchMapas();
+        fetchTipoMapa();
     }, []);
 
     const fetchMapas = async () => {
@@ -29,6 +31,15 @@ export default function Mapas() {
             setLoading(false);
         }
     };
+
+    const fetchTipoMapa = async () => {
+        try {
+            const response = await api.get('/mapas/tipos');
+            setTipoMapa(response.data.tipos);
+        } catch {
+            message.error('Error al cargar tipos de mapa');
+        }
+    }
 
     const handleCreate = () => {
         setEditingMapa(null);
@@ -91,10 +102,10 @@ export default function Mapas() {
             sorter: (a, b) => a.anyo - b.anyo
         },
         {
-            title: 'Información',
-            dataIndex: 'informacion',
-            key: 'informacion',
-            render: (text) => text ? <span>{text.length > 100 ? `${text.substring(0, 100)}...` : text}</span> : <span style={{ fontStyle: 'italic', color: '#888' }}>Sin información</span>
+            title: 'Tipo',
+            dataIndex: 'tipo',
+            key: 'tipo',
+            render: (text) => text ? <span>{text}</span> : <span style={{ fontStyle: 'italic', color: '#888' }}>Sin tipo</span>
         },
         {
             title: 'Imagen',
@@ -141,6 +152,28 @@ export default function Mapas() {
                         rules={[{ required: true, message: 'Por favor ingresa el título' }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item name="tipo" label="Tipo de Mapa" rules={[{ required: false, message: 'Por favor selecciona el tipo de mapa' }]}>
+                        <Select 
+                        placeholder="Selecciona el tipo de mapa" 
+                        allowClear
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        options={Object.entries(TipoMapaEnum).map(([key, value]) => ({ 
+                            key,
+                            value,
+                            label: value, 
+                        }))} />
+                    </Form.Item>
+                    <Form.Item
+                        name="autor"
+                        label="Autor"
+                        rules={[{ required: false, message: 'Por favor selecciona el autor' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                     <Form.Item
                         name="anyo"
                         label="Año"
@@ -148,6 +181,62 @@ export default function Mapas() {
                     >
                         <Input type="number" min={0} />
                     </Form.Item>
+                    <Form.Item
+                        name="area"
+                        label="Área"
+                        rules={[{ required: false, message: 'Por favor ingresa el área' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="editor"
+                        label="Editor"
+                        rules={[{ required: false, message: 'Por favor selecciona el editor' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="medida"
+                        label="Medidas"
+                        rules={[{ required: false, message: 'Por favor selecciona las medidas' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="escala"
+                        label="Escala"
+                        rules={[{ required: false, message: 'Por favor selecciona la escala' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="edicion"
+                        label="Edición"
+                        rules={[{ required: false, message: 'Por favor selecciona la edición' }]}
+                    >
+                        <RichTextEditor />
+                    </Form.Item>
+                    <Form.Item 
+                        name="ubicacion" 
+                        label="Ubicación"
+                        rules={[{ required: true, message: 'Por favor ingresa la ubicación' }]}
+                        >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="sitio_web"
+                        label="Sitio Web"
+                        rules={[{ required: false, message: 'Por favor selecciona el sitio web' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="informacion"
+                        label="Información"
+                        rules={[{ required: false, message: 'Por favor ingresa la información' }]}
+                    >
+                        <RichTextEditor />
+                     </Form.Item>
                     <Form.Item
                         name="imagen"
                         label="Imagen"
@@ -171,13 +260,6 @@ export default function Mapas() {
                         </Space>
                     </Form.Item>
                     <Form.Item
-                        name="informacion"
-                        label="Información"
-                        rules={[{ required: false, message: 'Por favor ingresa la información' }]}
-                    >
-                        <RichTextEditor />
-                     </Form.Item>
-                    <Form.Item
                         name="archivo"
                         label="Archivo"
                         rules={[{ required: false, message: 'Por favor selecciona el archivo' }]}
@@ -200,62 +282,6 @@ export default function Mapas() {
                                 </a>
                             ) : null}
                         </Space>
-                    </Form.Item>
-                    <Form.Item
-                        name="autor"
-                        label="Autor"
-                        rules={[{ required: false, message: 'Por favor selecciona el autor' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="medida"
-                        label="Medidas"
-                        rules={[{ required: false, message: 'Por favor selecciona las medidas' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="escala"
-                        label="Escala"
-                        rules={[{ required: false, message: 'Por favor selecciona la escala' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="edicion"
-                        label="Edición"
-                        rules={[{ required: false, message: 'Por favor selecciona la edición' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="editor"
-                        label="Editor"
-                        rules={[{ required: false, message: 'Por favor selecciona el editor' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="sitio_web"
-                        label="Sitio Web"
-                        rules={[{ required: false, message: 'Por favor selecciona el sitio web' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item 
-                        name="ubicacion" 
-                        label="Ubicación"
-                        rules={[{ required: true, message: 'Por favor ingresa la ubicación' }]}
-                        >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item 
-                        name="informacion" 
-                        label="Información"
-                        rules={[{ required: true, message: 'Por favor ingresa la información' }]}
-                        >
-                        <RichTextEditor />
                     </Form.Item>
                 </Form>
             </Modal>
