@@ -85,6 +85,12 @@ export default function Modulos() {
             sorter: (a, b) => a.nombre.localeCompare(b.nombre)
         },
         {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id
+        },
+        {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (

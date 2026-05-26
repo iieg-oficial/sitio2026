@@ -91,6 +91,12 @@ export default function Instituciones() {
             render: (logo) => logo ? <Image src={logo} alt="Logo" style={{ maxWidth: 100 }} /> : 'Sin logo'
         },
         {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id
+        },
+        {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (
