@@ -118,9 +118,33 @@ def parse_bool(value: str) -> bool:
 
 def parse_enum(enum_type, value: str):
     text = value.strip()
+
+    def normalize(raw: str) -> str:
+        return slugify(raw, separator="_")
+
+    normalized_text = normalize(text)
+
+    enum_class = getattr(enum_type, "enum_class", None)
+    if enum_class is not None:
+        for member in enum_class:
+            member_name = str(member.name)
+            member_value = str(member.value)
+            if (
+                member_name.lower() == text.lower()
+                or member_value.lower() == text.lower()
+                or normalize(member_name) == normalized_text
+                or normalize(member_value) == normalized_text
+            ):
+                return member
+
     for candidate in enum_type.enums:
-        if str(candidate).lower() == text.lower():
+        candidate_text = str(candidate)
+        if (
+            candidate_text.lower() == text.lower()
+            or normalize(candidate_text) == normalized_text
+        ):
             return candidate
+
     raise ValueError(f"Valor enum inválido: {value}. Válidos: {enum_type.enums}")
 
 
