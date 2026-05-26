@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:8000/api/portal-admin';
+const API_URL = import.meta.env.VITE_ADMIN_API_URL || '/api/portal-admin';
 
 const api = axios.create({
     baseURL: API_URL,
