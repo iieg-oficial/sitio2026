@@ -106,7 +106,7 @@ function HomePage() {
                 <h2>Mapas</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <TrackedLink 
-                to="/mapas" 
+                to="/mapas-historicos" 
                 target="_self"
                 className="bg-blue-500 text-white mx-auto w-60 text-center block mt-5">
                     Ver todos los mapas

@@ -49,6 +49,7 @@ const router = createBrowserRouter([
             { path: '/comunidad/:slug', element: <PaginaIndividual /> },
             { path: '/capacitaciones/:slug', element: <PaginaIndividual /> },
             { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
+            { path: '/mapas-historicos/:slug', element: <PaginaIndividual /> },
             { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> }
         ],
     },
