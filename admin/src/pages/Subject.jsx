@@ -91,6 +91,12 @@ export default function Subject() {
             sorter: (a, b) => a.parent_id.localeCompare(b.parent_id)
         },
         {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id
+        },
+        {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (

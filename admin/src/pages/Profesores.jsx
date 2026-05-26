@@ -91,6 +91,12 @@ export default function Profesores() {
             render: (url) => url ? <Image src={url} alt="Foto del profesor" style={{ maxWidth: 100 }} /> : 'Sin foto'
         },
         {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id
+        },
+        {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (
