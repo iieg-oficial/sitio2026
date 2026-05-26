@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Mapa, Usuario     
+from app.models import Mapa, Usuario   
+from app.models.mapa import TipoMapaEnum  
 from app.schemas.mapa import MapaOut, MapaResponse, MapaCreate
 
 router = APIRouter(prefix="/mapas", tags=["mapa"])
@@ -34,17 +35,19 @@ def create_mapa(
     """Crear un nuevo mapa"""
     db_mapa = Mapa(
         titulo=mapa.titulo,
-        anyo=mapa.anyo,
-        imagen=mapa.imagen,
-        archivo=mapa.archivo,
+        tipo=mapa.tipo,
         autor=mapa.autor,
+        anyo=mapa.anyo,
+        area=mapa.area,
+        editor=mapa.editor,
         medida=mapa.medida,
         escala=mapa.escala,
         edicion=mapa.edicion,
-        editor=mapa.editor,
-        sitio_web=mapa.sitio_web,
-        ubicacion=mapa.ubicacion,        
-        informacion=mapa.informacion,
+        ubicacion=mapa.ubicacion, 
+        sitio_web=mapa.sitio_web,        
+        informacion=mapa.informacion,       
+        imagen=mapa.imagen,
+        archivo=mapa.archivo,
         slug=slug,
     )
     db.add(db_mapa)
@@ -103,6 +106,12 @@ def delete_mapa(
     db.delete(db_mapa)
     db.commit()
     return db_mapa
+
+@router.get("/tipos", response_model=MapaOut)
+def get_tipos_mapa():
+    """Obtener los tipos de mapa disponibles"""
+    tipos = [tipo.value for tipo in TipoMapaEnum]
+    return {"tipos": tipos}     
 
 @router.get("/slug/{slug}", response_model=MapaOut)
 def get_mapa_slug(
