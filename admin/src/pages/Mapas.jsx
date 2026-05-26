@@ -23,8 +23,8 @@ export default function Mapas() {
     const fetchMapas = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/mapas');
-            setMapas(response.data.mapas);
+            const response = await api.get('/mapas/');
+            setMapas(Array.isArray(response.data?.mapas) ? response.data.mapas : []);
         } catch {
             message.error('Error al cargar mapas');
         } finally {
