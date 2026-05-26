@@ -11,12 +11,15 @@ function PaginaPorSlug({ slug }) {
   useEffect(() => {
     const fetchPage = async () => {
       if (!slug) return;
+      setErrorNotFound(false);
+      setPage(null);
       try {
         const response = await api.get(`/paginas/slug/${slug}`);
         setPage(response.data);
       } catch(error) {
         if (error.response?.status === 404) {
           setErrorNotFound(true);
+          setPage(null);
         }
         console.error("Error al obtener la página:", error);
       } 

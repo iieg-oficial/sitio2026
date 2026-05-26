@@ -4,7 +4,7 @@ from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Mapa, Usuario   
 from app.models.mapa import TipoMapaEnum  
-from app.schemas.mapa import MapaOut, MapaResponse, MapaCreate
+from app.schemas.mapa import MapaOut, MapaResponse, MapaCreate, MapaTiposResponse
 
 router = APIRouter(prefix="/mapas", tags=["mapa"])
 
@@ -107,11 +107,13 @@ def delete_mapa(
     db.commit()
     return db_mapa
 
-@router.get("/tipos", response_model=MapaOut)
+@router.get("/tipos", response_model=MapaTiposResponse)
 def get_tipos_mapa():
-    """Obtener los tipos de mapa disponibles"""
-    tipos = [tipo.value for tipo in TipoMapaEnum]
-    return {"tipos": tipos}     
+    return {
+        "tipos": {
+            tipos.name: tipos.value for tipos in TipoMapaEnum
+        }
+    }
 
 @router.get("/slug/{slug}", response_model=MapaOut)
 def get_mapa_slug(

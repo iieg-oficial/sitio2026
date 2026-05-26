@@ -38,6 +38,8 @@ export default function Mapas() {
             setTipoMapa(response.data.tipos);
         } catch {
             message.error('Error al cargar tipos de mapa');
+        }finally {
+            setLoading(false);
         }
     }
 
@@ -161,7 +163,7 @@ export default function Mapas() {
                         filterOption={(input, option) =>
                             (option?.label || '').toLowerCase().includes(input.toLowerCase())
                         }
-                        options={Object.entries(TipoMapaEnum).map(([key, value]) => ({ 
+                        options={Object.entries(tipoMapa).map(([key, value]) => ({ 
                             key,
                             value,
                             label: value, 
