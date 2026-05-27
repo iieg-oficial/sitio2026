@@ -1,6 +1,35 @@
-import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Checkbox, Select } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useState, useEffect, useMemo } from 'react';
+import {
+    Card,
+    Typography,
+    Space,
+    Button,
+    Modal,
+    Form,
+    Input,
+    message,
+    Checkbox,
+    Select,
+    List,
+    Tag,
+} from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, HolderOutlined } from '@ant-design/icons';
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+    sortableKeyboardCoordinates,
+    useSortable,
+    arrayMove,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 
@@ -18,7 +47,8 @@ export default function Paginas() {
         setLoading(true);
         try {
             const res = await api.get('/paginas');
-            setPages(res.data.pages);
+            const normalizedPages = (res.data.pages || []).map(({ subpages, ...rest }) => rest);
+            setPages(normalizedPages);
         } catch (err) {
             console.error("Error fetching pages:", err);
         }
@@ -28,15 +58,11 @@ export default function Paginas() {
     };
 
     const fetchPagesTree = async () => {
-        setLoading(true);
         try {
             const res = await api.get('/paginas/tree');
             setPagesTree(flattenTree(res.data));
         } catch (err) {
             console.error("Error fetching pages tree:", err);
-        }
-        finally {
-            setLoading(false);
         }
     };
 
@@ -44,6 +70,26 @@ export default function Paginas() {
         fetchPages();
         fetchPagesTree();
     }, []);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    const pagesById = useMemo(() => {
+        const map = new Map();
+        pages.forEach((page) => map.set(page.id, page));
+        return map;
+    }, [pages]);
+
+    const flatOrderedPages = useMemo(() => flattenOrderedPages(pages), [pages]);
+    const sortableIds = useMemo(() => flatOrderedPages.map((page) => page.id), [flatOrderedPages]);
 
 
     const handleCreate = () => {
@@ -99,57 +145,58 @@ export default function Paginas() {
                 message.error(editingPage ? 'Error al actualizar página' : 'Error al crear página');
             }
         };
-    
-        const columns = [
-            {
-                title: 'Titulo',
-                dataIndex: 'title',
-                key: 'title',
-                sorter: (a, b) => a.title.localeCompare(b.title)
-            },
-            {
-                title: 'Padre',
-                dataIndex: 'parent_id',
-                key: 'parent_id',
-                render: (parent_id) => pages.find((p) => p.id === parent_id)?.title,
-                sorter: (a, b) => a.parent_id.localeCompare(b.parent_id)
-            },
-            {
-                title: 'Slug',
-                dataIndex: 'slug_custom',
-                key: 'slug_custom',
-                sorter: (a, b) => a.slug_custom.localeCompare(b.slug_custom)
-            },
-            {
-                title: '¿Es link interno?',
-                dataIndex: 'link_interno',
-                key: 'link_interno',
-                render: (text) => text ? 'Sí' : 'No'
-            },          
-            {
-                title: 'Acciones',
-                key: 'actions',
-                render: (_, record) => (
-                    <Space>
-                        <Button
-                            type="link"
-                            icon={<EditOutlined />}
-                            onClick={() => handleEdit(record)}
-                        >
-                            Editar
-                        </Button>
-                        <Button
-                            type="link"
-                            danger
-                            icon={<DeleteOutlined />}
-                            onClick={() => handleDelete(record)}
-                        >
-                            Eliminar
-                        </Button>
-                    </Space>
-                )
+
+        const persistOrder = async (nextPages) => {
+            const items = normalizeOrderPayload(nextPages);
+            await api.put('/paginas/reorder', { items });
+        };
+
+        const handleDragEnd = async ({ active, over }) => {
+            if (!over || active.id === over.id) return;
+
+            const activePage = flatOrderedPages.find((page) => page.id === active.id);
+            const overPage = flatOrderedPages.find((page) => page.id === over.id);
+
+            if (!activePage || !overPage) return;
+
+            if (activePage.parent_id !== overPage.parent_id) {
+                message.warning('Solo puedes reordenar páginas del mismo nivel');
+                return;
             }
-        ];
+
+            const siblings = flatOrderedPages.filter(
+                (page) => page.parent_id === activePage.parent_id
+            );
+
+            const oldIndex = siblings.findIndex((page) => page.id === active.id);
+            const newIndex = siblings.findIndex((page) => page.id === over.id);
+
+            if (oldIndex === -1 || newIndex === -1) return;
+
+            const reorderedSiblings = arrayMove(siblings, oldIndex, newIndex);
+            const siblingIds = new Set(siblings.map((page) => page.id));
+
+            const nextPages = pages.map((page) => {
+                if (!siblingIds.has(page.id)) return page;
+
+                const nextOrder = reorderedSiblings.findIndex((item) => item.id === page.id);
+                return {
+                    ...page,
+                    order: nextOrder,
+                };
+            });
+
+            setPages(nextPages);
+
+            try {
+                await persistOrder(nextPages);
+                message.success('Orden actualizado');
+            } catch (error) {
+                console.error('Error updating order:', error);
+                message.error('No se pudo actualizar el orden');
+                fetchPages();
+            }
+        };
 
     return (
         <div>
@@ -165,17 +212,34 @@ export default function Paginas() {
             </div>
 
             <Card>
-                <Table
-                    columns={columns}
-                    dataSource={pages}
-                    rowKey="id"
-                    loading={loading}
-                    pagination={{
-                        pageSize: 10,
-                        showSizeChanger: true,
-                        showTotal: (total) => `Total ${total} páginas`
-                    }}
-                />
+                <Typography.Paragraph type="secondary" style={{ marginBottom: 16 }}>
+                    Arrastra con el icono para cambiar el orden. El menú público usa este mismo orden.
+                </Typography.Paragraph>
+
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                >
+                    <SortableContext items={sortableIds} strategy={verticalListSortingStrategy}>
+                        <List
+                            loading={loading}
+                            dataSource={flatOrderedPages}
+                            locale={{ emptyText: 'No hay páginas registradas' }}
+                            renderItem={(item) => (
+                                <SortablePageItem
+                                    key={item.id}
+                                    item={item}
+                                    parentTitle={
+                                        item.parent_id ? pagesById.get(item.parent_id)?.title : null
+                                    }
+                                    onEdit={handleEdit}
+                                    onDelete={handleDelete}
+                                />
+                            )}
+                        />
+                    </SortableContext>
+                </DndContext>
             </Card>
 
             <Modal
@@ -212,6 +276,13 @@ export default function Paginas() {
                         initialValue={true}
                         >
                         <Checkbox>¿Es link interno?</Checkbox>
+                    </Form.Item>
+                    <Form.Item 
+                        name="activar" 
+                        valuePropName="checked"
+                        initialValue={true}
+                        >
+                        <Checkbox>¿Activar página?</Checkbox>
                     </Form.Item>
                     <Form.Item
                         label="Slug"
@@ -269,7 +340,128 @@ export default function Paginas() {
 
 function flattenTree(pagesTree, depth = 0) {
     return pagesTree.flatMap((page) => {
-        const { children = [], ...rest } = page;
-        return [{ ...rest, depth }, ...flattenTree(children, depth + 1)];
+        const { subpages = [], ...rest } = page;
+        return [{ ...rest, depth }, ...flattenTree(subpages, depth + 1)];
     });
+}
+
+function flattenOrderedPages(items) {
+    const buildTree = (parentId = null) => {
+        return items
+            .filter((item) => item.parent_id === parentId)
+            .sort((a, b) => {
+                const orderA = typeof a.order === 'number' ? a.order : Number.MAX_SAFE_INTEGER;
+                const orderB = typeof b.order === 'number' ? b.order : Number.MAX_SAFE_INTEGER;
+                if (orderA !== orderB) return orderA - orderB;
+                return a.id - b.id;
+            })
+            .map((item) => ({
+                ...item,
+                children: buildTree(item.id),
+            }));
+    };
+
+    const flatten = (tree, depth = 0) => {
+        return tree.flatMap(({ children, ...rest }) => [
+            { ...rest, depth },
+            ...flatten(children, depth + 1),
+        ]);
+    };
+
+    return flatten(buildTree());
+}
+
+function normalizeOrderPayload(items) {
+    const grouped = items.reduce((acc, item) => {
+        const key = item.parent_id ?? 'root';
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(item);
+        return acc;
+    }, {});
+
+    return Object.values(grouped).flatMap((siblings) => {
+        return [...siblings]
+            .sort((a, b) => {
+                const orderA = typeof a.order === 'number' ? a.order : Number.MAX_SAFE_INTEGER;
+                const orderB = typeof b.order === 'number' ? b.order : Number.MAX_SAFE_INTEGER;
+                if (orderA !== orderB) return orderA - orderB;
+                return a.id - b.id;
+            })
+            .map((item, order) => ({
+                id: item.id,
+                parent_id: item.parent_id,
+                order,
+            }));
+    });
+}
+
+function SortablePageItem({ item, parentTitle, onEdit, onDelete }) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: item.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.6 : 1,
+        background: '#fff',
+        border: '1px solid #f0f0f0',
+        borderRadius: 8,
+        marginBottom: 10,
+        marginLeft: item.depth * 24,
+        padding: '12px 16px',
+    };
+
+    return (
+        <List.Item ref={setNodeRef} style={style}>
+            <div style={{ width: '100%' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 12,
+                        width: '100%',
+                    }}
+                >
+                    <Space>
+                        <Button
+                            type="text"
+                            icon={<HolderOutlined />}
+                            {...attributes}
+                            {...listeners}
+                            style={{ cursor: 'grab' }}
+                        />
+                        <div>
+                            <div style={{ fontWeight: 600 }}>{item.title}</div>
+                            <Space size={8} wrap>
+                                <Tag>{item.slug_custom}</Tag>
+                                {parentTitle && <Tag color="blue">Padre: {parentTitle}</Tag>}
+                                <Tag color={item.link_interno ? 'green' : 'gold'}>
+                                    {item.link_interno ? 'Interno' : 'Externo'}
+                                </Tag>
+                                <Tag color={item.activar ? 'success' : 'default'}>
+                                    {item.activar ? 'Activo' : 'Inactivo'}
+                                </Tag>
+                            </Space>
+                        </div>
+                    </Space>
+
+                    <Space>
+                        <Button type="link" icon={<EditOutlined />} onClick={() => onEdit(item)}>
+                            Editar
+                        </Button>
+                        <Button type="link" danger icon={<DeleteOutlined />} onClick={() => onDelete(item)}>
+                            Eliminar
+                        </Button>
+                    </Space>
+                </div>
+            </div>
+        </List.Item>
+    );
 }
