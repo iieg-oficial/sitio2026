@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async'
 
 function Post() {
     const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const keys = ['titulo', 'resumen', 'contenido', 'keywords', 'subject.titulo'];
 
@@ -30,7 +31,9 @@ function Post() {
 
     const showData = async () => {
         const response = await api.get('/posts');
-        setPosts(response.data);  
+        const data = response.data;
+        // La API puede devolver un array directamente o un objeto paginado
+        setPosts(Array.isArray(data) ? data : data?.items ?? data?.data ?? []);
     }
 
     useEffect(() => {
@@ -47,11 +50,11 @@ function Post() {
         });
 
     const endOffset = itemOffset + itemsPerPage;
-    const currentItems = filteredPosts.slice(itemOffset, endOffset);
-    const pageCount = Math.ceil(filteredPosts.length / itemsPerPage);
+    const currentItems = filteredPosts?.slice(itemOffset, endOffset);
+    const pageCount = Math.ceil(filteredPosts?.length / itemsPerPage);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % filteredPosts.length;
+        const newOffset = (event.selected * itemsPerPage) % filteredPosts?.length;
         setItemOffset(newOffset);
     };
 
@@ -62,9 +65,9 @@ function Post() {
     return (
         <>
     <Helmet>
-        <title>{page.title}</title>
-        {page.description_meta && <meta name="description" content={page.description_meta} />}
-        {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
+        <title>{page?.title }</title>
+        {page?.description_meta && <meta name="description" content={page.description_meta} />}
+        {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
     </Helmet>
         <div>
             <h1>Comunidad</h1>       

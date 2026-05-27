@@ -5,10 +5,18 @@ import TrackedLink from '@components/blocks/boton'
 import HeaderSearch from '@components/HeaderSearch'
 import './Navbardinamic.css'
 
+const sortByOrder = (a, b) => {
+  const orderA = Number.isInteger(a.order) ? a.order : Number.MAX_SAFE_INTEGER;
+  const orderB = Number.isInteger(b.order) ? b.order : Number.MAX_SAFE_INTEGER;
+
+  if (orderA !== orderB) return orderA - orderB;
+  return a.id - b.id;
+};
+
 const Navbardinamic = () => {
   const [menuItems, setMenuItems] = useState([]);
-  const [isOpen, setIsOpen] = useState(false); // ESTADO: Controla si el menú se ve o no
-  const [activeSubmenus, setActiveSubmenus] = useState({}); // Controla submenús abiertos
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeSubmenus, setActiveSubmenus] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -72,7 +80,8 @@ const Navbardinamic = () => {
               <TrackedLink to="/">Inicio</TrackedLink>
               </li>
             {menuItems
-              .filter(item => item.parent_id === null) // Filtro de padres para evitar duplicados
+              .filter(item => item.parent_id === null && item.activar === true) // Filtro de padres para evitar duplicados
+              .sort(sortByOrder)
               .map(item => (
                 <li key={item.id} className={`menu-link ${item.subpages && item.subpages.length > 0 ? 'has-subnav' : ''}`}>
                   <TrackedLink
@@ -94,13 +103,16 @@ const Navbardinamic = () => {
                   {/* Subpáginas (si existen) */}
                   {item.subpages && item.subpages.length > 0 && (
                     <ul className={`sub-menu ${activeSubmenus[item.id] ? 'active' : ''}`}>
-                      {item.subpages.map(subItem => (
-                        <li key={subItem.id}>
-                          <TrackedLink to={subItem.slug_custom} className="nav-link">
-                            {subItem.title}
-                          </TrackedLink>
-                        </li>
-                      ))}
+                      {item.subpages
+                        .filter(subItem => subItem.activar === true)
+                        .sort(sortByOrder)
+                        .map(subItem => (
+                          <li key={subItem.id}>
+                            <TrackedLink to={subItem.slug_custom} className="nav-link">
+                              {subItem.title}
+                            </TrackedLink>
+                          </li>
+                        ))}
                     </ul>
                   )}
                 </li>
