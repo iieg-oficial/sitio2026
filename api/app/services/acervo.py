@@ -1,71 +1,117 @@
-from io import BytesIO
+from datetime import datetime
 
-import urllib3
+import boto3
+from botocore.client import Config
+from botocore.exceptions import ClientError
 from fastapi import UploadFile
-from minio import Minio
-from minio.error import S3Error
 
 from app.core.settings import get_settings
 
 settings = get_settings()
 
+PORTAL_BUCKET = "portal"
+IIEG_BUCKET = "iieg"
+
 
 class AcervoService:
     def __init__(self):
-        http_client = None
-        if settings.acervo_use_ssl and not settings.acervo_verify_ssl:
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-            http_client = urllib3.PoolManager(
-                cert_reqs="CERT_NONE",
-                retries=urllib3.Retry(total=3, backoff_factor=0.5),
-            )
-
-        self.client = Minio(
-            settings.acervo_endpoint,
-            access_key=settings.acervo_access_key,
-            secret_key=settings.acervo_secret_key,
-            secure=settings.acervo_use_ssl,
-            http_client=http_client,
+        endpoint_url = settings.acervo_s3_url
+        config = Config(
+            signature_version="s3v4",
+            s3={"addressing_style": "path"},
         )
-        self.bucket_name = settings.acervo_bucket_name
-        self._ensure_bucket_exists()
 
-    def _ensure_bucket_exists(self):
-        try:
-            if not self.client.bucket_exists(self.bucket_name):
-                self.client.make_bucket(self.bucket_name)
-        except S3Error:
-            pass
+        self._clients: dict[str, "boto3.client"] = {
+            settings.acervo_bucket_name: boto3.client(
+                "s3",
+                endpoint_url=endpoint_url,
+                aws_access_key_id=settings.acervo_access_key,
+                aws_secret_access_key=settings.acervo_secret_key,
+                region_name=settings.acervo_region,
+                config=config,
+                verify=settings.acervo_verify_ssl,
+            ),
+            settings.acervo_iieg_bucket_name: boto3.client(
+                "s3",
+                endpoint_url=endpoint_url,
+                aws_access_key_id=settings.acervo_iieg_access_key,
+                aws_secret_access_key=settings.acervo_iieg_secret_key,
+                region_name=settings.acervo_region,
+                config=config,
+                verify=settings.acervo_verify_ssl,
+            ),
+        }
+        self.default_bucket = settings.acervo_bucket_name
+        self._ensure_buckets_exist()
 
-    async def upload_file(self, file: UploadFile, object_name: str) -> str:
+    def _ensure_buckets_exist(self):
+        for bucket, client in self._clients.items():
+            try:
+                client.head_bucket(Bucket=bucket)
+            except ClientError as e:
+                code = e.response.get("Error", {}).get("Code", "")
+                if code in ("404", "NoSuchBucket"):
+                    try:
+                        client.create_bucket(Bucket=bucket)
+                    except ClientError:
+                        pass
+
+    def _client_for(self, bucket: str | None) -> tuple["boto3.client", str]:
+        bucket = bucket or self.default_bucket
+        if bucket not in self._clients:
+            raise ValueError(f"Bucket no configurado: {bucket}")
+        return self._clients[bucket], bucket
+
+    async def upload_file(
+        self, file: UploadFile, object_name: str, bucket: str | None = None
+    ) -> str:
+        client, bucket_name = self._client_for(bucket)
         try:
             file_data = await file.read()
-            file_size = len(file_data)
-
-            self.client.put_object(
-                self.bucket_name,
-                object_name,
-                BytesIO(file_data),
-                file_size,
-                content_type=file.content_type,
+            client.put_object(
+                Bucket=bucket_name,
+                Key=object_name,
+                Body=file_data,
+                ContentType=file.content_type or "application/octet-stream",
             )
-
-            scheme = "https" if settings.acervo_use_ssl else "http"
-            url = f"{scheme}://{settings.acervo_public_endpoint}/{self.bucket_name}/{object_name}"
-            return url
-        except S3Error as e:
+            return self.get_file_url(object_name, bucket=bucket_name)
+        except ClientError as e:
             raise Exception(f"Error uploading file: {str(e)}")
 
-    def delete_file(self, object_name: str) -> bool:
+    def delete_file(self, object_name: str, bucket: str | None = None) -> bool:
+        client, bucket_name = self._client_for(bucket)
         try:
-            self.client.remove_object(self.bucket_name, object_name)
+            client.delete_object(Bucket=bucket_name, Key=object_name)
             return True
-        except S3Error:
+        except ClientError:
             return False
 
-    def get_file_url(self, object_name: str) -> str:
+    def get_file_url(self, object_name: str, bucket: str | None = None) -> str:
+        _, bucket_name = self._client_for(bucket)
         scheme = "https" if settings.acervo_use_ssl else "http"
-        return f"{scheme}://{settings.acervo_public_endpoint}/{self.bucket_name}/{object_name}"
+        return f"{scheme}://{settings.acervo_public_endpoint}/{bucket_name}/{object_name}"
+
+    def list_objects(self, bucket: str | None = None, prefix: str | None = None) -> list[dict]:
+        client, bucket_name = self._client_for(bucket)
+        paginator = client.get_paginator("list_objects_v2")
+        kwargs = {"Bucket": bucket_name}
+        if prefix:
+            kwargs["Prefix"] = prefix
+
+        result = []
+        for page in paginator.paginate(**kwargs):
+            for obj in page.get("Contents", []):
+                result.append(
+                    {
+                        "name": obj["Key"],
+                        "size": obj.get("Size", 0),
+                        "last_modified": obj.get("LastModified") or datetime.utcnow(),
+                        "etag": obj.get("ETag", "").strip('"'),
+                        "content_type": None,
+                        "url": self.get_file_url(obj["Key"], bucket=bucket_name),
+                    }
+                )
+        return result
 
 
 _acervo_service: AcervoService | None = None

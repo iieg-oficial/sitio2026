@@ -1,100 +1,148 @@
 # Makefile para IIEG Portal
 # Gestiona comandos de desarrollo y producción para Docker Compose
 
-# Colores para output
 GREEN  := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
-WHITE  := $(shell tput -Txterm setaf 7)
+RED    := $(shell tput -Txterm setaf 1)
 RESET  := $(shell tput -Txterm sgr0)
 
 # Entorno por defecto: dev
 ENV ?= dev
 
 # Configuración según entorno
+# - dev:  desarrollo local (acervo y todo en la misma máquina via iieg-network)
+# - prod: producción "administración" (servidor aislado, acervo accedido por URL pública)
+# - gcp:  producción "GCP" (todo en la misma VM, base + overlay iieg-network)
 ifeq ($(ENV),prod)
-	COMPOSE_FILE := docker-compose.yml
-	ENV_FILE     := .env
-	MSG_ENV      := Producción
+	COMPOSE_FILES := -f docker-compose.yml
+	ENV_FILE      := .env.production
+	MSG_ENV       := Producción (administración)
+else ifeq ($(ENV),gcp)
+	COMPOSE_FILES := -f docker-compose.yml -f docker-compose.gcp.yml
+	ENV_FILE      := .env.production
+	MSG_ENV       := Producción (GCP)
 else
-	COMPOSE_FILE := docker-compose.dev.yml
-	ENV_FILE     := .env.development
-	MSG_ENV      := Desarrollo
+	COMPOSE_FILES := -f docker-compose.dev.yml
+	ENV_FILE      := .env.development
+	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build down logs restart clean shell-api shell-web shell-admin setup
+.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup
 
-## Muestra ayuda de comandos disponibles
 help:
 	@echo ''
 	@echo '${YELLOW}IIEG Portal - Comandos disponibles${RESET}'
 	@echo ''
-	@echo 'Uso: ${YELLOW}make <comando> [ENV=dev|prod]${RESET}'
-	@echo '     (Por defecto ENV=dev)'
+	@echo 'Uso: ${YELLOW}make <comando> [ENV=dev|prod|gcp]${RESET} (por defecto ENV=dev)'
 	@echo ''
-	@echo '${GREEN}Comandos Generales:${RESET}'
+	@echo '${GREEN}Entornos:${RESET}'
+	@echo '  ${YELLOW}dev${RESET}   - Desarrollo local (acervo en misma máquina via iieg-network)'
+	@echo '  ${YELLOW}prod${RESET}  - Producción administración (servidor aislado, acervo por URL pública)'
+	@echo '  ${YELLOW}gcp${RESET}   - Producción GCP (todo en una VM, conecta a iieg-network)'
+	@echo ''
+	@echo '${GREEN}Comandos:${RESET}'
 	@echo '  ${YELLOW}make up${RESET}          - Inicia el entorno (en segundo plano)'
 	@echo '  ${YELLOW}make build${RESET}       - Reconstruye e inicia el entorno'
-	@echo '  ${YELLOW}make down${RESET}        - Detiene todos los contenedores'
+	@echo '  ${YELLOW}make down${RESET}        - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}        - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}     - Reinicia el entorno'
+	@echo '  ${YELLOW}make clean${RESET}       - Borra contenedores, redes y volúmenes (pide confirmación, FORCE=1 lo salta)'
 	@echo ''
-	@echo '${GREEN}Utilidades:${RESET}'
-	@echo '  ${YELLOW}make clean${RESET}       - Elimina contenedores, redes y volúmenes (¡Cuidado!)'
-	@echo '  ${YELLOW}make shell-api${RESET}   - Entra a la terminal del contenedor API'
-	@echo '  ${YELLOW}make shell-web${RESET}   - Entra a la terminal del contenedor Web'
-	@echo '  ${YELLOW}make shell-admin${RESET} - Entra a la terminal del contenedor Admin'
-	@echo '  ${YELLOW}make setup${RESET}       - Crea archivos .env iniciales si no existen'
+	@echo '${GREEN}Shells (entran al contenedor del ENV actual):${RESET}'
+	@echo '  ${YELLOW}make shell-api${RESET}   - bash en api'
+	@echo '  ${YELLOW}make shell-ckan${RESET}  - bash en ckan'
+	@echo '  ${YELLOW}make shell-web${RESET}   - sh en web (sólo ENV=dev)'
+	@echo '  ${YELLOW}make shell-admin${RESET} - sh en admin (sólo ENV=dev)'
+	@echo '  ${YELLOW}make ckan-exec CMD="..."${RESET} - Ejecuta un comando ckan en el contenedor. Ej: make ckan-exec CMD="ckan generate extension"'
+	@echo '  ${YELLOW}make bucket-ls [PREFIX=datos-abiertos/]${RESET} - Lista archivos del bucket S3/SeaweedFS en consola'
+	@echo '  ${YELLOW}make import-data SCRIPT=api/scripts/import_reportes_data.py SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Ejecuta un importador genérico'
+	@echo '  ${YELLOW}make import-one MODEL=mapa FILE=api/scripts/examples/mapa_import_example.csv${RESET} - Importa un archivo individual usando scripts/import_<modelo>.py'
+	@echo '  ${YELLOW}make import-mapa FILE=api/scripts/examples/mapa_import_example.csv${RESET} - Importa un archivo individual para mapa'
+	@echo '  ${YELLOW}make import-reportes SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Alias para el importador de reportes'
+	@echo '  ${YELLOW}make import-posts SOURCE=api/scripts/examples/posts_import_example.csv${RESET} - Alias para el importador de posts'
+	@echo '  ${YELLOW}make install-api-dep DEP=python-slugify${RESET} - Instala una dependencia Python en el contenedor api'
+	@echo '  ${YELLOW}make install-slugify${RESET} - Instala python-slugify en el contenedor api'
 	@echo ''
-
-# =============================================================================
-# COMANDOS PRINCIPALES
-# =============================================================================
+	@echo '${GREEN}Setup inicial:${RESET}'
+	@echo '  ${YELLOW}make setup${RESET}       - Crea .env.development y .env.production desde los .example si no existen'
+	@echo ''
 
 up:
-	@echo "${GREEN}Iniciando entorno de $(MSG_ENV)...${RESET}"
-	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up -d
+	@echo "${GREEN}Iniciando entorno: $(MSG_ENV)${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
 
 build:
-	@echo "${GREEN}Reconstruyendo entorno de $(MSG_ENV)...${RESET}"
-	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) up -d --build
+	@echo "${GREEN}Reconstruyendo entorno: $(MSG_ENV)${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d --build
 
 down:
-	@echo "${YELLOW}Deteniendo entorno de $(MSG_ENV)...${RESET}"
-	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) down
+	@echo "${YELLOW}Deteniendo entorno: $(MSG_ENV)${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) down
 
 logs:
-	docker compose --env-file $(ENV_FILE) -f $(COMPOSE_FILE) logs -f
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) logs -f
 
 restart: down up
 
-# =============================================================================
-# UTILIDADES
-# =============================================================================
-
 clean:
-	@echo "${YELLOW}Limpiando sistema (contenedores, redes y volúmenes)...${RESET}"
-	docker compose -f docker-compose.dev.yml down -v --remove-orphans || true
-	docker compose -f docker-compose.yml down -v --remove-orphans || true
+	@echo "${RED}⚠ Esto borra contenedores, redes y volúmenes de TODOS los modos (dev/prod/gcp).${RESET}"
+	@echo "${RED}  Se perderán datos de Postgres, CKAN-db, Redis, Solr, SeaweedFS y Media.${RESET}"
+	@if [ "$(FORCE)" != "1" ]; then \
+		printf "Escribe ${YELLOW}yes${RESET} para confirmar: "; \
+		read confirm; \
+		[ "$$confirm" = "yes" ] || { echo "${YELLOW}Cancelado.${RESET}"; exit 1; }; \
+	fi
+	-docker compose --env-file .env.development -f docker-compose.dev.yml down -v --remove-orphans
+	-docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.gcp.yml down -v --remove-orphans
+	-docker compose --env-file .env.production -f docker-compose.yml down -v --remove-orphans
 
 shell-api:
-	docker compose -f $(COMPOSE_FILE) exec api /bin/bash
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec api /bin/bash
+
+shell-ckan:
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec ckan /bin/bash
 
 shell-web:
-	docker compose -f $(COMPOSE_FILE) exec web /bin/sh
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec web /bin/sh
 
 shell-admin:
-	docker compose -f $(COMPOSE_FILE) exec admin /bin/sh
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec admin /bin/sh
+
+ckan-exec:
+	@test -n "$(CMD)" || { echo "${RED}Uso: make ckan-exec CMD=\"ckan generate extension\"${RESET}"; exit 1; }
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec ckan $(CMD)
+
+bucket-ls:
+	@echo "${GREEN}Listando bucket ($(MSG_ENV))...${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python -c "import boto3, os; ep = os.environ.get('ACERVO_S3_URL') or ('http://' + os.environ.get('ACERVO_ENDPOINT')); bucket = os.environ.get('ACERVO_BUCKET_NAME'); prefix = os.environ.get('PREFIX', 'datos-abiertos/'); s3 = boto3.client('s3', endpoint_url=ep, aws_access_key_id=os.environ.get('ACERVO_ACCESS_KEY'), aws_secret_access_key=os.environ.get('ACERVO_SECRET_KEY'), verify=False); res = s3.list_objects_v2(Bucket=bucket, Prefix=prefix, MaxKeys=200); objs = res.get('Contents', []); print(f'Bucket: {bucket}'); print(f'Endpoint: {ep}'); print(f'Prefix: {prefix}'); print('---'); [print(f\"{o['LastModified']} | {o['Size']:>10} | {o['Key']}\") for o in objs] if objs else print('Sin archivos para ese prefijo')" \
+		PREFIX="$(PREFIX)"
+
+import-data:
+	@test -n "$(SCRIPT)" || { echo "${RED}Uso: make import-data SCRIPT=api/scripts/importador.py SOURCE=api/scripts/examples/datos.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@test -n "$(SOURCE)" || { echo "${RED}Uso: make import-data SCRIPT=api/scripts/importador.py SOURCE=api/scripts/examples/datos.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@echo "${GREEN}Ejecutando importador $(SCRIPT) en $(MSG_ENV) con fuente $(SOURCE)...${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python $(patsubst api/%,%,$(SCRIPT)) $(patsubst api/%,%,$(SOURCE)) $(if $(MODE),--mode $(MODE),) $(if $(LIMIT),--limit $(LIMIT),) $(if $(DRY_RUN),--dry-run,) $(ARGS)
+
+import-one:
+	@test -n "$(MODEL)" || { echo "${RED}Uso: make import-one MODEL=mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@test -n "$(FILE)" || { echo "${RED}Uso: make import-one MODEL=mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@test -f "api/scripts/import_$(MODEL).py" || { echo "${RED}No existe api/scripts/import_$(MODEL).py${RESET}"; exit 1; }
+	@test -f "$(FILE)" || { echo "${RED}No existe el archivo de entrada: $(FILE)${RESET}"; exit 1; }
+	@echo "${GREEN}Importando archivo individual ($(FILE)) con import_$(MODEL).py en $(MSG_ENV)...${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python scripts/import_$(MODEL).py $(patsubst api/%,%,$(FILE)) $(if $(MODE),--mode $(MODE),) $(if $(LIMIT),--limit $(LIMIT),) $(if $(DRY_RUN),--dry-run,) $(ARGS)
+
+import-mapa:
+	@test -n "$(FILE)" || { echo "${RED}Uso: make import-mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--key-field slug']${RESET}"; exit 1; }
+	@$(MAKE) import-one ENV=$(ENV) MODEL=mapa FILE=$(FILE) MODE=$(MODE) LIMIT=$(LIMIT) DRY_RUN=$(DRY_RUN) ARGS="$(if $(ARGS),$(ARGS),--key-field slug)"
+
+
+install-api-dep:
+	@test -n "$(DEP)" || { echo "${RED}Uso: make install-api-dep DEP=python-slugify [ENV=dev|prod|gcp]${RESET}"; exit 1; }
+	@echo "${GREEN}Instalando dependencia Python $(DEP) en api ($(MSG_ENV))...${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api pip install "$(DEP)"
+
+install-slugify:
+	@$(MAKE) install-api-dep ENV=$(ENV) DEP=python-slugify
 
 setup:
-	@if [ ! -f .env.development ]; then \
-		cp .env.example .env.development; \
-		echo "${GREEN}Creado .env.development desde ejemplo${RESET}"; \
-	else \
-		echo "${YELLOW}.env.development ya existe${RESET}"; \
-	fi
-	@if [ ! -f .env ]; then \
-		cp .env.example .env; \
-		echo "${GREEN}Creado .env desde ejemplo${RESET}"; \
-	else \
-		echo "${YELLOW}.env ya existe${RESET}"; \
-	fi
+	@./scripts/init-env.sh

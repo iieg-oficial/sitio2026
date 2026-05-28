@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import DocsIIEG, Usuario
 from app.schemas.docs_iieg import DocsIIEGCreate, DocsIIEGOut, DocsIIEGResponse
 from slugify import slugify
@@ -11,7 +11,6 @@ router = APIRouter(prefix="/docs_iieg", tags=["docs_iieg"])
 @router.get("/", response_model=DocsIIEGResponse)
 def get_docs_iieg(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los documentos del IIEG"""
     docs_iieg = db.query(DocsIIEG).all()
@@ -21,7 +20,7 @@ def get_docs_iieg(
 def create_docs_iieg(
     docs_iieg: DocsIIEGCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(docs_iieg.nombre)
     base_slug = slug
@@ -51,7 +50,7 @@ def update_docs_iieg(
     docs_iieg_id: int,
     docs_iieg: DocsIIEGCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Actualizar un documento del IIEG"""
     db_docs_iieg = db.query(DocsIIEG).filter(DocsIIEG.id == docs_iieg_id).first()
@@ -77,7 +76,7 @@ def update_docs_iieg(
 def delete_docs_iieg(
     docs_iieg_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un documento del IIEG"""
     db_docs_iieg = db.query(DocsIIEG).filter(DocsIIEG.id == docs_iieg_id).first()
@@ -94,7 +93,6 @@ def delete_docs_iieg(
 def get_docs_iieg_slug(
     slug: str,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener un documento del IIEG por slug"""
     db_docs_iieg = db.query(DocsIIEG).filter(DocsIIEG.slug == slug).first()

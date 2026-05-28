@@ -7,7 +7,7 @@ import MainProvider from '@providers/MainProvider';
 import Home from '@pages/Home';
 import DynamicPage from './components/pageComponents/DynamicPage';
 import Post from '@pages/Post';
-import Resultados from '@pages/Resultados';
+import BusquedaGlobal from '@pages/BusquedaGlobal';
 import PaginaIndividual from './components/pageComponents/PaginaIndividual'
 import ClasificadorCultivos from '@pages/ClasificadorCultivos'
 
@@ -43,11 +43,13 @@ const router = createBrowserRouter([
         children: [
             { index: true, element: <Home /> },
             { path: '/comunidad', element: <Post /> },
-            { path: '/resultados', element: <Resultados /> },
+            { path: '/resultados', element: <BusquedaGlobal /> },
+            { path: '/busqueda', element: <BusquedaGlobal /> },
             { path: '/:slug', element: <DynamicPage /> },
             { path: '/comunidad/:slug', element: <PaginaIndividual /> },
             { path: '/capacitaciones/:slug', element: <PaginaIndividual /> },
             { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
+            { path: '/mapas-historicos/:slug', element: <PaginaIndividual /> },
             { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> }
         ],
     },

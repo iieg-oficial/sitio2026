@@ -27,6 +27,8 @@ from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 from app.schemas.docs_iieg import DocsIIEGCreate, DocsIIEGOut, DocsIIEGResponse
 from app.schemas.banner import BannerCreate, BannerOut, BannerResponse
 from app.schemas.contacto import ContactoCreate, ContactoOut, ContactoResponse
+from app.schemas.cuadernillos import CuadernilloCreate, CuadernilloOut, CuadernilloResponse
+from app.schemas.search import SearchResultItem, SearchResponse
 
 __all__ = [ 
     "UsuarioCreate",
@@ -114,4 +116,9 @@ __all__ = [
     "ContactoCreate",
     "ContactoOut",
     "ContactoResponse",
+    "CuadernilloCreate",
+    "CuadernilloOut",
+    "CuadernilloResponse",
+    "SearchResultItem",
+    "SearchResponse",
 ]

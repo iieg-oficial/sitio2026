@@ -111,6 +111,24 @@ export default function Banner() {
             render: (val) => val ? 'Sí' : 'No',
         },
         {
+            title: 'Imagen',
+            dataIndex: 'imagen',
+            key: 'imagen',
+            render: (val) => <img src={val} alt="" style={{ width: 50, height: 50 }} />,
+        },
+        {
+            title: 'Imagen desktop',
+            dataIndex: 'imagen_desktop',
+            key: 'imagen_desktop',
+            render: (val) => <img src={val} alt="" style={{ width: 50, height: 50 }} />,
+        },
+        {
+            title: 'Imagen mobile',
+            dataIndex: 'imagen_mobile',
+            key: 'imagen_mobile',
+            render: (val) => <img src={val} alt="" style={{ width: 50, height: 50 }} />,
+        },
+        {
             title: 'Acciones',
             key: 'acciones',
             render: (_, record) => (

@@ -1,0 +1,4 @@
+iieg-css:
+  output: iieg/%(version)s_iieg.css
+  contents:
+    - ../public/base.css

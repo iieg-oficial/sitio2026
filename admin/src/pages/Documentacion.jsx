@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 
@@ -192,13 +193,47 @@ export default function Documentacion() {
                         label="archivo metodología"
                         rules={[{ required: false, message: 'Por favor ingrese la metodología' }]}
                     >
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/metodologias"
+                                label="Subir metodología"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('metodologia', media.url);
+                                }}
+                            />
+                            <Form.Item name="metodologia" noStyle>
+                                <Input placeholder="Subir metodología" />
+                            </Form.Item>
+                            {form.getFieldValue('metodologia') ? (
+                                <a href={form.getFieldValue('metodologia')} target="_blank" rel="noopener noreferrer">
+                                    Ver metodología
+                                </a>
+                            ) : null}
+                        </Space>
                     </Form.Item>
                     <Form.Item name="codigo"
                         label="archivo código"
                         rules={[{ required: false, message: 'Por favor ingrese el archivo' }]}
                     >
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/codigos"
+                                label="Subir código"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('codigo', media.url);
+                                }}
+                            />
+                            <Form.Item name="codigo" noStyle>
+                                <Input placeholder="Subir código" />
+                            </Form.Item>
+                            {form.getFieldValue('codigo') ? (
+                                <a href={form.getFieldValue('codigo')} target="_blank" rel="noopener noreferrer">
+                                    Ver código
+                                </a>
+                            ) : null}
+                        </Space>
                     </Form.Item>
                     <Form.Item name="subject_id"
                         label="Tema"

@@ -6,6 +6,8 @@ class DirectorioBase(BaseModel):
     nombre: str
     cargo: str
     director: bool = False
+    telefono: Optional[str] = None
+    email: Optional[str] = None
     slug: Optional[str] = None
 
 class DirectorioCreate(DirectorioBase):

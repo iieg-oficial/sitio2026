@@ -10,7 +10,6 @@ router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos"])
 @router.get("/", response_model=DatosNuevosResponse)
 def read_datos_nuevos(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los datos nuevos"""
     datos_nuevos = db.query(DatosNuevos).all()
@@ -23,7 +22,7 @@ def read_datos_nuevos(
 def create_datos_nuevos(
     datos_nuevos: DatosNuevosCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(datos_nuevos.cifras)
     base_slug = slug
@@ -48,7 +47,7 @@ def update_datos_nuevos(
     id: int,
     datos_nuevos: DatosNuevosCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Actualizar un dato"""
     db_datos_nuevos = db.query(DatosNuevos).filter(DatosNuevos.id == id).first()
@@ -80,7 +79,7 @@ def update_datos_nuevos(
 def delete_datos_nuevos(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un dato"""
     db_datos_nuevos = db.query(DatosNuevos).filter(DatosNuevos.id == id).first()

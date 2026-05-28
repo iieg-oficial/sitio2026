@@ -1,0 +1,32 @@
+.iieg-theme-hero {
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  color: #4e098f;
+  background: linear-gradient(135deg, #d9f0ff 0%, #f3fbff 100%);
+  border: 1px solid #bcdff1;
+}
+
+.iieg-theme-hero__eyebrow {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2f0064;
+}
+
+.masthead, .header-account-wrapper,
+.site-footer{
+  background: #4e098f !important;
+}
+
+a{ 
+  color: #e9da12 !important;
+}
+
+nav.navbar{ margin-top: 25px;}
+
+.hero{
+  background: none !important;
+}

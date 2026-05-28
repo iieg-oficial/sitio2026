@@ -91,6 +91,12 @@ export default function Perfiles() {
             sorter: (a, b) => a.area.localeCompare(b.area)
         },
         {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id         
+        },
+        {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (

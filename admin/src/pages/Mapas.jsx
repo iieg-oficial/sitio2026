@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, DatePicker } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, DatePicker, Image, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 
@@ -12,22 +13,35 @@ export default function Mapas() {
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [editingMapa, setEditingMapa] = useState(null);
+    const [tipoMapa, setTipoMapa] = useState([]);
 
     useEffect(() => {
         fetchMapas();
+        fetchTipoMapa();
     }, []);
 
     const fetchMapas = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/mapas');
-            setMapas(response.data.mapas);
+            const response = await api.get('/mapas/');
+            setMapas(Array.isArray(response.data?.mapas) ? response.data.mapas : []);
         } catch {
             message.error('Error al cargar mapas');
         } finally {
             setLoading(false);
         }
     };
+
+    const fetchTipoMapa = async () => {
+        try {
+            const response = await api.get('/mapas/tipos');
+            setTipoMapa(response.data.tipos);
+        } catch {
+            message.error('Error al cargar tipos de mapa');
+        }finally {
+            setLoading(false);
+        }
+    }
 
     const handleCreate = () => {
         setEditingMapa(null);
@@ -90,10 +104,16 @@ export default function Mapas() {
             sorter: (a, b) => a.anyo - b.anyo
         },
         {
-            title: 'Información',
-            dataIndex: 'informacion',
-            key: 'informacion',
-            render: (text) => text ? <span>{text.length > 100 ? `${text.substring(0, 100)}...` : text}</span> : <span style={{ fontStyle: 'italic', color: '#888' }}>Sin información</span>
+            title: 'Tipo',
+            dataIndex: 'tipo',
+            key: 'tipo',
+            render: (text) => text ? <span>{text}</span> : <span style={{ fontStyle: 'italic', color: '#888' }}>Sin tipo</span>
+        },
+        {
+            title: 'Imagen',
+            dataIndex: 'imagen',
+            key: 'imagen',
+            render: (url) => url ? <Image src={url} alt="Mapa" style={{ maxWidth: 100 }} /> : 'Sin imagen'
         },
         {
             title: 'Acciones',
@@ -134,6 +154,28 @@ export default function Mapas() {
                         rules={[{ required: true, message: 'Por favor ingresa el título' }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item name="tipo" label="Tipo de Mapa" rules={[{ required: false, message: 'Por favor selecciona el tipo de mapa' }]}>
+                        <Select 
+                        placeholder="Selecciona el tipo de mapa" 
+                        allowClear
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        options={Object.entries(tipoMapa).map(([key, value]) => ({ 
+                            key,
+                            value,
+                            label: value, 
+                        }))} />
+                    </Form.Item>
+                    <Form.Item
+                        name="autor"
+                        label="Autor"
+                        rules={[{ required: false, message: 'Por favor selecciona el autor' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                     <Form.Item
                         name="anyo"
                         label="Año"
@@ -142,23 +184,16 @@ export default function Mapas() {
                         <Input type="number" min={0} />
                     </Form.Item>
                     <Form.Item
-                        name="imagen"
-                        label="Imagen"
-                        rules={[{ required: false, message: 'Por favor selecciona la imagen' }]}
+                        name="area"
+                        label="Área"
+                        rules={[{ required: false, message: 'Por favor ingresa el área' }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        name="archivo"
-                        label="Archivo"
-                        rules={[{ required: false, message: 'Por favor selecciona el archivo' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="autor"
-                        label="Autor"
-                        rules={[{ required: false, message: 'Por favor selecciona el autor' }]}
+                        name="editor"
+                        label="Editor"
+                        rules={[{ required: false, message: 'Por favor selecciona el editor' }]}
                     >
                         <Input />
                     </Form.Item>
@@ -181,13 +216,13 @@ export default function Mapas() {
                         label="Edición"
                         rules={[{ required: false, message: 'Por favor selecciona la edición' }]}
                     >
-                        <Input />
+                        <RichTextEditor />
                     </Form.Item>
-                    <Form.Item
-                        name="editor"
-                        label="Editor"
-                        rules={[{ required: false, message: 'Por favor selecciona el editor' }]}
-                    >
+                    <Form.Item 
+                        name="ubicacion" 
+                        label="Ubicación"
+                        rules={[{ required: true, message: 'Por favor ingresa la ubicación' }]}
+                        >
                         <Input />
                     </Form.Item>
                     <Form.Item
@@ -197,19 +232,58 @@ export default function Mapas() {
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item 
-                        name="ubicacion" 
-                        label="Ubicación"
-                        rules={[{ required: true, message: 'Por favor ingresa la ubicación' }]}
-                        >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item 
-                        name="informacion" 
+                    <Form.Item
+                        name="informacion"
                         label="Información"
-                        rules={[{ required: true, message: 'Por favor ingresa la información' }]}
-                        >
+                        rules={[{ required: false, message: 'Por favor ingresa la información' }]}
+                    >
                         <RichTextEditor />
+                     </Form.Item>
+                    <Form.Item
+                        name="imagen"
+                        label="Imagen"
+                        rules={[{ required: false, message: 'Por favor selecciona la imagen' }]}
+                    >
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/mapas"
+                                label="Subir imagen"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('imagen', media.url);
+                                }}
+                            />
+                            <Form.Item name="imagen" noStyle>
+                                <Input placeholder="URL de la imagen" />
+                            </Form.Item>
+                            {form.getFieldValue('imagen') ? (
+                                <Image src={form.getFieldValue('imagen')} alt="Vista previa" style={{ maxWidth: 260, borderRadius: 6 }} />
+                            ) : null}
+                        </Space>
+                    </Form.Item>
+                    <Form.Item
+                        name="archivo"
+                        label="Archivo"
+                        rules={[{ required: false, message: 'Por favor selecciona el archivo' }]}
+                    >
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/mapas"
+                                label="Subir archivo"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('archivo', media.url);
+                                }}
+                            />
+                            <Form.Item name="archivo" noStyle>
+                                <Input placeholder="Subir archivo" />
+                            </Form.Item>
+                            {form.getFieldValue('archivo') ? (
+                                <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">
+                                    Ver archivo
+                                </a>
+                            ) : null}
+                        </Space>
                     </Form.Item>
                 </Form>
             </Modal>

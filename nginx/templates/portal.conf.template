@@ -1,0 +1,132 @@
+upstream portal_api {
+    server portal-api:8000;
+}
+
+upstream ckan_backend {
+    server portal-ckan:5000;
+}
+
+server {
+    listen 80;
+    server_name _;
+
+    resolver 127.0.0.11 valid=30s ipv6=off;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/json;
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location ^~ /api/ {
+        proxy_pass http://portal_api;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 60;
+        proxy_send_timeout 60;
+        proxy_read_timeout 60;
+        client_max_body_size 100M;
+    }
+
+    location = /datos-abiertos/login {
+        return 301 /datos-abiertos/user/login;
+    }
+
+    location = /datos-abiertos {
+        return 301 /datos-abiertos/;
+    }
+
+    location = /datos-abiertos/logout {
+        return 301 /datos-abiertos/user/logout;
+    }
+
+    location = /datos-abiertos/register {
+        return 301 /datos-abiertos/user/register;
+    }
+
+    location ^~ /datos-abiertos {
+        rewrite ^/datos-abiertos/?(.*)$ /$1 break;
+        proxy_pass http://ckan_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Script-Name /datos-abiertos;
+        proxy_set_header X-Forwarded-Prefix /datos-abiertos;
+        proxy_connect_timeout 60;
+        proxy_send_timeout 60;
+        proxy_read_timeout 60;
+    }
+
+    location ^~ /base/ {
+        proxy_pass http://ckan_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Script-Name /datos-abiertos;
+        proxy_set_header X-Forwarded-Prefix /datos-abiertos;
+    }
+
+    location ^~ /webassets/ {
+        proxy_pass http://ckan_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Script-Name /datos-abiertos;
+        proxy_set_header X-Forwarded-Prefix /datos-abiertos;
+    }
+
+    location ^~ /_debug_toolbar/ {
+        proxy_pass http://ckan_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Script-Name /datos-abiertos;
+        proxy_set_header X-Forwarded-Prefix /datos-abiertos;
+    }
+
+    location ^~ /acervo/ {
+        set $acervo_upstream ${ACERVO_UPSTREAM_URL};
+        rewrite ^/acervo/(.*)$ /$1 break;
+        proxy_pass $acervo_upstream;
+        proxy_http_version 1.1;
+        proxy_set_header Host ${ACERVO_UPSTREAM_HOST};
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 60;
+        proxy_send_timeout 60;
+        proxy_read_timeout 60;
+        client_max_body_size 100M;
+    }
+
+    location = /robots.txt {
+        alias /usr/share/nginx/static/robots.txt;
+        access_log off;
+    }
+
+    location = /sitemap.xml {
+        alias /usr/share/nginx/static/sitemap.xml;
+        access_log off;
+    }
+
+    location ^~ /portal-admin {
+        alias /usr/share/nginx/html/portal-admin;
+        try_files $uri $uri/ /portal-admin/index.html;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

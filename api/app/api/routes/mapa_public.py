@@ -32,7 +32,7 @@ def read_mapa_random(
         "total": len(mapa),
     }
 
-@router.get("/slug/{slug}", response_model=MapaOut)
+@router.get("/{slug}", response_model=MapaOut)
 def get_mapa_slug(
     slug: str,
     db: Session = Depends(get_db),

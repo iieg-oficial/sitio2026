@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import api from '@services/apiService'
 import './mapas.css'
 
@@ -25,7 +25,7 @@ export default function Mapas() {
         }
     }, [location])
 
-    const mapasFiltrados = isMobile ? mapas.slice(0, 1) : mapas;
+    const mapasFiltrados = isMobile ? mapas.slice(0, 1) : mapas
     
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -35,6 +35,9 @@ export default function Mapas() {
                     <p>{mapa.ubicacion}</p>
                     {mapa.anyo && <p><strong>Año:</strong> {mapa.anyo}</p>}
                     <img src={mapa.imagen ? mapa.imagen : "/demo.jpg"} alt={mapa.titulo} className='image-mapa'/>
+                    <Link to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2] hover:underline">
+                        Ver mapa
+                    </Link>
                 </div>
             ))}
         </div>

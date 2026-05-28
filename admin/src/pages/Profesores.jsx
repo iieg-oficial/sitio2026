@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 
@@ -82,6 +83,18 @@ export default function Profesores() {
             dataIndex: 'nombre',
             key: 'nombre',
             sorter: (a, b) => a.nombre.localeCompare(b.nombre)
+        },
+        {
+            title: 'Foto',
+            dataIndex: 'foto',
+            key: 'foto',
+            render: (url) => url ? <Image src={url} alt="Foto del profesor" style={{ maxWidth: 100 }} /> : 'Sin foto'
+        },
+        {
+            title: 'Id',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id
         },
         {
             title: 'Acciones',
@@ -174,7 +187,22 @@ export default function Profesores() {
                         name="foto"
                         rules={[{ required: true, message: 'Por favor ingrese la foto' }]}
                     >
-                        <Input />
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/profesores"
+                                label="Subir foto"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('foto', media.url);
+                                }}
+                            />
+                            <Form.Item name="foto" noStyle>
+                                <Input placeholder="URL de la foto" />
+                            </Form.Item>
+                            {form.getFieldValue('foto') ? (
+                                <Image src={form.getFieldValue('foto')} alt="Foto del profesor" style={{ maxWidth: 200, borderRadius: 6 }} />
+                            ) : null}
+                        </Space>    
                     </Form.Item>
                 </Form>
             </Modal>

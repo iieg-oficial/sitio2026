@@ -25,6 +25,7 @@ from app.models.cursos import Cursos
 from app.models.docs_iieg import DocsIIEG
 from app.models.banner import Banner
 from app.models.contacto import Contacto
+from app.models.cuadernillos import Cuadernillo
 
 __all__ = [
     "Base",
@@ -55,4 +56,5 @@ __all__ = [
     "DocsIIEG",
     "Banner",
     "Contacto",
+    "Cuadernillo",
 ]

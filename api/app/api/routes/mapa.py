@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
-from app.models import Mapa, Usuario     
-from app.schemas.mapa import MapaOut, MapaResponse, MapaCreate
+from app.api.deps import get_current_user, get_db, verify_csrf
+from app.models import Mapa, Usuario   
+from app.models.mapa import TipoMapaEnum  
+from app.schemas.mapa import MapaOut, MapaResponse, MapaCreate, MapaTiposResponse
 
 router = APIRouter(prefix="/mapas", tags=["mapa"])
 
 @router.get("/", response_model=MapaResponse)
 def read_mapa(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los mapas"""
     mapas = db.query(Mapa).all()
@@ -22,7 +22,7 @@ def read_mapa(
 @router.post("/create", response_model=MapaOut)
 def create_mapa(
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
     mapa: MapaCreate = None,
 ):
     slug = slugify(mapa.titulo)
@@ -35,17 +35,19 @@ def create_mapa(
     """Crear un nuevo mapa"""
     db_mapa = Mapa(
         titulo=mapa.titulo,
-        anyo=mapa.anyo,
-        imagen=mapa.imagen,
-        archivo=mapa.archivo,
+        tipo=mapa.tipo,
         autor=mapa.autor,
+        anyo=mapa.anyo,
+        area=mapa.area,
+        editor=mapa.editor,
         medida=mapa.medida,
         escala=mapa.escala,
         edicion=mapa.edicion,
-        editor=mapa.editor,
-        sitio_web=mapa.sitio_web,
-        ubicacion=mapa.ubicacion,        
-        informacion=mapa.informacion,
+        ubicacion=mapa.ubicacion, 
+        sitio_web=mapa.sitio_web,        
+        informacion=mapa.informacion,       
+        imagen=mapa.imagen,
+        archivo=mapa.archivo,
         slug=slug,
     )
     db.add(db_mapa)
@@ -58,7 +60,7 @@ def update_mapa(
     id: int,
     mapa: MapaCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user)
+    current_user: Usuario = Depends(verify_csrf)
 ):
     """Actualizar un mapa"""
     db_mapa = db.query(Mapa).filter(Mapa.id == id).first()
@@ -92,7 +94,7 @@ def update_mapa(
 def delete_mapa(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un mapa"""
     db_mapa = db.query(Mapa).filter(Mapa.id == id).first()
@@ -104,6 +106,14 @@ def delete_mapa(
     db.delete(db_mapa)
     db.commit()
     return db_mapa
+
+@router.get("/tipos", response_model=MapaTiposResponse)
+def get_tipos_mapa():
+    return {
+        "tipos": {
+            tipos.name: tipos.value for tipos in TipoMapaEnum
+        }
+    }
 
 @router.get("/slug/{slug}", response_model=MapaOut)
 def get_mapa_slug(

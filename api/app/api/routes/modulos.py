@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Modulos, Usuario
 from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
 
@@ -10,7 +10,6 @@ router = APIRouter(prefix="/modulos", tags=["modulos"])
 @router.get("", response_model=ModulosResponse)
 def read_modulo(   
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener todos los modulos"""
     modulos = db.query(Modulos).all()
@@ -23,7 +22,6 @@ def read_modulo(
 def read_modulo_by_id(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
 ):
     """Obtener un modulo por id"""
     db_modulo = db.query(Modulos).filter(Modulos.id == id).first()
@@ -35,7 +33,7 @@ def read_modulo_by_id(
 def create_modulo(
     modulo: ModulosCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     slug = slugify(modulo.nombre)
     base_slug = slug
@@ -60,7 +58,7 @@ def update_modulo(
     id: int,
     modulo: ModulosCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Actualizar un modulo"""
     db_modulo = db.query(Modulos).filter(Modulos.id == id).first()
@@ -90,7 +88,7 @@ def update_modulo(
 def delete_modulo(
     id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(verify_csrf),
 ):
     """Eliminar un modulo"""
     db_modulo = db.query(Modulos).filter(Modulos.id == id).first()

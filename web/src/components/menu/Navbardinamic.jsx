@@ -1,14 +1,24 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import api from '@services/apiService'
 import TrackedLink from '@components/blocks/boton'
+import HeaderSearch from '@components/HeaderSearch'
 import './Navbardinamic.css'
+
+const sortByOrder = (a, b) => {
+  const orderA = Number.isInteger(a.order) ? a.order : Number.MAX_SAFE_INTEGER;
+  const orderB = Number.isInteger(b.order) ? b.order : Number.MAX_SAFE_INTEGER;
+
+  if (orderA !== orderB) return orderA - orderB;
+  return a.id - b.id;
+};
 
 const Navbardinamic = () => {
   const [menuItems, setMenuItems] = useState([]);
-  const [isOpen, setIsOpen] = useState(false); // ESTADO: Controla si el menú se ve o no
-  const [activeSubmenus, setActiveSubmenus] = useState({}); // Controla submenús abiertos
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeSubmenus, setActiveSubmenus] = useState({});
   const location = useLocation();
+  const navigate = useNavigate();
 
   // 1. Lógica de Carga de Datos
   useEffect(() => {
@@ -46,6 +56,15 @@ const Navbardinamic = () => {
     setActiveSubmenus({});
   }, [location]);
 
+  const handleSearch = (term) => {
+    if (!term) {
+      navigate('/busqueda');
+      return;
+    }
+
+    navigate(`/busqueda?q=${encodeURIComponent(term)}`);
+  };
+
   return (
     <div className="menu-wrapper grid grid-cols-2 lg:grid-cols-12 container mx-auto">
       <Link to="/" className="lg:col-span-3 content-center">
@@ -61,7 +80,8 @@ const Navbardinamic = () => {
               <TrackedLink to="/">Inicio</TrackedLink>
               </li>
             {menuItems
-              .filter(item => item.parent_id === null) // Filtro de padres para evitar duplicados
+              .filter(item => item.parent_id === null && item.activar === true) // Filtro de padres para evitar duplicados
+              .sort(sortByOrder)
               .map(item => (
                 <li key={item.id} className={`menu-link ${item.subpages && item.subpages.length > 0 ? 'has-subnav' : ''}`}>
                   <TrackedLink
@@ -83,13 +103,16 @@ const Navbardinamic = () => {
                   {/* Subpáginas (si existen) */}
                   {item.subpages && item.subpages.length > 0 && (
                     <ul className={`sub-menu ${activeSubmenus[item.id] ? 'active' : ''}`}>
-                      {item.subpages.map(subItem => (
-                        <li key={subItem.id}>
-                          <TrackedLink to={subItem.slug_custom} className="nav-link">
-                            {subItem.title}
-                          </TrackedLink>
-                        </li>
-                      ))}
+                      {item.subpages
+                        .filter(subItem => subItem.activar === true)
+                        .sort(sortByOrder)
+                        .map(subItem => (
+                          <li key={subItem.id}>
+                            <TrackedLink to={subItem.slug_custom} className="nav-link">
+                              {subItem.title}
+                            </TrackedLink>
+                          </li>
+                        ))}
                     </ul>
                   )}
                 </li>
@@ -98,6 +121,14 @@ const Navbardinamic = () => {
         </div>
           
       </nav>    
+
+      <div className="col-span-2 mt-2 lg:col-span-12 lg:mt-1">
+        <HeaderSearch
+          initialValue=""
+          onSubmit={handleSearch}
+          placeholder="Buscar en todo el sitio..."
+        />
+      </div>
     </div>
   );
 };

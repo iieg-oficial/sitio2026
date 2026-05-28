@@ -1,0 +1,17 @@
+{% ckan_extends %}
+
+{% block footer_content %}
+  <div class="footer-custom">
+    <p>© 2026 IIEG. {{ _('All rights reserved.') }}</p>
+    <ul>
+      <li><a href="{{ h.url_for('iieg.privacidad_page') }}">{{ _('Privacy') }}</a></li>
+      <li><a href="{{ h.url_for('iieg.terminos_page') }}">{{ _('Terms') }}</a></li>
+    </ul>
+  </div>
+
+  {% block footer_lang %}
+  {% snippet "snippets/language_selector.html" %}
+{% endblock %}
+
+{% endblock %}
+

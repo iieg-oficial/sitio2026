@@ -171,6 +171,18 @@ export default function Directorio() {
                     >
                         <Checkbox>¿Es director?</Checkbox>
                     </Form.Item>
+                    <Form.Item
+                        name="telefono"
+                        label="Teléfono"
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="email"
+                        label="Email"
+                    >
+                        <Input />
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>
