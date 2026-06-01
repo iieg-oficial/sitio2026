@@ -8,8 +8,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, __dirname, '');
 
+    const apiProxyTarget = env.VITE_API_PROXY_TARGET ?? 'http://localhost:18000';
+    const ckanProxyTarget = env.VITE_CKAN_PROXY_TARGET ?? 'http://localhost:15000';
+
     const ckanProxy = {
-        target: 'http://ckan:5000',
+        target: ckanProxyTarget,
         changeOrigin: true,
     };
 
@@ -38,7 +41,7 @@ export default defineConfig(({ mode }) => {
                 '/uploads': ckanProxy,
                 '/api/3': ckanProxy,
                 '/api': {
-                    target: 'http://api:8000',
+                    target: apiProxyTarget,
                     changeOrigin: true,
                 },
             },
