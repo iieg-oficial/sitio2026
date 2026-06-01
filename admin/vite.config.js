@@ -7,7 +7,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig(({ mode }) => {
-    const { VITE_ADMIN_PORT, VITE_ADMIN_HOST } = loadEnv(mode, __dirname, '');
+    const {
+        VITE_ADMIN_PORT,
+        VITE_ADMIN_HOST,
+        VITE_API_PROXY_TARGET,
+    } = loadEnv(mode, __dirname, '');
+
+    const apiProxyTarget = VITE_API_PROXY_TARGET ?? 'http://localhost:18000';
 
     return {
         plugins: [react()],
@@ -18,7 +24,7 @@ export default defineConfig(({ mode }) => {
             strictPort: true,
             proxy: {
                 '/api': {
-                    target: 'http://api:8000',
+                    target: apiProxyTarget,
                     changeOrigin: true,
                 },
             },

@@ -1,15 +1,10 @@
 .menu-wrapper {
   position: relative;
   z-index: 10;
-  font-family: 'Economica', sans-serif;
-  font-size: 1.857em;
-  text-transform: uppercase;
   padding-top: 2px;
   padding-bottom: 2px;
 }
 .menu-wrapper .menu {
-  margin: 0;
-  padding-left: 0;
   list-style: none;
   text-align: right;
 }
@@ -22,54 +17,31 @@
 .menu-wrapper a.menu-link {
   display: none;
   padding: 0.7em 0;
-  color: #6618a2;
 }
 .menu-wrapper a {
   display: block;
   position: relative;
   padding: 0 0.5em;
-  margin: 0 0.2em;
-  line-height: 1.3em;
   color: #6618a2;
   text-decoration: none;
-  border-bottom: 1px solid transparent;
+  border-bottom: none;
 }
-.menu-wrapper a:hover {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.9);
+.menu-wrapper a:hover {  
   transition: all 0.5s;
 }
 .menu-wrapper .menu > .current-menu-item > a,
 .menu-wrapper .menu > .current-menu-ancestor > a {
   position: relative;
   z-index: 12;
-  background: #f5d4d4;
   color: #6618a2;
-  border-bottom: 1px solid transparent;
+  border-bottom: none;
 }
 .menu-wrapper .menu > .current-menu-item > a:hover,
 .menu-wrapper .menu > .current-menu-ancestor > a:hover {
   background: #6618a2;
   color: #ffffff;
 }
-.menu-wrapper .menu > .current-menu-item > a:hover:after,
-.menu-wrapper .menu > .current-menu-ancestor > a:hover:after {
-  border-top-color: #fffdfd;
-}
-.menu-wrapper .menu > .current-menu-item > a:after,
-.menu-wrapper .menu > .current-menu-ancestor > a:after {
-  top: 100%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-  border-color: rgba(255, 255, 255, 0);
-  border-top-color: #f5d4d4;
-  border-width: 5px;
-  left: 50%;
-  margin-left: -5px;
-}
+
 .menu-wrapper .sub-menu {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -102,10 +74,10 @@
   padding-bottom: 0.26em;
 }
 .menu-wrapper .sub-menu li:last-child a {
-  border-bottom: 1px dashed #6618a2;
+  border-bottom: none;
 }
 .menu-wrapper li:hover .sub-menu {
-  max-height: 30em;
+  max-height: none;
   transition: max-height 0.5s;
 }
 
