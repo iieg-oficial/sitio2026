@@ -1,6 +1,6 @@
 export default function MisionVision() {
     return (
-        <div className="container-fluid py-15 bg-gray-100">
+        <div className="container-fluid py-15 bg-gray-100 px-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto container">
                 <div className="bg-white p-8 rounded-lg">
                     <h2 className="text-2xl font-bold mb-6 text-gray-800">Misión</h2>

@@ -19,8 +19,13 @@ export default defineConfig(({ mode }) => {
                 '/datos-abiertos': {
                     target: 'http://ckan:5000',
                     changeOrigin: true,
+                    rewrite: (path) => {
+                        const rewritten = path.replace(/^\/datos-abiertos(?=\/|$)/, '');
+                        return rewritten || '/';
+                    },
                     headers: {
                         'X-Script-Name': '/datos-abiertos',
+                        'X-Forwarded-Prefix': '/datos-abiertos',
                     }
                 },
                 '/api': {
