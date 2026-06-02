@@ -1,19 +1,15 @@
-import Banners from './home/banners'
+import Banners from './home/banners/banners'
 import Plataformas from './pageComponents/Plataformas'
-import HeroBlock from './blocks/HeroBlock'
-import TextBlock from './blocks/TextBlock'
-import Contacto from './home/contacto'
-import PlataformasDestacado from './home/plataformasDestacado'
-import PlataformasSlider from './home/plataformas_slider'
-import DatosNuevos from './home/datos_nuevos'
-import Flashes from './home/flash'
+import Contacto from './home/contacto/contacto'
+import PlataformasDestacado from './home/plataformas/plataformasDestacado'
+import PlataformasSlider from './home/plataformas/plataformas_slider'
+import DatosNuevos from './home/datos_nuevos/datos_nuevos'
+import Flashes from './home/flash/flash'
 import Mapas from './home/mapa/mapas'
 
 const COMPONENT_MAP = {
     'banners': Banners,
     'plataformas': Plataformas,
-    'hero': HeroBlock,
-    'text': TextBlock,
     'contacto': Contacto,
     'plataformasDestacado': PlataformasDestacado,
     'plataformas_slider': PlataformasSlider,

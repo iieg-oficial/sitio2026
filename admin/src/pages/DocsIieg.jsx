@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import parse from 'html-react-parser';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -90,7 +91,12 @@ export default function DocsIieg() {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
-            sorter: (a, b) => a.descripcion.localeCompare(b.descripcion)
+            render: (text) => <div style={{ maxHeight: '100px', overflow: 'hidden' }}>{parse(text)}</div>,
+            sorter: (a, b) => {
+                const cleanA = a.descripcion.replace(/<[^>]*>/g, '');
+                const cleanB = b.descripcion.replace(/<[^>]*>/g, '');
+                return cleanA.localeCompare(cleanB);
+            }
         },
         {
             title: 'Tipo',
