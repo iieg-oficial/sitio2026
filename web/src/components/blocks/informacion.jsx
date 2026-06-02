@@ -1,6 +1,6 @@
 export default function Informacion() {
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mx-auto container py-15">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mx-auto container py-15 px-2">
             <div className="text-center">
                 <img src="/demo.jpg" alt="" className="mx-auto" />
                 <p className="text-center mt-6 text-gray-800">
