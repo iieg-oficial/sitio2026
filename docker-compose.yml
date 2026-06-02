@@ -131,7 +131,7 @@ services:
       CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME:?CKAN_SYSADMIN_NAME is required}
       CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD:?CKAN_SYSADMIN_PASSWORD is required}
       CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
-      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore ${CKAN_THEME_PLUGIN:-iieg}
+      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg
       CKAN__ROOT_PATH: /datos-abiertos/{{LANG}}
       CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
       CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
