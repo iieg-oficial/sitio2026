@@ -15,8 +15,8 @@ export default function Valores() {
     }, [location])
 
     return (
-        <div className="border-2 border-red-500">
-            <h1>Valores</h1>
+        <div className="container-fuid py-15">
+            <h1 className="font-bold text-3xl text-center">Valores</h1>
             {valores.map(valor => (
                 <div key={valor.id}>
                     <h3>{valor.nombre}</h3>
