@@ -17,22 +17,17 @@ make setup   # crea .env.development y .env.production desde sus .example
 
 Edita `.env.development` y/o `.env.production` con los secretos reales (passwords, credenciales del Acervo, etc.). Los `.example` solo tienen placeholders `<...>`.
 
-## Cambiar tema de CKAN
+## Tema de CKAN
 
-El tema activo se controla con `CKAN_THEME_PLUGIN`.
+CKAN inicia siempre con el plugin de tema `iieg` (`ckanext-iieg`) definido directamente en `CKAN__PLUGINS` de los compose.
 
-- `iieg` activa el tema actual del portal.
-- `stadtzhtheme` activa el nuevo tema de Stadt Zürich.
-
-Pon ese valor en el `.env` del ambiente que quieras y luego reconstruye:
+Si actualizas CKAN o su configuracion, reconstruye:
 
 ```bash
 make build ENV=dev
 make build ENV=prod
 make build ENV=gcp
 ```
-
-Si cambias solo el valor del tema, no hace falta tocar los `docker-compose*.yml`.
 
 > Genera secretos así: `openssl rand -hex 32`
 
