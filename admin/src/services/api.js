@@ -78,6 +78,18 @@ api.interceptors.response.use(
         return response;
     },
     (error) => {
+        const detail = error.response?.data?.detail;
+        const isCsrfError = error.response?.status === 403
+            && typeof detail === 'string'
+            && detail.toLowerCase().includes('csrf token');
+
+        if (isCsrfError) {
+            sessionStorage.removeItem('csrf_token');
+            if (!window.location.pathname.endsWith('/login')) {
+                window.location.href = '/portal-admin/login';
+            }
+        }
+
         if (error.response?.status === 401) {
             sessionStorage.removeItem('csrf_token');
             if (!window.location.pathname.endsWith('/login')) {

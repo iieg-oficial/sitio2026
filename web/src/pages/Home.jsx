@@ -76,39 +76,44 @@ function HomePage() {
                 {page?.description_meta && <meta name="description" content={page.description_meta} />}
                 {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
             </Helmet>
-            <section className="h-96" role="banner">                
+            <section className="h-[450px] md:h-[550px] lg:h-[800px]" role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
             </section>            
             <section className="container-fluid relative">
                 <div className="relative z-0 pt-12">                    
-                    <TrackedLink to="/mapalab" className="bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <TrackedLink to="/mapalab" className="button bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 py-2 rounded-md mt-3">
                         Quiero explorar MapaLab
                     </TrackedLink>
                     <img src="/demo.jpg" alt="MapaLab" className="w-full h-full object-cover" />
                 </div>
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
-            <section className="w-10/12 mx-auto ">
-                <h2>Datos nuevos</h2>
-                <BlockRenderer block={{ type: 'datos_nuevos' }} />
+            <section className="w-full bg-gray-100 py-10">
+                <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
+                    <div>
+                        <h2 className="text-2xl font-bold text-center">Datos nuevos</h2>
+                        <BlockRenderer block={{ type: 'datos_nuevos' }} />
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-bold text-center">Flashes</h2>
+                        <BlockRenderer block={{ type: 'flashes' }} />               
+                        <TrackedLink to="/flashes" className="button block float-left bg-blue-500 hover:bg-blue-600 cursor-pointer text-white px-4 py-2 rounded-md mt-3">
+                            Ver todos los flashes
+                        </TrackedLink>
+                    </div>
+                </div>
             </section>
-            <section className="w-10/12 mx-auto my-10 relative">
-                <h2>Flashes</h2>
-                <BlockRenderer block={{ type: 'flashes' }} />               
-                <TrackedLink to="/flashes" className="bg-red-500 text-white z-10 mx-auto text-center block w-60">
-                    Ver todos los flashes
-                </TrackedLink>
-            </section>
+
             <section className="w-11/12 mx-auto border rounded-lg bg-amber-300 ">
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
             </section>
             <section className="w-11/12 mx-auto relative my-14">
-                <h2>Mapas</h2>
+                <h2 className="text-2xl font-bold text-center">Mapas</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <TrackedLink 
                 to="/mapas-historicos" 
                 target="_self"
-                className="bg-blue-500 text-white mx-auto w-60 text-center block mt-5">
+                className="button bg-blue-500 hover:bg-blue-600 cursor-pointer text-white px-4 py-2 rounded-md mt-3">
                     Ver todos los mapas
                 </TrackedLink>
             </section>

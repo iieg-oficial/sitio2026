@@ -10,10 +10,10 @@ export default defineConfig(({ mode }) => {
     const {
         VITE_ADMIN_PORT,
         VITE_ADMIN_HOST,
-        VITE_API_PROXY_TARGET,
+        VITE_ADMIN_API_PROXY_TARGET,
     } = loadEnv(mode, __dirname, '');
 
-    const apiProxyTarget = VITE_API_PROXY_TARGET ?? 'http://localhost:18000';
+    const apiProxyTarget = VITE_ADMIN_API_PROXY_TARGET ?? 'http://api:8000';
 
     return {
         plugins: [react()],
@@ -25,7 +25,8 @@ export default defineConfig(({ mode }) => {
             proxy: {
                 '/api': {
                     target: apiProxyTarget,
-                    changeOrigin: true,
+                    // Keep localhost host header so backend redirects don't expose Docker-only hostnames.
+                    changeOrigin: false,
                 },
             },
             watch: {
@@ -55,4 +56,3 @@ export default defineConfig(({ mode }) => {
         },
     };
 });
-
