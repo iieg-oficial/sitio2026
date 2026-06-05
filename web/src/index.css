@@ -1,8 +1,72 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@font-face {
+  font-family: 'Garet-Medium';
+  src: url(../public/Garet-Medium.woff) format('woff');  
+}
+
+@theme {
+    --font-garet: 'Garet-Medium', 'sans-serif';
+    --color-primary: #5c2472;
+    --color-secondary: #8936ab;
+    --color-tertiary: #ff8300;
+    --color-card: #f9fbff;
+    --color-titulo: #172a55;  
+    --color-body: #465055;
+    --color-etiqueta: #f4d8ff;
+    --color-etiqueta-sec: #ffe5c9;
+    --color-positivo: #3bc16f;
+    --color-medio: #ff9d00;
+    --color-negativo: #fa4848;
+    --text-44: 4.4rem;
+    --text-36: 3.6rem;
+    --text-28: 2.8rem;
+    --text-22: 2.2rem;
+    --text-20: 2.0rem;
+    --text-18: 1.8rem;
+    --text-14: 1.4rem;
+}
+
+@layer components {  
+    p {
+      font-size: va(--text-18);
+      color: var(--color-body);
+    }
+    h1 {
+      font-size: var(--text-2xl--line-height);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-titulo);
+    }
+    h2 {
+      font-size: var(--text-44);
+      font-weight: 800;
+      color: var(--color-titulo);
+    }
+    h3{
+      font-size: var(--text-36);
+      font-weight: 800;
+      color: var(--color-titulo);
+    }
+    h4 {
+      font-size: var(--text-28);
+      font-weight: 800;
+      color: var(--color-secondary);
+    }
+    h5 {
+      font-size: var(--text-22);
+      font-weight: 700;
+      color: var(--color-tertiary);
+    }
+}
+
 html {
     scroll-behavior: smooth;
+    font-size: 62.5%;
+}
+
+body {
+    font-family: var(--font-garet);
 }
 
 section[id] {
