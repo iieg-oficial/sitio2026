@@ -14,7 +14,24 @@ reporte_temas = Table(
 class PeriocidadEnum(str, enum.Enum):
     diaria = "diaria"
     mensual = "mensual"
+    bimestral = "bimestral"
+    trimestral = "trimestral"
+    semestral = "semestral"
     anual = "anual"
+
+class MesEnum(str, enum.Enum):
+    enero = "enero"
+    febrero = "febrero"
+    marzo = "marzo"
+    abril = "abril"
+    mayo = "mayo"
+    junio = "junio"
+    julio = "julio"
+    agosto = "agosto"
+    septiembre = "septiembre"
+    octubre = "octubre"
+    noviembre = "noviembre"
+    diciembre = "diciembre"
 
 class Reportes(Base):
     __tablename__ = "reportes"
@@ -22,7 +39,9 @@ class Reportes(Base):
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(Text, nullable=False)
     fecha = Column(DateTime, default=datetime.utcnow, nullable=True)
-    periocidad = Column(Enum(PeriocidadEnum), nullable=True)    
+    periocidad = Column(Enum(PeriocidadEnum), nullable=True)  
+    mes = Column(Enum(MesEnum), nullable=True)
+    anyo = Column(Integer, nullable=True)  
     archivo = Column(String(200), nullable=True)
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
