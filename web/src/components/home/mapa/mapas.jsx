@@ -30,13 +30,17 @@ export default function Mapas() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {mapasFiltrados.map(mapa => (
-                <div key={mapa.id} className="border rounded-lg p-4 overflow-hidden mapa">
-                    <h3>{mapa.titulo}</h3>
-                    <p>{mapa.ubicacion}</p>
-                    {mapa.anyo && <p><strong>Año:</strong> {mapa.anyo}</p>}
+                <div key={mapa.id} className="border rounded-lg p-4 overflow-hidden mapa">                    
                     <img src={mapa.imagen ? mapa.imagen : "/demo.jpg"} alt={mapa.titulo} className='image-mapa'/>
                     <Link to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2] hover:underline">
-                        Ver mapa
+                        <h3 className='text-white'>{mapa.titulo}</h3>
+                        
+                        <div className='flex'>
+                            <p className='bg-card text-tertiary rounded-2xl px-1'>{mapa.ubicacion}</p>
+                            <p className='bg-card text-titulo rounded-2xl px-1'>{mapa.anyo}</p>
+                            <p className='bg-card text-primary rounded-2xl px-1'>{mapa.tipo}</p>
+                        </div>
+                        
                     </Link>
                 </div>
             ))}
