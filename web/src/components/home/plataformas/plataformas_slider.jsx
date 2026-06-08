@@ -51,8 +51,7 @@ export default function PlataformasSlider() {
             {plataformas.map(plataforma => (
                         <SwiperSlide key={plataforma.id} className="border place-items-center p-2 pb-14" >
                             <a href={plataforma.link} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
-                                <img src={plataforma.imagen} alt={plataforma.titulo} className="w-full object-cover"/>
-                                <h3 className="mt-2 text-center">{plataforma.titulo}</h3>
+                                <img src={plataforma.imagen} alt={plataforma.titulo} className="w-full object-cover"/>                                
                             </a>
                         </SwiperSlide>
                     ))} 

@@ -17,9 +17,9 @@ export default function DatosNuevos() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-10">
             {datosNuevos.map(datoNuevo => (
-                <div key={datoNuevo.id} className="border border-gray-300 rounded-3xl p-4">
-                    <h3>{datoNuevo.cifras}</h3>
-                    <div dangerouslySetInnerHTML={{ __html: datoNuevo.descripcion }}  />
+                <div key={datoNuevo.id} className="bg-cardrounded-3xl p-4">
+                    <h3 className='text-tertiary'>{datoNuevo.cifras}</h3>
+                    <div dangerouslySetInnerHTML={{ __html: datoNuevo.descripcion }}  className='text-titulos text-18'/>
                 </div>
             ))}
         </div>

@@ -81,81 +81,89 @@ function HomePage() {
             </section>            
             <section className="container-fluid relative">
                 <div className="relative z-0 pt-12">                    
-                    <TrackedLink to="/mapalab" className="button bg-blue-500 text-white z-10 mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 py-2 rounded-md mt-3">
-                        Quiero explorar MapaLab
-                    </TrackedLink>
+                    <div className='bg-primary text-white z-10 text-center mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 py-2 rounded-lg'>
+                        <img src="/ico_mapalab.svg" alt="MapaLab" className="w-8 h-8 inline-block mr-2" />
+                        <p>Explora el territorio de Jalisco con datos geoespaciales</p>
+                        <TrackedLink to="/mapalab" className="button bg-medio hover:bg-tertiary">
+                            Quiero explorar MapaLab
+                        </TrackedLink>
+                    </div>
                     <img src="/demo.jpg" alt="MapaLab" className="w-full h-full object-cover" />
                 </div>
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
-            <section className="w-full bg-gray-100 py-10">
+            <section className="w-full bg-primary py-10">
                 <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
                     <div>
-                        <h2 className="text-2xl font-bold text-center">Datos nuevos</h2>
+                        <h2 className="text-white text-center">Conoce los datos más recientes</h2>
                         <BlockRenderer block={{ type: 'datos_nuevos' }} />
                     </div>
                     <div>
                         <h2 className="text-2xl font-bold text-center">Flashes</h2>
                         <BlockRenderer block={{ type: 'flashes' }} />               
-                        <TrackedLink to="/flashes" className="button block float-left bg-blue-500 hover:bg-blue-600 cursor-pointer text-white px-4 py-2 rounded-md mt-3">
-                            Ver todos los flashes
+                        <TrackedLink to="/flashes" className="button2 block float-left mt-3 text-tertiary hover:text-white border-tertiary hover:bg-tertiary">
+                            Quiero ver los datos más nuevos
                         </TrackedLink>
                     </div>
                 </div>
             </section>
 
-            <section className="w-11/12 mx-auto border rounded-lg bg-amber-300 ">
+            <section className="w-11/12 mx-auto border rounded-lg bg-white -mt-9">
+                <h2 className="text-titulo text-center my-10">Plataformas</h2>
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
+                <TrackedLink to="/flashes" className="button2 block float-left mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                    Quiero ver todas las plataformas
+                </TrackedLink>
             </section>
             <section className="w-11/12 mx-auto relative my-14">
-                <h2 className="text-2xl font-bold text-center">Mapas</h2>
+                <h2 className="text-titulo text-center">Conoce los mapas de Jalisco</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <TrackedLink 
                 to="/mapas-historicos" 
                 target="_self"
-                className="button bg-blue-500 hover:bg-blue-600 cursor-pointer text-white px-4 py-2 rounded-md mt-3">
-                    Ver todos los mapas
+                className="button2 block float-left mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                    Quiero ver todos los mapas
                 </TrackedLink>
             </section>
-            <section className="container-fluid mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 my-14 gap-4 relative">
+            <section className="container-fluid mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 my-14 gap-4 relative bg-card">
                 
                 <TrackedLink 
                 to="/transparencia" 
                 target="_blank"
-                className="btn btn-primary text-center md:col-span-2 xl:col-span-1">
-                    <img src="/demo.jpg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1">
+                    <img src="/ico_transparencia_normal.svg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Transparencia</span>
                 </TrackedLink>
 
                  <TrackedLink 
                 to="/licitaciones" 
                 target="_blank"
-                className="btn btn-primary text-center md:col-span-2 xl:col-span-1">
-                    <img src="/demo.jpg" alt="Licitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
+                className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1">
+                    <img src="/ico_licitaciones_normal.svg" alt="Licitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Licitaciones</span>
                 </TrackedLink>
 
                  <TrackedLink 
                 to="/contabilidad-gubernamental" 
                 target="_self"
-                className="btn btn-primary text-center md:col-span-2 xl:col-span-1">
-                    <img src="/demo.jpg" alt="Contabilidad Gubernamental" className="w-25 h-25 object-cover mx-auto mb-5" />
+                className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1">
+                    <img src="/ico_contabilidad_normal.svg" alt="Contabilidad Gubernamental" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Contabilidad Gubernamental</span>
                 </TrackedLink>
 
                 <TrackedLink 
                 to="/capacitaciones" 
                 target="_self"
-                className="btn btn-primary text-center col-span-1 md:col-span-2 md:col-start-2 xl:col-span-1">
-                    <img src="/demo.jpg" alt="Capacitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
+                className="text-primary hover:text-tertiary text-center col-span-1 md:col-span-2 md:col-start-2 xl:col-span-1">
+                    <img src="/ico_capacitaciones_normal.svg" alt="Capacitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Capacitaciones</span>
                 </TrackedLink>
 
                 <TrackedLink 
                 to="/comunidad" 
                 target="_self"
-                className="btn btn-primary text-center col-span-2 md:col-span-2 xl:col-span-1">
-                    <img src="/demo.jpg" alt="Comunidad" className="w-25 h-25 object-cover mx-auto mb-5" />
+                className="text-primary hover:text-tertiary text-center col-span-2 md:col-span-2 xl:col-span-1">
+                    <img src="/ico_comunidad_normal.svg" alt="Comunidad" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Comunidad</span>
                 </TrackedLink>
             </section>

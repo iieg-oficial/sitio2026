@@ -20,7 +20,7 @@ export default function PlataformasDestacado() {
                 <div key={plataforma.id}>
                     <a href={plataforma.link} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
                         <img src={plataforma.imagen} alt={plataforma.titulo} className="w-full object-cover"/>
-                        <h3 className="mt-2 text-center">{plataforma.titulo}</h3>
+                        <h3 className="mt-2 text-center text-terciary text-22">{plataforma.titulo}</h3>
                     </a>
                 </div>
             ))}
