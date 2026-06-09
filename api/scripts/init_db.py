@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -7,6 +8,22 @@ sys.path.append(str(Path(__file__).parent.parent))
 from app.core.database import SessionLocal, engine
 from app.core.security import hash_password
 from app.models import Base, MediaFolder, MenuItem, Usuario
+
+
+def aplicar_migraciones():
+    root = Path(__file__).resolve().parent.parent
+    alembic_ini = root / "alembic.ini"
+    if not alembic_ini.exists():
+        print("⚠️  alembic.ini no encontrado; omitiendo migraciones.")
+        return
+
+    print("▶️ Aplicando migraciones Alembic...")
+    subprocess.run(
+        [sys.executable, "-m", "alembic", "-c", str(alembic_ini), "upgrade", "head"],
+        check=True,
+        cwd=root,
+    )
+    print("✅ Migraciones aplicadas.")
 
 
 def crear_tablas():
@@ -119,6 +136,7 @@ def main():
     db = SessionLocal()
 
     try:
+        aplicar_migraciones()
         crear_tablas()
         crear_carpeta_raiz(db)
         crear_usuario_admin(db)

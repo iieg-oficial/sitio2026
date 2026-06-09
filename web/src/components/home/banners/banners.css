@@ -2,6 +2,7 @@
 .text-banner b,
 .text-banner strong{
     color: white;
+    font-size: var(--text-22);
 }
 
 .text-banner strong{

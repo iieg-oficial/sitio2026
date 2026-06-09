@@ -101,7 +101,13 @@ export default function DatosNuevos() {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
-            sorter: (a, b) => a.descripcion.localeCompare(b.descripcion)
+            sorter: (a, b) => a.descripcion.localeCompare(b.descripcion),
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'Acciones',

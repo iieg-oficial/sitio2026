@@ -83,8 +83,8 @@ function HomePage() {
                 <div className="relative z-0 order-2 md:order-1 min-h-[370px] md:min-h-auto">                    
                     <div className='bg-primary text-center z-10 mx-auto absolute top-6/12 md:top-8/12 xl:top-9/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-5 py-14 rounded-2xl w-11/12 md:w-9/12 xl:w-auto'>
                         <img src="/ico_mapalab.svg" alt="MapaLab" className="w-8 h-8 inline-block mr-2" />
-                        <p className='text-center text-white my-8'>Explora el territorio de Jalisco con datos geoespaciales</p>
-                        <TrackedLink to="/mapalab" className="button bg-medio hover:bg-tertiary">
+                        <p className='text-center text-white my-8 text-22'>Explora el territorio de Jalisco con datos geoespaciales</p>
+                        <TrackedLink to="/mapalab" className="button bg-medio hover:bg-tertiary text-base">
                             Quiero explorar MapaLab
                         </TrackedLink>
                     </div>
@@ -93,18 +93,18 @@ function HomePage() {
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
             <section className="w-full bg-primary pt-10 pb-32">
-                <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
-                    <div className='md:col-span-2'>
+                <div className="container mx-auto grid grid-cols-1 lg:grid-cols-6 gap-4 px-2">
+                    <div className='lg:col-span-6'>
                         <h2 className="text-white text-center">Conoce los datos más recientes</h2>
                     </div>
-                    <div>                        
+                    <div className='lg:col-span-2'>                        
                         <BlockRenderer block={{ type: 'datos_nuevos' }} />
-                    </div>
-                    <div>                        
-                        <BlockRenderer block={{ type: 'flashes' }} />               
-                        <TrackedLink to="/flashes" className="button2 block float-left mt-3 text-tertiary hover:text-white border-tertiary hover:bg-tertiary">
-                            Quiero ver los datos más nuevos
-                        </TrackedLink>
+                    </div>                    
+                    <div className='lg:col-span-4 pt-4 lg:pt-10 flex'>        
+                        <div className='hidden lg:grid content-center'>
+                            <div className='border border-white h-80 w-[1px] float-left mx-15 content-center'></div>
+                        </div>                
+                        <BlockRenderer block={{ type: 'flashes' }} />                                       
                     </div>
                 </div>
             </section>
