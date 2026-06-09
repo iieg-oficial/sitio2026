@@ -17,24 +17,32 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # Use PostgreSQL ENUM without forcing type creation if it already exists
-    nuevo_enum = postgresql.ENUM('sube', 'baja', 'igual', name='nuevoenum', create_type=False)
-
-    op.create_table(
-        'datos_nuevos',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('cifras', sa.String(length=200), nullable=False),
-        sa.Column('descripcion', sa.Text(), nullable=False),
-        sa.Column('slug', sa.String(length=200), nullable=False),
-        sa.Column('tipo', postgresql.ENUM('sube', 'baja', 'igual', name='nuevoenum', create_type=False), nullable=True, server_default=sa.text("'igual'")),
-        sa.PrimaryKeyConstraint('id')
+    op.execute(
+        """
+        DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'nuevoenum') THEN
+                CREATE TYPE nuevoenum AS ENUM ('sube', 'baja', 'igual');
+            END IF;
+        END$$;
+        """
     )
-    op.create_index(op.f('ix_datos_nuevos_id'), 'datos_nuevos', ['id'], unique=False)
+    op.execute(
+        """
+        CREATE TABLE IF NOT EXISTS datos_nuevos (
+            id SERIAL NOT NULL,
+            cifras VARCHAR(200) NOT NULL,
+            descripcion TEXT NOT NULL,
+            slug VARCHAR(200) NOT NULL,
+            tipo nuevoenum DEFAULT 'igual',
+            PRIMARY KEY (id)
+        );
+        """
+    )
+    op.execute("CREATE INDEX IF NOT EXISTS ix_datos_nuevos_id ON datos_nuevos (id);")
 
 
 def downgrade() -> None:
-    op.drop_index(op.f('ix_datos_nuevos_id'), table_name='datos_nuevos')
-    op.drop_table('datos_nuevos')
-
-    nuevo_enum = sa.Enum('sube', 'baja', 'igual', name='nuevoenum')
-    nuevo_enum.drop(op.get_bind(), checkfirst=True)
+    op.execute("DROP INDEX IF EXISTS ix_datos_nuevos_id;")
+    op.execute("DROP TABLE IF EXISTS datos_nuevos;")
+    op.execute("DROP TYPE IF EXISTS nuevoenum;")
