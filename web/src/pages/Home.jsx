@@ -80,10 +80,10 @@ function HomePage() {
                 <BlockRenderer block={{ type: 'banners' }} />
             </section>            
             <section className="container-fluid relative">
-                <div className="relative z-0 pt-12">                    
-                    <div className='bg-primary text-white z-10 text-center mx-auto absolute top-11/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 py-2 rounded-lg'>
+                <div className="relative z-0">                    
+                    <div className='bg-primary text-center z-10 mx-auto absolute top-9/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-5 py-14 rounded-2xl'>
                         <img src="/ico_mapalab.svg" alt="MapaLab" className="w-8 h-8 inline-block mr-2" />
-                        <p>Explora el territorio de Jalisco con datos geoespaciales</p>
+                        <p className='text-center text-white my-8'>Explora el territorio de Jalisco con datos geoespaciales</p>
                         <TrackedLink to="/mapalab" className="button bg-medio hover:bg-tertiary">
                             Quiero explorar MapaLab
                         </TrackedLink>
@@ -92,14 +92,15 @@ function HomePage() {
                 </div>
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
-            <section className="w-full bg-primary py-10">
+            <section className="w-full bg-primary pt-10 pb-32">
                 <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-2">
-                    <div>
+                    <div className='md:col-span-2'>
                         <h2 className="text-white text-center">Conoce los datos más recientes</h2>
+                    </div>
+                    <div>                        
                         <BlockRenderer block={{ type: 'datos_nuevos' }} />
                     </div>
-                    <div>
-                        <h2 className="text-2xl font-bold text-center">Flashes</h2>
+                    <div>                        
                         <BlockRenderer block={{ type: 'flashes' }} />               
                         <TrackedLink to="/flashes" className="button2 block float-left mt-3 text-tertiary hover:text-white border-tertiary hover:bg-tertiary">
                             Quiero ver los datos más nuevos
@@ -108,10 +109,10 @@ function HomePage() {
                 </div>
             </section>
 
-            <section className="w-11/12 mx-auto border rounded-lg bg-white -mt-9">
-                <h2 className="text-titulo text-center my-10">Plataformas</h2>
+            <section className="w-11/12 mx-auto rounded-lg bg-white -mt-18 pt-10">
+                <h2 className="text-titulo text-center my-10">Visita nuestras plataformas interactivas</h2>
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
-                <TrackedLink to="/flashes" className="button2 block float-left mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                <TrackedLink to="/flashes" className="button2 w-[380px] text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
                     Quiero ver todas las plataformas
                 </TrackedLink>
             </section>
@@ -121,7 +122,7 @@ function HomePage() {
                 <TrackedLink 
                 to="/mapas-historicos" 
                 target="_self"
-                className="button2 block float-left mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                className="button2 block w-[380px] text-center mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
                     Quiero ver todos los mapas
                 </TrackedLink>
             </section>
@@ -163,7 +164,7 @@ function HomePage() {
                 to="/comunidad" 
                 target="_self"
                 className="text-primary hover:text-tertiary text-center col-span-2 md:col-span-2 xl:col-span-1">
-                    <img src="/ico_comunidad_normal.svg" alt="Comunidad" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <img src="/ico_noticias_normal.png" alt="Comunidad" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Comunidad</span>
                 </TrackedLink>
             </section>

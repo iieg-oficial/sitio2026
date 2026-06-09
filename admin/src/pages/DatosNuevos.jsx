@@ -12,10 +12,23 @@ export default function DatosNuevos() {
     const [editingData, setEditingData] = useState(null);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [tipos, setTipos] = useState([]);
 
     useEffect(() => {
         fetchDatosNuevos();
+        fetchTipos();
     }, []);
+
+    const fetchTipos = async () => {
+        try {
+            const response = await api.get('/datos-nuevos/tipo');
+            setTipos(response.data.tipos);
+        } catch (error) {
+            message.error('Error al cargar los tipos');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fetchDatosNuevos = async () => {
         setLoading(true);
@@ -164,6 +177,19 @@ export default function DatosNuevos() {
                         rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
                     >
                         <RichTextEditor />
+                    </Form.Item>
+                    <Form.Item
+                        name="tipo"
+                        label="Tipo"
+                        rules={[{ required: false, message: 'Por favor seleccione el tipo' }]}
+                    >
+                        <Select placeholder="Seleccione un tipo">
+                            {Object.entries(tipos).map(([key, value]) => (
+                                <Select.Option key={key} value={key}>
+                                    {value}
+                                </Select.Option>
+                            ))}
+                        </Select>
                     </Form.Item>
                 </Form>
             </Modal>

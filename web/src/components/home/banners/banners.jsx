@@ -19,14 +19,16 @@ export default function Banners() {
         fetchBanners()
     }, [location])
 
+
   return (
     <>    
       <Swiper
         pagination={{
           dynamicBullets: true,
+          clickable: true,
         }}
         modules={[Pagination, Autoplay ]}
-        className="mySwiper h-full bg-primary"
+        className="mySwiper h-full bg-secondary"
         autoplay={{ delay: 10000, pauseOnMouseEnter: true }}
         lazy={true}
         a11y={{
@@ -40,15 +42,16 @@ export default function Banners() {
             <SwiperSlide key={banner.id} className="relative w-full h-full content-center " style={{ backgroundColor: banner.color_fondo}}>
               {banner.full_screen ? (
                     <>
-                        <img src={banner.imagen_desktop} alt={banner.titulo} className="hidden md:block w-full object-cover"/>
-                        <img src={banner.imagen_mobile} alt={banner.titulo} className="md:hidden w-full object-cover"/>
-                        <Link to={banner.link} className="button block float-left bg-medio hover:bg-tertiary">{banner.boton}</Link>
+                        <a href={banner.link} target="_blank" rel="noopener noreferrer">
+                            <img src={banner.imagen_desktop} alt={banner.titulo} className="hidden md:block w-full object-cover h-full"/>
+                            <img src={banner.imagen_mobile} alt={banner.titulo} className="md:hidden w-full object-cover h-full"/>
+                        </a>
                     </>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto px-2 md:px-0">
                         <div>
-                            <h2>{banner.titulo}</h2>                            
-                            <div dangerouslySetInnerHTML={{__html: banner.descripcion}} className='mt-5 prose max-w-none' />
+                            <h2 className='text-white'>{banner.titulo}</h2>                            
+                            <div dangerouslySetInnerHTML={{__html: banner.descripcion}} className='mt-5 prose max-w-none text-banner mb-5' />
                             <Link to={banner.link} className="button block float-left bg-medio hover:bg-tertiary">{banner.boton}</Link>
                         </div>
                         <div>
