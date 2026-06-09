@@ -107,13 +107,25 @@ export default function Flashes() {
             title: 'Descripción Jalisco', 
             dataIndex: 'desc_jal', 
             key: 'desc_jal',
-            sorter: (a, b) => a.desc_jal.localeCompare(b.desc_jal) 
+            sorter: (a, b) => a.desc_jal.localeCompare(b.desc_jal),
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'Descripción Nacional',
             dataIndex: 'desc_nac',
             key: 'desc_nac',
-            sorter: (a, b) => a.desc_nac.localeCompare(b.desc_nac)
+            sorter: (a, b) => a.desc_nac.localeCompare(b.desc_nac),
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'periocidad',
