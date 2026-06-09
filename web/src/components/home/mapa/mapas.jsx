@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import api from '@services/apiService'
 import './mapas.css'
+import TrackedLink from '@components/blocks/boton'
 
 export default function Mapas() {
     const [mapas, setMapas] = useState([])
@@ -30,18 +31,19 @@ export default function Mapas() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {mapasFiltrados.map(mapa => (
-                <div key={mapa.id} className="border rounded-lg p-4 overflow-hidden mapa">                    
+                <div key={mapa.id} className="p-4 overflow-hidden mapa">                    
                     <img src={mapa.imagen ? mapa.imagen : "/demo.jpg"} alt={mapa.titulo} className='image-mapa'/>
-                    <Link to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2] hover:underline">
-                        <h3 className='text-white'>{mapa.titulo}</h3>
-                        
-                        <div className='flex'>
-                            <p className='bg-card text-tertiary rounded-2xl px-1'>{mapa.ubicacion}</p>
-                            <p className='bg-card text-titulo rounded-2xl px-1'>{mapa.anyo}</p>
-                            <p className='bg-card text-primary rounded-2xl px-1'>{mapa.tipo}</p>
-                        </div>
-                        
-                    </Link>
+                    <div>
+                        <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
+                            <h3 className='text-white'>{mapa.titulo}</h3>
+                            
+                            <div className='flex'>                            
+                                <p className='bg-card text-titulo rounded-2xl px-1 text-14'>{mapa.anyo}</p>
+                                <p className='bg-etiqueta-sec text-primary rounded-2xl px-1 text-14'>{mapa.tipo}</p>
+                            </div>
+                            
+                        </TrackedLink>
+                    </div>
                 </div>
             ))}
         </div>
