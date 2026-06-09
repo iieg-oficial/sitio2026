@@ -15,7 +15,7 @@ export default function PlataformasDestacado() {
     }, [location])
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 h-48 bg-card mx-auto w-11/12 sm:container md:w-11/12 2xl:container absolute top-0 z-10 rounded-3xl left-1/2 -translate-x-1/2 -translate-y-1/2 place-items-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 h-48 bg-card mx-auto w-11/12 order-1 md:order-2 container md:w-11/12 2xl:container md:absolute top-0 z-10 md:rounded-3xl md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 place-items-center">
             {plataformas.map(plataforma => (
                 <div key={plataforma.id}>
                     <a href={plataforma.link} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
