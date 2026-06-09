@@ -30,7 +30,7 @@ export default function Contacto() {
 
     return (
         <>          
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 mx-2">
+            <div className="bg-white p-8 mx-2 md:mx-0 ">
                 <h2 className="mb-6 text-titulo">¿Tienes dudas? contáctanos</h2>
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
@@ -102,7 +102,7 @@ export default function Contacto() {
                 </div>
             </div>
 
-            <div className="overflow-hidden rounded-xl shadow-lg border border-gray-200 h-full">
+            <div className="overflow-hidden h-full">
                 <iframe 
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3732.6363330579716!2d-103.44923245953379!3d20.684369299596163!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428aecbb4902a4f%3A0xb1a0d25cb7c814cf!2sInstituto%20de%20Informaci%C3%B3n%20Estad%C3%ADstica%20y%20Geogr%C3%A1fica%20IIEG!5e0!3m2!1ses-419!2smx!4v1774984803790!5m2!1ses-419!2smx" 
                     width="100%" 

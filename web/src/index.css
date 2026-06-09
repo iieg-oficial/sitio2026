@@ -19,7 +19,7 @@
     --color-positivo: #3bc16f;
     --color-medio: #ff9d00;
     --color-negativo: #fa4848;
-    --text-44: clamp(2.375rem, 1.871vw + 0.704rem, 2.75rem);
+    --text-44: clamp(1.875rem, 1.871vw + 0.704rem, 2.75rem);
     --text-36: clamp(1.875rem, 1.871vw + 0.704rem, 2.25rem);
     --text-28: clamp(1.5rem, 1.871vw + 0.704rem, 1.75rem);
     --text-22: clamp(1.25rem, 1.871vw + 0.704rem, 1.375rem);

@@ -35,7 +35,8 @@
 }
 
 .swiper-pagination-bullets-dynamic {
-  & .swiper-pagination-bullet-active-next {
+  & .swiper-pagination-bullet-active-next,
+  .swiper-pagination-bullet-active-prev {
     transform: scale(1);
   }
 }
