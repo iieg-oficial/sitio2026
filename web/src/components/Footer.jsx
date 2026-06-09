@@ -10,7 +10,7 @@ function Footer() {
             <footer className="bg-primary text-white py-12 mt-auto">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-0 md:gap-8">
-                        <div className='mb-8 md:mb-0 md:col-span-2 xl:col-span-1'>
+                        <div className='mb-8 md:mb-0 md:col-span-2 xl:col-span-1 grid'>
                             <div>
                                 <img
                                     src="/ico_iieg_logo.svg"
@@ -18,7 +18,7 @@ function Footer() {
                                     className="mb-12 mx-auto md:ml-0"
                                 />
                             </div>
-                            <div className='flex justify-center md:justify-start gap-4'>
+                            <div className='flex md:justify-start justify-center gap-4 content-end'>
                                 <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
                                     <span class="line-md--instagram"></span>
                                 </a>
@@ -47,7 +47,7 @@ function Footer() {
                                     <img src="/ico_gobjal_logo.svg" alt="Link al sitio del gobierno de jalisco" className="mx-auto mb-12 md:mr-0 xl:mx-auto" />
                                 </a>
                             </div>
-                            <div>
+                            <div className='grid content-end'>
                                 <a href='' target='_blank'>
                                     <img src="/img_transparencia.png" alt="Link a la plataforma de transparencia" className="mx-auto mt-4 md:mr-0 xl:mx-auto" />
                                 </a>
