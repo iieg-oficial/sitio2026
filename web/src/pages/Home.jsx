@@ -117,7 +117,7 @@ function HomePage() {
                 </TrackedLink>
             </section>
             <section className="w-11/12 mx-auto relative my-14">
-                <h2 className="text-titulo text-center">Conoce los mapas de Jalisco</h2>
+                <h2 className="text-titulo text-center mb-10">Conoce los mapas de Jalisco</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <TrackedLink 
                 to="/mapas-historicos" 
