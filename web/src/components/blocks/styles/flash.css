@@ -1,0 +1,8 @@
+.flash_desc li{
+    margin-bottom: 15px;
+}
+
+.flash_desc p, .flash_desc li{
+    font-size: 14px;
+    color: var(--color-body);
+}

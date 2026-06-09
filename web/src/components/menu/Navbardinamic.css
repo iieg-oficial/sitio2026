@@ -25,9 +25,11 @@
   color: #ffffff;
   text-decoration: none;
   border-bottom: none;
+  font-size: 16px;
 }
 .menu-wrapper a:hover {  
   transition: all 0.5s;
+  color: #ff8300;
 }
 .menu-wrapper .menu > .current-menu-item > a,
 .menu-wrapper .menu > .current-menu-ancestor > a {
@@ -45,20 +47,18 @@
 .menu-wrapper .sub-menu {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  margin: 18px 0 0 -0.7em;
-  padding: 3px 0 0 0;
+  margin: 0px 0 0 -0.7em;  
   position: absolute;
   max-height: 0em;
   overflow: hidden;
   list-style: none outside none;
   text-align: left;
   text-transform: none;
+  border-radius: 8px;
+  background-color: #fff;
 }
 .menu-wrapper .sub-menu li {
   display: block;
-  background: #ffffff;
-  margin-left: 0.7em;
-  margin-right: 0.7em;
 }
 .menu-wrapper .sub-menu a {
   margin: 0;
@@ -66,14 +66,13 @@
   line-height: 1.8em;
   border: none;
   color: #5c2472;
+  padding: 5px 25px;
 }
 .menu-wrapper .sub-menu a:hover {
   background: #f4d8ff;
   color: #ff8300;
 }
-.menu-wrapper .sub-menu li:last-child {
-  padding-bottom: 0.26em;
-}
+
 .menu-wrapper .sub-menu li:last-child a {
   border-bottom: none;
 }

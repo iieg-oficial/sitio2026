@@ -48,11 +48,11 @@ export default function Banners() {
                         </a>
                     </>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto px-2 md:px-0 xl:px-2 2xl:px-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto px-2 xl:px-2 2xl:px-0">
                         <div>
                             <h2 className='text-white'>{banner.titulo}</h2>                            
                             <div dangerouslySetInnerHTML={{__html: banner.descripcion}} className='mt-5 prose max-w-none text-banner mb-5' />
-                            <Link to={banner.link} className="button block float-left bg-medio hover:bg-tertiary">{banner.boton}</Link>
+                            <Link to={banner.link} className="button block font-base float-left bg-medio hover:bg-tertiary">{banner.boton}</Link>
                         </div>
                         <div>
                             <img src={banner.imagen} alt={banner.titulo} className="w-full object-cover"/>

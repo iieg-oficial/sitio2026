@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
+import './datos_nuevos.css'
 
 export default function DatosNuevos() {
     const [datosNuevos, setDatosNuevos] = useState([])
@@ -21,17 +22,17 @@ export default function DatosNuevos() {
     };
 
     return (
-        <div className="grid grid-cols-12 gap-4 my-10">
+        <div className="">
             {datosNuevos.map(datoNuevo => (
-                <>
-                <div className="col-span-10 bg-cardrounded-3xl p-4 col-span-1">
-                    <h3 className='text-tertiary'>{datoNuevo.cifras}</h3>
-                    <div dangerouslySetInnerHTML={{ __html: datoNuevo.descripcion }} className='text-titulos text-18' />
+                <div className="grid grid-cols-12 gap-4 my-4 md:my-10 bg-card rounded-3xl p-4" key={datoNuevo.id}>
+                    <div className="col-span-9 bg-cardrounded-3xl p-4 col-span-1">
+                        <h3 className='text-tertiary'>{datoNuevo.cifras}</h3>
+                        <div dangerouslySetInnerHTML={{ __html: datoNuevo.descripcion }} className='datosn' />
+                    </div>
+                    <div className="col-span-3 content-center md:px-4">
+                            <img src={imagenes[datoNuevo.tipo]} alt={datoNuevo.cifras} className="w-full h-auto object-center object-cover" />
+                    </div>
                 </div>
-                <div className="col-span-2">
-                        <img src={imagenes[datoNuevo.tipo]} alt={datoNuevo.cifras} className="w-full h-auto object-center object-cover" />
-                </div>
-                </>
             ))}
         </div>
     )

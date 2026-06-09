@@ -63,9 +63,10 @@ export const CamposBannerFull = () => {
 export const CamposBannerMin = () => {
     const form = Form.useFormInstance();
     const imagen = Form.useWatch('imagen', form);
+
     return (
         <>
-            <Form.Item name="color_fondo" label="Color de Fondo" rules={[{ required: false }]}>
+            <Form.Item name="color_fondo" label="Color de Fondo" initialValue="#8936ab" rules={[{ required: false }]}>
                 <ColorPickerField name="color_fondo" />
             </Form.Item>
             <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>            
