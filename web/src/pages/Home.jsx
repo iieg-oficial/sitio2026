@@ -79,9 +79,9 @@ function HomePage() {
             <section className="h-[450px] md:h-[550px] lg:h-[800px]" role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
             </section>            
-            <section className="container-fluid relative">
-                <div className="relative z-0">                    
-                    <div className='bg-primary text-center z-10 mx-auto absolute top-9/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-5 py-14 rounded-2xl'>
+            <section className="container-fluid relative grid">
+                <div className="relative z-0 order-2 md:order-1 min-h-[370px] md:min-h-auto">                    
+                    <div className='bg-primary text-center z-10 mx-auto absolute top-6/12 md:top-8/12 xl:top-9/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-5 py-14 rounded-2xl w-11/12 md:w-9/12 xl:w-auto'>
                         <img src="/ico_mapalab.svg" alt="MapaLab" className="w-8 h-8 inline-block mr-2" />
                         <p className='text-center text-white my-8'>Explora el territorio de Jalisco con datos geoespaciales</p>
                         <TrackedLink to="/mapalab" className="button bg-medio hover:bg-tertiary">
@@ -112,7 +112,7 @@ function HomePage() {
             <section className="w-11/12 mx-auto rounded-lg bg-white -mt-18 pt-10">
                 <h2 className="text-titulo text-center my-10">Visita nuestras plataformas interactivas</h2>
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
-                <TrackedLink to="/flashes" className="button2 w-[380px] text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                <TrackedLink to="/flashes" className="button2 w-[350px] text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
                     Quiero ver todas las plataformas
                 </TrackedLink>
             </section>
@@ -122,7 +122,7 @@ function HomePage() {
                 <TrackedLink 
                 to="/mapas-historicos" 
                 target="_self"
-                className="button2 block w-[380px] text-center mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                className="button2 block w-[350px] text-center mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
                     Quiero ver todos los mapas
                 </TrackedLink>
             </section>

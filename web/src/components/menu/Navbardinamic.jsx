@@ -66,7 +66,7 @@ const Navbardinamic = () => {
   };
 
   return (
-    <div className='container-fluid bg-primary'>
+    <div className='container-fluid bg-primary py-5'>
       <div className="menu-wrapper grid grid-cols-2 lg:grid-cols-12 container mx-auto">
         <Link to="/" className="lg:col-span-3 content-center">
           <img src="/ico_IIEG_header.svg" alt="IIEG" className="h-12 w-auto" />
