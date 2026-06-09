@@ -72,8 +72,8 @@ export default function Contacto() {
                     <button 
                         type="submit" 
                         disabled={status === "Enviando..."}
-                        className={`button2 border-tertiary text-tertiary${
-                            status === "Enviando..." ? "bg-medio text-white cursor-wait" : "bg-tertiary hover:bg-tertiary hover:text-white"
+                        className={`button2 border-tertiary px-5 py-2 text-tertiary ${
+                            status === "Enviando..." ? "bg-medio text-white cursor-wait" : "hover:bg-tertiary hover:text-white"
                         }`}
                     >
                         {status === "Enviando..." ? "Enviando..." : "Enviar Mensaje"}
@@ -96,7 +96,7 @@ export default function Contacto() {
                     <a href="tel:+523337771770" className="block text-titulo hover:text-tertiary">
                         <span class="et--phone"></span> 33 3777 1770
                     </a>
-                    <p className="mt-2">
+                    <p className="mt-2 text-titulo">
                         <span class="mynaui--map-pin"></span> Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.
                     </p>
                 </div>
