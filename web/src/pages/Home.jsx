@@ -112,7 +112,7 @@ function HomePage() {
             <section className="w-11/12 mx-auto rounded-lg bg-white -mt-18 pt-10">
                 <h2 className="text-titulo text-center my-10">Visita nuestras plataformas interactivas</h2>
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
-                <TrackedLink to="/flashes" className="button2 w-[350px] text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                <TrackedLink to="/flashes" className="button2 w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
                     Quiero ver todas las plataformas
                 </TrackedLink>
             </section>

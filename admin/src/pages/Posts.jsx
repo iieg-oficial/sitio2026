@@ -109,7 +109,13 @@ export default function Posts() {
             title: 'Resumen',
             dataIndex: 'resumen',
             key: 'resumen',
-            sorter: (a, b) => a.resumen.localeCompare(b.resumen)
+            sorter: (a, b) => a.resumen.localeCompare(b.resumen),
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'Slug',

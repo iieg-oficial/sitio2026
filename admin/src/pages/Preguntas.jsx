@@ -101,13 +101,25 @@ export default function Preguntas() {
             title: 'Pregunta',
             dataIndex: 'pregunta',
             key: 'pregunta',
-            sorter: (a, b) => a.pregunta.localeCompare(b.pregunta)
+            sorter: (a, b) => a.pregunta.localeCompare(b.pregunta),
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'Respuesta',
             dataIndex: 'respuesta',
             key: 'respuesta',
-            sorter: (a, b) => a.respuesta.localeCompare(b.respuesta)
+            sorter: (a, b) => a.respuesta.localeCompare(b.respuesta),
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'Tema',
