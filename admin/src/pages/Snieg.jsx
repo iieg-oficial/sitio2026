@@ -86,6 +86,12 @@ export default function Snieg() {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'Enlace',
