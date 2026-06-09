@@ -15,33 +15,47 @@ function Footer() {
                                 <img
                                     src="/ico_iieg_logo.svg"
                                     alt="IIEG Logo"
-                                    className="w-16 h-16 mb-4"
+                                    className="mb-4"
                                 />
                             </div>
-                            <div>
-                                <span class="entypo-social--facebook-with-circle"></span>
-                                <span class="mage--instagram-circle"></span>
-                                <span class="fa6-brands--square-x-twitter"></span>
-                                <span class="entypo-social--linkedin-with-circle"></span>
-                                <span class="entypo-social--youtube-with-circle"></span>
+                            <div className='flex gap-4'>
+                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                    <span class="line-md--instagram"></span>
+                                </a>
+
+                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                    <span class="ri--facebook-fill"></span>
+                                </a>
+                                
+                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                    <span class="pajamas--twitter"></span>
+                                </a>
+                                
+                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                    <span class="ri--linkedin-fill"></span>
+                                </a>
+                                
+                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                    <span class="mdi--youtube"></span>
+                                </a>
                             </div>                            
                         </div>
 
                         <div>
                             <div>
                                 <a href='' target='_blank'>
-                                    <image src="/ico_gobjal_logo.svg" alt="Link al sitio del gobierno de jalisco" className="w-32 h-32 mb-4" />
+                                    <img src="/ico_gobjal_logo.svg" alt="Link al sitio del gobierno de jalisco" className="mx-auto" />
                                 </a>
                             </div>
                             <div>
                                 <a href='' target='_blank'>
-                                    <image src="/img_transparencia.png" alt="Link a la plataforma de transparencia" className="w-32 h-32 mb-4" />
+                                    <img src="/img_transparencia.png" alt="Link a la plataforma de transparencia" className="mx-auto mt-4" />
                                 </a>
                             </div>
                         </div>
 
                         <div>
-                           <ul>
+                           <ul style={{ listStyleType: 'none' }}>
                             <li>
                                 <a href='/' className='linkfooter'>Inicio</a>
                             </li>
@@ -58,7 +72,7 @@ function Footer() {
                         </div>
 
                         <div>
-                           <ul>
+                           <ul style={{ listStyleType: 'none' }}>
                             <li>
                                 <a href='' target='_blank' className='linkfooter'>Licitaciones</a>
                             </li>
@@ -75,9 +89,6 @@ function Footer() {
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                        <p>&copy; {currentYear} IIEG. Todos los derechos reservados.</p>
-                    </div>
                 </div>
             </footer>
         </>
