@@ -1,0 +1,21 @@
+.swiper-button-prev, .swiper-button-next{
+    color: var(--color-primary);
+    background-color: white;
+    border-radius: 100%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 40px;
+    height: 40px;
+}
+
+.swiper-button-prev, .swiper-button-next {
+  & ::slotted(svg), & svg {
+    width: auto;
+    height: 25px;
+    -o-object-fit: contain;
+    object-fit: contain;
+    transform-origin: center;
+    fill: currentColor;
+    pointer-events: none;
+    stroke: currentColor;
+  }
+}

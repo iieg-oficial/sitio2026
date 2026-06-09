@@ -6,6 +6,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import '../../blocks/styles/plataformas.css'
 
 export default function PlataformasSlider() {
     const [plataformas, setPlataformas] = useState([])
@@ -22,10 +23,9 @@ export default function PlataformasSlider() {
     return (
         <div >
             <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            className="!pb-14"
-            navigation
-            pagination={{ clickable: true }}
+            modules={[Navigation, Autoplay]}
+            className=""
+            navigation            
             autoplay={{ delay: 10000, pauseOnMouseEnter: true }}
             spaceBetween={20}
             slidesPerView={1}
