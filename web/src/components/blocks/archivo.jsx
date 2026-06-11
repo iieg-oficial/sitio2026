@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import api from '@services/apiService'
-import ReactPaginate from 'react-paginate';
 import Searcher from '../pageComponents/searcher';
 import { format } from 'date-fns';
 
@@ -75,9 +74,10 @@ export default function Archivo() {
     return (
         <div>
             <div>
-            <h1>Institucional de archivos</h1>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <hr />
+           
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo buscas?" />
+            
+
             <div className="flex gap-2 mb-4">
                 {years.map(year => (
                     <button
@@ -145,19 +145,6 @@ export default function Archivo() {
            
         </div>
 
-        <ReactPaginate
-        previousLabel={"Ant"}
-        nextLabel={"Sig"}
-        breakLabel={"..."}
-        breakClassName={"break-me"}
-        pageCount={pageCount}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={3}
-        onPageChange={handlePageClick}
-        containerClassName={"pagination"}
-        activeClassName={"active"}
-        forcePage={Math.floor(itemOffset / itemsPerPage)}
-      />
     </div>
   )
 }
