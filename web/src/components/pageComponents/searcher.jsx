@@ -1,12 +1,12 @@
 
-const Searcher = ({ searchTerm, setSearchTerm }) => {
+const Searcher = ({ searchTerm, setSearchTerm, placeholder }) => {
     
     return (
         <div>
             <div>
                 <input 
                 type="text" 
-                placeholder="Buscar..."
+                placeholder={placeholder}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 value={searchTerm} />
             </div>
