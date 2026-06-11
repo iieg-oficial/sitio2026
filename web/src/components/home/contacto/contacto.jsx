@@ -94,10 +94,10 @@ export default function Contacto() {
                 </form>
                 <div className="my-6 text-22 text-titulo">
                     <a href="tel:+523337771770" className="block text-titulo hover:text-tertiary">
-                        <span class="et--phone"></span> 33 3777 1770
+                        <span class="et--phone w-[24px] h-[24px]"></span> 33 3777 1770
                     </a>
                     <p className="mt-2 text-titulo">
-                        <span class="mynaui--map-pin"></span> Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.
+                        <span class="mynaui--map-pin w-[24px] h-[24px]"></span> Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.
                     </p>
                 </div>
             </div>
