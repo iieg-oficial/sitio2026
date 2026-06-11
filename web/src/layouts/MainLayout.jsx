@@ -3,9 +3,11 @@ import { Outlet } from 'react-router';
 import Footer from '@components/Footer';
 import GlobalContext from '@contexts/GlobalContext';
 import Navbardinamic from '@components/menu/Navbardinamic';
+import { useScrollToHash } from "@hooks/useScrollToHash";
 
 const MainLayout = () => {
     const { isMenuPreview } = useContext(GlobalContext);
+    useScrollToHash();
 
     return (
         <div className="">
