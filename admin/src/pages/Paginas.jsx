@@ -266,7 +266,7 @@ export default function Paginas() {
                     <Form.Item
                         label="Descripción"
                         name="description"
-                        rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
+                        rules={[{ required: false, message: 'Por favor ingrese la descripción' }]}
                     >
                         <RichTextEditor />
                     </Form.Item>
@@ -295,7 +295,7 @@ export default function Paginas() {
                     <Form.Item
                         label="Fecha de actualización"
                         name="updated_at"
-                        rules={[{ required: true, message: 'Por favor ingrese la fecha de actualización' }]}
+                        rules={[{ required: false, message: 'Por favor ingrese la fecha de actualización' }]}
                     >
                         <Input type="date" />
                     </Form.Item>
@@ -303,7 +303,7 @@ export default function Paginas() {
                     <Form.Item
                         label="Keywords"
                         name="keywords_meta"
-                        rules={[{ required: true, message: 'Por favor ingrese el titulo' }]}
+                        rules={[{ required: false, message: 'Por favor ingrese el titulo' }]}
                     >
                         <Input />
                     </Form.Item>
@@ -311,7 +311,7 @@ export default function Paginas() {
                     <Form.Item
                         label="Meta Descripción"
                         name="description_meta"
-                        rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
+                        rules={[{ required: false, message: 'Por favor ingrese la descripción' }]}
                     >
                         <RichTextEditor />
                     </Form.Item>
