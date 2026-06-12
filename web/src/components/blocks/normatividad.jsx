@@ -23,7 +23,7 @@ export default function Normatividad() {
                             <a href={normatividad.documento} target="_blank" rel="noopener noreferrer" download className='flex gap-4'>
                                 <span class="material-symbols--download"></span> <p className='text-22 text-titulo group-hover:text-tertiary'>{normatividad.nombre}</p>
                             </a>
-                        </div>
+                        </div> 
                     ))}
             </div>
         </div>
