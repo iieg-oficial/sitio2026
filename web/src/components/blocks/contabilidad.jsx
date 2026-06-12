@@ -8,7 +8,6 @@ import TrackedLink from '@components/blocks/boton'
 export default function Contabilidad() {
     const [contabilidad, setContabilidad] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const keys = ['titulo', 'archivo', 'subject.titulo'];
     const [activeTab, setActiveTab] = useState(null);
     const [openSubjects, setOpenSubjects] = useState({});
     const [itemOffset, setItemOffset] = useState(0);
@@ -23,13 +22,26 @@ export default function Contabilidad() {
         showData()
     }, []);
 
+    const getPrimaryTema = (archivo) => {
+        const temas = archivo.temas ?? [];
+        const parentTema = temas.find(t => !t.parent_id);
+        return parentTema?.titulo ?? temas[0]?.titulo ?? 'Sin tema';
+    }
+
+    const getSubtema = (archivo) => {
+        const temas = archivo.temas ?? [];
+        const subtema = temas.find(t => t.parent_id);
+        return subtema?.titulo ?? null;
+    }
+
     const filteredPosts = !searchTerm 
         ? contabilidad 
         : contabilidad.filter(post => {
-            return keys.some(key => {
-                const value = key.split('.').reduce((obj, part) => obj?.[part], post);
-                return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());
-            });
+            const term = searchTerm.toLowerCase();
+            if (post.titulo?.toLowerCase().includes(term)) return true;
+            if (post.archivo?.toLowerCase().includes(term)) return true;
+            if (post.temas?.some(t => t.titulo?.toLowerCase().includes(term))) return true;
+            return false;
         });
 
     const years = [...new Set(
@@ -47,7 +59,7 @@ export default function Contabilidad() {
     );
 
     const groupedBySubject = postsByYear.reduce((grupos, contabilidad) => {
-    const tema = contabilidad.subject?.titulo ?? 'Sin tema';
+    const tema = getPrimaryTema(contabilidad);
         if (!grupos[tema]) grupos[tema] = [];
         grupos[tema].push(contabilidad);
         return grupos;
@@ -93,7 +105,8 @@ export default function Contabilidad() {
                         </button>
                     ))}
                 </div>
-<div className='border-card rounded-2xl p-5'>
+                
+                <div className='border-card rounded-2xl p-5'>
                     {currentSubjects.length === 0 && (
                         <p>No hay resultados.</p>
                     )}
@@ -101,6 +114,14 @@ export default function Contabilidad() {
                     {currentSubjects.map((tema) => {
                         const items = groupedBySubject[tema];
                         const isOpen = openSubjects[tema] ?? false; // abierto por defecto
+                        const groupedBySubtema = items.reduce((grupos, contabilidad) => {
+                            const subtema = getSubtema(contabilidad) ?? 'Sin subtema';
+                            if (!grupos[subtema]) grupos[subtema] = [];
+                            grupos[subtema].push(contabilidad);
+                            return grupos;
+                        }, {});
+                        const subtemas = Object.keys(groupedBySubtema).sort((a, b) => a.localeCompare(b));
+
 
                         return (
                             <div key={tema} className='bg-card rounded-2xl mb-4 p-4'>
@@ -122,35 +143,45 @@ export default function Contabilidad() {
                                     </span>
                                 </button>
                          
-                         {isOpen && (
-                                                            <div className="px-4 pb-3 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                                {items.map((archivo) => (
-                                                                    <div className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
-                                                                        <div className='flex'>
-                                                                            <TrackedLink to={archivo.archivo} className="" target="_blank" rel="noopener noreferrer">
-                                                                                <div className='col-span-1 bg-[#FF83004D] h-[40px] w-[40px] rounded-full flex items-center justify-center'>
-                                                                                    <span className="material-symbols--download text-tertiary"></span> 
-                                                                                </div>
-                                                                            </TrackedLink>
-                        
-                                                                            <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
+                                {isOpen && (
+                                    <div className="px-4 pb-3 space-y-4">
+                                        {subtemas.map((subtema) => {
+                                            const showHeading = subtema !== 'Sin subtema' || subtemas.length > 1;
+                                                return (
+                                                    <div key={subtema}>
+                                                        {showHeading && (
+                                                            <div className='mb-3 text-20 font-bold text-primary'>
+                                                                 {subtema}
                                                             </div>
                                                         )}
-                        
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            {groupedBySubtema[subtema].map((contabilidad) => (
+                                                                <div key={contabilidad.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
+                                                                    <div className='flex'>
+                                                                        <TrackedLink to={contabilidad.archivo} className="" target="_blank" rel="noopener noreferrer">
+                                                                            <div className='col-span-1 bg-[#FF83004D] h-[40px] w-[40px] rounded-full flex items-center justify-center'>
+                                                                                <span className="material-symbols--download text-tertiary"></span> 
+                                                                            </div>
+                                                                        </TrackedLink>
+                               
+                                                                        <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{contabilidad.titulo}</p>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
                                                     </div>
-                                                    )
-                                                    }
-                                                    
                                                 )
-                                            }
+                                            })}
                                         </div>
-                                    </div>
-                                   
+                                     )}
                                 </div>
-                        
-                            </div>
-                          )
-                        }
+                            )
+                        })}
+                    </div>
+                </div>
+                                          
+            </div>
+                               
+        </div>
+    )
+}
