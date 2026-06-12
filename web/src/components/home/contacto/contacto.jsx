@@ -97,7 +97,7 @@ export default function Contacto() {
                         <span class="et--phone mr-5"></span> <span className="inline-block align-middle">33 3777 1770</span>
                     </a>
                     <p className="mt-2 text-20 font-bold text-titulo">
-                        <span class="mynaui--map-pin mr-5"></span> Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.
+                        <span class="mynaui--map-pin w-[24px] h-[24px] mr-5"></span> Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.
                     </p>
                 </div>
             </div>

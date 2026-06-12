@@ -3,6 +3,7 @@ import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import Searcher from '../pageComponents/searcher';
 import { format } from 'date-fns';
+import TrackedLink from '@components/blocks/boton'
 
 export default function Contabilidad() {
     const [contabilidad, setContabilidad] = useState([]);
@@ -75,89 +76,81 @@ export default function Contabilidad() {
     return (
         <div>
             <div>
-            <h1>Contabilidad</h1>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <hr />
-            <div className="flex gap-2 mb-4">
-                {years.map(year => (
-                    <button
-                        key={year}
-                        onClick={() => { setActiveTab(year); setItemOffset(0); } }
-                        className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === year
-                                ? 'bg-blue-600 text-white border-blue-600'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'}`}
-                    >
-                        {year}
-                    </button>
-                ))}
-            </div>
-            <div className='border-2 border-gray-200 rounded-lg p-4'>
-                {currentSubjects.length === 0 && (
-                    <p className="text-gray-400">No hay resultados.</p>
-                )}
-
-                {currentSubjects.map((tema) => {
-                    const items = groupedBySubject[tema];
-                    const isOpen = openSubjects[tema] ?? true; // abierto por defecto
-
-                    return (
-                        <div key={tema} className='border-2 border-gray-200 rounded-lg mb-3'>
-
-                            
-                            <button
-                                onClick={() => toggleSubject(tema)}
-                                className="w-full flex justify-between items-center px-4 py-3 font-semibold text-left hover:bg-gray-50"
-                            >
-                                <span>{tema}</span>
-                                <span className="flex items-center gap-2">
-                                    
-                                    <span className="bg-blue-100 text-blue-700 text-sm font-bold px-2 py-0.5 rounded-full">
-                                        {items.length}
-                                    </span>
-                                    <span className="text-gray-400">{isOpen ? '▲' : '▼'}</span>
-                                </span>
-                            </button>
-
-                            
-                            {isOpen && (
-                                <div className="px-4 pb-3 flex flex-col gap-2">
-                                    {items.map((archivo) => (
-                                        <div key={archivo.id} className='border border-gray-100 rounded p-3'>
-
-                                        <a href={archivo.archivo}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:underline"
-                                            >
-                                            {archivo.titulo}
-                                        </a>
-                                        </div>))}
-                                </div>
-                            )}
-
-                        </div>
-                        )
-                        }
-                        
-                    )
-                }
-            </div>
            
-        </div>
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo buscas?" />
+            
+            <div className='mx-auto px-2 container my-15'>
+                <div className="flex gap-2 mb-5">
+                    {years.map(year => (
+                        <button
+                            key={year}
+                            onClick={() => { setActiveTab(year); setItemOffset(0); } }
+                                className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
+                                        ? 'bg-etiqueta-sec text-tertiary border-tertiary'
+                                        : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
+                        >
+                            {year}
+                        </button>
+                    ))}
+                </div>
+<div className='border-card rounded-2xl p-5'>
+                    {currentSubjects.length === 0 && (
+                        <p>No hay resultados.</p>
+                    )}
 
-        <ReactPaginate
-        previousLabel={"Ant"}
-        nextLabel={"Sig"}
-        breakLabel={"..."}
-        breakClassName={"break-me"}
-        pageCount={pageCount}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={3}
-        onPageChange={handlePageClick}
-        containerClassName={"pagination"}
-        activeClassName={"active"}
-        forcePage={Math.floor(itemOffset / itemsPerPage)}
-      />
-    </div>
-  )
-}
+                    {currentSubjects.map((tema) => {
+                        const items = groupedBySubject[tema];
+                        const isOpen = openSubjects[tema] ?? false; // abierto por defecto
+
+                        return (
+                            <div key={tema} className='bg-card rounded-2xl mb-4 p-4'>
+
+                                
+                                <button
+                                    onClick={() => toggleSubject(tema)}
+                                    className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-extrabold"
+                                >
+                                    <span>{tema}</span>
+                                    <span className="flex items-center gap-8">
+                                        
+                                        <span className="bg-etiqueta-sec text-tertiary border border-tertiary font-bold px-5 py-2 rounded-2xl text-22">
+                                            {items.length}
+                                        </span>
+                                        <div className='col-span-1 bg-white shadow-lg h-[25px] w-[25px] rounded-full flex items-center justify-center transition-shadow duration-300 hover:shadow-xl'>
+                                            <span className={`line-md--chevron-down text-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></span>
+                                        </div>
+                                    </span>
+                                </button>
+                         
+                         {isOpen && (
+                                                            <div className="px-4 pb-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                {items.map((archivo) => (
+                                                                    <div className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
+                                                                        <div className='flex'>
+                                                                            <TrackedLink to={archivo.archivo} className="" target="_blank" rel="noopener noreferrer">
+                                                                                <div className='col-span-1 bg-[#FF83004D] h-[40px] w-[40px] rounded-full flex items-center justify-center'>
+                                                                                    <span className="material-symbols--download text-tertiary"></span> 
+                                                                                </div>
+                                                                            </TrackedLink>
+                        
+                                                                            <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                        
+                                                    </div>
+                                                    )
+                                                    }
+                                                    
+                                                )
+                                            }
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                        
+                            </div>
+                          )
+                        }
