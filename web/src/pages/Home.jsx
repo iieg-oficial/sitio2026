@@ -126,14 +126,15 @@ function HomePage() {
                     Quiero ver todos los mapas
                 </TrackedLink>
             </section>
-            <section className="container-fluid mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 my-14 gap-4 relative bg-card">
+            <section className="container-fluid relative bg-card py-20">
+                <div className="container mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 gap-4 ">
                 
                 <TrackedLink 
                 to="/transparencia" 
                 target="_blank"
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1">
                     <img src="/ico_transparencia_normal.svg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2">Transparencia</span>
+                    <span className="block mt-2 text-22">Transparencia</span>
                 </TrackedLink>
 
                  <TrackedLink 
@@ -141,7 +142,7 @@ function HomePage() {
                 target="_blank"
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1">
                     <img src="/ico_licitaciones_normal.svg" alt="Licitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2">Licitaciones</span>
+                    <span className="block mt-2 text-22">Licitaciones</span>
                 </TrackedLink>
 
                  <TrackedLink 
@@ -149,7 +150,7 @@ function HomePage() {
                 target="_self"
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1">
                     <img src="/ico_contabilidad_normal.svg" alt="Contabilidad Gubernamental" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2">Contabilidad Gubernamental</span>
+                    <span className="block mt-2 text-22">Contabilidad Gubernamental</span>
                 </TrackedLink>
 
                 <TrackedLink 
@@ -157,7 +158,7 @@ function HomePage() {
                 target="_self"
                 className="text-primary hover:text-tertiary text-center col-span-1 md:col-span-2 md:col-start-2 xl:col-span-1">
                     <img src="/ico_capacitaciones_normal.svg" alt="Capacitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2">Capacitaciones</span>
+                    <span className="block mt-2 text-22">Capacitaciones</span>
                 </TrackedLink>
 
                 <TrackedLink 
@@ -167,6 +168,8 @@ function HomePage() {
                     <img src="/ico_noticias_normal.png" alt="Comunidad" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2">Comunidad</span>
                 </TrackedLink>
+
+                </div>
             </section>
             <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
                 <BlockRenderer block={{ type: 'contacto' }} />
