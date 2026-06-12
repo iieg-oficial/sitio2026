@@ -3,6 +3,7 @@ import api from '@services/apiService'
 import Searcher from '../pageComponents/searcher';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
+import TrackedLink from '@components/blocks/boton'
 
 export default function Reportes() {
     const [reportes, setReportes] = useState([])
@@ -63,31 +64,33 @@ export default function Reportes() {
 
     return (
         <div>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <hr />
-            <div className="flex gap-2 mb-4">
-                <button
-                    onClick={() => { setActiveTab("Todos"); setItemOffset(0); }}
-                    className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === "Todos"
-                            ? 'bg-blue-600 text-white border-blue-600'
-                            : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'
-                    }`}
-                >
-                    Todos
-                </button>
-                {types.map(type => (
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
+            
+            <div className='mx-auto px-2 container my-15'>
+                <div className="flex gap-2 mb-5">
                     <button
-                        key={type}
-                        onClick={() => { setActiveTab(type); setItemOffset(0); } }
-                        className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === type
+                        onClick={() => { setActiveTab("Todos"); setItemOffset(0); }}
+                        className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === "Todos"
                                 ? 'bg-blue-600 text-white border-blue-600'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'}`}
+                                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'
+                        }`}
                     >
-                        {type}
+                        Todos
                     </button>
-                ))}
+                    {types.map(type => (
+                        <button
+                            key={type}
+                            onClick={() => { setActiveTab(type); setItemOffset(0); } }
+                            className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === type
+                                    ? 'bg-blue-600 text-white border-blue-600'
+                                    : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'}`}
+                        >
+                            {type}
+                        </button>
+                    ))}
+                </div>
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4 mx-auto container'>
                 {currentReportes.map(reporte => (
                     <div className='border-2 border-yellow-500 rounded-lg p-4' key={reporte.id}>
                         <span className='text-blue-600 font-semibold'>{format(new Date(reporte.fecha), 'yyyy')}</span>
