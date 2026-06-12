@@ -4,16 +4,16 @@ from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Preguntas, Subject
-from app.schemas import PreguntasOut, ReporteList
+from app.schemas import PreguntasOut, PreguntasList
 
 router = APIRouter(prefix="/preguntas", tags=["preguntas-public"])
 
 
-@router.get("", response_model=ReporteList)
+@router.get("", response_model=PreguntasList)
 def listar_preguntas(
     db: Session = Depends(get_db),
 ):
-    preguntas = db.execute(select(Preguntas).order_by(Preguntas.fecha.desc())).scalars().all()
+    preguntas = db.execute(select(Preguntas)).scalars().all()
     return {
         "preguntas": preguntas,
         "total": len(preguntas),
