@@ -35,8 +35,8 @@
       color: var(--color-body);
     }
     h1 {
-      font-size: var(--text-2xl--line-height);
-      font-weight: var(--font-weight-semibold);
+      font-size: var(--text-44);
+      font-weight: 900;
       color: var(--color-titulo);
     }
     h2 {
@@ -268,3 +268,25 @@ li::marker {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
+
+.edatos-recientes{
+  background-color: var(--color-etiqueta-sec);
+  color: var(--color-tertiary);
+  border: 1px solid var(--color-tertiary);
+}
+.eestadistica{
+  background-color: var(--color-etiqueta-ter);
+  color: var(--color-titulo);
+  border: 1px solid var(--color-titulo);
+}
+.eotro{
+  background-color: var(--color-etiqueta-ter);
+  color: var(--color-titulo);
+  border: 1px solid var(--color-titulo);
+}
+.eplataforma{
+  background-color: var(--color-etiqueta);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+.pagination{}
