@@ -53,7 +53,7 @@ export default function Preguntas() {
                     >                    
                         {subjects.map(subject => (
                             <button
-                                key={year}
+                                key={subject}
                                 onClick={() => { setActiveTab(subject); setItemOffset(0); } }
                                 className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === subject
                                         ? 'bg-etiqueta-sec text-tertiary border-tertiary'
@@ -73,16 +73,18 @@ export default function Preguntas() {
             {gruposPreguntas.map(([tema, preguntas]) => {        
                       
                 return (
-                    <div key={tema} className='w-full rounded-2xl pl-6 p-4 bg-card'>
+                    <div key={tema} className='w-full mb-15'>
                         {preguntas.map((pregunta) => {
-                            const isOpen = openPreguntas[pregunta.id] ?? true;  
+                            const isOpen = openPreguntas[pregunta.id] ?? false;  
 
                             return (
-                                <div key={pregunta.id}>
-                                    <button onClick={() => togglePregunta(pregunta.id)}>
-                                        <h2 className='text-primary text-22'>{pregunta.titulo}</h2>
-                                        <div className='col-span-1 bg-white shadow-lg h-[25px] w-[25px] rounded-full flex items-center justify-center transition-shadow duration-300 hover:shadow-xl'>
+                                <div key={pregunta.id} className='mb-5 w-full rounded-2xl bg-card pl-6 p-4'>
+                                    <button onClick={() => togglePregunta(pregunta.id)} className='grid grid-cols-12 w-full'>
+                                        <h2 className='text-primary text-22 col-span-11 text-left'>{pregunta.pregunta}</h2>
+                                        <div className='col-span-1'>
+                                        <div className=' bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 hover:shadow-xl'>
                                             <span className={`line-md--chevron-down text-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></span>
+                                        </div>
                                         </div>
                                     </button>
                                     {isOpen && (
