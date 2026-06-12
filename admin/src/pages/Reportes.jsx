@@ -51,6 +51,7 @@ export default function Reportes() {
             setPeriocidad(response.data.periocidad || {});
         } catch (error) {
             message.error('Error al cargar periocidad');
+            console.log(error);
         }
     };
 
@@ -74,7 +75,12 @@ export default function Reportes() {
         setEditingReporte(record);
         const ids = (record.temas ?? []).map((t) => t.id);
         setSelectedSubjects(ids);
-        form.setFieldsValue(record);
+        form.setFieldsValue({
+            ...record,
+            fecha: record.fecha ? record.fecha.slice(0, 10) : undefined,
+            periocidad: record.periocidad,
+            mes: record.mes,
+        });
         setModalVisible(true);
     };
 
@@ -206,7 +212,7 @@ export default function Reportes() {
                     <Form.Item
                         name="fecha"
                         label="Fecha de publicación"
-                        rules={[{ required: true, message: 'Por favor seleccione la fecha' }]}
+                        rules={[{ required: false, message: 'Por favor seleccione la fecha' }]}
                     >
                         <Input type="date" />
                     </Form.Item>
@@ -217,38 +223,34 @@ export default function Reportes() {
                             setSelectedSubjects(ids);
                         }}
                     />
-                    <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingresa la periocidad' }]}>
+                    <Form.Item name="periocidad" label="Periocidad" rules={[{ required: false, message: 'Por favor ingresa la periocidad' }]}>
                         <Select 
                             placeholder="Selecciona la periocidad"
-                            alowClear
+                            allowClear
                             showSearch
                             optionFilterProp="label"
                             filterOption={(input, option) =>
                                 (option?.label || '').toLowerCase().includes(input.toLowerCase())
                             }
                             options={Object.entries(periocidad).map(([key, value]) => ({ 
-                                key,
-                                value, 
+                                value: key,
                                 label: value 
-                            }
-                        ))}
+                            }))}
                         />  
                     </Form.Item>
                      <Form.Item name="mes" label="Mes" rules={[{ required: true, message: 'Por favor ingresa el mes' }]}>
                         <Select 
                             placeholder="Selecciona el mes"
-                            alowClear
+                            allowClear
                             showSearch
                             optionFilterProp="label"
                             filterOption={(input, option) =>
                                 (option?.label || '').toLowerCase().includes(input.toLowerCase())
                             }
                             options={Object.entries(meses).map(([key, value]) => ({ 
-                                key,
-                                value, 
+                                value: key,
                                 label: value 
-                            }
-                        ))}
+                            }))}
                         />  
                     </Form.Item>
                     <Form.Item name="anyo" label="Año" rules={[{ required: true, message: 'Por favor ingresa el año' }]}>
