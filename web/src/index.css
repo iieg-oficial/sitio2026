@@ -292,7 +292,7 @@ li::marker {
 ul.pagination{
   display: flex;
   justify-content: center;
-  margin: 20px;
+  margin: 5% 20px;
   gap:20px;
 }
 
