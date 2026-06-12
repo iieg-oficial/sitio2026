@@ -7,7 +7,6 @@ import TrackedLink from '@components/blocks/boton'
 export default function Archivo() {
     const [archivos, setArchivos] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const keys = ['titulo', 'archivo', 'subject.titulo'];
     const [activeTab, setActiveTab] = useState(null);
     const [openSubjects, setOpenSubjects] = useState({});
     const [itemOffset, setItemOffset] = useState(0);
@@ -22,13 +21,26 @@ export default function Archivo() {
         showData()
     }, []);
 
+    const getPrimaryTema = (archivo) => {
+        const temas = archivo.temas ?? [];
+        const parentTema = temas.find(t => !t.parent_id);
+        return parentTema?.titulo ?? temas[0]?.titulo ?? 'Sin tema';
+    }
+
+    const getSubtema = (archivo) => {
+        const temas = archivo.temas ?? [];
+        const subtema = temas.find(t => t.parent_id);
+        return subtema?.titulo ?? null;
+    }
+
     const filteredPosts = !searchTerm 
         ? archivos 
         : archivos.filter(post => {
-            return keys.some(key => {
-                const value = key.split('.').reduce((obj, part) => obj?.[part], post);
-                return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());
-            });
+            const term = searchTerm.toLowerCase();
+            if (post.titulo?.toLowerCase().includes(term)) return true;
+            if (post.archivo?.toLowerCase().includes(term)) return true;
+            if (post.temas?.some(t => t.titulo?.toLowerCase().includes(term))) return true;
+            return false;
         });
 
     const years = [...new Set(
@@ -46,11 +58,11 @@ export default function Archivo() {
     );
 
     const groupedBySubject = postsByYear.reduce((grupos, archivo) => {
-    const tema = archivo.subject?.titulo ?? 'Sin tema';
+        const tema = getPrimaryTema(archivo);
         if (!grupos[tema]) grupos[tema] = [];
         grupos[tema].push(archivo);
         return grupos;
-    }, {});   
+    }, {});
 
     const subjects = Object.keys(groupedBySubject).sort();
 
@@ -100,18 +112,22 @@ export default function Archivo() {
                     {currentSubjects.map((tema) => {
                         const items = groupedBySubject[tema];
                         const isOpen = openSubjects[tema] ?? false; // abierto por defecto
+                        const groupedBySubtema = items.reduce((grupos, archivo) => {
+                            const subtema = getSubtema(archivo) ?? 'Sin subtema';
+                            if (!grupos[subtema]) grupos[subtema] = [];
+                            grupos[subtema].push(archivo);
+                            return grupos;
+                        }, {});
+                        const subtemas = Object.keys(groupedBySubtema).sort((a, b) => a.localeCompare(b));
 
                         return (
                             <div key={tema} className='bg-card rounded-2xl mb-4 p-4'>
-
-                                
                                 <button
                                     onClick={() => toggleSubject(tema)}
                                     className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-extrabold"
                                 >
                                     <span>{tema}</span>
                                     <span className="flex items-center gap-8">
-                                        
                                         <span className="bg-etiqueta-sec text-tertiary border border-tertiary font-bold px-5 py-2 rounded-2xl text-22">
                                             {items.length}
                                         </span>
@@ -122,29 +138,39 @@ export default function Archivo() {
                                 </button>
 
                                 {isOpen && (
-                                    <div className="px-4 pb-3 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {items.map((archivo) => (
-                                            <div className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
-                                                <div className='flex'>
-                                                    <TrackedLink to={archivo.archivo} className="" target="_blank" rel="noopener noreferrer">
-                                                        <div className='col-span-1 bg-[#FF83004D] h-[40px] w-[40px] rounded-full flex items-center justify-center'>
-                                                            <span className="material-symbols--download text-tertiary"></span> 
+                                    <div className="px-4 pb-3 space-y-4">
+                                        {subtemas.map((subtema) => {
+                                            const showHeading = subtema !== 'Sin subtema' || subtemas.length > 1;
+                                            return (
+                                                <div key={subtema}>
+                                                    {showHeading && (
+                                                        <div className='mb-3 text-20 font-bold text-primary'>
+                                                            {subtema}
                                                         </div>
-                                                    </TrackedLink>
+                                                    )}
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        {groupedBySubtema[subtema].map((archivo) => (
+                                                            <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
+                                                                <div className='flex'>
+                                                                    <TrackedLink to={archivo.archivo} className="" target="_blank" rel="noopener noreferrer">
+                                                                        <div className='col-span-1 bg-[#FF83004D] h-[40px] w-[40px] rounded-full flex items-center justify-center'>
+                                                                            <span className="material-symbols--download text-tertiary"></span> 
+                                                                        </div>
+                                                                    </TrackedLink>
 
-                                                    <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
+                                                                    <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            )
+                                        })}
                                     </div>
                                 )}
-
                             </div>
-                            )
-                            }
-                            
                         )
-                    }
+                    })}
                 </div>
             </div>
            
