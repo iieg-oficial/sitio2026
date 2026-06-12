@@ -4,7 +4,7 @@ import ReactPaginate from 'react-paginate'
 import { useLocation } from 'react-router'
 import Searcher from '../pageComponents/searcher';
 
-const ITEMS_PER_PAGE = 2
+const ITEMS_PER_PAGE = 12
 
 export default function Sistemas() {
     const [sistemas, setSistemas] = useState([])
