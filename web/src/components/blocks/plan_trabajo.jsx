@@ -7,6 +7,7 @@ export default function PlanTrabajo() {
     const [planTrabajo, setPlanTrabajo] = useState([]);
     const location = useLocation();
     const [activeTab, setActiveTab] = useState(null);
+    const [itemOffset, setItemOffset] = useState(0);
 
     useEffect(() => {
         const fetchPlanTrabajo = async () => {
@@ -31,29 +32,39 @@ export default function PlanTrabajo() {
     );
     
     return (
-        <div className="container-fuid py-15 px-2">
-            <h1 className="font-bold text-3xl text-center">Plan de Trabajo</h1>
-            <div className="container mx-auto">
-                <div className="flex gap-2 mb-4">
-                    {years.map(year => (
-                        <button
-                            key={year}
-                            onClick={() => { setActiveTab(year); setItemOffset(0); } }
-                            className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === year
-                                    ? 'bg-blue-600 text-white border-blue-600'
-                                    : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'}`}
-                        >
-                            {year}
-                        </button>
-                    ))}
+        <div className="container-fuid py-15">
+            <h2 className="text-titulo text-center">Planes de trabajo e informes de actividades</h2>
+            <div className="container-fluid mx-auto mt-15">
+                <div className="relative container mx-auto px-2">
+                    <span class="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
+                    <div
+                        className="flex gap-5 mb-10 lg:ml-15 overflow-x-auto sm:overflow-visible snap-x snap-mandatory"
+                        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
+                    >                    
+                        {years.map(year => (
+                            <button
+                                key={year}
+                                onClick={() => { setActiveTab(year); setItemOffset(0); } }
+                                className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
+                                        ? 'bg-etiqueta-sec text-tertiary border-tertiary'
+                                        : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
+                            >
+                                {year}
+                            </button>
+                        ))}                    
+                    </div>
+                    <span class="material-symbols--chevron-right absolute z-10 bottom-5 right-0 sm:hidden!"></span>
                 </div>
-                <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="mx-auto bg-card px-2 pt-2 container-fluid">
+                <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 container">
                     {postsByYear.map(planTrabajo => (
-                        <div key={planTrabajo.id} className="flex items-center gap-2 mb-4 p-4 border rounded-lg">
-                            <img src={planTrabajo.imagen ? planTrabajo.imagen : "/default.png"} alt={planTrabajo.nombre} className='w-[50px] h-auto float-right'/>
-                            <h3>{planTrabajo.nombre}</h3>
+                        <div key={planTrabajo.id} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-lg group bg-white">
+                            <a href={planTrabajo.documento} target="_blank" rel="noopener noreferrer" download className='flex gap-4'>
+                                <span className="material-symbols--download"></span> <p className='text-22 text-titulo group-hover:text-tertiary'>{planTrabajo.nombre}</p>
+                            </a>
                         </div>
                     ))}
+                </div>
                 </div>
             </div>
         </div>
