@@ -3,6 +3,7 @@ import api from '@services/apiService'
 import Searcher from '../pageComponents/searcher';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 const monthNames = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -165,61 +166,61 @@ export default function Reportes() {
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
 
             <div className='mx-auto px-2 container my-15'>
-                <div className='grid grid-cols-1 md:grid-cols-5 gap-3 mb-5'>
+                <div className='flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5'>
                     <div>
-                        <label className='block text-sm font-semibold mb-1'>Tema</label>
+                        <label className='block text-14 text-primary'>Selecciona un Tema</label>
                         <select
                             value={temaFilter}
                             onChange={(event) => setTemaFilter(event.target.value)}
-                            className='w-full rounded-lg border-gray-200 p-2'
+                            className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                         >
-                            <option value=''>Todos</option>
+                            <option value='' className='text-titulo! bg-card!'>Todos</option>
                             {temas.map(tema => (
-                                <option key={tema} value={tema}>{tema}</option>
+                                <option key={tema} value={tema} className='text-titulo! bg-card!'>{tema}</option>
                             ))}
                         </select>
                     </div>
 
                     {subtemas.length > 0 && (
                         <div>
-                            <label className='block text-sm font-semibold mb-1'>Subtema</label>
+                            <label className='block text-14 text-primary'>Selecciona un Subtema</label>
                             <select
                                 value={subtemaFilter}
                                 onChange={(event) => setSubtemaFilter(event.target.value)}
-                                className='w-full rounded-lg border-gray-200 p-2'
+                                className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                             >
-                                <option value=''>Todos</option>
+                                <option value='' className='text-titulo! bg-card!'>Todos</option>
                                 {subtemas.map(subtema => (
-                                    <option key={subtema} value={subtema}>{subtema}</option>
+                                    <option key={subtema} value={subtema} className='text-titulo! bg-card!'>{subtema}</option>
                                 ))}
                             </select>
                         </div>
                     )}
 
                     <div>
-                        <label className='block text-sm font-semibold mb-1'>Año</label>
+                        <label className='block text-14 text-primary'>Selecciona un Año</label>
                         <select
                             value={yearFilter}
                             onChange={(event) => setYearFilter(event.target.value)}
-                            className='w-full rounded-lg border-gray-200 p-2'
+                            className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                         >
-                            <option value=''>Todos</option>
+                            <option value='' className='text-titulo! bg-card!'>Todos</option>
                             {years.map(year => (
-                                <option key={year} value={year}>{year}</option>
+                                <option key={year} value={year} className='text-titulo! bg-card!'>{year}</option>
                             ))}
                         </select>
                     </div>
 
                     <div>
-                        <label className='block text-sm font-semibold mb-1'>Mes</label>
+                        <label className='block text-14 text-primary'>Selecciona un Mes</label>
                         <select
                             value={monthFilter}
                             onChange={(event) => setMonthFilter(event.target.value)}
-                            className='w-full rounded-lg border-gray-200 p-2'
+                            className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                         >
-                            <option value=''>Todos</option>
+                            <option value='' className='text-titulo! bg-card!'>Todos</option>
                             {months.map(month => (
-                                <option key={month.value} value={month.value}>{month.label}</option>
+                                <option key={month.value} value={month.value} className='text-titulo! bg-card!'>{month.label}</option>
                             ))}
                         </select>
                     </div>
@@ -228,7 +229,7 @@ export default function Reportes() {
                         <div className='flex items-end'>
                             <button
                                 onClick={clearFilters}
-                                className='w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50'
+                                className='w-full rounded-lg border border-titulo bg-card px-4 py-2 text-sm text-titulo cursor-pointer hover:text-tertiary'
                             >
                                 Limpiar filtros
                             </button>
@@ -237,25 +238,33 @@ export default function Reportes() {
                 </div>
             </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4 mx-auto container'>
+            <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mx-auto container px-2'>
                 {currentReportes.map(reporte => (
-                    <div className='border-2 border-yellow-500 rounded-lg p-4' key={reporte.id}>
-                        <span className='text-blue-600 font-semibold'>{reporte.year || (reporte.fecha ? format(new Date(reporte.fecha), 'yyyy') : 'Sin año')}</span>
-                        <h3>{reporte.titulo}</h3>
-                        {reporte.temaTitles?.length > 0 && (
-                            <p><strong>Tema:</strong> {reporte.temaTitles.join(', ')}</p>
-                        )}
-                        {reporte.subtemaTitles?.length > 0 && (
-                            <p><strong>Subtema:</strong> {reporte.subtemaTitles.join(', ')}</p>
-                        )}
-                        <p>periocidad: {reporte.periocidad}</p>
-                        {reporte.month && (
-                            <p>Mes: {monthNames[Number(reporte.month) - 1] || reporte.month}</p>
-                        )}
-                        {reporte.archivo && (
-                            <p>archivo: {reporte.archivo}</p>
-                        )}
-                    </div>
+                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" download>
+                        <div className='border-2 border-card rounded-2xl p-8 hover:border-titulo hover:border' key={reporte.id}>
+                            
+                            <div className="flex items-center gap-2 mb-4 bg-white justify-between">
+                                <p className=' text-22 text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
+                                <div className='bg-[#FF83004D] h-[37px] w-[40px] rounded-full flex items-center justify-center'>
+                                    <span className="material-symbols--download text-tertiary"></span> 
+                                </div>
+                            </div> 
+
+                            <div className='flex flex-wrap gap-5 text-14'>
+                                {reporte.anyo && (
+                                    <p className='text-tertiary border border-tertiary bg-etiqueta-sec py-3 px-5 rounded-xl'>{reporte.anyo}</p>
+                                )}
+                                {reporte.periocidad && (
+                                    <p className='text-titulo border border-titulo bg-etiqueta-ter py-3 px-5 rounded-xl'>{reporte.periocidad}</p>
+                                )}
+                                {reporte.fecha && (
+                                    <p className='text-primary border border-primary bg-etiqueta py-3 px-5 rounded-xl'>Publicada: {format(new Date(reporte.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                )}
+                            </div>
+                            
+                            
+                        </div>
+                    </a>
                 ))}
             </div>
 
