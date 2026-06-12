@@ -34,11 +34,11 @@ export default function Contacto() {
                 <h2 className="mb-6 text-titulo">¿Tienes dudas? contáctanos</h2>
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="block text-primary text-14 mb-2">Nombre Completo</label>
+                        <label className="block text-primary text-14 mb-2">Nombre Completo <span className="text-tertiary">*</span></label>
                         <input 
                             type="text" 
                             placeholder="Ej. Juan Pérez" 
-                            className="w-full px-4 py-3 bg-[##EFF4FF] focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
+                            className="w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
                             value={form.name} 
                             onChange={(e) => setForm({ ...form, name: e.target.value })} 
                             required
@@ -46,11 +46,11 @@ export default function Contacto() {
                     </div>
 
                     <div>
-                        <label className="block text-primary text-14 mb-2">Correo Electrónico</label>
+                        <label className="block text-primary text-14 mb-2">Correo Electrónico <span className="text-tertiary">*</span></label>
                         <input 
                             type="email" 
                             placeholder="correo@ejemplo.com" 
-                            className="w-full px-4 py-3 bg-[##EFF4FF] focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
+                            className="w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
                             value={form.email} 
                             onChange={(e) => setForm({ ...form, email: e.target.value })} 
                             required
@@ -58,11 +58,11 @@ export default function Contacto() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-gray-600 mb-2">Tu Mensaje</label>
+                        <label className="block text-primary text-14 mb-2">Tu Mensaje <span className="text-tertiary">*</span></label>
                         <textarea 
                             rows="5" 
                             placeholder="¿En qué podemos ayudarte?" 
-                            className="w-full px-4 py-3 bg-[##EFF4FF] focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all resize-none"
+                            className="w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all resize-none"
                             value={form.message} 
                             onChange={(e) => setForm({ ...form, message: e.target.value })}
                             required
@@ -72,11 +72,11 @@ export default function Contacto() {
                     <button 
                         type="submit" 
                         disabled={status === "Enviando..."}
-                        className={`button2 border-tertiary px-5 py-2 text-tertiary ${
+                        className={`button2 border-tertiary !px-18 !py-3 font-bold text-tertiary ${
                             status === "Enviando..." ? "bg-medio text-white cursor-wait" : "hover:bg-tertiary hover:text-white"
                         }`}
                     >
-                        {status === "Enviando..." ? "Enviando..." : "Enviar Mensaje"}
+                        {status === "Enviando..." ? "Enviando..." : "Enviar"}
                     </button>
 
                     {status === "ok" && (
@@ -92,12 +92,12 @@ export default function Contacto() {
                         </div>
                     )}
                 </form>
-                <div className="my-6 text-22 text-titulo">
+                <div className="my-6 text-20 font-bold text-titulo">
                     <a href="tel:+523337771770" className="block text-titulo hover:text-tertiary">
-                        <span class="et--phone"></span> 33 3777 1770
+                        <span class="et--phone mr-5"></span> <span className="inline-block align-middle">33 3777 1770</span>
                     </a>
-                    <p className="mt-2 text-titulo">
-                        <span class="mynaui--map-pin"></span> Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.
+                    <p className="mt-2 text-20 font-bold text-titulo">
+                        <span class="mynaui--map-pin mr-5"></span> Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.
                     </p>
                 </div>
             </div>
