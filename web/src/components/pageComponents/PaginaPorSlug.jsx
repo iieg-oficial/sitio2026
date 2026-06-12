@@ -47,7 +47,9 @@ function PaginaPorSlug({ slug }) {
     <article>
         <section className="page-header text-center py-12">
             <h1 className="text-titulos">{page.title}</h1>
-            <div dangerouslySetInnerHTML={{__html: page.description}} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto' />            
+            { page.description && (
+                <div dangerouslySetInnerHTML={{__html: page.description}} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto' />
+            )}
         </section>
         <PaginaDinamica />
     </article>
