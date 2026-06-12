@@ -1,15 +1,24 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import api from '@services/apiService'
 import Searcher from '../pageComponents/searcher';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
-import TrackedLink from '@components/blocks/boton'
+
+const monthNames = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
 
 export default function Reportes() {
     const [reportes, setReportes] = useState([])
     const [searchTerm, setSearchTerm] = useState("");
-    const keys = ['titulo', 'descripcion', 'periocidad', 'subtema', 'subject.titulo'];
-    const [activeTab, setActiveTab] = useState("Todos");
+    const [temaFilter, setTemaFilter] = useState("");
+    const [subtemaFilter, setSubtemaFilter] = useState("");
+    const [yearFilter, setYearFilter] = useState("");
+    const [monthFilter, setMonthFilter] = useState("");
+    const [itemOffset, setItemOffset] = useState(0);
+    const itemsPerPage = 12;
+    const keys = ['titulo', 'claves', 'periocidad', 'mes', 'anyo'];
 
     const fetchReportes = async () => {
         const response = await api.get('/reportes')
@@ -20,94 +29,239 @@ export default function Reportes() {
         fetchReportes()
     }, []);
 
-    const filteredReportes = !searchTerm 
-        ? reportes
-        : reportes.filter(post => {
-            return keys.some(key => {
-                const value = key.split('.').reduce((obj, part) => obj?.[part], post);
-                return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());
-            });
+    const monthNameToNumber = {
+        enero: '01',
+        febrero: '02',
+        marzo: '03',
+        abril: '04',
+        mayo: '05',
+        junio: '06',
+        julio: '07',
+        agosto: '08',
+        septiembre: '09',
+        octubre: '10',
+        noviembre: '11',
+        diciembre: '12',
+    };
+
+    const getTemaTitles = (reporte) => {
+        const temas = reporte.temas ?? [];
+        return temas
+            .filter(t => !t.parent_id)
+            .map(t => t.titulo)
+            .filter(Boolean);
+    };
+
+    const getSubtemaTitles = (reporte) => {
+        const temas = reporte.temas ?? [];
+        return temas
+            .filter(t => t.parent_id)
+            .map(t => t.titulo)
+            .filter(Boolean);
+    };
+
+    const reportesWithMeta = useMemo(() => {
+        return reportes.map(reporte => {
+            const fecha = reporte?.fecha ? new Date(reporte.fecha) : null;
+            const validDate = fecha instanceof Date && !isNaN(fecha);
+            const temaTitles = getTemaTitles(reporte);
+            const subtemaTitles = getSubtemaTitles(reporte);
+            const anyo = reporte.anyo ?? (validDate ? Number(format(fecha, 'yyyy')) : null);
+            const month = reporte.mes
+                ? monthNameToNumber[String(reporte.mes).toLowerCase()] || String(reporte.mes)
+                : validDate
+                    ? format(fecha, 'MM')
+                    : '';
+
+            return {
+                ...reporte,
+                temaTitles,
+                subtemaTitles,
+                year: anyo ? String(anyo) : '',
+                month: month || '',
+            }
+        })
+    }, [reportes]);
+
+    const temas = useMemo(
+        () => [...new Set(reportesWithMeta.flatMap(r => r.temaTitles))].sort(),
+        [reportesWithMeta]
+    );
+
+    const subtemas = useMemo(() => {
+        const uniqueSubtemas = new Set();
+        reportesWithMeta.forEach(r => {
+            if (!temaFilter || r.temaTitles.includes(temaFilter)) {
+                r.subtemaTitles.forEach(title => uniqueSubtemas.add(title));
+            }
         });
+        return [...uniqueSubtemas].sort();
+    }, [reportesWithMeta, temaFilter]);
 
-    const types = [...new Set(
-        filteredReportes.map(post => post.subject.titulo)
-    )].sort();
+    const years = useMemo(
+        () => [...new Set(reportesWithMeta.map(r => r.year).filter(Boolean))].sort((a, b) => Number(b) - Number(a)),
+        [reportesWithMeta]
+    );
 
-    const filteredReportesByType = activeTab === "Todos"
-        ? filteredReportes
-        : filteredReportes.filter(post => post.subject.titulo === activeTab);
+    const months = useMemo(() => {
+        const uniqueMonths = [...new Set(reportesWithMeta.map(r => r.month).filter(Boolean))];
+        const sortedMonths = uniqueMonths.sort((a, b) => Number(a) - Number(b));
+        return sortedMonths.map(value => ({
+            value,
+            label: monthNames[Number(value) - 1] || value
+        }));
+    }, [reportesWithMeta]);
 
-    const [itemOffset, setItemOffset] = useState(0);
-    const itemsPerPage = 12;
+    useEffect(() => {
+        if (subtemaFilter && !subtemas.includes(subtemaFilter)) {
+            setSubtemaFilter("");
+        }
+    }, [temaFilter, subtemas, subtemaFilter]);
+
+    const filteredReportes = useMemo(() => {
+        return reportesWithMeta.filter(post => {
+            const searchTermLower = searchTerm.toLowerCase();
+            const matchesSearch = !searchTerm || [
+                post.titulo,
+                post.claves,
+                post.periocidad,
+            ].some(value => value?.toString().toLowerCase().includes(searchTermLower))
+                || post.temaTitles.some(title => title.toLowerCase().includes(searchTermLower))
+                || post.subtemaTitles.some(title => title.toLowerCase().includes(searchTermLower));
+
+            const matchesTema = !temaFilter || post.temaTitles.includes(temaFilter);
+            const matchesSubtema = !subtemaFilter || post.subtemaTitles.includes(subtemaFilter);
+            const matchesYear = !yearFilter || post.year === yearFilter;
+            const matchesMonth = !monthFilter || post.month === monthFilter;
+
+            return matchesSearch && matchesTema && matchesSubtema && matchesYear && matchesMonth;
+        });
+    }, [reportesWithMeta, searchTerm, temaFilter, subtemaFilter, yearFilter, monthFilter]);
 
     const endOffset = itemOffset + itemsPerPage;
-    const currentReportes = filteredReportesByType.slice(itemOffset, endOffset);
-    const pageCount = Math.ceil(filteredReportesByType.length / itemsPerPage);
+    const currentReportes = filteredReportes.slice(itemOffset, endOffset);
+    const pageCount = Math.ceil(filteredReportes.length / itemsPerPage);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % filteredReportesByType.length;
+        if (filteredReportes.length === 0) return;
+        const newOffset = (event.selected * itemsPerPage) % filteredReportes.length;
         setItemOffset(newOffset);
     };
 
     useEffect(() => {
         setItemOffset(0);
-    }, [searchTerm, activeTab]);
+    }, [searchTerm, temaFilter, subtemaFilter, yearFilter, monthFilter]);
 
-    const handleTabClick = (tab) => {
-        setActiveTab(tab);
+    const clearFilters = () => {
+        setTemaFilter("");
+        setSubtemaFilter("");
+        setYearFilter("");
+        setMonthFilter("");
         setItemOffset(0);
     };
-
-    useEffect(() => {
-        setItemOffset(0);
-    }, [searchTerm, activeTab]);
 
     return (
         <div>
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
-            
+
             <div className='mx-auto px-2 container my-15'>
-                <div className="flex gap-2 mb-5">
-                    <button
-                        onClick={() => { setActiveTab("Todos"); setItemOffset(0); }}
-                        className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === "Todos"
-                                ? 'bg-blue-600 text-white border-blue-600'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'
-                        }`}
-                    >
-                        Todos
-                    </button>
-                    {types.map(type => (
-                        <button
-                            key={type}
-                            onClick={() => { setActiveTab(type); setItemOffset(0); } }
-                            className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === type
-                                    ? 'bg-blue-600 text-white border-blue-600'
-                                    : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'}`}
+                <div className='grid grid-cols-1 md:grid-cols-5 gap-3 mb-5'>
+                    <div>
+                        <label className='block text-sm font-semibold mb-1'>Tema</label>
+                        <select
+                            value={temaFilter}
+                            onChange={(event) => setTemaFilter(event.target.value)}
+                            className='w-full rounded-lg border-gray-200 p-2'
                         >
-                            {type}
-                        </button>
-                    ))}
+                            <option value=''>Todos</option>
+                            {temas.map(tema => (
+                                <option key={tema} value={tema}>{tema}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {subtemas.length > 0 && (
+                        <div>
+                            <label className='block text-sm font-semibold mb-1'>Subtema</label>
+                            <select
+                                value={subtemaFilter}
+                                onChange={(event) => setSubtemaFilter(event.target.value)}
+                                className='w-full rounded-lg border-gray-200 p-2'
+                            >
+                                <option value=''>Todos</option>
+                                {subtemas.map(subtema => (
+                                    <option key={subtema} value={subtema}>{subtema}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    <div>
+                        <label className='block text-sm font-semibold mb-1'>Año</label>
+                        <select
+                            value={yearFilter}
+                            onChange={(event) => setYearFilter(event.target.value)}
+                            className='w-full rounded-lg border-gray-200 p-2'
+                        >
+                            <option value=''>Todos</option>
+                            {years.map(year => (
+                                <option key={year} value={year}>{year}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className='block text-sm font-semibold mb-1'>Mes</label>
+                        <select
+                            value={monthFilter}
+                            onChange={(event) => setMonthFilter(event.target.value)}
+                            className='w-full rounded-lg border-gray-200 p-2'
+                        >
+                            <option value=''>Todos</option>
+                            {months.map(month => (
+                                <option key={month.value} value={month.value}>{month.label}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {(temaFilter || subtemaFilter || yearFilter || monthFilter) && (
+                        <div className='flex items-end'>
+                            <button
+                                onClick={clearFilters}
+                                className='w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50'
+                            >
+                                Limpiar filtros
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
+
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4 mx-auto container'>
                 {currentReportes.map(reporte => (
                     <div className='border-2 border-yellow-500 rounded-lg p-4' key={reporte.id}>
-                        <span className='text-blue-600 font-semibold'>{format(new Date(reporte.fecha), 'yyyy')}</span>
+                        <span className='text-blue-600 font-semibold'>{reporte.year || (reporte.fecha ? format(new Date(reporte.fecha), 'yyyy') : 'Sin año')}</span>
                         <h3>{reporte.titulo}</h3>
-                        <p>{reporte.descripcion}</p>
+                        {reporte.temaTitles?.length > 0 && (
+                            <p><strong>Tema:</strong> {reporte.temaTitles.join(', ')}</p>
+                        )}
+                        {reporte.subtemaTitles?.length > 0 && (
+                            <p><strong>Subtema:</strong> {reporte.subtemaTitles.join(', ')}</p>
+                        )}
                         <p>periocidad: {reporte.periocidad}</p>
-                        <p>subtema: {reporte.subtema}</p>
-                        <p>fecha: {reporte.fecha}</p>
-                        <p>archivo: {reporte.archivo}</p>
+                        {reporte.month && (
+                            <p>Mes: {monthNames[Number(reporte.month) - 1] || reporte.month}</p>
+                        )}
+                        {reporte.archivo && (
+                            <p>archivo: {reporte.archivo}</p>
+                        )}
                     </div>
                 ))}
             </div>
 
-
             <ReactPaginate
-                previousLabel={"Ant"}
-                nextLabel={"Sig"}
+                previousLabel={"<"}
+                nextLabel={">"}
                 breakLabel={"..."}
                 breakClassName={"break-me"}
                 pageCount={pageCount}
