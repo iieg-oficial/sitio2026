@@ -5,8 +5,9 @@ import Searcher from '../pageComponents/searcher';
 
 export default function Flashes() {
     const [flashes, setFlashes] = useState([])
+    const [lastFlash, setLastFlash] = useState(null)
     const [searchTerm, setSearchTerm] = useState("");
-    const keys = ['titulo', 'desc_jal', 'desc_nac', 'periocidad', 'fuente', 'subject.titulo'];
+    const keys = ['titulo', 'desc_jal', 'desc_nac', 'periocidad', 'fuente'];
     const [activeTab, setActiveTab] = useState("Todos");
 
     const fetchFlashes = async () => {
@@ -14,8 +15,15 @@ export default function Flashes() {
         setFlashes(response.data.flashes)
     }
 
+    const fetchLastFlash = async () => {
+        const response = await api.get('/flashes/last')
+        setLastFlash(response.data[0] || null)
+    }
+
     useEffect(() => {
         fetchFlashes()
+        fetchLastFlash()
+        console.log('Flashes fetched:', lastFlash)
     }, []);
 
     const filteredFlashes = !searchTerm 
@@ -28,12 +36,12 @@ export default function Flashes() {
         });
 
     const types = [...new Set(
-        filteredFlashes.map(post => post.subject.titulo)
-    )].sort();
+        filteredFlashes.flatMap(post => post.temas?.map(tema => tema.titulo) || [])
+    )].filter(Boolean).sort();
 
     const filteredFlashesByType = activeTab === "Todos"
         ? filteredFlashes
-        : filteredFlashes.filter(post => post.subject.titulo === activeTab);
+        : filteredFlashes.filter(post => post.temas?.some(tema => tema.titulo === activeTab));
 
         const [itemOffset, setItemOffset] = useState(0);
         const itemsPerPage = 12;
@@ -62,14 +70,23 @@ export default function Flashes() {
 
     return (
         <div>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <hr />
-            <div className="flex gap-2 mb-4">
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder='¿qué quieres buscas?'/>
+     
+            {lastFlash && (
+                <div className='bg-blue-100 border-2 border-blue-400 rounded-lg p-4 mb-4 h-96'>
+                    <h3>Último Flash</h3>
+                    <p>{lastFlash.titulo}</p>
+                </div>
+            )}
+     
+            
+            <div className="flex gap-2 my-15 mx-auto container px-2">
+
                 <button
                     onClick={() => { setActiveTab("Todos"); setItemOffset(0); }}
-                    className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === "Todos"
-                            ? 'bg-blue-600 text-white border-blue-600'
-                            : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'
+                    className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === "Todos"
+                            ? 'bg-blue-bg-etiqueta-sec text-tertiary border-tertiary'
+                            : 'bg-etiqueta-sec text-tertiary border-tertiary'
                     }`}
                 >
                     Todos
@@ -78,14 +95,17 @@ export default function Flashes() {
                     <button
                         key={type}
                         onClick={() => { setActiveTab(type); setItemOffset(0); } }
-                        className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === type
-                                ? 'bg-blue-600 text-white border-blue-600'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'}`}
+                        className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === type
+                                ? 'bg-blue-bg-etiqueta-sec text-tertiary border-tertiary'
+                                : 'bg-etiqueta-sec text-tertiary border-tertiary'
+                        }`}
                     >
                         {type}
                     </button>
                 ))}
             </div>
+
+
             {currentFlashes.map(flash => (
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4' key={flash.id}>
                     <div className='md:col-span-2'><h3>{flash.titulo}</h3></div>
