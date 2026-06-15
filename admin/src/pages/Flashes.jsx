@@ -216,13 +216,13 @@ export default function Flashes() {
                         ]}
                         />
                     </Form.Item>
-                    <Form.Item name="fecha_publicacion" label="Fecha de Publicación" rules={[{ required: true, message: 'Por favor ingresa la fecha de publicación' }]}>
+                    <Form.Item name="fecha_publicacion" label="Fecha de Publicación" rules={[{ required: false, message: 'Por favor ingresa la fecha de publicación' }]}>
                         <Input type="date" />
                     </Form.Item>
-                    <Form.Item name="fuente" label="Fuente" rules={[{ required: true, message: 'Por favor ingresa la fuente' }]}>
+                    <Form.Item name="fuente" label="Fuente" rules={[{ required: false, message: 'Por favor ingresa la fuente' }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="link" label="Link" rules={[{ required: true, message: 'Por favor ingresa el link' }]}>
+                    <Form.Item name="link" label="Link" rules={[{ required: false, message: 'Por favor ingresa el link' }]}>
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
