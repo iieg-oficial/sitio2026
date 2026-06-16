@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
 import Searcher from '../pageComponents/searcher';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export default function Flashes() {
     const [flashes, setFlashes] = useState([])
@@ -69,13 +71,27 @@ export default function Flashes() {
         }, [searchTerm, activeTab]);
 
     return (
-        <div>
+        <div className='px-2'>
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder='¿qué quieres buscas?'/>
      
             {lastFlash && (
-                <div className='bg-blue-100 border-2 border-blue-400 rounded-lg p-4 mb-4 h-96'>
-                    <h3>Último Flash</h3>
-                    <p>{lastFlash.titulo}</p>
+                <div className='rounded-2xl p-5 lg:p-14 mb-4 mx-auto container bg-[#F5F5F5] mt-15'>
+                    <h3 className='text-28 text-primary'>{lastFlash.titulo}</h3>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
+                        <div className='bg-white rounded-2xl p-8'>
+                            <h4>Jalisco</h4>
+                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_jal}} className='mt-5 prose max-w-none' />
+                        </div>
+                        <div className='bg-white rounded-2xl p-6'>
+                            <h4>Nacional</h4>
+                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_nac}} className='mt-5 prose max-w-none' />
+                        </div>
+                        <div className='md:col-span-2 flex gap-4 flex-wrap mt-5'>
+                            <p className='bg-[#F5F5F5] text-body rounded-2xl px-4 py-2 text-14'>{lastFlash.periocidad}</p>
+                            <p className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p> 
+                            <p className='bg-[#E5E0E0] text-body rounded-2xl px-4 py-2 text-14'>{lastFlash.fuente}</p>
+                        </div>
+                    </div>
                 </div>
             )}
      
@@ -107,20 +123,22 @@ export default function Flashes() {
 
 
             {currentFlashes.map(flash => (
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4' key={flash.id}>
-                    <div className='md:col-span-2'><h3>{flash.titulo}</h3></div>
-                    <div className='border-2 border-gray-200 rounded-lg p-4'>
-                        <h3>Jalisco</h3>
-                        <p>{flash.desc_jal}</p>
-                    </div>
-                    <div className='border-2 border-gray-200 rounded-lg p-4'>
-                        <h3>Nacional</h3>
-                        <p>{flash.desc_nac}</p>
-                    </div>
-                    <div className='md:col-span-2 border-2 border-gray-200 rounded-lg p-4'>
-                        <p>periocidad: {flash.periocidad}</p>
-                        <p>Link: {flash.link}</p>
-                        <p>Fuente: {flash.fuente}</p>
+                <div className='rounded-2xl p-5 lg:p-14 mb-4 mx-auto container bg-[#F5F5F5] mt-15'>
+                    <h3 className='text-28 text-primary'>{flash.titulo}</h3>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
+                        <div className='bg-white rounded-2xl p-8'>
+                            <h4>Jalisco</h4>
+                            <div dangerouslySetInnerHTML={{__html: flash.desc_jal}} className='mt-5 prose max-w-none' />
+                        </div>
+                        <div className='bg-white rounded-2xl p-6'>
+                            <h4>Nacional</h4>
+                            <div dangerouslySetInnerHTML={{__html: flash.desc_nac}} className='mt-5 prose max-w-none' />
+                        </div>
+                        <div className='md:col-span-2 flex gap-4 flex-wrap mt-5'>
+                            <p className='bg-[#F5F5F5] text-body rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
+                            <p className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p> 
+                            <p className='bg-[#E5E0E0] text-body rounded-2xl px-4 py-2 text-14'>{flash.fuente}</p>
+                        </div>
                     </div>
                 </div>
             ))}
