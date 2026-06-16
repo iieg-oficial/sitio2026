@@ -7,16 +7,17 @@ import TrackedLink from '@components/blocks/boton'
 
 export default function ClasificadorCultivos() {
     const [page, setPage] = useState(null);
+    const [loading, setLoading] = useState(true)
 
     const fetchPageHome = async () => {
         setLoading(true)
-        try {
+        try {            
             const res = await api.get('/paginas/slug/clasificador-de-cultivos')
             setPage(res.data)
+            console.log('Page data:', res.data)  
         } catch (err) {
-            console.error("Error fetching page clasificador-de-cultivos:", err)
-        }
-        finally {
+            console.error("Error fetching page:", err)
+        } finally {
             setLoading(false)
         }
     }
@@ -38,10 +39,10 @@ export default function ClasificadorCultivos() {
                 </div>
                 <section className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
                     <div>
-                        <img src={page?.imagen ? page.imagen : "/demo.jpg"} alt={page?.titulo} className='image-mapa rounded-4xl'/>
+                        <img src="/demo.jpg" alt={page?.title} className='image-mapa rounded-4xl'/>
                     </div>
                     <div>
-                        <h1>Clasificador de Cultivos</h1>
+                        <h1>{page?.title || 'Clasificador de Cultivos'}</h1>
                         <p className="my-5 leading-10">Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.</p>
                         <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-18 text-card bg-[#454545] rounded-2xl px-4 py-2">
                             Ver la documetación del proyecto                                
