@@ -45,6 +45,9 @@ function PaginaPorSlug({ slug }) {
         {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
     </Helmet>
     <article>
+      <div className='mx-auto w-full px-2 2xl:w-10/12 md:pt-5 mt-5'>
+            <Backlink />
+        </div>
         <section className="page-header text-center py-12">
             <h1 className="text-titulos">{page.title}</h1>
             { page.description && (

@@ -5,6 +5,7 @@ import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
+
 const monthNames = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
