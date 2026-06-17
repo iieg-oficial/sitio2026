@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Flashes, Usuario, Subject   
+from app.models import Flashes, Usuario, Subject  
+from app.models.flashes import PeriocidadEnum, MesEnum 
 from app.schemas.flashes import FlashesOut, FlashesResponse, FlashesCreate, FlashesList
 
 router = APIRouter(prefix="/flashes", tags=["flashes"])  
@@ -47,6 +48,8 @@ def create_flashes(
         desc_nac=flashes.desc_nac,
         periocidad=flashes.periocidad,
         fecha_publicacion=flashes.fecha_publicacion,
+        mes=flashes.mes,
+        anyo=flashes.anyo,
         fuente=flashes.fuente,
         link=flashes.link,
         claves=flashes.claves,
@@ -58,6 +61,22 @@ def create_flashes(
     db.commit()
     db.refresh(db_flashes)
     return db_flashes
+
+@router.get("/periocidad")
+def get_periocidad():
+    return{
+        "periodo": {
+            periodo.name: periodo.value for periodo in PeriocidadEnum
+        }
+    }
+
+@router.get("/meses")
+def listar_meses():
+    return {
+        "meses": {
+            mes.name: mes.value for mes in MesEnum
+        }
+    }
 
 @router.get("/{id}", response_model=FlashesResponse)
 def get_flashes_by_id(

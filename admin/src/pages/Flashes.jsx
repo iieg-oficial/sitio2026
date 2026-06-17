@@ -16,11 +16,24 @@ export default function Flashes() {
     const [editingFlash, setEditingFlash] = useState(null);
     const [subjects, setSubjects] = useState([]);  
     const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [periodo, setPeriodo] = useState([]);
+    const [meses, setMeses] = useState([]);
 
     useEffect(() => {
         fetchFlashes();
         fetchSubjects();
+        fetchPeriodo();
+        fetchMeses();
     }, []);
+
+    const fetchPeriodo = async () => {
+        try{
+            const response = await api.get('/flashes/periocidad');
+            setPeriodo(response.data.periocidad || {});
+        } catch (error) {
+            message.error('Error al obtener los periocidad');
+        }
+    }
 
     const fetchSubjects = async () => {
         try {
@@ -40,6 +53,15 @@ export default function Flashes() {
             message.error('Error al cargar flashes');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchMeses = async () => {
+        try {
+            const response = await api.get('/reportes/meses');
+            setMeses(response.data.meses || {});
+        } catch (error) {
+            message.error('Error al cargar meses');
         }
     };
 
@@ -209,16 +231,42 @@ export default function Flashes() {
                         <RichTextEditor />
                     </Form.Item>
                     <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingresa la periocidad' }]}>
-                        <Select placeholder="Selecciona la periocidad" options={[
-                            { value: 'diaria', label: 'Diaria'},
-                            { value: 'mensual', label: 'Mensual'},
-                            { value: 'anual', label: 'Anual'},
-                        ]}
-                        />
+                        <Select
+                        placeholder="Selecciona un periodo"
+                        allowClear
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        options={Object.entries(periodo).map(([key, value]) => ({
+                            key,
+                            value,
+                            label: value,
+                        }))}
+                    />
                     </Form.Item>
                     <Form.Item name="fecha_publicacion" label="Fecha de Publicación" rules={[{ required: false, message: 'Por favor ingresa la fecha de publicación' }]}>
                         <Input type="date" />
                     </Form.Item>
+                    <Form.Item name="mes" label="Mes" rules={[{ required: true, message: 'Por favor ingresa el mes' }]}>
+                        <Select 
+                            placeholder="Selecciona el mes"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={Object.entries(meses).map(([key, value]) => ({ 
+                                value: key,
+                                label: value 
+                            }))}
+                        />  
+                    </Form.Item>
+                    <Form.Item name="anyo" label="Año" rules={[{ required: true, message: 'Por favor ingresa el año' }]}>
+                        <Input />
+                     </Form.Item>
                     <Form.Item name="fuente" label="Fuente" rules={[{ required: false, message: 'Por favor ingresa la fuente' }]}>
                         <Input />
                     </Form.Item>
