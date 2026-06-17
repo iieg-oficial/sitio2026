@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 const { Title } = Typography;
 
@@ -14,6 +15,7 @@ export default function Documentacion() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingDocumentacion, setEditingDocumentacion] = useState(null);
     const [subjects, setSubjects] = useState([]);
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
 
     useEffect(() => {
         fetchDocumentaciones();
@@ -22,10 +24,10 @@ export default function Documentacion() {
 
     const fetchSubjects = async () => {
         try {
-            const response = await api.get('/subject');
+            const response = await api.get('/subject/tree');
             setSubjects(response.data);
-        } catch (error) {
-            console.error('Error al obtener subjects:', error);
+        } catch {
+            message.error('Error al cargar temas');
         }
     };
 
@@ -41,14 +43,18 @@ export default function Documentacion() {
         }
     };
 
-    const handleCreate = () => {
+    const handleCreate = () => {        
         setEditingDocumentacion(null);
+        setSelectedSubjects([]);
         form.resetFields();
         setModalVisible(true);
     };
 
     const handleEdit = (record) => {
         setEditingDocumentacion(record);
+        // Pre-cargar los temas seleccionados desde el registro
+        const ids = (record.temas ?? []).map((t) => t.id);
+        setSelectedSubjects(ids);        
         form.setFieldsValue(record);
         setModalVisible(true);
     };
@@ -75,11 +81,12 @@ export default function Documentacion() {
 
     const handleSubmit = async (values) => {
         try {
+            const payload = { ...values, tema_ids: selectedSubjects };
             if (editingDocumentacion) {
-                await api.put(`/documentacion/${editingDocumentacion.id}`, values);
+                await api.put(`/documentacion/${editingDocumentacion.id}`, payload);
                 message.success('Documentación actualizada exitosamente');
             } else {
-                await api.post('/documentacion/create', values);
+                await api.post('/documentacion/create', payload);
                 message.success('Documentación creada exitosamente');
             }
             setModalVisible(false);
@@ -98,10 +105,10 @@ export default function Documentacion() {
         },
         {
             title: 'Tema',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
-            render: (subject_id) => subjects.find((s) => s.id === subject_id)?.titulo,
-            sorter: (a, b) => a.subject.titulo.localeCompare(b.subject.titulo)
+            dataIndex: 'temas',
+            key: 'temas',
+            render: (temas) => temas.map((t) => t.titulo).join(', '),
+            sorter: (a, b) => a.temas.map((t) => t.titulo).join(', ').localeCompare(b.temas.map((t) => t.titulo).join(', '))
         },
         {
             title: 'Palabras clave',
@@ -235,18 +242,13 @@ export default function Documentacion() {
                             ) : null}
                         </Space>
                     </Form.Item>
-                    <Form.Item name="subject_id"
-                        label="Tema"
-                        rules={[{ required: true, message: 'Por favor seleccione un tema' }]}
-                    >
-                        <Select
-                            placeholder="Selecciona un tema"
-                            options={subjects.map((s) => ({
-                                value: s.id,
-                                label: s.titulo
-                            }))}
-                        />
-                    </Form.Item>
+                    <TemaSelector
+                        temas={subjects}
+                        seleccionados={selectedSubjects}
+                        onChange={(ids) => {                                    
+                        setSelectedSubjects(ids);
+                        }}
+                    />
                     
                 </Form>
             </Modal>
