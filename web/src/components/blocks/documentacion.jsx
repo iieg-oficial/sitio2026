@@ -72,9 +72,7 @@ export default function Documentacion() {
 
             const matchesTema = !selectedTemaId || post.temas?.some(tema => !tema.parent_id && tema.id === Number(selectedTemaId));
             const matchesSubtema = !selectedSubtemaId || post.temas?.some(tema => tema.id === Number(selectedSubtemaId));
-            const matchesTipo = !selectedTipo || (selectedTipo === 'codigo'
-                ? post.codigo?.trim() !== ''
-                : post.metodologia?.trim() !== '');
+            const matchesTipo = !selectedTipo || post.tipo === selectedTipo;
 
             return matchesSearch && matchesTema && matchesSubtema && matchesTipo;
         })
@@ -157,8 +155,16 @@ export default function Documentacion() {
                                 className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                             >
                                 <option value='' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
-                                <option value='codigo' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Código abierto</option>
-                                <option value='metodologia' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Metodología</option>
+                                <option value='Informes' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Informes</option>
+                                <option value='Análisis estadísticos' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Análisis estadísticos</option>
+                                <option value='Publicaciones institucionales' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Publicaciones institucionales</option>
+                                <option value='Documentación de censos' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Documentación de censos</option>
+                                <option value='Documentos normativos' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Documentos normativos</option>
+                                <option value='Metodologia' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Metodología</option>
+                                <option value='Código' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Código</option>
+                                <option value='Manuales' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Manuales</option>
+                                <option value='Guías' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Guías</option>
+                                <option value='FAQs' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>FAQs</option>
                             </select>
                         </div>
                     
@@ -198,11 +204,8 @@ export default function Documentacion() {
                         <h3 className='text-primary'>{documentacion.titulo}</h3>
                         <div dangerouslySetInnerHTML={{__html: documentacion.descripcion}} className='mt-5 prose max-w-none my-5' />                                                
                         <div className='flex flex-wrap gap-4'>
-                            { documentacion.metodologia && documentacion.metodologia.trim() !== '' && (
-                                <a href={documentacion.metodologia} className='rounded-2xl bg-body text-white text-18 px-5 py-2'>Metodología</a>
-                            )}
-                            { documentacion.codigo && documentacion.codigo.trim() !== '' && (
-                                <a href={documentacion.codigo} className='rounded-2xl bg-body text-white text-18 px-5 py-2'>Código abierto</a>
+                            {documentacion.tipo && (
+                                <span className='rounded-2xl bg-body text-white text-18 px-5 py-2'>{documentacion.tipo}</span>
                             )}
                         </div>
                     </div>
