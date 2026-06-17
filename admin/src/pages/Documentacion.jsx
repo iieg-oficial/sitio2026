@@ -16,11 +16,22 @@ export default function Documentacion() {
     const [editingDocumentacion, setEditingDocumentacion] = useState(null);
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [tipo, setTipo] = useState([]);
 
     useEffect(() => {
         fetchDocumentaciones();
         fetchSubjects();
+        fetchTipo();
     }, []);
+
+    const fetchTipo = async () => {
+        try{
+            const response = await api.get('/documentacion/tipos');
+            setTipo(response.data.tipos || {});
+        } catch (error){
+            message.error('Error al obtener los tipos');
+        }
+    }
 
     const fetchSubjects = async () => {
         try {
@@ -190,57 +201,50 @@ export default function Documentacion() {
                     >
                         <RichTextEditor />
                     </Form.Item>
-                    <Form.Item name="claves"
-                        label="Palabras clave"
-                        rules={[{ required: true, message: 'Por favor ingrese las palabras clave' }]}
+                    <Form.Item name="anyo"
+                        label="Año"
+                        rules={[{ required: false, message: 'Por favor ingrese el año' }]}
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="metodologia"
-                        label="archivo metodología"
-                        rules={[{ required: false, message: 'Por favor ingrese la metodología' }]}
-                    >
-                        <Space direction="vertical" style={{ width: '100%' }}>
-                            <UploadAcervo
-                                bucket="portal"
-                                folder="/metodologias"
-                                label="Subir metodología"
-                                onUploaded={(media) => {
-                                    form.setFieldValue('metodologia', media.url);
-                                }}
-                            />
-                            <Form.Item name="metodologia" noStyle>
-                                <Input placeholder="Subir metodología" />
-                            </Form.Item>
-                            {form.getFieldValue('metodologia') ? (
-                                <a href={form.getFieldValue('metodologia')} target="_blank" rel="noopener noreferrer">
-                                    Ver metodología
-                                </a>
-                            ) : null}
-                        </Space>
-                    </Form.Item>
-                    <Form.Item name="codigo"
-                        label="archivo código"
+                    <Form.Item name="archivo"
+                        label="Archivo"
                         rules={[{ required: false, message: 'Por favor ingrese el archivo' }]}
                     >
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
-                                folder="/codigos"
-                                label="Subir código"
+                                folder="/documentacion"
+                                label="Subir archivo"
                                 onUploaded={(media) => {
-                                    form.setFieldValue('codigo', media.url);
+                                    form.setFieldValue('archivo', media.url);
                                 }}
                             />
-                            <Form.Item name="codigo" noStyle>
-                                <Input placeholder="Subir código" />
+                            <Form.Item name="archivo" noStyle>
+                                <Input placeholder="Subir archivo" />
                             </Form.Item>
-                            {form.getFieldValue('codigo') ? (
-                                <a href={form.getFieldValue('codigo')} target="_blank" rel="noopener noreferrer">
-                                    Ver código
+                            {form.getFieldValue('archivo') ? (
+                                <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">
+                                    Ver archivo
                                 </a>
                             ) : null}
                         </Space>
+                    </Form.Item>
+                    <Form.Item name="tipo" label="Tipo" rules={[{ required: false, message: 'Por favor ingresa el tipo ' }]}>
+                        <Select
+                        placeholder="Selecciona un tipo"
+                        allowClear
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        options={Object.entries(tipo).map(([key, value]) => ({
+                            key,
+                            value,
+                            label: value,
+                        }))}
+                    />
                     </Form.Item>
                     <TemaSelector
                         temas={subjects}
@@ -249,6 +253,12 @@ export default function Documentacion() {
                         setSelectedSubjects(ids);
                         }}
                     />
+                    <Form.Item name="claves"
+                        label="Palabras clave"
+                        rules={[{ required: true, message: 'Por favor ingrese las palabras clave' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                     
                 </Form>
             </Modal>

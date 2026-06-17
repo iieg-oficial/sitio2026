@@ -4,6 +4,7 @@ from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Documentacion, Usuario, Subject
+from app.models.documentacion import TipoEnum
 from app.schemas import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
 
 router = APIRouter(prefix="/documentacion", tags=["documentacion"])
@@ -46,8 +47,9 @@ async def crear_documentacion(
     nuevo = Documentacion(
         titulo=documentacion_in.titulo,
         descripcion=documentacion_in.descripcion,
-        metodologia=documentacion_in.metodologia,
-        codigo=documentacion_in.codigo,
+        anyo=documentacion_in.anyo,
+        archivo=documentacion_in.archivo,
+        tipo=documentacion_in.tipo,
         claves=documentacion_in.claves,
         slug=slug,
     )
@@ -58,6 +60,14 @@ async def crear_documentacion(
     db.commit()
     db.refresh(nuevo)
     return nuevo
+
+@router.get("/tipos")
+def get_tipos():
+    return {
+        "tipos":{
+            tipo.name: tipo.value for tipo in TipoEnum
+        }
+    }
 
 @router.get("/{documentacion_id}", response_model=DocumentacionResponse)
 async def obtener_documentacion(
