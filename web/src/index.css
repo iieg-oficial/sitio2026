@@ -279,11 +279,6 @@ li::marker {
   color: var(--color-titulo);
   border: 1px solid var(--color-titulo);
 }
-.eotro{
-  background-color: var(--color-etiqueta-ter);
-  color: var(--color-titulo);
-  border: 1px solid var(--color-titulo);
-}
 .eplataforma{
   background-color: var(--color-etiqueta);
   color: var(--color-primary);

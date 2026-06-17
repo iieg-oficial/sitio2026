@@ -4,6 +4,7 @@ from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Sistemas, Usuario, Subject
+from app.models.sistemas import TipoSistemaEnum
 from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse, SistemasList
 
 router = APIRouter(prefix="/sistemas", tags=["sistemas"])
@@ -63,6 +64,14 @@ def create_sistemas(
     db.commit()
     db.refresh(db_sistemas)
     return db_sistemas
+
+@router.get("/tipos")
+def get_tipos():
+    return{
+        "tipos": {
+            tipo.name: tipo.value for tipo in TipoSistemaEnum
+        }
+    }
 
 @router.get("/{id}", response_model=SistemasOut)
 def get_sistemas_id(
@@ -133,7 +142,6 @@ def delete_sistemas(
     db.delete(db_sistemas)
     db.commit()
     return db_sistemas
-
 @router.get("/slug/{slug}", response_model=SistemasResponse)
 def get_sistemas_slug(
     slug: str,

@@ -17,11 +17,22 @@ export default function Sistemas() {
     const [editingSistema, setEditingSistema] = useState(null);
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [tipos, setTipos] = useState([]);
 
     useEffect(() => {
         fetchSistemas();
         fetchSubjects();
+        fetchTipos();
     }, []);
+
+    const fetchTipos = async () => {
+        try{
+            const response = await api.get('/sistemas/tipos');
+            setTipos(response.data.tipos || {});
+        } catch (error) {
+            message.error('Error al obtener los tipos');
+        }
+    }
 
     const fetchSistemas = async () => {
         setLoading(true);
@@ -46,7 +57,7 @@ export default function Sistemas() {
 
     const handleCreate = () => {
         setEditingSistema(null);
-        setSelectedSubjects([]);
+        setSelectedSubjects([]);        
         form.resetFields();
         setModalVisible(true);
     };
@@ -181,12 +192,20 @@ export default function Sistemas() {
                     <Input />
                 </Form.Item>
                 <Form.Item name="tipo" label="Tipo" rules={[{ required: true }]}>
-                    <Select>
-                        <Option value="plataforma">Plataforma</Option>
-                        <Option value="datos-recientes">Datos recientes</Option>
-                        <Option value="estadistica">Estadística</Option>
-                        <Option value="otro">Otro</Option>
-                    </Select>
+                    <Select
+                        placeholder="Selecciona un tipo"
+                        allowClear
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        options={Object.entries(tipos).map(([key, value]) => ({
+                            key,
+                            value,
+                            label: value,
+                        }))}
+                    />
                 </Form.Item>
                 <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
                     <Space direction="vertical" style={{ width: '100%' }}>

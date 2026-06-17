@@ -2,12 +2,7 @@ from pydantic import BaseModel, field_validator
 from enum import Enum
 from typing import List, Optional
 from app.schemas.subject import SubjectFlat
-
-class TipoSistemaEnum(str, Enum):
-    plataforma = "plataforma"
-    datos = "datos-recientes"
-    estadistica = "estadistica"
-    otro = "otro"
+from app.models.sistemas import TipoSistemaEnum
 
 class SistemasCreate(BaseModel):
     titulo: str
