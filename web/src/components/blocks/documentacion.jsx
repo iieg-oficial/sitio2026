@@ -11,6 +11,7 @@ export default function Documentacion() {
     const fetchDocumentaciones = async () => {
         const response = await api.get('/documentacion')
         setDocumentaciones(response.data.documentaciones)
+        console.log("datos chidos", response.data)
     }
 
     useEffect(() => {
@@ -43,15 +44,36 @@ export default function Documentacion() {
     return (
         <div>
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <hr />
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4'>
+            
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mx-auto px-2 container my-15'>
                 {filteredDocumentaciones.map(documentacion => (
-                    <div className='border-2 border-yellow-500 rounded-lg p-4' key={documentacion.id}>                        
-                        <h3>{documentacion.titulo}</h3>
-                        <p>{documentacion.descripcion}</p>
-                        <p>metodologia: {documentacion.metodologia}</p>
-                        <p>codigo: {documentacion.codigo}</p>
-                        <p>claves: {documentacion.claves}</p>
+                    <div className='rounded-2xl bg-card p-8' key={documentacion.id}>   
+                        {documentacion.temas
+                            .filter(tema => !tema.parent_id)
+                            .map(tema => (
+                                <div key={tema.id}>
+                                <span className='text-22'>{tema.titulo}</span>
+
+                                {/* Subtemas que coincidan con el id del tema */}
+                                {documentacion.temas
+                                    .filter(subtema => subtema.parent_id === tema.id)
+                                    .map(subtema => (
+                                    <span key={subtema.id} className='text-16'> | {subtema.titulo}</span>
+                                    ))
+                                }
+                                </div>
+                            ))
+                        }
+                        <h3 className='text-primary'>{documentacion.titulo}</h3>
+                        <div dangerouslySetInnerHTML={{__html: documentacion.descripcion}} className='mt-5 prose max-w-none my-5' />                                                
+                        <div className='flex flex-wrap gap-4'>
+                            { documentacion.metodologia && documentacion.metodologia.trim() !== '' && (
+                                <a href={documentacion.metodologia} className='rounded-2xl bg-body text-white text-18 px-5 py-2'>Metodología</a>
+                            )}
+                            { documentacion.codigo && documentacion.codigo.trim() !== '' && (
+                                <a href={documentacion.codigo} className='rounded-2xl bg-body text-white text-18 px-5 py-2'>Código abierto</a>
+                            )}
+                        </div>
                     </div>
                 ))}
             </div>
