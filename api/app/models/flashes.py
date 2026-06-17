@@ -15,7 +15,24 @@ flash_temas = Table(
 class PeriocidadEnum(str, enum.Enum):
     diaria = "diaria"
     mensual = "mensual"
+    bimestral = "bimestral"
+    trimestral = "trimestral"
+    semestral = "semestral"
     anual = "anual"
+
+class MesEnum(str, enum.Enum):
+    enero = "enero"
+    febrero = "febrero"
+    marzo = "marzo"
+    abril = "abril"
+    mayo = "mayo"
+    junio = "junio"
+    julio = "julio"
+    agosto = "agosto"
+    septiembre = "septiembre"
+    octubre = "octubre"
+    noviembre = "noviembre"
+    diciembre = "diciembre"
 
 class Flashes(Base):
     __tablename__ = "flashes"
@@ -26,6 +43,8 @@ class Flashes(Base):
     desc_nac = Column(Text, nullable=False)
     periocidad = Column(Enum(PeriocidadEnum), nullable=False)
     fecha_publicacion = Column(DateTime, default=datetime.utcnow)
+    mes = Column(Enum(MesEnum), nullable=True)
+    anyo = Column(Integer, nullable=True)
     fuente = Column(String, nullable=True)
     link = Column(String, nullable=True)
     claves = Column(String(200), nullable=True)
