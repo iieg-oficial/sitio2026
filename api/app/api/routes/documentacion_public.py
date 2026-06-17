@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_db
-from app.models import Documentacion
+from app.models import Documentacion, Subject
 from app.schemas import DocumentacionOut, DocumentacionResponse, DocumentacionList
 
 router = APIRouter(prefix="/documentacion", tags=["documentacion - public"])
@@ -12,7 +12,9 @@ router = APIRouter(prefix="/documentacion", tags=["documentacion - public"])
 async def listar_documentaciones(
     db: Session = Depends(get_db),
 ):
-    documentaciones = db.execute(select(Documentacion).order_by(Documentacion.fecha.desc())).scalars().all()
+    documentaciones = db.execute(
+        select(Documentacion).order_by(Documentacion.titulo) 
+    ).scalars().all()
     return {
         "documentaciones": documentaciones,
         "total": len(documentaciones),
