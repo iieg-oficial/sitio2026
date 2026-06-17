@@ -1,12 +1,15 @@
 from typing import Optional, List
 from app.schemas.subject import SubjectFlat
 from pydantic import BaseModel, field_validator
+from enum import Enum
+from app.models.documentacion import TipoEnum
 
 class DocumentacionCreate(BaseModel):
     titulo: str
     descripcion: str
-    metodologia: Optional[str] = None
-    codigo: Optional[str] = None
+    anyo: Optional[int] = None
+    archivo: Optional[str] = None
+    tipo : Optional[TipoEnum] = None
     claves: Optional[str] = None    
     slug: Optional[str] = None
     tema_ids: Optional[List[int]] = None
@@ -25,8 +28,9 @@ class DocumentacionOut(BaseModel):
     id: int
     titulo: str
     descripcion: str
-    metodologia: Optional[str] = None
-    codigo: Optional[str] = None
+    anyo: Optional[int] = None
+    archivo: Optional[str] = None
+    tipo : Optional[TipoEnum] = None
     claves: Optional[str] = None
     slug: Optional[str] = None
 
@@ -39,8 +43,9 @@ class DocumentacionResponse(BaseModel):
     id: int
     titulo: str
     descripcion: str
-    metodologia: Optional[str] = None
-    codigo: Optional[str] = None
+    anyo: Optional[int] = None
+    archivo: Optional[str] = None
+    tipo : Optional[TipoEnum] = None
     claves: Optional[str] = None
     slug: Optional[str] = None
 
