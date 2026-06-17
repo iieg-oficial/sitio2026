@@ -3,11 +3,8 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 from app.schemas.subject import SubjectFlat
+from app.models.flashes import PeriocidadEnum, MesEnum
 
-class PeriocidadEnum(str, Enum):
-    diaria = "diaria"
-    mensual = "mensual"
-    anual = "anual"
 
 class FlashesCreate(BaseModel):
     titulo: str
@@ -15,6 +12,8 @@ class FlashesCreate(BaseModel):
     desc_nac: str
     periocidad: PeriocidadEnum = None
     fecha_publicacion: datetime = None
+    mes: Optional[MesEnum] = None
+    anyo: Optional[int] = None
     fuente: str = None
     link: str = None
     tema_ids: Optional[List[int]] = None
@@ -37,6 +36,8 @@ class FlashesOut(BaseModel):
     desc_nac: str
     periocidad: PeriocidadEnum = None
     fecha_publicacion: datetime = None
+    mes: Optional[MesEnum] = None
+    anyo: Optional[int] = None
     fuente: str = None
     link: str = None
     temas: Optional[List[SubjectFlat]] = []
@@ -53,6 +54,8 @@ class FlashesResponse(BaseModel):
     desc_nac: str
     periocidad: PeriocidadEnum = None
     fecha_publicacion: datetime = None
+    mes: Optional[MesEnum] = None
+    anyo: Optional[int] = None
     fuente: str = None
     link: str = None
     temas: Optional[List[SubjectFlat]] = []
