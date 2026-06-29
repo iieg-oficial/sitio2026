@@ -22,7 +22,7 @@ export default function PlanInstitucional() {
             <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10">
             {planInstitucional.map(planInstitucional => (
                 <div key={planInstitucional.id} className="p-4 my-4 text-center">
-                    <img src={planInstitucional.imagen ? planInstitucional.imagen : "/default.png"} alt={planInstitucional.nombre} className='w-[50px] h-auto mx-auto mb-5'/>
+                    <img src={planInstitucional.imagen ? planInstitucional.imagen : "/default.png"} alt={planInstitucional.nombre} className='object-contain mx-auto mb-5'/>
                     <h5 className="col-span-12 text-titulo">{planInstitucional.nombre}</h5>                    
                 </div>
             ))}
