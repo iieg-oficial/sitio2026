@@ -81,14 +81,14 @@ function HomePage() {
             </section>            
             <section className="container-fluid relative grid">
                 <div className="relative z-0 order-2 md:order-1 min-h-[370px] md:min-h-auto">                    
-                    <div className='bg-primary text-center z-10 mx-auto absolute top-6/12 md:top-8/12 xl:top-9/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-5 py-14 rounded-2xl w-11/12 md:w-9/12 xl:w-auto'>
-                        <img src="/ico_mapalab.svg" alt="MapaLab" className="w-8 h-8 inline-block mr-2" />
+                    <div className='bg-primary text-center z-10 mx-auto absolute top-6/12 md:top-8/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-5 py-11 rounded-2xl w-11/12 md:w-9/12 xl:w-auto'>
+                        <img src="/ico_mapalab.png" alt="MapaLab" className="inline-block mr-2" />
                         <p className='text-center text-white my-8 text-22'>Explora el territorio de Jalisco con datos geoespaciales</p>
                         <TrackedLink to="/mapalab" className="button bg-medio hover:bg-tertiary text-base">
                             Quiero explorar MapaLab
                         </TrackedLink>
                     </div>
-                    <img src="/demo.jpg" alt="MapaLab" className="w-full h-full object-cover" />
+                    <img src="/img_mapalab.png" alt="MapaLab" className="w-full h-full object-cover" />
                 </div>
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
