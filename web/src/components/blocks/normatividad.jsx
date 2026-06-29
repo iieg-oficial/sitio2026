@@ -19,7 +19,7 @@ export default function Normatividad() {
             <h2 className="text-titulo text-center">Normatividad</h2>
             <div className="container mx-auto mt-8">
                     {normatividad.map(normatividad => (
-                        <div key={normatividad.id} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-lg group bg-white">
+                        <div key={normatividad.id} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-3xl group bg-white hover:border-tertiary">
                             <a href={normatividad.documento} target="_blank" rel="noopener noreferrer" download className='flex gap-4'>
                                 <span class="material-symbols--download"></span> <p className='text-22 text-titulo group-hover:text-tertiary'>{normatividad.nombre}</p>
                             </a>

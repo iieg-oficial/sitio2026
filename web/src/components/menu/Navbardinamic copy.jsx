@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import api from '@services/apiService'
 import TrackedLink from '@components/blocks/boton'
+import HeaderSearch from '@components/HeaderSearch'
 import './Navbardinamic.css'
 
 const sortByOrder = (a, b) => {
@@ -55,6 +56,14 @@ const Navbardinamic = () => {
     setActiveSubmenus({});
   }, [location]);
 
+  const handleSearch = (term) => {
+    if (!term) {
+      navigate('/busqueda');
+      return;
+    }
+
+    navigate(`/busqueda?q=${encodeURIComponent(term)}`);
+  };
 
   return (
     <div className='container-fluid bg-primary py-5'>
@@ -114,6 +123,13 @@ const Navbardinamic = () => {
             
         </nav>    
 
+        <div className="col-span-2 mt-2 lg:col-span-12 lg:mt-1">
+          <HeaderSearch
+            initialValue=""
+            onSubmit={handleSearch}
+            placeholder="Buscar en todo el sitio..."
+          />
+        </div>
       </div>
     </div>
   );

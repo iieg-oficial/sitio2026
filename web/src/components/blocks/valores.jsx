@@ -19,7 +19,7 @@ export default function Valores() {
             <h2 className="text-center mb-15">Valores</h2>
             <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
             {valores.map(valor => (
-                <div key={valor.id} className="bg-card rounded-xl px-4 py-6 my-4 grid grid-cols-12 gap-4">
+                <div key={valor.id} className="bg-card rounded-3xl px-4 py-6 my-4 grid grid-cols-12 gap-4">
                     <div className="col-span-2">
                         <img src={valor.imagen ? valor.imagen : "/default.png"} alt={valor.nombre} className='w-[50px] h-auto float-right'/>
                     </div>
