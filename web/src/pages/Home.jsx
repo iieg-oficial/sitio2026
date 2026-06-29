@@ -109,13 +109,14 @@ function HomePage() {
                 </div>
             </section>
 
-            <section className="w-11/12 mx-auto rounded-lg bg-white -mt-18 pt-10">
+            <section className="w-11/12 mx-auto rounded-4xl -mt-18 py-10 bg-card px-8">
                 <h2 className="text-titulo text-center my-10">Visita nuestras plataformas interactivas</h2>
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
                 <TrackedLink to="/flashes" className="button2 w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
                     Quiero ver todas las plataformas
                 </TrackedLink>
             </section>
+
             <section className="w-11/12 mx-auto relative my-14">
                 <h2 className="text-titulo text-center mb-10">Conoce los mapas de Jalisco</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
@@ -132,41 +133,56 @@ function HomePage() {
                 <TrackedLink 
                 to="/transparencia" 
                 target="_blank"
-                className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1">
-                    <img src="/ico_transparencia_normal.svg" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
+                className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
+                    <div className='relative z-2'>                        
+                    <img src="/ico_transparencia_normal.png" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2 text-22">Transparencia</span>
+                    </div>                    
+                    <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
 
                  <TrackedLink 
                 to="/licitaciones" 
                 target="_blank"
-                className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1">
-                    <img src="/ico_licitaciones_normal.svg" alt="Licitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
+                className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
+                    <div className='relative z-2'>                        
+                    <img src="/ico_licitaciones_normal.png" alt="Licitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2 text-22">Licitaciones</span>
+                    </div>                    
+                    <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
 
                  <TrackedLink 
                 to="/contabilidad-gubernamental" 
                 target="_self"
-                className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1">
-                    <img src="/ico_contabilidad_normal.svg" alt="Contabilidad Gubernamental" className="w-25 h-25 object-cover mx-auto mb-5" />
+                className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
+                    <div className='relative z-2'>                        
+                    <img src="/ico_contabilidad_normal.png" alt="Contabilidad Gubernamental" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2 text-22">Contabilidad Gubernamental</span>
+                    </div>                    
+                    <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
 
                 <TrackedLink 
                 to="/capacitaciones" 
                 target="_self"
-                className="text-primary hover:text-tertiary text-center col-span-1 md:col-span-2 md:col-start-2 xl:col-span-1">
-                    <img src="/ico_capacitaciones_normal.svg" alt="Capacitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
+                className="text-primary hover:text-tertiary text-center col-span-1 md:col-span-2 md:col-start-2 xl:col-span-1 group relative">
+                    <div className='relative z-2'>                        
+                    <img src="/ico_capacitaciones_normal.png" alt="Capacitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
                     <span className="block mt-2 text-22">Capacitaciones</span>
+                    </div>                    
+                    <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
 
                 <TrackedLink 
                 to="/comunidad" 
                 target="_self"
-                className="text-primary hover:text-tertiary text-center col-span-2 md:col-span-2 xl:col-span-1">
+                className="text-primary hover:text-tertiary text-center col-span-2 md:col-span-2 xl:col-span-1 group relative">
+                    <div className='relative z-2'>                        
                     <img src="/ico_noticias_normal.png" alt="Comunidad" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2">Comunidad</span>
+                    <span className="block mt-2">Comunidad</span>                    
+                    </div>                    
+                    <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
 
                 </div>
