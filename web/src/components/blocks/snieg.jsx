@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
 import TrackedLink from '@components/blocks/boton'
+import ConditionalLink from '../pageComponents/ConditionalLink'
 
 export default function Snieg() {
     const [snieg, setSnieg] = useState([])
@@ -19,7 +20,13 @@ export default function Snieg() {
         <div className='container mx-auto px-2 mb-15'>
             
             {snieg.map(snieg => (
-                <div key={snieg.id} className='bg-card rounded-3xl p-6 mb-5 grid md:grid-cols-6 gap-4'>
+                <ConditionalLink
+                key={snieg.id}
+                link={snieg.enlace}
+                target="_blank"
+                rel="noopener noreferrer"
+                >
+                <div key={snieg.id} className={`bg-card rounded-3xl p-6 mb-5 grid md:grid-cols-6 gap-4 ${ snieg.enlace ? "hover:border-1 hover:border-tertiary" : ""} `}>
                     <div className='md:col-span-2'>
                         <img src={snieg.imagen ? snieg.imagen : "/demo.jpg"} alt={snieg.titulo} />
                     </div>
@@ -39,6 +46,7 @@ export default function Snieg() {
                     </div>
                     
                 </div>
+                </ConditionalLink>
             ))}
         </div>
     )
