@@ -39,7 +39,7 @@ export default function Directorio() {
                 return (
                     <div 
                         key={item.id} 
-                        className={`border border-primary rounded-3xl pl-8 pr-5 py-3 mb-4 cursor-pointer transition-all duration-300 mx-auto md:w-3/6 ${isOpen ? 'bg-card border-0' : 'bg-white'}`}
+                        className={`border-2 border-primary rounded-3xl pl-8 pr-5 py-3 mb-4 cursor-pointer transition-all duration-300 mx-auto md:w-3/6 ${isOpen ? 'border-2' : 'bg-white'}`}
                         onClick={() => toggleAcordeon(item.id)}
                     >                    
                         {/* Elemento Padre */}
@@ -81,7 +81,7 @@ export default function Directorio() {
                 return (
                     <div 
                         key={elementos.id} 
-                        className={`border border-primary rounded-3xl pl-8 pr-5 py-3 mb-4 cursor-pointer transition-all duration-300 ${isOpen ? 'bg-card border-0' : 'bg-white'}`}
+                        className={`border-0 rounded-3xl pl-8 pr-5 py-3 mb-4 cursor-pointer transition-all duration-300 ${isOpen ? 'bg-card border-0' : 'bg-card'}`}
                         onClick={() => toggleAcordeon(elementos.id)}
                     >                    
                         <div className="grid grid-cols-12 gap-4">
