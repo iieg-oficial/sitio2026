@@ -16,9 +16,9 @@ export default function DatosNuevos() {
     }, [location])
 
     const imagenes = {
-    sube:   "/ico_menos.svg",
-    baja: "/ico_flecha negativo.svg",
-    igual:  "/ico_igual.svg",
+    sube:   "/ico_flecha_positivo.png",
+    baja: "/ico_flecha_negativo.png",
+    igual:  "/ico_igual.png",
     };
 
     return (
