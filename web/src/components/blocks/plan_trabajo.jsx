@@ -45,7 +45,7 @@ export default function PlanTrabajo() {
                             <button
                                 key={year}
                                 onClick={() => { setActiveTab(year); setItemOffset(0); } }
-                                className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
+                                className={`px-10 py-3 cursor-pointer rounded-xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
                                         ? 'bg-etiqueta-sec text-tertiary border-tertiary'
                                         : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
                             >
@@ -58,7 +58,7 @@ export default function PlanTrabajo() {
                 <div className="mx-auto bg-card px-2 pt-2 container-fluid">
                 <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 container">
                     {postsByYear.map(planTrabajo => (
-                        <div key={planTrabajo.id} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-lg group bg-white">
+                        <div key={planTrabajo.id} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-3xl group bg-white hover:border-tertiary">
                             <a href={planTrabajo.documento} target="_blank" rel="noopener noreferrer" download className='flex gap-4'>
                                 <span className="material-symbols--download"></span> <p className='text-22 text-titulo group-hover:text-tertiary'>{planTrabajo.nombre}</p>
                             </a>
