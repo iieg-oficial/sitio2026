@@ -120,14 +120,8 @@ export default function Mapas() {
     return (
         <div className="container mx-auto px-2 ">
             {/* ── Panel de filtros ── */}
-            
-                <div className="flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5">
 
-                    {/* Búsqueda por palabra clave */}
-                    <div className="">
-                        <label className='block text-14 text-primary'>
-                            Palabra clave
-                        </label>
+            <div className="mx-auto container md:w-6/12 mb-15">
                         <input
                             type="search"
                             value={keyword}
@@ -136,6 +130,8 @@ export default function Mapas() {
                             className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
                         />
                     </div>
+            
+                <div className="flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5">
 
                     {/* Filtro: Año */}
                     <div className="">
