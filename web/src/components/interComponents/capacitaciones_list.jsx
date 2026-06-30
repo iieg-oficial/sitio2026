@@ -6,21 +6,28 @@ export default function CapacitacionesList() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
     const [singleCapacitacion, setSingleCapacitacion] = useState(null);
     const [activeTab, setActiveTab] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
             const fetchCapacitacion = async () => {
                 try {
-                    const response = await api.get(`/cursos-public/${slug}`);
+                    const response = await api.get(`/cursos-public/slug/${slug}`);
                     setSingleCapacitacion(response.data);
+                    setError(null);
                 } catch (error) {
                     console.error("Error al obtener la capacitación:", error);
+                    setError(error?.response?.data?.detail || error.message || 'Error al obtener la capacitación');
+                    setSingleCapacitacion(null);
                 }
             }
             fetchCapacitacion();
         }, [slug]);
 
         if (!singleCapacitacion) {
-        return <div>Cargando ...</div>;
+            if (error) {
+                return <div>Error al cargar la capacitación: {error}</div>;
+            }
+            return <div>Cargando ...</div>;
     }
 
     return (
