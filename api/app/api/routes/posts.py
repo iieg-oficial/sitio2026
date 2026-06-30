@@ -8,6 +8,15 @@ from slugify import slugify
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
+
+def _obtener_post_por_identificador(db: Session, identificador: str):
+    if identificador.isdigit():
+        return db.get(Posts, int(identificador))
+    return db.execute(
+        select(Posts).where(Posts.slug == identificador)
+    ).scalar_one_or_none()
+
+
 def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
     """Carga los objetos Subject dado una lista de IDs, ignorando IDs inválidos."""
     if not tema_ids:
@@ -30,10 +39,10 @@ async def listar_posts(
 
 @router.get("/{post_id}", response_model=PostResponse)
 async def obtener_post(
-    post_id: int, 
+    post_id: str,
     db: Session = Depends(get_db),
 ):
-    post = db.get(Posts, post_id)
+    post = _obtener_post_por_identificador(db, post_id)
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Post no encontrado"
