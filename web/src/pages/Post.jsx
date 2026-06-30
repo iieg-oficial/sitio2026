@@ -6,37 +6,44 @@ import ReactPaginate from 'react-paginate';
 import { Helmet } from 'react-helmet-async'
 
 function Post() {
+    const defaultPage = {
+        title: 'Comunidad',
+        description: '<p>Bienvenido a la comunidad. Aquí encontrarás las últimas publicaciones y novedades.</p><p>Usa el buscador para filtrar los posts según tus intereses y términos de búsqueda.</p>',
+        description_meta: 'Encuentra publicaciones de la comunidad con el buscador y accede a las novedades del portal.',
+        keywords_meta: 'comunidad,posts,búsqueda,noticias'
+    };
+
     const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(defaultPage);
     const [searchTerm, setSearchTerm] = useState("");
     const keys = ['titulo', 'resumen', 'contenido', 'keywords', 'subject.titulo'];
 
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
 
-    const [page, setPage] = useState(null);
-
     const fetchPageHome = async () => {
-        setLoading(true)
         try {
-            const res = await api.get('/paginas/slug/comunidad')
-            setPage(res.data)
+            const res = await api.get('/paginas/slug/comunidad');
+            setPage(res.data);
         } catch (err) {
-            console.error("Error fetching page community:", err)
-        }
-        finally {
-            setLoading(false)
+            if (err.response?.status !== 404) {
+                console.error("Error fetching page community:", err);
+            }
         }
     }
 
     const showData = async () => {
         const response = await api.get('/posts');
-        const data = response.data;
-        // La API puede devolver un array directamente o un objeto paginado
-        setPosts(Array.isArray(data) ? data : data?.items ?? data?.data ?? []);
+        const payload = response.data;
+        const postsData = Array.isArray(payload)
+            ? payload
+            : payload?.posts ?? payload?.items ?? payload?.data ?? [];
+
+        setPosts(postsData);
     }
 
     useEffect(() => {
+        fetchPageHome();
         showData();        
     }, []);
 
@@ -51,6 +58,7 @@ function Post() {
 
     const endOffset = itemOffset + itemsPerPage;
     const currentItems = filteredPosts?.slice(itemOffset, endOffset);
+    
     const pageCount = Math.ceil(filteredPosts?.length / itemsPerPage);
 
     const handlePageClick = (event) => {
@@ -70,11 +78,14 @@ function Post() {
         {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
     </Helmet>
         <div>
-            <h1>Comunidad</h1>       
+            <h1 className='text-center'>Comunidad</h1>
+            {page?.description && (
+                <div className='prose mx-auto my-6 px-2 md:px-0 md:w-3/6' dangerouslySetInnerHTML={{ __html: page.description }} />
+            )}
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <hr />
-            <PostList results={currentItems} 
-            key={`${itemOffset}-${searchTerm}`} />
+
+            <PostList results={currentItems} key={`${itemOffset}-${searchTerm}`} />
+
             <ReactPaginate
                 previousLabel={"Ant"}
                 nextLabel={"Sig"}
