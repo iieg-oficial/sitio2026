@@ -56,7 +56,7 @@ export default function Convocatorias() {
         <div>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 rounded-3xl p-4 container mx-auto'>
                 {currentItems.map(convocatoria => (
-                    <TrackedLink to={`/convocatoria/${convocatoria.slug}`} className="" target="_blank" rel="noopener noreferrer">
+                    <TrackedLink to={`/convocatorias/${convocatoria.slug}`} className="" target="_blank" rel="noopener noreferrer">
                         <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl' key={convocatoria.id}>                        
                             <div className='md:col-span-2'></div>
                                 <div className='md:col-span-4 p-6'>
