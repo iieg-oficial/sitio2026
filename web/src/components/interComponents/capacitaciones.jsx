@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
 import CapacitacionesList from './capacitaciones_list';
+import BackLink from './../pageComponents/Backlink'
 
 export default function Capacitaciones() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
@@ -41,44 +42,60 @@ export default function Capacitaciones() {
                 <meta property="og:description" content={singleCapacitacion.resumen} />
                 <meta property="og:url" content={window.location.href} />
             </Helmet>
-            <article className='mx-auto container my-40 relative flex flex-col items-center'>
-                <main className='mx-auto w-7/12 p-10 border-2 border-amber-950 z-10 relative bg-white'>
-                    <h1 className='text-3xl font-bold mb-4'>{singleCapacitacion.titulo}</h1>
-                    <div dangerouslySetInnerHTML={{__html: singleCapacitacion.descripcion}} className='mt-5 prose max-w-none' />
-                </main>
-                <section className='grid grid-cols-1 md:grid-cols-3'>
-                    <div className='mt-8 text-sm text-gray-500 border-t pt-4'>
-                        <p><strong>Fecha:</strong> {new Date(singleCapacitacion.inicio).toLocaleDateString()}</p>
+            <article className='my-40 relative'>
+                <BackLink />
+                <main className='grid md:grid-cols-6 mx-auto'>
+                    <div className='md:col-span-2'></div>
+                    <div className='md:col-span-4'>
+                        <h1 className='text-3xl font-bold mb-4'>{singleCapacitacion.titulo}</h1>
+                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.descripcion}} className='mt-5 prose max-w-none' />
                     </div>
-                    <div className='mt-8 text-sm text-gray-500 border-t pt-4'>
+                </main>
+                <section className='w-11/12 mx-auto flex flex-wrap gap-5 text-14 justify-between'>
+                    <div className='mt-8 text-sm text-gray-500 pt-4'>
+                        <p><strong>Inicio de clases:</strong> {new Date(singleCapacitacion.inicio).toLocaleDateString()}</p>
+                    </div>
+                    <div className='mt-8 text-sm text-gray-500 pt-4'>
                         <p><strong>Formato:</strong> {singleCapacitacion.tipo_curso.formato}</p>
                     </div>
-                    <div className='mt-8 text-sm text-gray-500 border-t pt-4'>
+                    <div className='mt-8 text-sm text-gray-500 pt-4'>
                         <p><strong>Horario:</strong> {singleCapacitacion.Horario}</p>
                     </div>
                 </section>
-                <section className='w-11/12 md:w-10/12 mx-auto'>
+                <section className='w-11/12 md:w-10/12 mx-auto my-15'>
                     <div>
-                        <h2>Objetivo</h2>
-                        <p>{singleCapacitacion.Objetivo}</p>
+                        <h2 className='text-center'>Objetivo</h2>
+                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.Objetivo}} className='mt-5 prose max-w-none w-8/12 mx-auto bg-card rounded-3xl p-6' />
                     </div>
-                    <div>
-                        <h2>Perfil de Ingreso</h2>
-                        <p>{singleCapacitacion.p_ingreso}</p>
+                    <div className='my-20'>
+                        <h2 className='text-center'>Perfil de Ingreso</h2>
+                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_ingreso}} className='mt-5 prose max-w-none w-8/12 mx-auto bg-card rounded-3xl p-6' />
                     </div>
                      <div>
-                        <h2>Perfil de Egreso</h2>
-                        <p>{singleCapacitacion.p_egreso}</p>                        
+                        <h2 className='text-center'>Perfil de Egreso</h2>
+                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_egreso}} className='mt-5 prose max-w-none w-8/12 mx-auto bg-card rounded-3xl p-6' />                        
                     </div>
                 </section>
                     
-                <CapacitacionesList />
+                <CapacitacionesList curso={singleCapacitacion} />
 
-                <section>
-                    <p><strong>Inscripción:</strong> {singleCapacitacion.inscripcion}</p><br></br>
-                    <p><strong>Acreditación:</strong> {singleCapacitacion.acreditacion}</p><br></br>
-                    <p><strong>Vigencia:</strong> {singleCapacitacion.vigencia}</p><br></br>
-                    <p><strong>Contacto:</strong> {singleCapacitacion.contacto}</p><br></br>
+                <section className='grid md:grid-cols-2 gap-4 lg:w-8/12 mx-auto'>
+                    <div className='bg-card p-5 my-5 rounded-3xl'>
+                        <strong>Inscripción:</strong> 
+                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.inscripcion}} className='mt-5 prose max-w-none' />                        
+                    </div>
+                    <div className='bg-card p-5 my-5 rounded-3xl'>
+                        <strong>Acreditación:</strong> 
+                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.acreditacion}} className='mt-5 prose max-w-none' />                        
+                    </div>
+                    <div className='bg-card p-5 my-5 rounded-3xl'>
+                        <strong>Vigencia:</strong> 
+                        <p>{singleCapacitacion.vigencia}</p>
+                    </div>
+                    <div className='bg-card p-5 my-5 rounded-3xl'>
+                        <strong>Contacto:</strong> 
+                        <p>{singleCapacitacion.contacto}</p>
+                    </div>
                 </section>
                     
             </article>
