@@ -6,20 +6,27 @@ export default function ConvocatoriasList() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
     const [singleConvocatoria, setSingleConvocatoria] = useState(null);
     const [activeTab, setActiveTab] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchConvocatoria = async () => {
             try {
-                const response = await api.get(`/cursos-public/${slug}`);
+                const response = await api.get(`/cursos-public/slug/${slug}`);
                 setSingleConvocatoria(response.data);
+                setError(null);
             } catch (error) {
                 console.error("Error al obtener la convocatoria:", error);
+                setError(error?.response?.data?.detail || error.message || 'Error al obtener la convocatoria');
+                setSingleConvocatoria(null);
             }
         }
         fetchConvocatoria();
     }, [slug]);
 
     if (!singleConvocatoria) {
+        if (error) {
+            return <div>Error al cargar la convocatoria: {error}</div>;
+        }
         return <div>Cargando ...</div>;
     }
 
