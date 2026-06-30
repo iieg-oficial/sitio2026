@@ -7,32 +7,37 @@ export default function Convocatorias() {
     const [convocatorias, setConvocatorias] = useState([])
     
     const fetchConvocatorias = async () => {
-        const response = await api.get('/cursos-public', { params: { destacado: false, tipo_curso: 'convocatoria' } })
-        setConvocatorias(response.data.cursos)
+        try {
+            const response = await api.get('/cursos-public', {
+                params: { tipo_curso: 'convocatoria' },
+            })
+            setConvocatorias(response.data?.cursos ?? [])
+        } catch (error) {
+            console.error('Error al cargar convocatorias:', error)
+            setConvocatorias([])
+        }
     }
 
     useEffect(() => {
         fetchConvocatorias()
     }, []);
 
-    const [itemOffset, setItemOffset] = useState(0);
-    const itemsPerPage = 12;
+    const [itemOffset, setItemOffset] = useState(0)
+    const itemsPerPage = 12
+    const endOffset = itemOffset + itemsPerPage
+    const currentItems = convocatorias.slice(itemOffset, endOffset)
 
-    const pageCount = Math.ceil(convocatorias.length / itemsPerPage);
+    const pageCount = Math.ceil(convocatorias.length / itemsPerPage)
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % convocatorias.length;
-        setItemOffset(newOffset);
-    };
-
-    useEffect(() => {
-        setItemOffset(0);
-    }, []);
+        const newOffset = (event.selected * itemsPerPage) % convocatorias.length
+        setItemOffset(newOffset)
+    }
 
     return (
         <div>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4'>
-                {convocatorias.map(convocatoria => (
+                {currentItems.map(convocatoria => (
                     <div className='border-2 border-yellow-500 rounded-lg p-4' key={convocatoria.id}>                        
                         <h3>{convocatoria.titulo}</h3>
                         <p>{convocatoria.descripcion}</p>

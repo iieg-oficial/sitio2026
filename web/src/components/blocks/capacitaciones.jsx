@@ -7,38 +7,59 @@ export default function Capacitaciones() {
     const [capacitaciones, setCapacitaciones] = useState([])
     const [capacitacionesDestacadas, setCapacitacionesDestacadas] = useState([])
 
-    const fetchCapacitaciones = async () => {
-        const response = await api.get('/cursos-public', { params: { destacado: false, tipo_curso: 'capacitacion' } })
-        setCapacitaciones(response.data.cursos)
+    const isCapacitacion = (curso) => {
+        if (!curso) return false
+        if (typeof curso.tipo_curso === 'string') {
+            return curso.tipo_curso === 'capacitacion'
+        }
+        if (curso.tipo_curso?.value) {
+            return curso.tipo_curso.value === 'capacitacion'
+        }
+        if (curso.tipo_curso?.name) {
+            return curso.tipo_curso.name === 'capacitacion'
+        }
+        return false
     }
 
-    const fetchCapacitacionesDestacadas = async () => {
-        const response = await api.get('/cursos-public', { params: { destacado: true, tipo_curso: 'capacitacion' } })
-        setCapacitacionesDestacadas(response.data.cursos)
+    const fetchCapacitaciones = async () => {
+        try {
+            const response = await api.get('/cursos-public', {
+                params: { tipo_curso: 'capacitacion' },
+            })
+
+            const cursos = response.data?.cursos ?? []
+            const capacitacionesSolo = cursos.filter(isCapacitacion)
+            const destacadas = capacitacionesSolo.filter(curso => curso.destacado === true).slice(0, 1)
+            const noDestacadas = capacitacionesSolo.filter(curso => curso.destacado !== true)
+
+            setCapacitacionesDestacadas(destacadas)
+            setCapacitaciones(noDestacadas)
+        } catch (error) {
+            console.error('Error al cargar capacitaciones:', error)
+            setCapacitaciones([])
+            setCapacitacionesDestacadas([])
+        }
     }
 
     useEffect(() => {
         fetchCapacitaciones()
-        fetchCapacitacionesDestacadas()
     }, []);
 
-    const [itemOffset, setItemOffset] = useState(0);
-    const itemsPerPage = 12;
+    const [itemOffset, setItemOffset] = useState(0)
+    const itemsPerPage = 12
+    const endOffset = itemOffset + itemsPerPage
+    const currentItems = capacitaciones.slice(itemOffset, endOffset)
 
-    const pageCount = Math.ceil(capacitaciones.length / itemsPerPage);
+    const pageCount = Math.ceil(capacitaciones.length / itemsPerPage)
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % capacitaciones.length;
-        setItemOffset(newOffset);
-    };
-
-    useEffect(() => {
-        setItemOffset(0);
-    }, []);
+        const newOffset = (event.selected * itemsPerPage) % capacitaciones.length
+        setItemOffset(newOffset)
+    }
 
     return (
         <div>
-            <div className='grid grid-cols-1 gap-4 border-2 border-blue-500 rounded-lg p-4'>
+            <div className='bg-red-400 grid grid-cols-1 gap-4 border-2 border-blue-500 rounded-lg p-4'>
                 {capacitacionesDestacadas.map(capacitacion => (
                     <div className='border-2 border-green-500 rounded-lg p-4' key={capacitacion.id}>                        
                         <h3>{capacitacion.titulo}</h3>
@@ -48,7 +69,7 @@ export default function Capacitaciones() {
                 ))}
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 border-2 border-pink-500 rounded-lg p-4'>
-                {capacitaciones.map(capacitacion => (
+                {currentItems.map(capacitacion => (
                     <div className='border-2 border-yellow-500 rounded-lg p-4' key={capacitacion.id}>                        
                         <h3>{capacitacion.titulo}</h3>
                         <p>{capacitacion.descripcion}</p>
