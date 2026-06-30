@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
+import TrackedLink from '@components/blocks/boton'
 
 export default function Documentacion() {
     const [documentaciones, setDocumentaciones] = useState([])
@@ -102,10 +103,7 @@ export default function Documentacion() {
     return (
         <div>
 
-            <div className='mx-auto px-2 container my-15'>
-                <div className='flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5'>
-                    <div>
-                        <label className='block text-14 text-primary'>Palabra clave</label>
+            <div className='mx-auto container md:w-6/12'>
                         <input
                             type="search"
                             value={searchTerm}
@@ -113,7 +111,10 @@ export default function Documentacion() {
                             placeholder="Busca por ..."
                             className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
                         />
-                    </div>
+            </div>
+            <div className='mx-auto px-2 container my-15'>
+                <div className='flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5'>
+                    
                         <div className=''>
                             <label className='block text-14 text-primary'>Tema</label>
                             <select
@@ -185,30 +186,37 @@ export default function Documentacion() {
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mx-auto px-2 container my-15'>
                 {filteredDocumentaciones.map(documentacion => (
-                    <div className='rounded-2xl bg-card p-8' key={documentacion.id}>   
-                        {documentacion.temas
-                            .filter(tema => !tema.parent_id)
-                            .map(tema => (
-                                <div key={tema.id}>
-                                    <span className='text-22'>{tema.titulo}</span>
+                    <TrackedLink to={documentacion.archivo} className="" target="_blank" download>
+                        <div className='rounded-2xl bg-card p-8 hover:border hover:border-tertiary' key={documentacion.id}>   
+                            {documentacion.temas
+                                .filter(tema => !tema.parent_id)
+                                .map(tema => (
+                                    <div key={tema.id}>
+                                        <span className='text-18'>{tema.titulo}</span>
 
-                                    {documentacion.temas
-                                        .filter(subtema => subtema.parent_id === tema.id)
-                                        .map(subtema => (
-                                            <span key={subtema.id} className='text-16'> | {subtema.titulo}</span>
-                                        ))
-                                    }
-                                </div>
-                            ))
-                        }
-                        <h3 className='text-primary'>{documentacion.titulo}</h3>
-                        <div dangerouslySetInnerHTML={{__html: documentacion.descripcion}} className='mt-5 prose max-w-none my-5' />                                                
-                        <div className='flex flex-wrap gap-4'>
-                            {documentacion.tipo && (
-                                <span className='rounded-2xl bg-body text-white text-18 px-5 py-2'>{documentacion.tipo}</span>
-                            )}
+                                        {/*documentacion.temas
+                                            .filter(subtema => subtema.parent_id === tema.id)
+                                            .map(subtema => (
+                                                <span key={subtema.id} className='text-16'> | {subtema.titulo}</span>
+                                            ))
+                                        */}
+                                    </div>
+                                ))
+                            }
+                            <div className='flex justify-between'>
+                                <h3 className='text-primary'>{documentacion.titulo}</h3>               
+                                <span className="material-symbols--download text-tertiary"></span> 
+                            </div>                                                        
+                            <div className='flex flex-wrap gap-4 mt-10'>
+                                {documentacion.tipo && (
+                                    <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>{documentacion.tipo}</span>
+                                )}
+                                {documentacion.anyo && (
+                                    <span className='rounded-2xl bg-etiqueta-ter text-tertiary text-14 px-5 py-2'>{documentacion.anyo}</span>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    </TrackedLink>
                 ))}
             </div>
 
