@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import api from '@services/apiService'
 import Searcher from '../pageComponents/searcher';
 import ReactPaginate from 'react-paginate';
+import TrackedLink from '@components/blocks/boton'
 
 export default function Cuadernillos() {
     const [cuadernillos, setCuadernillos] = useState([])
@@ -56,37 +57,36 @@ export default function Cuadernillos() {
     return (
         <div>
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <hr />
-            {loadError ? <p>No se pudieron cargar los cuadernillos.</p> : null}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 container mx-auto my-15">
                 {currentCuadernillos.map((cuadernillo) => (
-                    <div key={cuadernillo.id} className="border rounded p-4 shadow">
-                        <h3 className="text-lg font-bold">{cuadernillo.titulo}</h3>
-                        <p>Año: {cuadernillo.anyo}</p>
-                        <p>Municipio: {cuadernillo.municipio || 'N/A'}</p>
-                        {cuadernillo.archivo && (
-                            <a href={cuadernillo.archivo} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                Ver Cuadernillo
-                            </a>
-                        )}
-                    </div>
+                    <TrackedLink to={cuadernillo.archivo} className="" target="_blank" download>
+                        <div key={cuadernillo.id} className="bg-card hover:border hover:border-tertiary rounded-3xl p-4">
+                            <div className='flex justify-between'>
+                                <h3 className='text-primary text-20'>{cuadernillo.titulo}</h3>               
+                                <span className="material-symbols--download text-tertiary"></span> 
+                            </div> 
+                            <div className='flex flex-wrap gap-4 mt-10'>
+                                <p className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Año: {cuadernillo.anyo}</p>
+                                <p className='rounded-2xl bg-etiqueta-sec text-tertiary text-14 px-5 py-2'>Municipio: {cuadernillo.municipio || 'N/A'}</p>
+                            </div>
+                        </div>
+                    </TrackedLink>
                 ))}
             </div>
             <ReactPaginate
-                breakLabel="..."
-                nextLabel="Siguiente >"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={5}
+                previousLabel={"Ant"}
+                nextLabel={"Sig"}
+                breakLabel={"..."}
+                breakClassName={"break-me"}
                 pageCount={pageCount}
-                previousLabel="< Anterior"
-                containerClassName="pagination flex justify-center mt-4 gap-2"
-                pageClassName="page-item"
-                pageLinkClassName="page-link px-3 py-1 border rounded"
-                previousClassName="page-item"
-                previousLinkClassName="page-link px-3 py-1 border rounded"
-                nextClassName="page-item"
-                nextLinkClassName="page-link px-3 py-1 border rounded"
-                activeClassName="active bg-blue-500 text-white border-blue-500"
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination"}
+                activeClassName={"active"}
+                forcePage={Math.floor(itemOffset / itemsPerPage)}
             />
         </div>
     );

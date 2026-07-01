@@ -13,28 +13,23 @@ function Resultados() {
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
 
-    const [page, setPage] = useState(null);
+    const defaultPage = {
+        title: 'Comunidad',
+        description: '<p>Bienvenido a la comunidad. Aquí encontrarás las últimas publicaciones y novedades.</p><p>Usa el buscador para filtrar los posts según tus intereses y términos de búsqueda.</p>',
+        description_meta: 'Encuentra publicaciones de la comunidad con el buscador y accede a las novedades del portal.',
+        keywords_meta: 'comunidad,posts,búsqueda,noticias'
+    };
 
-    const fetchPageHome = async () => {
-        setLoading(true)
-        try {
-            const res = await api.get('/paginas/slug/comunidad')
-            setPage(res.data)
-        } catch (err) {
-            console.error("Error fetching page community:", err)
-        }
-        finally {
-            setLoading(false)
-        }
-    }
-    
-    useEffect(() => {
-        fetchPageHome()
-    }, [])
+    const [page] = useState(defaultPage);
 
     const showData = async () => {
         const response = await api.get('/posts');
-        setPosts(response.data);  
+        const payload = response.data;
+        const postsData = Array.isArray(payload)
+            ? payload
+            : payload?.posts ?? payload?.items ?? payload?.data ?? [];
+
+        setPosts(postsData);
     }
 
     useEffect(() => {
@@ -66,9 +61,9 @@ function Resultados() {
     return (
         <>
             <Helmet>
-                <title>{page.title}</title>
-                {page.description_meta && <meta name="description" content={page.description_meta} />}
-                {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
+                <title>{page?.title || 'Comunidad'}</title>
+                {page?.description_meta && <meta name="description" content={page.description_meta} />}
+                {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
             </Helmet>
         <div>
             <h1>Comunidad</h1>       

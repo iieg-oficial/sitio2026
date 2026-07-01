@@ -21,7 +21,7 @@ export default function Cursos() {
   const [perfiles, setPerfiles] = useState([]);
   const [temas, setTemas] = useState([]);
   const [selectedTemas, setSelectedTemas] = useState([]);
-  const [tipoCurso, setTipoCurso] = useState([]);
+  const [tipoCurso, setTipoCurso] = useState(null);
 
   useEffect(() => {
     fetchCursos();
@@ -92,6 +92,7 @@ export default function Cursos() {
   const handleCreate = () => {
     setEditingCurso(null);
     setSelectedTemas([]);
+    setTipoCurso(null);
     form.resetFields();
     setModalVisible(true);
   };
@@ -105,8 +106,11 @@ export default function Cursos() {
       instituciones: record.instituciones ? record.instituciones.map(i => i.id) : [],
       perfiles: record.perfiles ? record.perfiles.map(p => p.id) : [],
       profesores: record.profesores ? record.profesores.map(p => p.id) : [],
+      destacado: !!record.destacado,
+      tipo_curso: record.tipo_curso,
     };
     setSelectedTemas(record.temas ? record.temas.map(t => t.id) : []);
+    setTipoCurso(record.tipo_curso || null);
     form.setFieldsValue(formValues);
     setModalVisible(true);
   };
@@ -153,6 +157,8 @@ export default function Cursos() {
     convocatoria: <CamposConvocatorias instituciones={instituciones} perfiles={perfiles} />,
     comun: <CamposComunes />
   };
+
+  const tipoCursoValue = form.getFieldValue('tipo_curso') || tipoCurso;
 
   const columns = [
     {
@@ -234,7 +240,16 @@ export default function Cursos() {
         okText={editingCurso ? 'Actualizar' : 'Crear'}
         cancelText="Cancelar"
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          onValuesChange={(changedValues) => {
+            if (changedValues.tipo_curso !== undefined) {
+              setTipoCurso(changedValues.tipo_curso);
+            }
+          }}
+        >
 
           {SECCIONES["comun"]}
 
@@ -243,13 +258,17 @@ export default function Cursos() {
             label="Tipo de curso"
             rules={[{ required: true, message: 'Por favor seleccione un tipo de curso' }]}
           >
-            <Select placeholder="Seleccione un tipo de curso" onChange={setTipoCurso}>
+            <Select
+              placeholder="Seleccione un tipo de curso"
+              value={tipoCurso}
+              onChange={(value) => setTipoCurso(value)}
+            >
               <Option key="capacitacion" value="capacitacion">Capacitación</Option>
               <Option key="convocatoria" value="convocatoria">Convocatoria</Option>
             </Select>
           </Form.Item>
 
-          {SECCIONES[tipoCurso] ?? null}
+          {SECCIONES[tipoCursoValue] ?? null}
 
           <Form.Item
             name="vigencia"
