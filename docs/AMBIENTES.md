@@ -19,7 +19,7 @@ Edita `.env.development` y/o `.env.production` con los secretos reales (password
 
 ## Tema de CKAN
 
-CKAN inicia siempre con el plugin de tema `iieg` (`ckanext-iieg`) definido directamente en `CKAN__PLUGINS` de los compose.
+Por defecto, CKAN no carga el tema personalizado `iieg` (`ckanext-iieg`) al iniciar desde los compose. Si en algún ambiente quieres activarlo manualmente, debes agregarlo explícitamente en `CKAN__PLUGINS` y reconstruir la imagen o reiniciar el servicio.
 
 Si actualizas CKAN o su configuracion, reconstruye:
 
