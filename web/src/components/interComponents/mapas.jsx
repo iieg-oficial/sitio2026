@@ -34,11 +34,9 @@ export default function Mapas() {
             <meta property="og:description" content={singleMapa.resumen} />
             <meta property="og:url" content={window.location.href} />
         </Helmet>
-        <div className='mx-auto w-full px-2 2xl:w-10/12 md:pt-5 mt-5'>
-            <Backlink />
-        </div>
-        <article className='w-full px-2 mx-auto md:container md:px-0 mb-15'>
-            <main className='grid grid-cols-1 md:px-2 lg:grid-cols-12 gap-6'>
+        <article className='w-full px-2 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
+            <div className='md:col-span-1'><Backlink /></div>
+            <main className='md:col-span-11 grid grid-cols-1 md:px-2 lg:grid-cols-12 gap-6'>
                 <div className='col-span-1 lg:col-span-5'>
                     <img src={singleMapa.imagen ? singleMapa.imagen : "/demo.jpg"} alt={singleMapa.titulo} className='rounded-4xl w-full' />
                 </div>
