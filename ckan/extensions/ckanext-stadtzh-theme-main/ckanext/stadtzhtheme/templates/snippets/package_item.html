@@ -1,9 +1,0 @@
-{% ckan_extends %}
-
-{% block resources_inner %}
-  {% for resource in h.dict_list_reduce(package.resources, 'format') %}
-  <li>
-    <a href="{{ h.url_for(package.type ~ '.read', id=package.name) }}" class="badge badge-default" data-format="{{ resource.lower() }}">{{ resource.lower() }}</a>
-  </li>
-  {% endfor %}
-{% endblock %}

@@ -77,11 +77,16 @@ function Post() {
         {page?.description_meta && <meta name="description" content={page.description_meta} />}
         {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
     </Helmet>
-        <div>
-            <h1 className='text-center'>Comunidad</h1>
-            {page?.description && (
-                <div className='prose mx-auto my-6 px-2 md:px-0 md:w-3/6' dangerouslySetInnerHTML={{ __html: page.description }} />
-            )}
+        <article>
+            <div className='page-header text-center py-12'>
+                <div className="container mx-auto">                
+                <h1 className="text-titulos text-center">{page.title}</h1>
+                </div>
+                { page.description && (
+                    <div dangerouslySetInnerHTML={{__html: page.description}} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto' />
+                )}
+                </div>
+
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
             <PostList results={currentItems} key={`${itemOffset}-${searchTerm}`} />
@@ -99,7 +104,7 @@ function Post() {
                 activeClassName={"active"}
                 forcePage={Math.floor(itemOffset / itemsPerPage)}
             />
-        </div>
+        </article>
         </>
     )
 }
