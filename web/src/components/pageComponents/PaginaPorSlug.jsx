@@ -3,10 +3,12 @@ import { Helmet } from 'react-helmet-async';
 import PaginaDinamica from './PaginaDinamica';
 import api from '@services/apiService';
 import NotFound from '../blocks/NotFound';
+import Backlink from "./Backlink";
 
 function PaginaPorSlug({ slug }) {
   const [page, setPage] = useState(null);
   const [errorNotFound, setErrorNotFound] = useState(false);
+  
 
   useEffect(() => {
     const fetchPage = async () => {
@@ -16,6 +18,7 @@ function PaginaPorSlug({ slug }) {
       try {
         const response = await api.get(`/paginas/slug/${slug}`);
         setPage(response.data);
+        
       } catch(error) {
         if (error.response?.status === 404) {
           setErrorNotFound(true);
@@ -34,6 +37,8 @@ function PaginaPorSlug({ slug }) {
         </article>
       );
   }
+  
+  const interno = page ? ["flashes", "reportes"].includes(page.slug_custom) : false;
 
   if (!page) return <p>Cargando...</p>;
 
@@ -46,7 +51,10 @@ function PaginaPorSlug({ slug }) {
     </Helmet>
     <article>
         <section className="page-header text-center py-12">
-            <h1 className="text-titulos">{page.title}</h1>
+            <div className="container mx-auto grid md:grid-cols-12 gap-1">  
+              {interno && <div className='md:col-span-1'><Backlink /></div>}            
+              <h1 className={`text-titulos text-center ${interno ? 'col-span-11' : 'col-span-12'}`}>{page.title}</h1>
+            </div>
             { page.description && (
                 <div dangerouslySetInnerHTML={{__html: page.description}} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto' />
             )}

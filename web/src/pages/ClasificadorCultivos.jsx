@@ -34,7 +34,7 @@ export default function ClasificadorCultivos() {
                 {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
             </Helmet>
             <div className='mx-auto container mb-15'>
-                <div className='mx-auto w-full px-2 2xl:w-10/12 md:pt-5 mt-5'>
+                <div className='mt-5'>
                     <Backlink />
                 </div>
                 <section className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
