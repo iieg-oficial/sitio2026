@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
+import TrackedLink from '@components/blocks/boton'
 
 export default function Blog() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
@@ -10,7 +11,7 @@ export default function Blog() {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const response = await api.get(`/posts/${slug}`);
+                const response = await api.get(`/posts/slug/${slug}`);
                 setSinglePost(response.data);
             } catch (error) {
                 console.error("Error al obtener el post:", error);
@@ -33,8 +34,8 @@ export default function Blog() {
             <meta property="og:description" content={singlePost.resumen} />
             <meta property="og:url" content={window.location.href} />
         </Helmet>
-        <article className='my-40 relative flex flex-col items-center'>
-            <main className='mx-auto w-7/12 p-10 border-2 border-amber-950 z-10 relative bg-white'>
+        <article className='my-40 relative'>
+            <main className='mx-auto container'>
                 <h1 className='text-3xl font-bold mb-4'>{singlePost.titulo}</h1>
                 <div dangerouslySetInnerHTML={{__html: singlePost.contenido}} className='mt-5 prose max-w-none' />
                 <div className='mt-8 text-sm text-gray-500 border-t pt-4'>

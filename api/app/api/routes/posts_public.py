@@ -6,6 +6,14 @@ from app.api.deps import get_db
 from app.models import Posts
 from app.schemas.posts import PostOut, PostResponse, PostList
 
+
+def _obtener_post_por_identificador(db: Session, identificador: str):
+    if identificador.isdigit():
+        return db.get(Posts, int(identificador))
+    return db.execute(
+        select(Posts).where(Posts.slug == identificador)
+    ).scalar_one_or_none()
+
 router = APIRouter(prefix="/posts", tags=["portal - posts"])
 
 
@@ -21,10 +29,10 @@ async def listar_posts(
 
 @router.get("/{post_id}", response_model=PostResponse)
 async def obtener_post(
-    post_id: int, 
+    post_id: str,
     db: Session = Depends(get_db),
 ):
-    post = db.get(Posts, post_id)
+    post = _obtener_post_por_identificador(db, post_id)
     if not post:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Post no encontrado"
