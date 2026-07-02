@@ -7,6 +7,7 @@ import { UploadAcervo } from '@components/UploadAcervo';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 const { Title } = Typography;
+const { Option } = Select;
 
 export default function Documentacion() {
     const [documentaciones, setDocumentaciones] = useState([]);
@@ -17,11 +18,13 @@ export default function Documentacion() {
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [tipo, setTipo] = useState([]);
+    const [proyectos, setProyectos] = useState([]);
 
     useEffect(() => {
         fetchDocumentaciones();
         fetchSubjects();
         fetchTipo();
+        fetchProyectos();
     }, []);
 
     const fetchTipo = async () => {
@@ -54,9 +57,19 @@ export default function Documentacion() {
         }
     };
 
+    const fetchProyectos = async () => {
+        try {
+            const response = await api.get('/proyectos');
+            setProyectos(response.data.proyectos);
+        } catch (error) {
+            console.error('Error al obtener proyectos:', error);
+        }
+    };
+
     const handleCreate = () => {        
         setEditingDocumentacion(null);
         setSelectedSubjects([]);
+        setProyectos([]);
         form.resetFields();
         setModalVisible(true);
     };
@@ -65,8 +78,12 @@ export default function Documentacion() {
         setEditingDocumentacion(record);
         // Pre-cargar los temas seleccionados desde el registro
         const ids = (record.temas ?? []).map((t) => t.id);
+        const formValues = { 
+            ...record, 
+            proyectos: record.proyectos ? record.proyectos?.map((p) => p.id) : []
+        };
         setSelectedSubjects(ids);        
-        form.setFieldsValue(record);
+        form.setFieldsValue(formValues);
         setModalVisible(true);
     };
 
@@ -118,14 +135,17 @@ export default function Documentacion() {
             title: 'Tema',
             dataIndex: 'temas',
             key: 'temas',
-            render: (temas) => temas.map((t) => t.titulo).join(', '),
+            render: (temas = []) => temas.map((t) => t.titulo).join(', '),
             sorter: (a, b) => a.temas.map((t) => t.titulo).join(', ').localeCompare(b.temas.map((t) => t.titulo).join(', '))
         },
         {
-            title: 'Palabras clave',
-            dataIndex: 'claves',
-            key: 'claves',
-            sorter: (a, b) => a.claves.localeCompare(b.claves)
+            title: 'Proyecto',
+            dataIndex: 'proyectos',
+            key: 'proyectos',
+            render: (proyectos = []) => proyectos.map((p) => p.nombre).join(', '),
+            sorter: (a, b) => 
+                (a.proyectos ?? []).map((p) => p.nombre).join(', ')
+            .localeCompare((b.proyectos ?? []).map((p) => p.nombre).join(', '))
         },
         {
             title: 'Acciones',
@@ -253,6 +273,29 @@ export default function Documentacion() {
                         setSelectedSubjects(ids);
                         }}
                     />
+                    <Form.Item name="proyectos"
+                        label="Proyectos"
+                        rules={[{ required: false, message: 'Por favor seleccione uno o varios proyectos' }]}
+                    >
+                        <Select
+                            mode="multiple"
+                            placeholder="Seleccione un proyectos"
+                            allowClear
+                            showSearch
+                            maxTagCount="responsive"
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().includes(input.toLowerCase())
+                            }
+                        >
+                            {proyectos.map((proyecto) => (
+                                <Option key={proyecto.id} value={proyecto.id}>
+                                    {proyecto.nombre}
+                                </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                    
                     <Form.Item name="claves"
                         label="Palabras clave"
                         rules={[{ required: true, message: 'Por favor ingrese las palabras clave' }]}
