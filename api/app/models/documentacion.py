@@ -51,6 +51,5 @@ class Documentacion(Base):
     proyectos = relationship(
         "Proyectos",
         secondary=documentacion_proyectos,
-        back_populates="cursos",
-        lazy="selectin",
+        back_populates="cursos"
     )

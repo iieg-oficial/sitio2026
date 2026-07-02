@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Documentacion, Usuario, Subject
+from app.models import Documentacion, Usuario, Subject, Proyectos
 from app.models.documentacion import TipoEnum
 from app.schemas import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
 
@@ -17,17 +17,27 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
         select(Subject).where(Subject.id.in_(tema_ids))
     ).scalars().all()
 
+def _load_proyectos(db: Session, proyecto_ids: list[int]) -> list[Proyectos]:
+    """Carga los objetos Proyectos dado una lista de IDs, ignorando IDs inválidos."""
+    if not proyecto_ids:
+        return []
+    return db.execute(
+        select(Proyectos).where(Proyectos.id.in_(proyecto_ids))
+    ).scalars().all()
+
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
     db: Session = Depends(get_db),
 ):
-    documentaciones = db.execute(
-        select(Documentacion).order_by(Documentacion.titulo) 
-    ).scalars().all()
-    return {
-        "documentaciones": documentaciones,
-        "total": len(documentaciones),
-    }
+    documentaciones = (
+        db.query(Documentacion)
+        .options(
+            joinedload(Documentacion.temas), 
+            joinedload(Documentacion.proyectos)
+        )
+        .all()
+    )
+    return {"documentaciones": documentaciones, "total": len(documentaciones)}
 
 @router.post("/create", response_model=DocumentacionOut, status_code=status.HTTP_201_CREATED)
 async def crear_documentacion(
@@ -35,6 +45,17 @@ async def crear_documentacion(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
+    proyectos = (
+        db.query(Proyectos).filter(Proyectos.id.in_(documentacion_in.proyectos)).all()
+        if documentacion_in.proyectos 
+        else []
+    )
+    if documentacion_in.proyectos and len(proyectos) != len(documentacion_in.proyectos):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uno o más proyectos proporcionados no existen.",
+        )
+    
     slug = slugify(documentacion_in.titulo)
     base_slug = slug
     contador = 1
@@ -54,11 +75,24 @@ async def crear_documentacion(
         slug=slug,
     )
 
+    nuevo.proyectos = proyectos
     nuevo.temas = _load_temas(db, documentacion_in.tema_ids or [])
-
+    
     db.add(nuevo)
+    db.flush()
+
     db.commit()
     db.refresh(nuevo)
+
+    nuevo = (
+        db.query(Documentacion)
+        .options(
+            joinedload(Documentacion.temas),
+            joinedload(Documentacion.proyectos)
+        )
+        .filter(Documentacion.id == nuevo.id)
+        .first()
+    )
     return nuevo
 
 @router.get("/tipos")
@@ -68,6 +102,26 @@ def get_tipos():
             tipo.name: tipo.value for tipo in TipoEnum
         }
     }
+
+@router.get("/slug/{slug}", response_model=DocumentacionOut)
+def get_documentacion_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    documentacion = (
+        db.query(Documentacion)
+        .options(
+            joinedload(Documentacion.temas),
+            joinedload(Documentacion.proyectos)
+        )
+        .filter(Documentacion.slug == slug)
+        .first()
+    )
+    if not documentacion:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
+        )
+    return documentacion
 
 @router.get("/{documentacion_id}", response_model=DocumentacionResponse)
 async def obtener_documentacion(
@@ -88,13 +142,34 @@ async def actualizar_documentacion(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    documentacion = db.get(Documentacion, documentacion_id)
+    documentacion = (
+        db.query(Documentacion)
+        .options(
+            joinedload(Documentacion.temas),
+            joinedload(Documentacion.proyectos),
+        )
+        .filter(Documentacion.id == documentacion_id)
+        .first()
+    )
     if not documentacion:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
         )
+    
+    if documentacion_in.proyectos is not None:
+        proyectos = (
+            db.query(Proyectos).filter(Proyectos.id.in_(documentacion_in.proyectos)).all()
+            if documentacion_in.proyectos else []
+        )
+        if len(proyectos) != len(documentacion_in.proyectos):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Uno o más proyectos proporcionados no existen.",
+            )
+        documentacion.proyectos = proyectos
 
-    update_data = documentacion_in.dict(exclude_unset=True)
+    update_data = dict(documentacion_in)
+
     if "titulo" in update_data and update_data["titulo"] != documentacion.titulo:
         slug = slugify(update_data["titulo"])
         base_slug = slug
@@ -108,15 +183,29 @@ async def actualizar_documentacion(
     elif "slug" in update_data and not update_data["slug"]:
         del update_data["slug"]
 
-    # Manejar la relación many-to-many de temas
-    if "tema_ids" in update_data:
-        documentacion.temas = _load_temas(db, update_data.pop("tema_ids") or [])
+    campos = [
+        "nombre", "descripcion", "anyo", "archivo", "tipo", "claves"
+    ]
 
-    for campo, valor in update_data.items():
-        setattr(documentacion, campo, valor)
+    for campo in campos:
+        valor = getattr(documentacion_in, campo, None)
+        if valor is not None:
+            setattr(documentacion, campo, valor)
+        
 
     db.commit()
     db.refresh(documentacion)
+
+    documentacion = (
+        db.query(Documentacion)
+        .options(
+            joinedload(Documentacion.temas),
+            joinedload(Documentacion.proyectos)
+        )
+        .filter(Documentacion.id == documentacion_id)
+        .first()
+    )
+    
     return documentacion
 
 @router.delete("/{documentacion_id}")
@@ -125,7 +214,15 @@ async def eliminar_documentacion(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    documentacion = db.get(Documentacion, documentacion_id)
+    documentacion = (
+        db.query(Documentacion)
+        .options(
+            joinedload(Documentacion.temas),
+            joinedload(Documentacion.proyectos)
+        )
+        .filter(Documentacion.id == documentacion_id)
+        .first()
+    )
     if not documentacion:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
@@ -134,17 +231,3 @@ async def eliminar_documentacion(
     db.commit()
     return documentacion
 
-@router.get("/slug/{slug}", response_model=DocumentacionOut)
-def get_documentacion_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener una documentación por slug"""
-    documentacion = db.execute(
-        select(Documentacion).where(Documentacion.slug == slug)
-    ).scalars().first()
-    if not documentacion:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
-        )
-    return documentacion
