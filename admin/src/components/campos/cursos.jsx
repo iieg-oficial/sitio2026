@@ -1,5 +1,6 @@
 import { Form, Input, Select, Checkbox } from 'antd';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 
 const { Option } = Select;
@@ -16,14 +17,14 @@ export const CamposCapacitaciones = ({ modulos, profesores }) => (
         <Form.Item
             name="inscripcion"
             label="Inscripción"
-            rules={[{ required: true, message: 'Por favor seleccione un estado de inscripción' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un estado de inscripción' }]}
         >
             <RichTextEditor />
         </Form.Item>
         <Form.Item
             name="acreditacion"
             label="Acreditación"
-            rules={[{ required: true, message: 'Por favor seleccione un estado de acreditación' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un estado de acreditación' }]}
         >
             <RichTextEditor />
         </Form.Item>
@@ -37,7 +38,7 @@ export const CamposCapacitaciones = ({ modulos, profesores }) => (
         <Form.Item
             name="modulos"
             label="Módulo"
-            rules={[{ required: true, message: 'Por favor seleccione un módulo' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un módulo' }]}
         >
             <Select 
                 mode="multiple"
@@ -60,7 +61,7 @@ export const CamposCapacitaciones = ({ modulos, profesores }) => (
         <Form.Item
             name="profesores"
             label="Profesor"
-            rules={[{ required: true, message: 'Por favor seleccione un profesor' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un profesor' }]}
         >
             <Select 
                 mode="multiple"
@@ -87,7 +88,7 @@ export const CamposConvocatorias = ({ instituciones, perfiles }) => (
         <Form.Item
             name="instituciones"
             label="Institución"
-            rules={[{ required: true, message: 'Por favor seleccione una institución' }]}
+            rules={[{ required: false, message: 'Por favor seleccione una institución' }]}
         >
             <Select 
                 mode="multiple"
@@ -110,7 +111,7 @@ export const CamposConvocatorias = ({ instituciones, perfiles }) => (
         <Form.Item
             name="perfiles"
             label="Perfil"
-            rules={[{ required: true, message: 'Por favor seleccione un perfil' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un perfil' }]}
         >
             <Select 
                 mode="multiple"
@@ -174,23 +175,44 @@ export const CamposComunes = () => (
         <Form.Item
             name="Objetivo"
             label="Objetivo"
-            rules={[{ required: true, message: 'Por favor seleccione un objetivo' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un objetivo' }]}
         >
             <Input />
         </Form.Item>
         <Form.Item
             name="p_ingreso"
             label="P. Ingreso"
-            rules={[{ required: true, message: 'Por favor seleccione un p. ingreso' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un p. ingreso' }]}
         >
             <RichTextEditor />
         </Form.Item>
         <Form.Item
             name="p_egreso"
             label="P. Egreso"
-            rules={[{ required: true, message: 'Por favor seleccione un p. egreso' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un p. egreso' }]}
         >
             <RichTextEditor />
+        </Form.Item>
+        <Form.Item
+            name="archivo"
+            label="Archivo"
+            rules={[{ required: false, message: 'Por favor seleccione un archivo' }]}
+        >
+            <UploadAcervo 
+                bucket="cursos"
+                folder="/cursos"
+                label="Subir archivo"
+                onUploaded={(media) => {
+                    form.setFieldsValue({ archivo: media.url });
+                }}
+             />
+        </Form.Item>
+        <Form.Item
+            name="formulario"
+            label="Link a Formulario"
+            rules={[{ required: false, message: 'Por favor seleccione un formulario' }]}
+        >
+            <Input />
         </Form.Item>
     </>
 );

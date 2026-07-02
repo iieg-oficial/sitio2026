@@ -30,6 +30,8 @@ class CursosCreate(BaseModel):
     contacto: str = None
     destacado: bool = False
     clave: str = None
+    archivo: Optional[str] = None
+    formulario: Optional[str] = None
     slug: Optional[str] = None
 
     @field_validator('tema_ids', mode='before')
@@ -52,17 +54,19 @@ class CursosOut(BaseModel):
     p_ingreso: str | None = None
     p_egreso: str | None = None
     tipo_curso: TipoCurso | None = None
-    modulos: List[ModulosOut] = []
-    instituciones: List[InstitucionesOut] = []
-    perfiles: List[PerfilesOut] = []
-    profesores: List[ProfesoresOut] = []
-    temas: Optional[List[SubjectFlat]] = []
+    modulos: Optional[List[int]] = None
+    instituciones: Optional[List[int]] = None
+    perfiles: Optional[List[int]] = None
+    profesores: Optional[List[int]] = None
+    tema_ids: Optional[List[int]] = None
     inscripcion: str | None = None
     acreditacion: str | None = None
     vigencia: str | None = None
     contacto: str | None = None
     destacado: bool | None = None
     clave: str | None = None
+    archivo: Optional[str] = None
+    formulario: Optional[str] = None
     slug: Optional[str] = None
 
     class Config:
