@@ -67,6 +67,9 @@ class Cursos(Base):
     contacto = Column(String(200), nullable=True)
     clave = Column(String(200), nullable=True)
 
+    archivo = Column(String, nullable=True)
+    formulario = Column(String, nullable=True)
+
     temas = relationship(
         "Subject",
         secondary=curso_temas,

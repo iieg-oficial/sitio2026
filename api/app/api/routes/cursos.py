@@ -115,6 +115,8 @@ def create_cursos(
         contacto=cursos.contacto,
         destacado=cursos.destacado,
         clave=cursos.clave,
+        archivo=cursos.archivo,
+        formulario=cursos.formulario,
         slug=slug,
     )
     
@@ -268,7 +270,7 @@ def update_cursos(
     campos_escalares = [
         "titulo", "descripcion", "inicio", "formato", "Horario", "Objetivo",
         "p_ingreso", "p_egreso", "tipo_curso", "inscripcion", "acreditacion",
-        "vigencia", "contacto", "destacado", "clave"
+        "vigencia", "contacto", "destacado", "clave", "archivo", "formulario"
     ]
     for campo in campos_escalares:
         valor = getattr(cursos, campo, None)
