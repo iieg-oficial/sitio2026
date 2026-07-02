@@ -29,6 +29,7 @@ from app.schemas.banner import BannerCreate, BannerOut, BannerResponse
 from app.schemas.contacto import ContactoCreate, ContactoOut, ContactoResponse
 from app.schemas.cuadernillos import CuadernilloCreate, CuadernilloOut, CuadernilloResponse
 from app.schemas.search import SearchResultItem, SearchResponse
+from app.schemas.proyectos import ProyectosCreate, ProyectosOut, ProyectosResponse
 
 __all__ = [ 
     "UsuarioCreate",
@@ -121,4 +122,7 @@ __all__ = [
     "CuadernilloResponse",
     "SearchResultItem",
     "SearchResponse",
+    "ProyectosCreate",
+    "ProyectosOut",
+    "ProyectosResponse"
 ]

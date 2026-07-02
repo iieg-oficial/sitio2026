@@ -10,6 +10,13 @@ documentacion_temas = Table(
     Column("subject_id", Integer, ForeignKey("subject.id"), primary_key=True),
 )
 
+documentacion_proyectos = Table(
+    "documentacion_proyectos",
+    Base.metadata,
+    Column("documentacion_id", Integer, ForeignKey("documentacion.id"), primary_key=True),
+    Column("proyecto_id", Integer, ForeignKey("proyectos.id"), primary_key=True),
+)
+
 class TipoEnum(str, enum.Enum):
     informes = "Informes"
     analisis_estadisticos = "Análisis estadísticos"
@@ -38,5 +45,12 @@ class Documentacion(Base):
         "Subject",
         secondary=documentacion_temas,
         back_populates="documentacion",
+        lazy="selectin",
+    )
+    
+    proyectos = relationship(
+        "Proyectos",
+        secondary=documentacion_proyectos,
+        back_populates="cursos",
         lazy="selectin",
     )
