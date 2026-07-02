@@ -9,6 +9,7 @@ export default function Documentacion() {
     const [selectedTemaId, setSelectedTemaId] = useState("");
     const [selectedSubtemaId, setSelectedSubtemaId] = useState("");
     const [selectedTipo, setSelectedTipo] = useState("");
+    const [selectedProyecto, setSelectedProyecto] = useState("");
     const keys = ['titulo', 'descripcion', 'claves', 'subject.titulo', 'temas.titulo'];
 
     const fetchDocumentaciones = async () => {
@@ -19,6 +20,18 @@ export default function Documentacion() {
     useEffect(() => {
         fetchDocumentaciones()
     }, []);
+
+    const proyectos = useMemo(() => {
+        const map = new Map();
+        documentaciones.forEach(doc => {
+            doc.proyectos?.forEach(proyecto => {
+                if (!map.has(proyecto.id)) {
+                    map.set(proyecto.id, proyecto)
+                }
+            })
+        })
+        return Array.from(map.values())
+    }, [documentaciones]);
 
     const temas = useMemo(() => {
         const map = new Map();
@@ -74,10 +87,11 @@ export default function Documentacion() {
             const matchesTema = !selectedTemaId || post.temas?.some(tema => !tema.parent_id && tema.id === Number(selectedTemaId));
             const matchesSubtema = !selectedSubtemaId || post.temas?.some(tema => tema.id === Number(selectedSubtemaId));
             const matchesTipo = !selectedTipo || post.tipo === selectedTipo;
+            const matchesProyecto = !selectedProyecto || post.proyectos?.some(proyecto => proyecto.id === Number(selectedProyecto));
 
-            return matchesSearch && matchesTema && matchesSubtema && matchesTipo;
+            return matchesSearch && matchesTema && matchesSubtema && matchesTipo && matchesProyecto;
         })
-    }, [documentaciones, searchTerm, selectedTemaId, selectedSubtemaId, selectedTipo])
+    }, [documentaciones, searchTerm, selectedTemaId, selectedSubtemaId, selectedTipo, selectedProyecto]);
 
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
@@ -90,15 +104,16 @@ export default function Documentacion() {
 
     useEffect(() => {
         setItemOffset(0);
-    }, [searchTerm, selectedTemaId, selectedSubtemaId, selectedTipo]);
+    }, [searchTerm, selectedTemaId, selectedSubtemaId, selectedTipo, selectedProyecto]);
 
     const resetFilters = () => {
         setSelectedTemaId("")
         setSelectedSubtemaId("")
         setSelectedTipo("")
+        setSelectedProyecto("")
     }
 
-    const hasActiveFilter = Boolean(selectedTemaId || selectedSubtemaId || selectedTipo)
+    const hasActiveFilter = Boolean(selectedTemaId || selectedSubtemaId || selectedTipo || selectedProyecto)
 
     return (
         <div>
@@ -166,6 +181,20 @@ export default function Documentacion() {
                                 <option value='Manuales' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Manuales</option>
                                 <option value='Guías' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Guías</option>
                                 <option value='FAQs' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>FAQs</option>
+                            </select>
+                        </div>
+
+                        <div className=''>
+                            <label className='block text-14 text-primary'>Proyecto</label>
+                            <select
+                                value={selectedProyecto}
+                                onChange={(e) => setSelectedProyecto(e.target.value)}
+                                className='w-full rounded-lg bg-card text-titulo px-4 py-2'
+                            >
+                                <option value='' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
+                                {proyectos.map(proyecto => (
+                                    <option key={proyecto.id} value={proyecto.id} className='w-full rounded-lg bg-card text-titulo px-4 py-2'>{proyecto.nombre}</option>
+                                ))}
                             </select>
                         </div>
                     
