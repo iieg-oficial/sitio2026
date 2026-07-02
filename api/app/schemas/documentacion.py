@@ -3,6 +3,7 @@ from app.schemas.subject import SubjectFlat
 from pydantic import BaseModel, field_validator
 from enum import Enum
 from app.models.documentacion import TipoEnum
+from app.schemas.proyectos import ProyectosOut
 
 class DocumentacionCreate(BaseModel):
     titulo: str
@@ -13,6 +14,7 @@ class DocumentacionCreate(BaseModel):
     claves: Optional[str] = None    
     slug: Optional[str] = None
     tema_ids: Optional[List[int]] = None
+    proyectos: Optional[List[int]] = None
 
     @field_validator('tema_ids', mode='before')
     @classmethod
@@ -35,6 +37,7 @@ class DocumentacionOut(BaseModel):
     slug: Optional[str] = None
 
     temas: Optional[List[SubjectFlat]] = []
+    proyectos: Optional[List[ProyectosOut]] = []
 
     class Config:
         from_attributes = True
@@ -50,6 +53,7 @@ class DocumentacionResponse(BaseModel):
     slug: Optional[str] = None
 
     temas: Optional[List[SubjectFlat]] = []
+    proyectos: Optional[List[ProyectosOut]] = []
 
     class Config:
         from_attributes = True
