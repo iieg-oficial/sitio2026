@@ -11,7 +11,7 @@ from app.api.routes import (
     sistemas, sistemas_public, reportes, reportes_public, documentacion, documentacion_public, profesores, profesores_public, 
     instituciones, instituciones_public, profesores, profesores_public, modulos, modulos_public, perfiles, perfiles_public,
     cursos, cursos_public, docs_iieg, docs_iieg_public, banner, banner_public, contacto,
-    cuadernillos, cuadernillos_public, search_public
+    cuadernillos, cuadernillos_public, search_public, proyectos, proyectos_public
 )
 from app.core.settings import get_settings
 
@@ -97,6 +97,8 @@ def create_app() -> FastAPI:
     app.include_router(cuadernillos.router,prefix=settings.admin_prefix) 
     app.include_router(cuadernillos_public.router,prefix=settings.web_prefix)
     app.include_router(search_public.router,prefix=settings.web_prefix)
+    app.include_router(proyectos.router,prefix=settings.admin_prefix)
+    app.include_router(proyectos_public.router,prefix=settings.web_prefix)
 
     @app.get("/", tags=["health"])
     async def healthcheck():

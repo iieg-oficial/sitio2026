@@ -115,6 +115,12 @@ export default function MainLayout() {
                     label: 'Perfiles',
                     onClick: () => navigate('/perfiles')
                 },
+                {
+                    key: '/proyectos',
+                    icon: <MenuOutlined />,
+                    label: 'Proyectos',
+                    onClick: () => navigate('/proyectos')
+                },
             ],         
         });
 
