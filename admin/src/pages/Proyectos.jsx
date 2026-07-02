@@ -66,7 +66,7 @@ export default function Proyectos() {
                 await api.put(`/proyectos/${editingProyecto.id}`, values);
                 message.success('Proyecto actualizado exitosamente');
             } else {
-                await api.post('/proyectos', values);
+                await api.post('/proyectos/create', values);
                 message.success('Proyecto creado exitosamente');
             }
             setModalVisible(false);
