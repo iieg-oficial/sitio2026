@@ -126,12 +126,12 @@ export default function Mapas() {
                             type="search"
                             value={keyword}
                             onChange={handleKeywordChange}
-                            placeholder="Busca por título, autor, ubicación..."
+                            placeholder="Filtrar por palabras clave"
                             className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
                         />
                     </div>
             
-                <div className="flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5">
+                <div className="flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5">
 
                     {/* Filtro: Año */}
                     <div className="">
@@ -210,9 +210,13 @@ export default function Mapas() {
                                                     <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
                                                         <h3 className='text-white'>{mapa.titulo}</h3>
                                                         
-                                                        <div className='flex mb-4 gap-2'>                            
-                                                            <p className='bg-card text-titulo rounded-2xl px-4 py-2 text-14'>{mapa.anyo}</p>
-                                                            <p className='bg-etiqueta-sec text-primary rounded-2xl px-4 py-2 text-14'>{mapa.tipo}</p>
+                                                        <div className='flex mb-4 gap-2'> 
+                                                            {mapa.anyo ? (
+                                                                <p className='bg-card text-titulo rounded-2xl px-4 py-2 text-14'>{mapa.anyo}</p>
+                                                            ) : null}
+                                                            {mapa.tipo ? (
+                                                                <p className='bg-etiqueta-sec text-primary rounded-2xl px-4 py-2 text-14'>{mapa.tipo}</p>
+                                                            ) : null}
                                                         </div>
                                                         
                                                     </TrackedLink>
