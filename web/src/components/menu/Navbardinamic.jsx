@@ -63,7 +63,7 @@ const Navbardinamic = () => {
           <img src="/ico_IIEG_header.svg" alt="IIEG" className="h-12 w-auto" />
         </Link>
         <a href="#menu" className={`menu-link text-right ${isOpen ? 'active' : ''}`} onClick={toggleMenu}>
-          <span className="ico-caret-down right" aria-hidden="true">M</span>
+          <span className="material-symbols--menu-rounded"></span>
         </a>
         <nav id="menu" className={`navbar col-span-2 lg:col-span-9 ${isOpen ? 'active' : ''}`} role="navigation">
           <div className="menu">
