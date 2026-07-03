@@ -30,9 +30,9 @@ export default function Contacto() {
 
     return (
         <>          
-            <div className="bg-white p-8 mx-2 md:mx-0 ">
+            <div className="bg-white p-8 mx-2 md:mx-0 xl:pl-30">
                 <h2 className="mb-6 text-titulo">¿Tienes dudas? contáctanos</h2>
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-5 2xl:pr-40">
                     <div>
                         <label className="block text-primary text-14 mb-2">Nombre Completo <span className="text-tertiary">*</span></label>
                         <input 

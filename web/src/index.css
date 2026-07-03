@@ -27,6 +27,7 @@
     --text-20: clamp(1.125rem, 1.871vw + 0.704rem, 1.25rem);
     --text-18: clamp(1rem, 1.871vw + 0.704rem, 1.125rem);
     --text-14: 14px;
+    --breakpoint-extra: 1980px;
 }
 
 @layer base {  
@@ -76,11 +77,11 @@ section[id] {
 }
 
 .button{
-  @apply  text-white py-2 px-4 rounded-4xl text-base transition-colors duration-300 cursor-pointer;
+  @apply  text-white py-2 px-4 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold;
 }
 
 .button2{
-  @apply border py-2 px-4 rounded-4xl text-base transition-colors duration-300 cursor-pointer;
+  @apply border-2 py-2 px-4 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold;
 }
 
 .rsicon{
@@ -268,6 +269,16 @@ li::marker {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
+
+.material-symbols--menu-rounded {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M4 18q-.425 0-.712-.288T3 17t.288-.712T4 16h16q.425 0 .713.288T21 17t-.288.713T20 18zm0-5q-.425 0-.712-.288T3 12t.288-.712T4 11h16q.425 0 .713.288T21 12t-.288.713T20 13zm0-5q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z'/%3E%3C/svg%3E");
+}
+
 
 .edatos-recientes{
   background-color: var(--color-etiqueta-sec);
