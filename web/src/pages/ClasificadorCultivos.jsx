@@ -37,56 +37,59 @@ export default function ClasificadorCultivos() {
                 <div className='mt-5'>
                     <Backlink />
                 </div>
-                <section className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
-                    <div>
+                <section className="container mx-auto grid grid-cols-1 lg:grid-cols-6 gap-10 px-2">
+                    <div className="lg:col-span-2">
                         <img src="/demo.jpg" alt={page?.title} className='image-mapa rounded-4xl'/>
                     </div>
-                    <div>
+                    <div className="lg:col-span-4">
                         <h1>{page?.title || 'Clasificador de Cultivos'}</h1>
                         <p className="my-5 leading-10">Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.</p>
-                        <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-18 text-card bg-[#454545] rounded-2xl px-4 py-2">
+                        <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-base text-primary rounded-4xl border border-primary px-6 py-3 font-extrabold hover:bg-primary hover:text-white transition-all duration-200">
                             Ver la documetación del proyecto                                
                         </TrackedLink>
                     </div>
                 </section>
-                <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-25 gap-10 text-center diez">
+                <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-50 gap-12 text-center diez">
                     <div>
+                        <img src="/demo.jpg" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
                         <p>Modelos de IA detectan y clasifican a gran escala, cultivos a través de la interpretación de imágenes satelitales.</p>
                     </div>
                     <div>
+                        <img src="/demo.jpg" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
                         <p>Segmentación de parcelas: identifica los límites de las parcelas agrícolas con ayuda de imágenes satelitales del Programa NICFI</p>
                     </div>
                     <div>
+                        <img src="/demo.jpg" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
                         <p>Clasificación del tipo de cultivo: clasifica el tipo de cultivo dentro de cada parcela identificada, utilizando series de tiempo de imágenes satelitales provenientes de Sentinel-1 y Sentinel-2.</p>
                     </div>
                 </section>
                 <section>
-                    <h2 className="text-primary text-center">Clasificador de cultivos en cifras</h2>
+                    <h2 className="text-primary text-center font-extrabold">Clasificador de cultivos en cifras</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-15 mb-25 text-center">
-                        <div>
-                            <b>80,000 kilómetros cuadrados</b><br></br>
-                            <p>Área de estudio</p>
+                        <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
+                            <b className='text-44 text-tertiary'>80,000 km²</b><br></br>
+                            <p className='text-18 text-titulo'>Área de estudio</p>
                         </div>
-                        <div>
-                            <b>81%</b><br></br>
-                            <p>Precisión general (usando ConvNet + InceptionTime)</p>
+                        <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
+                            <b className='text-44 text-tertiary'>81%</b><br></br>
+                            <p className='text-18 text-titulo'>Precisión general</p>
                         </div>
-                        <div>
-                            <b>+3% de precisión general (segmentación ConvNet)</b><br></br>
-                            <p>Mejora en Precisión (ConvNet vs. MSC)</p>
+                        <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
+                            <b className='text-44 text-tertiary'>F1-score ≥ 90 %</b><br></br>
+                            <p className='text-18 text-titulo'>Rendimiento de los modelos de IA en la detección de cultivos</p>
                         </div>
-                        <div>
-                            <b>+9.9% de mejora en IoU (de 0.668 a 0.734)</b><br></br>
-                            <p>Mejora en IoU (5-ch vs. 3-ch ConvNet)</p>
+                        <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
+                            <b className='text-44 text-tertiary'>+9.9%</b><br></br>
+                            <p className='text-18 text-titulo'>Mejora en IoU (de 0.668 a 0.734) mejora en IoU (5-ch vs. 3-ch ConvNet)</p>
                         </div>
-                        <div>
-                            <b>+5.8% de mejora en Average Precision (AP)</b><br></br>
-                            <p>Mejora en AP (5-ch vs. 3-ch ConvNet)</p>
+                        <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
+                            <b className='text-44 text-tertiary'>+5.8%</b><br></br>
+                            <p className='text-18 text-titulo'>Mejora en Average Precision (AP) Mejora en AP (5-ch vs. 3-ch ConvNet)</p>
                         </div>
                     </div>
                 </section>
-                <section className="px-2">
-                    <h2 className="text-primary text-center">Imágenes de la plataforma</h2>
+                <section className="px-2 mt-50">
+                    <h2 className="text-primary text-center font-extrabold">Imágenes de la plataforma</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-15 mb-25 text-center">
                         <div>
                             <img src={page?.imagen ? page.imagen : "/demo.jpg"} alt={page?.titulo} className='image-mapa rounded-4xl'/>
@@ -99,18 +102,7 @@ export default function ClasificadorCultivos() {
                         </div>
                     </div>
                 </section>
-                <section className="px-2">
-                    <h2 className="text-primary text-center">Papers</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-15 mb-25 text-center">
-                        <div>
-                            <img src={page?.imagen ? page.imagen : "/demo.jpg"} alt={page?.titulo} className='image-mapa rounded-4xl'/>
-                        </div>
-                        <div>
-                            <img src={page?.imagen ? page.imagen : "/demo.jpg"} alt={page?.titulo} className='image-mapa rounded-4xl'/>
-                        </div>                
-                    </div>
-                    <TrackedLink to="/clasificador-cultivos/paper"className="mt-2 block mx-auto text-18 text-card bg-[#454545] rounded-2xl px-4 py-2 text-center w-[350px]">Ver artículo completo</TrackedLink>
-                </section>
+
             </div>
         </>
     )
