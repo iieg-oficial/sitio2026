@@ -155,7 +155,7 @@ export default function Cursos() {
   const SECCIONES = {
     capacitacion: <CamposCapacitaciones modulos={modulos} profesores={profesores} />,
     convocatoria: <CamposConvocatorias instituciones={instituciones} perfiles={perfiles} />,
-    comun: <CamposComunes />
+    comun: <CamposComunes form={form} />
   };
 
   const tipoCursoValue = form.getFieldValue('tipo_curso') || tipoCurso;

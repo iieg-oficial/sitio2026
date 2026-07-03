@@ -134,7 +134,7 @@ export const CamposConvocatorias = ({ instituciones, perfiles }) => (
     </>
 );
 
-export const CamposComunes = () => (
+export const CamposComunes = ({ form }) => (
     <>
 
         <Form.Item
@@ -199,13 +199,21 @@ export const CamposComunes = () => (
             rules={[{ required: false, message: 'Por favor seleccione un archivo' }]}
         >
             <UploadAcervo 
-                bucket="cursos"
+                bucket="portal"
                 folder="/cursos"
                 label="Subir archivo"
                 onUploaded={(media) => {
                     form.setFieldsValue({ archivo: media.url });
                 }}
              />
+            <Form.Item name="archivo" noStyle>
+                <Input placeholder="Subir archivo" />
+            </Form.Item>
+                {form.getFieldValue('archivo') ? (
+                    <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">
+                        Ver archivo
+                    </a>
+                ) : null}
         </Form.Item>
         <Form.Item
             name="formulario"
