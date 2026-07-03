@@ -76,12 +76,12 @@ function HomePage() {
                 {page?.description_meta && <meta name="description" content={page.description_meta} />}
                 {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
             </Helmet>
-            <section className="h-[450px] md:h-[550px] lg:h-[800px]" role="banner">                
+            <section className="h-auto md:h-[550px] lg:h-[800px]" role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
             </section>            
             <section className="container-fluid relative grid">
-                <div className="relative z-0 order-2 md:order-1 min-h-[370px] md:min-h-auto">                    
-                    <div className='bg-primary text-center z-10 mx-auto absolute top-6/12 md:top-8/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-5 py-11 rounded-2xl w-11/12 md:w-9/12 xl:w-auto'>
+                <div className="relative z-0 order-2 xl:order-1 min-h-[370px] xl:min-h-auto">                    
+                    <div className='bg-primary text-center z-10 mx-auto absolute top-6/12 xl:top-8/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-10 py-11 rounded-2xl w-11/12 xl:w-9/12 xl:w-auto'>
                         <img src="/ico_mapalab.png" alt="MapaLab" className="inline-block mr-2" />
                         <p className='text-center text-white my-8 text-22'>Explora el territorio de Jalisco con datos geoespaciales</p>
                         <TrackedLink to="/mapalab" className="button bg-medio hover:bg-tertiary text-base">
@@ -92,8 +92,8 @@ function HomePage() {
                 </div>
                 <BlockRenderer block={{ type: 'plataformasDestacado' }} />
             </section>
-            <section className="w-full bg-primary pt-10 pb-32">
-                <div className="container mx-auto grid grid-cols-1 lg:grid-cols-6 gap-4 px-2">
+            <section className="w-full bg-primary pt-15 pb-32">
+                <div className="container mx-auto grid grid-cols-1 lg:grid-cols-6 gap-4 px-5 xl:px-5 2xl:px-0">
                     <div className='lg:col-span-6'>
                         <h2 className="text-white text-center">Conoce los datos más recientes</h2>
                     </div>
@@ -109,16 +109,16 @@ function HomePage() {
                 </div>
             </section>
 
-            <section className="w-11/12 mx-auto rounded-4xl -mt-18 py-10 bg-card px-8">
+            <section className="w-11/12 mx-auto rounded-4xl -mt-18 pt-10 pb-15 bg-card px-8 extra:max-w-[1980px]">
                 <h2 className="text-titulo text-center my-10">Visita nuestras plataformas interactivas</h2>
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
-                <TrackedLink to="/flashes" className="button2 w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                <TrackedLink to="/flashes" className="button2 sm:w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
                     Quiero ver todas las plataformas
                 </TrackedLink>
             </section>
 
-            <section className="w-11/12 mx-auto relative my-14">
-                <h2 className="text-titulo text-center mb-10">Conoce los mapas de Jalisco</h2>
+            <section className="w-11/12 mx-auto relative my-15">
+                <h2 className="text-titulo text-center mb-14 text-44 font-extrabold">Conoce los mapas históricos de Jalisco</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <TrackedLink 
                 to="/mapas-historicos" 
@@ -187,7 +187,7 @@ function HomePage() {
 
                 </div>
             </section>
-            <section className="container-fluid mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+            <section className="container-fluid mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 extra:max-w-[1980px] mx-auto">
                 <BlockRenderer block={{ type: 'contacto' }} />
             </section>
         </>

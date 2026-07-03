@@ -29,18 +29,18 @@ export default function Mapas() {
     const mapasFiltrados = isMobile ? mapas.slice(0, 1) : mapas
     
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 extra:max-w-[1980px] mx-auto w-full">
             {mapasFiltrados.map(mapa => (
                 <a href={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
-                    <div key={mapa.id} className="p-4 overflow-hidden mapa h-96 relative rounded-4xl">                    
+                    <div key={mapa.id} className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">                    
                         <img src={mapa.imagen ? mapa.imagen : "/demo.jpg"} alt={mapa.titulo} className='image-mapa rounded-4xl'/>
-                        <div className='info'>
+                        <div className='info px-5'>
                             <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
                                 <h3 className='text-white'>{mapa.titulo}</h3>
                                 
-                                <div className='flex mb-4 gap-2'>                            
-                                    <p className='bg-card text-titulo rounded-2xl px-4 py-2 text-14'>{mapa.anyo}</p>
-                                    <p className='bg-etiqueta-sec text-primary rounded-2xl px-4 py-2 text-14'>{mapa.tipo}</p>
+                                <div className='flex mb-5 mt-8 gap-2'>  
+                                    {mapa.anyo ? <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta text-tertiary border border-[#FF83004D]'>{mapa.anyo}</p> : null}                        
+                                    {mapa.tipo ? <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>{mapa.tipo}</p> : null}                                    
                                 </div>
                                 
                             </TrackedLink>

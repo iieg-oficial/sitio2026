@@ -48,7 +48,7 @@ export default function Banners() {
                         </a>
                     </>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto px-2 xl:px-2 2xl:px-0">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto px-5 xl:px-5 2xl:px-0">
                         <div>
                             <h2 className='text-white'>{banner.titulo}</h2>                            
                             <div dangerouslySetInnerHTML={{__html: banner.descripcion}} className='mt-5 prose max-w-none text-banner mb-5' />
