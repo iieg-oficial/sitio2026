@@ -3,10 +3,18 @@ from datetime import datetime
 from typing import Optional, List
 from app.schemas.subject import SubjectFlat
 
+class GalleryImageOut(BaseModel):
+    id: int
+    url: str
+    order: int
+    class Config:
+        from_attributes = True
+
 class PostCreate(BaseModel):
     titulo: str
     resumen: str = ""
     contenido: str
+    gallery_urls: list[str] = []
     autor: str = "IIEG"
     fecha: Optional[datetime] = None
     claves: Optional[str] = None    
@@ -27,6 +35,7 @@ class PostOut(BaseModel):
     titulo: str
     resumen: str
     contenido: str
+    gallery_images: list[GalleryImageOut]
     autor: str
     fecha: datetime
     claves: Optional[str] = None    
@@ -42,6 +51,7 @@ class PostResponse(BaseModel):
     titulo: str
     resumen: str
     contenido: str
+    gallery_images: list[GalleryImageOut]
     autor: str
     fecha: datetime
     claves: Optional[str] = None    

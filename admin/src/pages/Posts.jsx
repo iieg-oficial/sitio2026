@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { UploadAcervoMultiple } from '@components/UploadAcervoMultiple';
 
 const { Title } = Typography;
 
@@ -14,13 +15,18 @@ export default function Posts() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingPost, setEditingPost] = useState(null);
     const [subjects, setSubjects] = useState([]);  
-    const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [selectedSubjects, setSelectedSubjects] = useState([]);    
+    const [galleryImages, setGalleryImages] = useState([]);
 
     useEffect(() => {
         fetchPosts();
         fetchSubjects();
     }, []);
 
+
+    const removeGalleryImage = (url) => {
+        setGalleryImages((prev) => prev.filter((img) => img !== url));
+    };
     
     const fetchSubjects = async () => {
         
@@ -47,14 +53,17 @@ export default function Posts() {
     const handleCreate = () => {
         setEditingPost(null);
         setSelectedSubjects([]);
+        setGalleryImages([]);
         form.resetFields();
         setModalVisible(true);
     };
 
     const handleEdit = (record) => {
+        console.log('Record al editar:', record.gallery_images);
         setEditingPost(record);
         const ids = record.temas.map((tema) => tema.id);
         setSelectedSubjects(ids);
+        setGalleryImages((record.gallery_images ?? []).map((img) => img.url));
         form.setFieldsValue(record);
         setModalVisible(true);
     };
@@ -82,8 +91,10 @@ export default function Posts() {
         try {
             const payload = {
                 ...values,
-                tema_ids: selectedSubjects
+                tema_ids: selectedSubjects,
+                gallery_urls: galleryImages.map((img) => (typeof img === 'string' ? img : img.url)),
             };
+            console.log('Payload enviado:', payload); // <-- temporal
             if (editingPost) {
                 await api.put(`/posts/${editingPost.id}`, payload);
                 message.success('Post actualizado exitosamente');
@@ -268,7 +279,49 @@ export default function Posts() {
                             setSelectedSubjects(ids);
                         }}
                     />
+                    <Form.Item label="Galería de imágenes">
+                        <UploadAcervoMultiple
+                            bucket="portal"
+                            folder="/blog"
+                            label="Subir archivo"
+                            onUploaded={(urls) => {
+                                setGalleryImages((prev) => [...prev, ...urls]);
+                            }}
+                        />
 
+                        <Space direction="vertical" style={{ width: '100%', marginTop: 10 }}>
+                            {galleryImages.map((url) => (
+                                <div key={url} style={{ marginBottom: 10, borderBottom: '1px solid #a59c9c', paddingBottom: 10, position: 'relative' }}>
+                                        
+                                        <div style={{ margin: '15px 0px' }}>
+                                            <a href={url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="block text-xs text-blue-600 truncate mt-1"
+                                                title={url}
+                                            >
+                                                <img src={url}
+                                                style={{ maxWidth: 260, marginBottom: 10 }}
+                                                onError={(e) => { e.target.style.display = 'none'; }}
+                                                />                                            
+                                            </a>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeGalleryImage(url)}
+                                                style={{ float: 'right',width: '10%' }}
+                                            >
+                                                ×
+                                            </button>
+                                            <Form.Item name="url" noStyle>
+                                                <Input placeholder={url} value={url} />
+                                            </Form.Item>
+                                        </div>
+                                </div>
+                            ))}
+                        </Space>
+                            
+                        
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>

@@ -1,12 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Posts, Usuario, Subject
+from app.models.posts import GalleryImage
 from app.schemas.posts import PostCreate, PostOut, PostResponse, PostList
 from slugify import slugify
+import uuid, shutil
+from pathlib import Path
 
 router = APIRouter(prefix="/posts", tags=["posts"])
+UPLOAD_DIR = Path("static/uploads")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+ALLOWED = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 
 
 def _obtener_post_por_identificador(db: Session, identificador: str):
@@ -49,6 +55,19 @@ async def obtener_post(
         )
     return post
 
+@router.post("/uploads/image")
+async def upload_image(file: UploadFile = File(...)):
+    if file.content_type not in ALLOWED:
+        raise HTTPException(400, "Tipo de archivo no permitido")
+
+    ext = file.filename.split(".")[-1]
+    filename = f"{uuid.uuid4()}.{ext}"
+    dest = UPLOAD_DIR / filename
+
+    with dest.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    return {"url": f"/static/uploads/{filename}"}
 
 @router.post("/create", response_model=PostOut, status_code=status.HTTP_201_CREATED)
 async def crear_post(
@@ -75,7 +94,15 @@ async def crear_post(
     )
     nuevo.temas = _load_temas(db, post_in.tema_ids or [])
     
+    
     db.add(nuevo)
+
+    db.flush()
+    for i, url in enumerate(post_in.gallery_urls):
+        nuevo.gallery_images.append(
+            GalleryImage(url=url, order=i)
+        )
+        
     db.commit()
     db.refresh(nuevo)
 
@@ -119,6 +146,13 @@ async def actualizar_post(
     
     if "tema_ids" in update_data:
         post.temas = _load_temas(db, update_data.pop("tema_ids") or [])
+    
+    if "gallery_urls" in update_data:
+        gallery_urls = update_data.pop("gallery_urls") or []
+        post.gallery_images.clear()
+        db.flush()
+        for i, url in enumerate(gallery_urls):
+            post.gallery_images.append(GalleryImage(url=url, order=i))
 
     for campo, valor in update_data.items():
         setattr(post, campo, valor)
