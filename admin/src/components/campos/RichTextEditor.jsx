@@ -2,6 +2,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
+import Image from '@tiptap/extension-image'
 import { useEffect } from 'react'
 
 const ToolbarButton = ({ onClick, active, title, children }) => (
@@ -31,12 +32,25 @@ export default function RichTextEditor({ value, onChange }) {
       StarterKit,
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      Image,
     ],
     content: value || '',
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML())  // notifica al Form con HTML string
     },
-  })
+  });
+
+  const addImage = () => {
+    const url = window.prompt('Introduce la URL de la imagen:');
+
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  };
+
+  if (!editor) {
+    return null;
+  }
 
   // Sincroniza cuando el Form carga datos (edición)
   useEffect(() => {
@@ -81,12 +95,15 @@ export default function RichTextEditor({ value, onChange }) {
         <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('right').run()} active={editor.isActive({ textAlign: 'right' })} title="Alinear derecha">
           →
         </ToolbarButton>
+        <ToolbarButton onClick={addImage} title="Insertar imagen">
+          Imagen
+        </ToolbarButton>
       </div>
 
       {/* Área de edición */}
       <EditorContent
         editor={editor}
-        style={{ padding: '12px', minHeight: 120, fontSize: 14 }}
+        style={{ padding: '12px', minHeight: 220, fontSize: 18 }}
       />
     </div>
   )
