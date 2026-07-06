@@ -17,7 +17,7 @@ export default function Blog() {
             try {
                 const response = await api.get(`/posts/slug/${slug}`);
                 setSinglePost(response.data);
-                console.log("Fetched post:", response.data); // Log the fetched post data
+                
             } catch (error) {
                 console.error("Error al obtener el post:", error);
             }

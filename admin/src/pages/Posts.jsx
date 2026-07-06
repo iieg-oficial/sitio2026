@@ -59,7 +59,7 @@ export default function Posts() {
     };
 
     const handleEdit = (record) => {
-        console.log('Record al editar:', record.gallery_images);
+        
         setEditingPost(record);
         const ids = record.temas.map((tema) => tema.id);
         setSelectedSubjects(ids);
