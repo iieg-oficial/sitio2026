@@ -77,7 +77,7 @@ function Post() {
         {page?.description_meta && <meta name="description" content={page.description_meta} />}
         {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
     </Helmet>
-        <article>
+        <article className="px-5 xl:px-5 2xl:px-0 ">
             <div className='page-header text-center py-12'>
                 <div className="container mx-auto">                
                 <h1 className="text-titulos text-center">{page.title}</h1>
