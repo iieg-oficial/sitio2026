@@ -125,7 +125,7 @@ export default function Sistemas() {
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             {currentSystems.map((sistema) => (
                                 <a href={sistema.link} target="_blank" rel="noopener noreferrer" key={sistema.id}>
-                                <div key={sistema.id} className='mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 cursor-pointer hover:border-primary hover:border'>
+                                <div key={sistema.id} className='mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 cursor-pointer hover:border-primary hover:border group'>
                                     <div className='md:col-span-2'>
                                         <img
                                             src={sistema.imagen ? sistema.imagen : '/demo.jpg'}
@@ -146,8 +146,8 @@ export default function Sistemas() {
                                             </span>
                                         )}
                                         
-                                        <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 hover:shadow-xl'>
-                                            <span className="material-symbols--chevron-right text-primary"></span>
+                                        <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                            <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                         </div>
                                     </div>
                                 </div>
