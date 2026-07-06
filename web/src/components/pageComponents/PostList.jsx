@@ -9,8 +9,8 @@ function PostList({ results = [] }) {
   return (
     <section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6 container mx-auto">
       {results.map((post) => (
-        <TrackedLink to={`/comunidad/${post.slug}`} className="" rel="noopener noreferrer">
-          <div key={post.id} className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid md:grid-cols-2 gap-4 px-5 group">
+        <TrackedLink to={`/comunidad/${post.slug}`} className="" rel="noopener noreferrer" key={post.id}>
+          <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid md:grid-cols-2 gap-4 px-5 group">
             <div></div>
             <div>
               <h3 className="text-primary font-extrabold text-28">{post.titulo}</h3>
