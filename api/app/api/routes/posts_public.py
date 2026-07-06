@@ -21,11 +21,24 @@ router = APIRouter(prefix="/posts", tags=["portal - posts"])
 async def listar_posts(
     db: Session = Depends(get_db),
 ):
-    posts = db.execute(select(Posts)).scalars().all()
+    posts = db.execute(select(Posts)).scalars().all()    
     return {
         "posts": posts,
         "total": len(posts),
     }
+
+@router.get("/slug/{slug}", response_model=PostOut)
+async def obtener_post_slug(
+    slug: str, 
+    db: Session = Depends(get_db)
+):
+    post = db.execute(select(Posts).where(Posts.slug == slug)).scalar_one_or_none()
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Post no encontrado"
+        )
+    return post
+
 
 @router.get("/{post_id}", response_model=PostResponse)
 async def obtener_post(
@@ -40,14 +53,3 @@ async def obtener_post(
     return post
 
 
-@router.get("/slug/{slug}", response_model=PostOut)
-async def obtener_post_slug(
-    slug: str, 
-    db: Session = Depends(get_db)
-):
-    post = db.execute(select(Posts).where(Posts.slug == slug)).scalar_one_or_none()
-    if not post:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Post no encontrado"
-        )
-    return post

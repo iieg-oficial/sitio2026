@@ -34,7 +34,7 @@ export default function Mapas() {
             <meta property="og:description" content={singleMapa.resumen} />
             <meta property="og:url" content={window.location.href} />
         </Helmet>
-        <article className='w-full px-2 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
+        <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
             <div className='md:col-span-1'><Backlink /></div>
             <main className='md:col-span-11 grid grid-cols-1 md:px-2 lg:grid-cols-12 gap-6'>
                 <div className='col-span-1 lg:col-span-5'>
