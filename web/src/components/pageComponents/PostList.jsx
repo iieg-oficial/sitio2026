@@ -9,20 +9,25 @@ function PostList({ results = [] }) {
   return (
     <section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6 container mx-auto">
       {results.map((post) => (
-        <div key={post.id} className="bg-card p-4 rounded-3xl hover:border hover:border-primary">
-          <h3>{post.titulo}</h3>
-          <div className="flex gap-4 my-4 flex-wrap">
-            <span className='bg-etiqueta-ter text-14 px-4 py-2 rounded-2xl text-tertiary'>{format(new Date(post.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</span>
-            {post.subject ?
-            <span className='bg-etiqueta-ter text-14 px-4 py-2 rounded-2xl text-tertiary'>{post.subject?.titulo}</span>
-            : null}
+        <TrackedLink to={`/comunidad/${post.slug}`} className="" rel="noopener noreferrer">
+          <div key={post.id} className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid md:grid-cols-2 gap-4 px-5 group">
+            <div></div>
+            <div>
+              <h3 className="text-primary font-extrabold text-28">{post.titulo}</h3>
+              <div className="flex gap-4 my-4 flex-wrap">
+                <p className='bg-[#ccc] text-body rounded-2xl px-4 py-2 text-14'>{format(new Date(post.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                {post.subject ?
+                <p className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>{post.subject?.titulo}</p>
+                : null}
+              </div>
+              <div dangerouslySetInnerHTML={{__html: post.resumen}} className='mt-5 prose max-w-none' />
+              
+              <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+              </div>
+            </div>
           </div>
-          <p>{post.resumen}</p>
-          
-          <Link to={`/comunidad/${post.slug}`} state={{ type: 'blog' }} className="read-more bg-blue-500 text-white">
-            Leer más
-          </Link>
-        </div>
+        </TrackedLink>
       ))}
     </section>
   );
