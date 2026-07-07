@@ -176,6 +176,11 @@ li::marker {
   line-height: 40px;
 }
 
+.cursos p{
+  line-height: 40px;
+  color: var(--color-titulo);
+}
+
 .material-symbols--download {
   display: inline-block;
   width: 24px;

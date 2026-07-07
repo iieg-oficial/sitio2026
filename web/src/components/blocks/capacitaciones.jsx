@@ -60,7 +60,7 @@ export default function Capacitaciones() {
 
     return (
         <div>
-            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover border-tertiary'>
+            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover border-tertiary px-5 xl:px-5 2xl:px-0'>
                 {capacitacionesDestacadas.map(capacitacion => (
                     <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" target="_blank" rel="noopener noreferrer">
                     <div className='grid md:grid-cols-6' key={capacitacion.id}>                        
@@ -76,13 +76,14 @@ export default function Capacitaciones() {
                     </TrackedLink>
                 ))}
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-15 container mx-auto'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-15 container mx-auto px-5 xl:px-5 2xl:px-0'>
                 {currentItems.map(capacitacion => (
                     <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" target="_blank" rel="noopener noreferrer">
                     <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl' key={capacitacion.id}>                        
                         <div className='md:col-span-2'></div>
                         <div className='md:col-span-4 p-6'>
-                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>                            
+                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>    
+                            <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez mt-5' />                        
                             <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
                                 <span className="material-symbols--chevron-right"></span>
                             </div>
