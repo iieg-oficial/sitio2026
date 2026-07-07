@@ -29,7 +29,7 @@ export default function Flashes() {
     const fetchPeriodo = async () => {
         try{
             const response = await api.get('/flashes/periocidad');
-            setPeriodo(response.data.periocidad || {});
+            setPeriodo(response.data.periodo || {});            
         } catch (error) {
             message.error('Error al obtener los periocidad');
         }
@@ -77,7 +77,13 @@ export default function Flashes() {
         // Pre-cargar los temas seleccionados desde el registro
         const ids = (record.temas ?? []).map((t) => t.id);
         setSelectedSubjects(ids);
-        form.setFieldsValue(record);
+        const fechaFormateada = record.fecha_publicacion
+        ? new Date(record.fecha_publicacion).toISOString().split('T')[0]
+        : null;
+        form.setFieldsValue({
+            ...record,
+            fecha_publicacion: fechaFormateada,
+        });
         setModalVisible(true);
     };
 
@@ -118,6 +124,10 @@ export default function Flashes() {
         }
     }
 
+    useEffect(() => {
+    
+}, [periodo]);
+
     const columns = [
         { 
             title: 'Título', 
@@ -138,18 +148,6 @@ export default function Flashes() {
             ),
         },
         {
-            title: 'Descripción Nacional',
-            dataIndex: 'desc_nac',
-            key: 'desc_nac',
-            sorter: (a, b) => a.desc_nac.localeCompare(b.desc_nac),
-            render: (text) => (
-                <div
-                className="tiptap-content"
-                dangerouslySetInnerHTML={{ __html: text }}
-                />
-            ),
-        },
-        {
             title: 'periocidad',
             dataIndex: 'periocidad',
             key: 'periocidad',
@@ -162,12 +160,6 @@ export default function Flashes() {
             key: "fecha_publicacion",
             render: (date) => new Date(date).toLocaleDateString('es-MX'),
             sorter: (a, b) => new Date(a.fecha_publicacion) - new Date(b.fecha_publicacion)
-        },
-        {
-            title: 'Fuente',
-            dataIndex: 'fuente',
-            key: 'fuente',
-            sorter: (a, b) => a.fuente.localeCompare(b.fuente)
         },
         {
             title: 'Link',
@@ -239,9 +231,9 @@ export default function Flashes() {
                         filterOption={(input, option) =>
                             (option?.label || '').toLowerCase().includes(input.toLowerCase())
                         }
-                        options={Object.entries(periodo).map(([key, value]) => ({
-                            key,
-                            value,
+                        options={Object.entries(periodo).map(([key, value]) => ({  
+                            key,                          
+                            value: value,
                             label: value,
                         }))}
                     />
