@@ -5,6 +5,7 @@ import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import TrackedLink from '@components/blocks/boton'
+import ConditionalLink from '../pageComponents/ConditionalLink'
 
 export default function Flashes() {
     const [flashes, setFlashes] = useState([])
@@ -262,19 +263,26 @@ export default function Flashes() {
 
             <div className='grid lg:grid-cols-3 container mx-auto gap-4'>
                 {currentFlashes.length > 0 ? currentFlashes.map(flash => (
-                    <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mb-4 mx-auto container bg-white mt-8 hover:border hover:border-tertiary'>
-                        <h3 className='text-18 text-titulos'>{flash.titulo}</h3>
-                        <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
-                            <div className='md:col-span-2 flex gap-4 flex-wrap mt-5'>
-                                {flash.periocidad && (
-                                    <p className='bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
-                                )}
-                                {flash.fecha_publicacion && (
-                                    <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
-                                )}
+                    <ConditionalLink
+                        key={flash.id}
+                        link={flash.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mb-4 mx-auto container bg-white mt-8 hover:border hover:border-tertiary'>
+                            <h3 className='text-18 text-titulos'>{flash.titulo}</h3>
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
+                                <div className='md:col-span-2 flex gap-4 flex-wrap mt-5'>
+                                    {flash.periocidad && (
+                                        <p className='bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
+                                    )}
+                                    {flash.fecha_publicacion && (
+                                        <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </ConditionalLink>
                 )) : (
                     <div className='lg:col-span-3 rounded-2xl bg-[#F5F5F5] p-8 text-center text-tertiary mb-15'>
                         No se encontraron flashes con los filtros seleccionados.
