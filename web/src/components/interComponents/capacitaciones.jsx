@@ -4,6 +4,11 @@ import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
 import CapacitacionesList from './capacitaciones_list';
 import BackLink from './../pageComponents/Backlink'
+import TrackedLink from '@components/blocks/boton'
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
+
+dayjs.locale('es')
 
 export default function Capacitaciones() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
@@ -42,60 +47,96 @@ export default function Capacitaciones() {
                 <meta property="og:description" content={singleCapacitacion.resumen} />
                 <meta property="og:url" content={window.location.href} />
             </Helmet>
-            <article className='my-40 relative'>
+            <article className='mt-8 relative px-5 xl:px-5 2xl:px-0'>
                 <BackLink />
                 <main className='grid md:grid-cols-6 mx-auto'>
                     <div className='md:col-span-2'></div>
                     <div className='md:col-span-4'>
-                        <h1 className='text-3xl font-bold mb-4'>{singleCapacitacion.titulo}</h1>
-                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.descripcion}} className='mt-5 prose max-w-none' />
+                        <h1 className='text-44 font-extrabold mb-4'>{singleCapacitacion.titulo}</h1>
+                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.descripcion}} className='mt-5 prose max-w-none diez' />
+                        <div className='mt-5 flex flex-wrap gap-5'>
+                        {singleCapacitacion.archivo && (
+                            <TrackedLink key={singleCapacitacion.id} to={singleCapacitacion.archivo} target="_blank" download>
+                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Descarga el archivo informativo</span>
+                            </TrackedLink>
+                        )}
+                        {singleCapacitacion.formulario && (
+                            <TrackedLink key={singleCapacitacion.id} to={singleCapacitacion.formulario} target="_blank">
+                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
+                            </TrackedLink>
+                        )}
+                        </div>
                     </div>
                 </main>
-                <section className='w-11/12 mx-auto flex flex-wrap gap-5 text-14 justify-between'>
-                    <div className='mt-8 text-sm text-gray-500 pt-4'>
-                        <p><strong>Inicio de clases:</strong> {new Date(singleCapacitacion.inicio).toLocaleDateString()}</p>
+                <section className='w-11/12 mx-auto flex flex-wrap gap-5 justify-around'>
+                    <div className='mt-8 pt-4'>
+                        <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
+                            Inicio de clases: {dayjs(singleCapacitacion.inicio).format('D [de] MMMM [de] YYYY')}                             
+                        </p>
                     </div>
-                    <div className='mt-8 text-sm text-gray-500 pt-4'>
-                        <p><strong>Formato:</strong> {singleCapacitacion.tipo_curso.formato}</p>
+                    <div className='mt-8 pt-4'>
+                        <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
+                            Formato: {singleCapacitacion.tipo_curso.formato}
+                        </p>
                     </div>
-                    <div className='mt-8 text-sm text-gray-500 pt-4'>
-                        <p><strong>Horario:</strong> {singleCapacitacion.Horario}</p>
+                    <div className='mt-8 pt-4'>
+                        <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
+                            Horario: {singleCapacitacion.Horario}
+                        </p>
                     </div>
                 </section>
                 <section className='w-11/12 md:w-10/12 mx-auto my-15'>
-                    <div>
-                        <h2 className='text-center'>Objetivo</h2>
-                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.Objetivo}} className='mt-5 prose max-w-none w-8/12 mx-auto bg-card rounded-3xl p-6' />
+                    <div className='grid grid-cols-6 gap-5'>
+                        <div className='col-span-1'>
+                            <img src="" alt="" />
+                        </div>
+                        <div className='col-span-5'>
+                            <h2 className='text-primary text-36 font-extrabold'>Objetivo</h2>
+                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.Objetivo}} className='mt-5 prose max-w-none cursos' />
+                        </div>
                     </div>
-                    <div className='my-20'>
-                        <h2 className='text-center'>Perfil de Ingreso</h2>
-                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_ingreso}} className='mt-5 prose max-w-none w-8/12 mx-auto bg-card rounded-3xl p-6' />
+                    <div className='my-20 grid grid-cols-6 gap-5'>
+                        <div className='col-span-1'>
+                            <img src="" alt="" />
+                        </div>
+                        <div className='col-span-5'>
+                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Ingreso</h2>
+                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_ingreso}} className='mt-5 prose max-w-none cursos' />
+                        </div>
                     </div>
-                     <div>
-                        <h2 className='text-center'>Perfil de Egreso</h2>
-                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_egreso}} className='mt-5 prose max-w-none w-8/12 mx-auto bg-card rounded-3xl p-6' />                        
+                     <div className='grid grid-cols-6 gap-5'>
+                        <div className='col-span-1'>
+                            <img src="" alt="" />
+                        </div>
+                        <div className='col-span-5'>
+                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Egreso</h2>
+                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_egreso}} className='mt-5 prose max-w-none cursos' />                        
+                        </div>
                     </div>
                 </section>
                     
                 <CapacitacionesList curso={singleCapacitacion} />
 
-                <section className='grid md:grid-cols-2 gap-4 lg:w-8/12 mx-auto'>
-                    <div className='bg-card p-5 my-5 rounded-3xl'>
-                        <strong>Inscripción:</strong> 
-                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.inscripcion}} className='mt-5 prose max-w-none' />                        
-                    </div>
-                    <div className='bg-card p-5 my-5 rounded-3xl'>
-                        <strong>Acreditación:</strong> 
-                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.acreditacion}} className='mt-5 prose max-w-none' />                        
-                    </div>
-                    <div className='bg-card p-5 my-5 rounded-3xl'>
-                        <strong>Vigencia:</strong> 
-                        <p>{singleCapacitacion.vigencia}</p>
-                    </div>
-                    <div className='bg-card p-5 my-5 rounded-3xl'>
-                        <strong>Contacto:</strong> 
-                        <p>{singleCapacitacion.contacto}</p>
-                    </div>
+                <section className='grid grid-cols-6 gap-4 w-11/12 md:w-10/12 mx-auto mb-15'>
+                    <div className='col-span-1'></div>
+                    <div className='col-span-5'>
+                        <div className='my-5'>
+                            <strong className='text-primary font-extrabold text-36 mb-10'>Inscripción</strong> 
+                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.inscripcion}} className='mt-5 prose max-w-none cursos' />                        
+                        </div>
+                        <div className='my-5'>
+                            <strong className='text-primary font-extrabold text-36 mb-10'>Acreditación</strong> 
+                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.acreditacion}} className='mt-5 prose max-w-none cursos' />                        
+                        </div>
+                        <div className='my-5'>
+                            <strong className='text-primary font-extrabold text-36'>Vigencia</strong> 
+                            <p className='text-20 text-titulo pt-6'>{singleCapacitacion.vigencia}</p>
+                        </div>
+                        <div className='my-5'>
+                            <strong className='text-primary font-extrabold text-36'>Contacto</strong> 
+                            <p className='text-20 text-titulo pt-6'>{singleCapacitacion.contacto}</p>
+                        </div>
+                    </div>                    
                 </section>
                     
             </article>

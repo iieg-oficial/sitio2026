@@ -54,11 +54,11 @@ class CursosOut(BaseModel):
     p_ingreso: str | None = None
     p_egreso: str | None = None
     tipo_curso: TipoCurso | None = None
-    modulos: Optional[List[int]] = None
-    instituciones: Optional[List[int]] = None
-    perfiles: Optional[List[int]] = None
-    profesores: Optional[List[int]] = None
-    tema_ids: Optional[List[int]] = None
+    modulos: List[ModulosOut] = []
+    instituciones: List[InstitucionesOut] = []
+    perfiles: List[PerfilesOut] = []
+    profesores: List[ProfesoresOut] = []
+    temas: List[SubjectFlat] = []
     inscripcion: str | None = None
     acreditacion: str | None = None
     vigencia: str | None = None
