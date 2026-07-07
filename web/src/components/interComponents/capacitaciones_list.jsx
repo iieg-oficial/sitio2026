@@ -27,7 +27,7 @@ export default function CapacitacionesList({ curso }) {
 
     return (
         <>
-        <section className='w-11/12 md:w-10/12 mx-auto'>
+        <section className='lg:w-10/12 mx-auto'>
             <section className='my-15'>
                     <div className='grid grid-cols-6 gap-5'>
                         <div className='col-span-1'>
@@ -74,9 +74,9 @@ export default function CapacitacionesList({ curso }) {
                             <h2 className='text-primary text-36 font-extrabold'>Conoce a los profesores</h2>
                         </div>
                     </div>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto w-11/12 md:w-8/12'>
+                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mx-auto lg:w-8/12'>
                         {profesoresReversed.map((profesor) => (
-                           <div key={profesor.id} className='bg-card p-5 my-5 grid md:grid-cols-6 rounded-3xl gap-4'>
+                           <div key={profesor.id} className='bg-card p-5 my-5 grid lg:grid-cols-6 rounded-3xl gap-4'>
                             <div className='col-span-2'></div>
                             <div className='col-span-4'>
                                 <p className='text-tertiary font-bold text-22 mb-5'>{profesor.nombre}</p>

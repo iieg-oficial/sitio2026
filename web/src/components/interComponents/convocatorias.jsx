@@ -4,6 +4,12 @@ import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
 import ConvocatoriasList from './convocatorias_list';
 import Backlink from '../pageComponents/Backlink';
+import TrackedLink from '@components/blocks/boton'
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
+import ConvocatoriasInst from './convocatorias_inst';
+
+dayjs.locale('es')
 
 export default function Convocatorias() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
@@ -42,53 +48,88 @@ export default function Convocatorias() {
                 <meta property="og:description" content={singleConvocatoria.resumen} />
                 <meta property="og:url" content={window.location.href} />
             </Helmet>
-            <article className='my-40 relative'>
+            <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <Backlink />
-                <main className='mx-auto container grid md:grid-cols-6 rounded-3xl bg-card p-4'>
+                <main className='grid lg:grid-cols-6 mx-auto'>
                     <div className='col-span-2'></div>
                     <div className='col-span-4'>
                         <h1 className='text-44 font-bold mb-4'>{singleConvocatoria.titulo}</h1>
-                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.descripcion}} className='mt-5 prose max-w-none' />
+                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.descripcion}} className='mt-5 prose max-w-none diez' />
+                        <div className='mt-5 flex flex-wrap gap-5'>
+                            {singleConvocatoria.archivo && (
+                                <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.archivo} target="_blank" download>
+                                    <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Descarga el archivo informativo</span>
+                                </TrackedLink>
+                            )}
+                            {singleConvocatoria.formulario && (
+                                <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.formulario} target="_blank">
+                                    <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
+                                </TrackedLink>
+                            )}
+                        </div>
                     </div>
                 </main>
-                <section className='w-11/12 mx-auto flex flex-wrap gap-5 text-14 justify-between'>
-                    <div className='mt-8 text-sm text-gray-500 pt-4'>
-                        <p><strong>Fecha:</strong> {new Date(singleConvocatoria.inicio).toLocaleDateString()}</p>
+                <section className='lg:w-11/12 mx-auto flex flex-wrap gap-5 lg:justify-around mt-8'>
+                    <div className='lg:mt-8 lg:pt-4'>
+                        <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
+                            Inicio: {dayjs(singleConvocatoria.inicio).format('D [de] MMMM [de] YYYY')}                             
+                        </p>
                     </div>
-                    <div className='mt-8 text-sm text-gray-500 pt-4'>
-                        <p><strong>Formato:</strong> {singleConvocatoria.tipo_curso.formato}</p>
+                    <div className='lg:mt-8 lg:pt-4'>
+                        <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
+                            Formato: {singleConvocatoria.tipo_curso.formato}
+                        </p>
                     </div>
-                    <div className='mt-8 text-sm text-gray-500 pt-4'>
-                        <p><strong>Horario:</strong> {singleConvocatoria.Horario}</p>
+                    <div className='lg:mt-8 lg:pt-4'>
+                        <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
+                            Horario: {singleConvocatoria.Horario}
+                        </p>
                     </div>
                 </section>
-                <section className='w-11/12 md:w-10/12 mx-auto my-15'>
-                    <div>
-                        <h2 className='text-center'>Objetivo</h2>
-                        <p className='bg-card rounded-4xl p-5 mx-auto w-8/12'>{singleConvocatoria.Objetivo}</p>
+                <section className='lg:w-10/12 mx-auto my-15'>
+                    <div className='grid grid-cols-6 gap-5'>
+                        <div className='col-span-1'>
+                            <img src="" alt="" />
+                        </div>
+                        <div className='col-span-5'>
+                            <h2 className='text-primary text-36 font-extrabold'>Objetivo</h2>
+                            <div dangerouslySetInnerHTML={{__html: singleConvocatoria.Objetivo}} className='mt-5 prose max-w-none cursos' />
+                        </div>
                     </div>
-                    <div>
-                        <h2 className='text-center'>Perfil de Ingreso</h2>
-                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_ingreso}} className='mt-5 prose max-w-none roundend-4xl bg-card p-5 mx-auto w-8/12' />
-                        
+                    <div className='my-20 grid grid-cols-6 gap-5'>
+                        <div className='col-span-1'>
+                            <img src="" alt="" />
+                        </div>
+                        <div className='col-span-5'>
+                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Ingreso</h2>
+                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_ingreso}} className='mt-5 prose max-w-none cursos' />
+                        </div>
                     </div>
-                     <div>
-                        <h2 className='text-center'>Perfil de Egreso</h2>
-                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_egreso}} className='mt-5 prose max-w-none roundend-4xl bg-card p-5 mx-auto w-8/12' />
-                                            
+                     <div className='grid grid-cols-6 gap-5'>
+                        <div className='col-span-1'>
+                            <img src="" alt="" />
+                        </div>
+                        <div className='col-span-5'>
+                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Egreso</h2>
+                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_egreso}} className='mt-5 prose max-w-none cursos' />                        
+                        </div>
                     </div>
                 </section>
                 <ConvocatoriasList />
-                <section className="grid md:grid-cols-2 gap-4 lg:w-8/12 mx-auto">
-                    <div className='bg-card p-5 my-5 rounded-3xl'>
-                        <strong>Vigencia:</strong> 
-                        <p>{singleConvocatoria.vigencia}</p>
-                    </div>
-                    <div className='bg-card p-5 my-5 rounded-3xl'>
-                        <strong>Contacto:</strong> 
-                        <p>{singleConvocatoria.contacto}</p>
-                    </div>
+                <section className='grid grid-cols-6 gap-4 lg:w-10/12 mx-auto mb-15'>
+                    <div className='col-span-1'></div>
+                    <div className='col-span-5 grid lg:grid-cols-2 gap-5'>
+                        <div className='my-5'>
+                            <strong className='text-primary font-extrabold text-36 mb-10'>Vigencia</strong> 
+                            <p className='text-20 text-titulo pt-6'>{singleConvocatoria.vigencia}</p>
+                        </div>
+                        <div className='my-5'>
+                            <strong className='text-primary font-extrabold text-36'>Contacto</strong> 
+                        <p className='text-20 text-titulo pt-6'>{singleConvocatoria.contacto}</p>
+                        </div>
+                    </div>                
                 </section>
+                <ConvocatoriasInst />
             </article>
         </>
     );

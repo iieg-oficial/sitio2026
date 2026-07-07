@@ -35,46 +35,44 @@ export default function ConvocatoriasList() {
 
     return (
         <>
-        <section className='container mx-auto'>
-            <h2 className='text-center'>Perfiles</h2>
+        <section className='lg:w-10/12 mx-auto my-15'>
+            <div className='grid grid-cols-6 gap-5'>
+                        <div className='col-span-1'>
+                            <img src="" alt="" />
+                        </div>
+                        <div className='col-span-5'>
+                            <h2 className='text-primary text-36 font-extrabold'>Perfiles</h2>
+                        </div>
+                    </div>
+
             <div className='flex justify-left mt-8 gap-4 mx-auto w-8/12'>
                 {singleConvocatoria.perfiles.map((perfil) => (
                     <button 
                     key={perfil.id}
                     onClick={() => setActiveTab(perfil.area)}
-                    className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === perfil.area
-                        ? 'bg-tertiary text-white border-tertiary'
-                                : 'bg-white text-tertiary border-tertiary hover:bg-etiqueta-sec'}`
-                    }
+                    className={`px-4 py-2 rounded-lg font-extrabold text-28 transition-colors ${activeTab === perfil.area
+                                ? 'bg-etiqueta-sec text-tertiary border-tertiary border-1'
+                                : 'bg-white text-titulo hover:bg-etiqueta-sec hover:text-tertiary hover:border-1'}`
+                            }
                     >
                         {perfil.area}
                     </button>
                 ))}
             </div>
-            <div className='bg-card p-5 my-5 mx-auto w-8/12 rounded-3xl'>
+            <div className='p-5 my-5 mx-auto md:px-10 xl:px-25 w-8/12 '>
                 {singleConvocatoria.perfiles.map((perfil) => {
                     if (activeTab === perfil.area) {
                         return (
                             <div key={perfil.id}>
-                                <h2>{perfil.nombre}</h2>
-                                <div dangerouslySetInnerHTML={{__html: perfil.descripcion}} className='mt-5 prose max-w-none' />                        
+                                <h2 className='text-tertiary text-28 font-extrabold'>{perfil.nombre}</h2>
+                                <div dangerouslySetInnerHTML={{__html: perfil.descripcion}} className='mt-5 prose max-w-none cursos' />                        
                             </div>
                         )
                     }
                 })}
             </div>
         </section>
-        <section>
-            <h2 className='text-center'>Instituciones</h2>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto w-11/12 md:w-8/12'>
-                {singleConvocatoria.instituciones.map((institucion) => (
-                    <div key={institucion.id} className='bg-card p-5 my-5 grid md:grid-cols-2 rounded-3xl gap-4'>
-                        <img src={institucion.logo} alt="" />
-                        <h2>{institucion.nombre}</h2>
-                    </div>
-                ))}
-            </div>
-        </section>
+
         </>
     );
 }   

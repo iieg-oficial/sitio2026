@@ -47,11 +47,11 @@ export default function Capacitaciones() {
                 <meta property="og:description" content={singleCapacitacion.resumen} />
                 <meta property="og:url" content={window.location.href} />
             </Helmet>
-            <article className='mt-8 relative px-5 xl:px-5 2xl:px-0'>
+            <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <BackLink />
-                <main className='grid md:grid-cols-6 mx-auto'>
-                    <div className='md:col-span-2'></div>
-                    <div className='md:col-span-4'>
+                <main className='grid lg:grid-cols-6 mx-auto'>
+                    <div className='lg:col-span-2'></div>
+                    <div className='lg:col-span-4'>
                         <h1 className='text-44 font-extrabold mb-4'>{singleCapacitacion.titulo}</h1>
                         <div dangerouslySetInnerHTML={{__html: singleCapacitacion.descripcion}} className='mt-5 prose max-w-none diez' />
                         <div className='mt-5 flex flex-wrap gap-5'>
@@ -68,24 +68,24 @@ export default function Capacitaciones() {
                         </div>
                     </div>
                 </main>
-                <section className='w-11/12 mx-auto flex flex-wrap gap-5 justify-around'>
-                    <div className='mt-8 pt-4'>
+                <section className='lg:w-11/12 mx-auto flex flex-wrap gap-5 lg:justify-around mt-8'>
+                    <div className='lg:mt-8 lg:pt-4'>
                         <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
                             Inicio de clases: {dayjs(singleCapacitacion.inicio).format('D [de] MMMM [de] YYYY')}                             
                         </p>
                     </div>
-                    <div className='mt-8 pt-4'>
+                    <div className='lg:mt-8 lg:pt-4'>
                         <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
                             Formato: {singleCapacitacion.tipo_curso.formato}
                         </p>
                     </div>
-                    <div className='mt-8 pt-4'>
+                    <div className='lg:mt-8 lg:pt-4'>
                         <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
                             Horario: {singleCapacitacion.Horario}
                         </p>
                     </div>
                 </section>
-                <section className='w-11/12 md:w-10/12 mx-auto my-15'>
+                <section className='lg:w-10/12 mx-auto my-15'>
                     <div className='grid grid-cols-6 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
@@ -117,9 +117,9 @@ export default function Capacitaciones() {
                     
                 <CapacitacionesList curso={singleCapacitacion} />
 
-                <section className='grid grid-cols-6 gap-4 w-11/12 md:w-10/12 mx-auto mb-15'>
+                <section className='grid grid-cols-6 gap-4 lg:w-10/12 mx-auto mb-15'>
                     <div className='col-span-1'></div>
-                    <div className='col-span-5'>
+                    <div className='col-span-5 grid lg:grid-cols-2 gap-5'>
                         <div className='my-5'>
                             <strong className='text-primary font-extrabold text-36 mb-10'>Inscripción</strong> 
                             <div dangerouslySetInnerHTML={{__html: singleCapacitacion.inscripcion}} className='mt-5 prose max-w-none cursos' />                        
