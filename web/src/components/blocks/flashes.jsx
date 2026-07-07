@@ -269,10 +269,10 @@ export default function Flashes() {
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mb-4 mx-auto container bg-white mt-8 hover:border hover:border-tertiary'>
+                        <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mb-4 mx-auto container bg-white mt-8 hover:border hover:border-tertiary group'>
                             <h3 className='text-18 text-titulos'>{flash.titulo}</h3>
-                            <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
-                                <div className='md:col-span-2 flex gap-4 flex-wrap mt-5'>
+                            <div className='grid grid-cols-1 grid-cols-6 gap-6 mt-8'>
+                                <div className='col-span-4 flex gap-4 flex-wrap mt-5'>
                                     {flash.periocidad && (
                                         <p className='bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
                                     )}
@@ -280,6 +280,15 @@ export default function Flashes() {
                                         <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                     )}
                                 </div>
+                                { flash.link ?
+                                    <div className='col-span-2 mt-6'>
+                                        <TrackedLink to={flash.link} className="" target="_blank" rel="noopener noreferrer">
+                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                                <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                            </div>
+                                        </TrackedLink>
+                                    </div>
+                                : null }
                             </div>
                         </div>
                     </ConditionalLink>
