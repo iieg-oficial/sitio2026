@@ -92,7 +92,7 @@ export default function Cursos() {
   const handleCreate = () => {
     setEditingCurso(null);
     setSelectedTemas([]);
-    setTipoCurso(null);
+    setTipoCurso(null);    
     form.resetFields();
     setModalVisible(true);
   };
@@ -137,7 +137,7 @@ export default function Cursos() {
 
   const handleSubmit = async (values) => {
     try {
-      const payload = { ...values, tema_ids: selectedTemas };
+      const payload = { ...values, tema_ids: selectedTemas };      
       if (editingCurso) {
         await api.put(`/cursos/${editingCurso.id}`, payload);
         message.success('Curso actualizado exitosamente');
