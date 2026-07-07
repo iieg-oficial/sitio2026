@@ -42,7 +42,7 @@ class Flashes(Base):
     desc_jal = Column(Text, nullable=False)
     desc_nac = Column(Text, nullable=False)
     periocidad = Column(Enum(PeriocidadEnum), nullable=False)
-    fecha_publicacion = Column(DateTime, default=datetime.utcnow)
+    fecha_publicacion = Column(DateTime, default=datetime.utcnow, nullable=True)
     mes = Column(Enum(MesEnum), nullable=True)
     anyo = Column(Integer, nullable=True)
     fuente = Column(String, nullable=True)
