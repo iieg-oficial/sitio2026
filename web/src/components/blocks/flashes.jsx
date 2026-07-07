@@ -28,6 +28,19 @@ export default function Flashes() {
         setLastFlash(response.data[0] || null)
     }
 
+    const hasActiveFilters = Boolean(searchTerm.trim() || selectedTemaId || selectedSubtemaId || selectedYear || selectedMonth);
+
+    const flashesWithoutLast = useMemo(() => {
+        if (!lastFlash) return flashes;
+        if (hasActiveFilters) return flashes; // con filtros activos, no se excluye: puede aparecer si coincide
+        return flashes.filter(flash => flash.id !== lastFlash.id);
+    }, [flashes, lastFlash, hasActiveFilters]);
+
+    const flashesForOptions = useMemo(() => {
+        if (!lastFlash) return flashes;
+        return flashes.filter(flash => flash.id !== lastFlash.id);
+    }, [flashes, lastFlash]);
+
     useEffect(() => {
         fetchFlashes()
         fetchLastFlash()
@@ -35,7 +48,7 @@ export default function Flashes() {
 
     const themes = useMemo(() => {
         const map = new Map();
-        flashes.forEach(flash => {
+        flashesForOptions.forEach(flash => {
             flash.temas?.filter(tema => !tema.parent_id).forEach(tema => {
                 if (!map.has(tema.id)) {
                     map.set(tema.id, tema)
@@ -44,13 +57,13 @@ export default function Flashes() {
         })
 
         return Array.from(map.values()).sort((a, b) => a.titulo.localeCompare(b.titulo));
-    }, [flashes]);
+    }, [flashesForOptions]);
 
     const subthemes = useMemo(() => {
         if (!selectedTemaId) return [];
 
         const map = new Map();
-        flashes.forEach(flash => {
+        flashesForOptions.forEach(flash => {
             flash.temas?.filter(tema => tema.parent_id === Number(selectedTemaId)).forEach(subtema => {
                 if (!map.has(subtema.id)) {
                     map.set(subtema.id, subtema)
@@ -59,15 +72,15 @@ export default function Flashes() {
         })
 
         return Array.from(map.values()).sort((a, b) => a.titulo.localeCompare(b.titulo));
-    }, [flashes, selectedTemaId]);
+    }, [flashesForOptions, selectedTemaId]);
 
     const years = useMemo(() => {
         return [...new Set(
-            flashes
+            flashesForOptions
                 .map(flash => flash.fecha_publicacion ? new Date(flash.fecha_publicacion).getFullYear() : null)
                 .filter(Boolean)
         )].sort((a, b) => b - a);
-    }, [flashes]);
+    }, [flashesForOptions]);
 
     const months = useMemo(() => {
         const monthNames = Array.from({ length: 12 }, (_, index) => ({
@@ -91,7 +104,7 @@ export default function Flashes() {
     const filteredFlashes = useMemo(() => {
         const normalizedSearch = searchTerm.toLowerCase().trim();
 
-        return flashes.filter(post => {
+        return flashesWithoutLast.filter(post => {
             const matchesSearch = !normalizedSearch || keys.some(key => {
                 const value = key.split('.').reduce((obj, part) => obj?.[part], post);
                 return value?.toString().toLowerCase().includes(normalizedSearch);
@@ -110,11 +123,11 @@ export default function Flashes() {
 
             return matchesSearch && matchesTema && matchesSubtema && matchesYear && matchesMonth;
         });
-    }, [flashes, searchTerm, selectedTemaId, selectedSubtemaId, selectedYear, selectedMonth]);
+    }, [flashesWithoutLast, searchTerm, selectedTemaId, selectedSubtemaId, selectedYear, selectedMonth]);
 
     const pageCount = Math.max(1, Math.ceil(filteredFlashes.length / itemsPerPage));
     const currentFlashes = filteredFlashes.slice(itemOffset, itemOffset + itemsPerPage);
-    const hasActiveFilters = Boolean(searchTerm.trim() || selectedTemaId || selectedSubtemaId || selectedYear || selectedMonth);
+    
 
     const handlePageClick = (event) => {
         const newOffset = (event.selected * itemsPerPage) % Math.max(filteredFlashes.length, 1);
@@ -132,7 +145,7 @@ export default function Flashes() {
 
     return (
         <div className='px-2'>
-            {lastFlash && (
+            {lastFlash && !hasActiveFilters && (
                 <div className='rounded-2xl p-5 lg:p-14 mb-4 mx-auto container bg-[#F5F5F5] mt-5 mb-15'>
                     <h3 className='text-28 text-tertiary'>{lastFlash.titulo}</h3>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
@@ -170,7 +183,7 @@ export default function Flashes() {
 
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder='¿qué quieres buscas?' />
 
-            <div className='mx-auto container flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mtgit s-15'>
+            <div className='mx-auto container flex flex-col lg:flex-wrap lg:flex-row gap-5 mt-15'>
                 <div>
                     <label className='block text-14 text-primary mb-2'>Tema</label>
                     <select
