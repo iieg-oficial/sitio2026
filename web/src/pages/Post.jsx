@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import PostList from '@components/pageComponents/PostList'
 import Searcher from '@components/pageComponents/searcher'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import { Helmet } from 'react-helmet-async'
+import { format } from 'date-fns';
 
 function Post() {
     const defaultPage = {
@@ -15,6 +16,9 @@ function Post() {
 
     const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(defaultPage);
+    const [loading, setLoading] = useState(true)
+    const [loadError, setLoadError] = useState(false)
+    const [activeTab, setActiveTab] = useState(0)    
     const [searchTerm, setSearchTerm] = useState("");
     const keys = ['titulo', 'resumen', 'contenido', 'keywords', 'subject.titulo'];
 
@@ -34,12 +38,14 @@ function Post() {
 
     const showData = async () => {
         const response = await api.get('/posts');
-        const payload = response.data;
-        const postsData = Array.isArray(payload)
-            ? payload
-            : payload?.posts ?? payload?.items ?? payload?.data ?? [];
+    console.log('RAW response.data:', response.data);
+    const payload = response.data;
+    const postsData = Array.isArray(payload)
+        ? payload
+        : payload?.posts ?? payload?.items ?? payload?.data ?? [];
+    console.log('postsData resultante:', postsData);
 
-        setPosts(postsData);
+    setPosts(postsData);
     }
 
     useEffect(() => {
@@ -47,29 +53,51 @@ function Post() {
         showData();        
     }, []);
 
-    const filteredPosts = !searchTerm 
+    const filteredPosts = useMemo( () => ( 
+        !searchTerm 
         ? posts 
         : posts.filter(post => {
             return keys.some(key => {
             const value = key.split('.').reduce((obj, part) => obj?.[part], post);
-            return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());
-            });
+            return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());            
         });
+    })
+), [posts, searchTerm]);
 
-    const endOffset = itemOffset + itemsPerPage;
-    const currentItems = filteredPosts?.slice(itemOffset, endOffset);
-    
-    const pageCount = Math.ceil(filteredPosts?.length / itemsPerPage);
+    const subjects = useMemo(() => [...new Set(filteredPosts
+        .flatMap(p => p.temas?.map(t => t.titulo) ?? [])
+        .filter(Boolean)
+    )].sort(), [filteredPosts]);
 
-    const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % filteredPosts?.length;
-        setItemOffset(newOffset);
-    };
+    const tabs = useMemo(() => ['Todo', ...subjects], [subjects]);
+    const activeSubject = activeTab > 0 ? subjects[activeTab - 1] : null;
+
+    useEffect(() => {
+        if (activeTab > subjects.length) {
+            setActiveTab(0);
+        }
+    }, [subjects.length, activeTab]);
 
     useEffect(() => {
         setItemOffset(0);
-    }, [searchTerm]);
+    }, [searchTerm, activeTab]);
 
+    const filteredByTab = useMemo(() => {
+        if (activeTab === 0) return filteredPosts;
+        return filteredPosts.filter(post => post.temas?.some(t => t.titulo === activeSubject));
+    }, [activeTab, activeSubject, filteredPosts]);
+
+    const endOffset = itemOffset + itemsPerPage;
+    const currentItems = filteredByTab?.slice(itemOffset, endOffset);
+
+    const pageCount = Math.ceil(filteredByTab?.length / itemsPerPage);
+
+    const handlePageClick = (event) => {
+        const newOffset = (event.selected * itemsPerPage) % filteredByTab?.length;
+        setItemOffset(newOffset);
+    };
+
+    
     return (
         <>
     <Helmet>
@@ -87,9 +115,14 @@ function Post() {
                 )}
                 </div>
 
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />            
 
-            <PostList results={currentItems} key={`${itemOffset}-${searchTerm}`} />
+            <PostList 
+                results={currentItems} 
+                tabs={tabs} 
+                activeTab={activeTab} 
+                setActiveTab={setActiveTab} 
+                key={`${itemOffset}-${searchTerm}`} />
 
             <ReactPaginate
                 previousLabel={"Ant"}

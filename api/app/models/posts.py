@@ -19,7 +19,7 @@ class Posts(Base):
     resumen = Column(Text)
     contenido = Column(Text, nullable=False)    
     autor = Column(String(100), default="IIEG")
-    fecha = Column(DateTime, default=datetime.utcnow)
+    fecha = Column(DateTime, default=datetime.utcnow, nullable=True)
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
     
