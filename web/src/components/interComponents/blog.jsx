@@ -7,9 +7,11 @@ import api from '@services/apiService'
 import TrackedLink from '@components/blocks/boton'
 import Backlink from '../pageComponents/Backlink'
 import Galeria from '../interComponents/galeria'
+import ShareButtons from '../pageComponents/ShareButtons'
 
 export default function Blog() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
+    const postUrl = `http://localhost:13010/comunidad/${slug}`;
     const [singlePost, setSinglePost] = useState(null);
 
     useEffect(() => {
@@ -56,6 +58,12 @@ export default function Blog() {
                         <Galeria images={singlePost.gallery_images} />
                     </section> 
                 ) : null}
+                <div>
+                <ShareButtons
+                    url={postUrl}
+                    title={singlePost.titulo}
+                />
+                </div>
             </main>            
         </article>
     </>
