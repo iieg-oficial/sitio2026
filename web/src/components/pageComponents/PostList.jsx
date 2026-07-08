@@ -45,7 +45,9 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
 
         <TrackedLink to={`/comunidad/${post.slug}`} className="" rel="noopener noreferrer" key={post.id}>
           <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid md:grid-cols-2 gap-4 px-5 group">
-            <div></div>
+            <div>
+              <img src={post.gallery_images[0].url ?? "/demo.jpg"} alt={post.titulo} />
+            </div>
             <div>
               <h3 className="text-primary font-extrabold text-28">{post.titulo}</h3>
               <div className="flex gap-4 my-4 flex-wrap">
