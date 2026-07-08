@@ -12,7 +12,15 @@ export default function Galeria({ images }) {
 
     return (
         <div className="galeria-imagenes">
-            <Swiper
+            {images.length === 1 ? (
+                <>
+                {images.map((imagen) => (
+                        <img src={imagen.url} alt={`Imagen ${imagen.id}`} />                    
+                ))}
+                </>
+            ) : (
+                <>
+                <Swiper
                 style={{
                     "--swiper-navigation-color": "#fff",
                     "--swiper-pagination-color": "#fff",
@@ -46,6 +54,8 @@ export default function Galeria({ images }) {
                     </SwiperSlide>
                 ))}
             </Swiper>
+            </>
+            )}            
         </div>
     );
 }
