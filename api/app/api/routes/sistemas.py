@@ -18,6 +18,12 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
         select(Subject).where(Subject.id.in_(tema_ids))
     ).scalars().all()
 
+@router.get("/tree", response_model=list[SistemasOut])
+async def obtener_sistemas_tree(    
+    db: Session = Depends(get_db)):
+    sistemas = db.execute(select(Sistemas).where(Sistemas.parent_id == None)).scalars().all()
+    return sistemas
+
     
 @router.get("/", response_model=SistemasList)
 def read_sistemas(

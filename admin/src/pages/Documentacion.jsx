@@ -18,13 +18,14 @@ export default function Documentacion() {
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [tipo, setTipo] = useState([]);
-    const [proyectos, setProyectos] = useState([]);
+    const [sistemasOptions, setSistemasOptions] = useState([]);
+    const [selectedSistemas, setSelectedSistemas] = useState([]);
 
     useEffect(() => {
         fetchDocumentaciones();
         fetchSubjects();
         fetchTipo();
-        fetchProyectos();
+        fetchSistemas();
     }, []);
 
     const fetchTipo = async () => {
@@ -57,19 +58,19 @@ export default function Documentacion() {
         }
     };
 
-    const fetchProyectos = async () => {
+    const fetchSistemas = async () => {
         try {
-            const response = await api.get('/proyectos');
-            setProyectos(response.data.proyectos);
-        } catch (error) {
-            console.error('Error al obtener proyectos:', error);
+            const response = await api.get('/sistemas');
+            setSistemasOptions(response.data.sistemas || []);
+        } catch {
+            message.error('Error al cargar sistemas');
         }
     };
 
     const handleCreate = () => {        
         setEditingDocumentacion(null);
         setSelectedSubjects([]);
-        setProyectos([]);
+        setSelectedSistemas([]);
         form.resetFields();
         setModalVisible(true);
     };
@@ -78,11 +79,12 @@ export default function Documentacion() {
         setEditingDocumentacion(record);
         // Pre-cargar los temas seleccionados desde el registro
         const ids = (record.temas ?? []).map((t) => t.id);
+        const idsp = (record.sistemas ?? []).map((t) => t.id);
         const formValues = { 
-            ...record, 
-            proyectos: record.proyectos ? record.proyectos?.map((p) => p.id) : []
+            ...record
         };
         setSelectedSubjects(ids);        
+        setSelectedSistemas(idsp);  
         form.setFieldsValue(formValues);
         setModalVisible(true);
     };
@@ -109,7 +111,7 @@ export default function Documentacion() {
 
     const handleSubmit = async (values) => {
         try {
-            const payload = { ...values, tema_ids: selectedSubjects };
+            const payload = { ...values, tema_ids: selectedSubjects, sistema_ids: selectedSistemas };
             if (editingDocumentacion) {
                 await api.patch(`/documentacion/${editingDocumentacion.id}`, payload);
                 message.success('Documentación actualizada exitosamente');
@@ -139,13 +141,11 @@ export default function Documentacion() {
             sorter: (a, b) => a.temas.map((t) => t.titulo).join(', ').localeCompare(b.temas.map((t) => t.titulo).join(', '))
         },
         {
-            title: 'Proyecto',
-            dataIndex: 'proyectos',
-            key: 'proyectos',
-            render: (proyectos = []) => proyectos.map((p) => p.nombre).join(', '),
-            sorter: (a, b) => 
-                (a.proyectos ?? []).map((p) => p.nombre).join(', ')
-            .localeCompare((b.proyectos ?? []).map((p) => p.nombre).join(', '))
+            title: 'sistema',
+            dataIndex: 'sistemas',
+            key: 'sistemas',
+            render: (sistemas = []) => sistemas.map((t) => t.titulo).join(', '),
+            sorter: (a, b) => a.sistemas.map((t) => t.titulo).join(', ').localeCompare(b.sistemas.map((t) => t.titulo).join(', '))
         },
         {
             title: 'Acciones',
@@ -273,27 +273,23 @@ export default function Documentacion() {
                         setSelectedSubjects(ids);
                         }}
                     />
-                    <Form.Item name="proyectos"
-                        label="Proyectos"
-                        rules={[{ required: false, message: 'Por favor seleccione uno o varios proyectos' }]}
-                    >
+                    <Form.Item name="sistemas" label="Proyectos" rules={[{ required: false, message: 'Selecciona un  proyecto' }]}>
                         <Select
-                            mode="multiple"
-                            placeholder="Seleccione un proyectos"
-                            allowClear
-                            showSearch
-                            maxTagCount="responsive"
-                            optionFilterProp="label"
-                            filterOption={(input, option) =>
-                                option.children.toLowerCase().includes(input.toLowerCase())
-                            }
-                        >
-                            {proyectos.map((proyecto) => (
-                                <Option key={proyecto.id} value={proyecto.id}>
-                                    {proyecto.nombre}
-                                </Option>
-                            ))}
-                        </Select>
+                        mode="multiple"
+                        placeholder="Selecciona uno o más proyectos"
+                        allowClear
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        value={selectedSistemas}
+                        onChange={(ids) => setSelectedSistemas(ids)}
+                        options={sistemasOptions.map((s) => ({
+                            value: s.id,
+                            label: s.titulo,
+                        }))}
+                    />
                     </Form.Item>
                     
                     <Form.Item name="claves"
