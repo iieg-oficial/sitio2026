@@ -42,7 +42,7 @@ def create_snieg(
     db.refresh(db_snieg)
     return db_snieg
 
-@router.put("/{id}", response_model=SniegOut)
+@router.patch("/{id}", response_model=SniegOut)
 def update_snieg(
     id: int,
     snieg: SniegCreate,

@@ -43,7 +43,7 @@ def create_perfil(
     db.refresh(perfil_db)
     return perfil_db
 
-@router.put("/{id}", response_model=PerfilesOut)
+@router.patch("/{id}", response_model=PerfilesOut)
 def update_perfil(
     id: int,
     perfil: PerfilesCreate,

@@ -45,7 +45,7 @@ def create_docs_iieg(
     db.refresh(db_docs_iieg)
     return db_docs_iieg
 
-@router.put("/{docs_iieg_id}", response_model=DocsIIEGOut)
+@router.patch("/{docs_iieg_id}", response_model=DocsIIEGOut)
 def update_docs_iieg(
     docs_iieg_id: int,
     docs_iieg: DocsIIEGCreate,

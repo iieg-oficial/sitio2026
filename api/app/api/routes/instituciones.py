@@ -50,7 +50,7 @@ async def crear_institucion(
     db.refresh(nuevo)
     return nuevo
 
-@router.put("/{institucion_id}", response_model=InstitucionesOut)
+@router.patch("/{institucion_id}", response_model=InstitucionesOut)
 async def actualizar_institucion(
     institucion_id: int,
     institucion_in: InstitucionesCreate,

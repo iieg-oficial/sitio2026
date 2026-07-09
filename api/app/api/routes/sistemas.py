@@ -87,7 +87,7 @@ def get_sistemas_id(
         )
     return db_sistemas
 
-@router.put("/{id}", response_model=SistemasOut)
+@router.patch("/{id}", response_model=SistemasOut)
 def update_sistemas(
     id: int,
     sistemas: SistemasCreate,

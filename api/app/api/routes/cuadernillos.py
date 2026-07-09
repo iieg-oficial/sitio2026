@@ -46,7 +46,7 @@ def create_cuadernillo(
     db.refresh(db_cuadernillo)
     return db_cuadernillo
 
-@router.put("/{id}", response_model=CuadernilloOut)
+@router.patch("/{id}", response_model=CuadernilloOut)
 def update_cuadernillo(
     id: int,
     cuadernillo: CuadernilloCreate,

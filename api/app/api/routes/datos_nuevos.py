@@ -44,7 +44,7 @@ def create_datos_nuevos(
     db.refresh(db_datos_nuevos)
     return db_datos_nuevos
 
-@router.put("/{id}", response_model=DatosNuevosOut)
+@router.patch("/{id}", response_model=DatosNuevosOut)
 def update_datos_nuevos(
     id: int,
     datos_nuevos: DatosNuevosCreate,
