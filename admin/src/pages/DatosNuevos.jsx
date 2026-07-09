@@ -77,7 +77,7 @@ export default function DatosNuevos() {
     const handleSubmit = async (values) => {
         try {
             if (editingData) {
-                await api.put(`/datos-nuevos/${editingData.id}`, values);
+                await api.patch(`/datos-nuevos/${editingData.id}`, values);
                 message.success('Dato nuevo actualizado exitosamente');
             } else {
                 await api.post('/datos-nuevos/create', values);

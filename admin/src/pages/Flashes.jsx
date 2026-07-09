@@ -111,7 +111,7 @@ export default function Flashes() {
             // TemaSelector vive fuera del Form, hay que agregar los IDs manualmente
             const payload = { ...values, tema_ids: selectedSubjects };
             if (editingFlash) {
-                await api.put(`/flashes/${editingFlash.id}`, payload);
+                await api.patch(`/flashes/${editingFlash.id}`, payload);
                 message.success('Flash actualizado exitosamente');
             } else {
                 await api.post('/flashes/create', payload);

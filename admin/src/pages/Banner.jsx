@@ -66,7 +66,7 @@ export default function Banner() {
     const handleSubmit = async (values) => {
         try {
             if (editingBanner) {
-                await api.put(`/banner/${editingBanner.id}`, values);
+                await api.patch(`/banner/${editingBanner.id}`, values);
                 message.success('Banner actualizado correctamente');
             } else {
                 await api.post('/banner/create', values);

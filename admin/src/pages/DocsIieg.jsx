@@ -67,7 +67,7 @@ export default function DocsIieg() {
     const handleSubmit = async (values) => {
         try {
             if (editingDoc) {
-                await api.put(`/docs_iieg/${editingDoc.id}`, values);
+                await api.patch(`/docs_iieg/${editingDoc.id}`, values);
                 message.success('Documento del IIEG actualizado exitosamente');
             } else {
                 await api.post('/docs_iieg/create', values);

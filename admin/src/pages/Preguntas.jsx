@@ -83,7 +83,7 @@ export default function Preguntas() {
                 tema_ids: selectedSubjects
             };
             if (editingPregunta) {
-                await api.put(`/preguntas/${editingPregunta.id}`, payload);
+                await api.patch(`/preguntas/${editingPregunta.id}`, payload);
                 message.success('Pregunta actualizada exitosamente');
             } else {
                 await api.post('/preguntas/create', payload);
