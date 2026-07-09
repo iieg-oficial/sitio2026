@@ -173,7 +173,7 @@ def get_cursos_slug(
     return db_cursos
 
 
-@router.put("/{curso_id}", response_model=CursosOut)
+@router.patch("/{curso_id}", response_model=CursosOut)
 def update_cursos(
     curso_id: int,
     cursos: CursosCreate,

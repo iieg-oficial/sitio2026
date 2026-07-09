@@ -5,16 +5,16 @@ from app.models.datos_nuevos import NuevoEnum
 
 
 class DatosNuevosCreate(BaseModel):
-    cifras: str
-    descripcion: str
+    cifras: Optional[str]
+    descripcion: Optional[str]
     tipo: Optional[NuevoEnum] = None
     slug: Optional[str] = None
 
 
 class DatosNuevosOut(BaseModel):
     id: int
-    cifras: str
-    descripcion: str
+    cifras: Optional[str]
+    descripcion: Optional[str]
     tipo: Optional[NuevoEnum] = None
     slug: Optional[str] = None
 

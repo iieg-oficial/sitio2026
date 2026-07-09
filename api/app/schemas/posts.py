@@ -12,8 +12,8 @@ class GalleryImageOut(BaseModel):
 
 class PostCreate(BaseModel):
     titulo: str
-    resumen: str = ""
-    contenido: str
+    resumen: Optional[str] = None
+    contenido: Optional[str]
     gallery_urls: list[str] = []
     autor: str = "IIEG"
     fecha: Optional[datetime] = None
@@ -33,11 +33,11 @@ class PostCreate(BaseModel):
 class PostOut(BaseModel):
     id: int
     titulo: str
-    resumen: str
-    contenido: str
+    resumen: Optional[str]
+    contenido: Optional[str]
     gallery_images: list[GalleryImageOut]
-    autor: str
-    fecha: datetime
+    autor: Optional[str]
+    fecha: Optional[datetime]
     claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
@@ -49,11 +49,11 @@ class PostOut(BaseModel):
 class PostResponse(BaseModel):
     id: int
     titulo: str
-    resumen: str
-    contenido: str
+    resumen: Optional[str]
+    contenido: Optional[str]
     gallery_images: list[GalleryImageOut]
-    autor: str
-    fecha: datetime
+    autor: Optional[str]
+    fecha: Optional[datetime]
     claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None

@@ -3,13 +3,13 @@ from typing import List, Optional
 
 class ModulosCreate(BaseModel):    
     nombre: str
-    descripcion: str = None
+    descripcion: Optional[str] = None
     slug: Optional[str] = None
 
 class ModulosOut(BaseModel):
     id: int
     nombre: str
-    descripcion: str = None
+    descripcion: Optional[str] = None
     slug: Optional[str] = None
 
     class Config:

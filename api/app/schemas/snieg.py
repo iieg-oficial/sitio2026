@@ -3,9 +3,9 @@ from typing import List, Optional
 
 class SniegBase(BaseModel):
     titulo: str
-    descripcion: str
-    imagen: str | None = None
-    enlace: str | None = None
+    descripcion: Optional[str] = None
+    imagen: Optional[str] = None
+    enlace: Optional[str] = None
     slug: Optional[str] = None
 
 class SniegCreate(SniegBase):
