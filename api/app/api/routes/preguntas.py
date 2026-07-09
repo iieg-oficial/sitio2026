@@ -64,7 +64,7 @@ def obtener_pregunta(
         )
     return pregunta
 
-@router.put("/{pregunta_id}", response_model=PreguntasOut)
+@router.patch("/{pregunta_id}", response_model=PreguntasOut)
 def actualizar_pregunta(
     pregunta_id: int,
     pregunta_in: PreguntasCreate,

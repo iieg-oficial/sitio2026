@@ -121,7 +121,7 @@ async def obtener_post_slug(
     return post
 
 
-@router.put("/{post_id}", response_model=PostOut)
+@router.patch("/{post_id}", response_model=PostOut)
 async def actualizar_post(
     post_id: int,
     post_in: PostCreate,

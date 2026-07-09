@@ -92,7 +92,7 @@ def get_flashes_by_id(
         )
     return db_flashes
 
-@router.put("/{id}", response_model=FlashesOut)
+@router.patch("/{id}", response_model=FlashesOut)
 def update_flashes(
     id: int,
     flashes: FlashesCreate,
