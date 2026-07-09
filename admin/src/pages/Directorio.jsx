@@ -63,7 +63,7 @@ export default function Directorio() {
     const handleSubmit = async (values) => {
         try {
             if (editingDirectorio) {
-                await api.put(`/directorio/${editingDirectorio.id}`, values);
+                await api.patch(`/directorio/${editingDirectorio.id}`, values);
                 message.success('Directorio actualizado exitosamente');
             } else {
                 await api.post('/directorio/create', values);

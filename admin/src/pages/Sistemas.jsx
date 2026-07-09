@@ -93,7 +93,7 @@ export default function Sistemas() {
         try {
             const payload = { ...values, tema_ids: selectedSubjects };
             if (editingSistema) {
-                await api.put(`/sistemas/${editingSistema.id}`, payload);
+                await api.patch(`/sistemas/${editingSistema.id}`, payload);
                 message.success('Sistema actualizado exitosamente');
             } else {
                 await api.post('/sistemas/create', payload);

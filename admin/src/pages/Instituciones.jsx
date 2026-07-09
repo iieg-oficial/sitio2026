@@ -64,7 +64,7 @@ export default function Instituciones() {
     const handleSubmit = async (values) => {
         try {
             if (editingInstitucion) {
-                await api.put(`/instituciones/${editingInstitucion.id}`, values);
+                await api.patch(`/instituciones/${editingInstitucion.id}`, values);
                 message.success('Institución actualizada exitosamente');
             } else {
                 await api.post('/instituciones/create', values);

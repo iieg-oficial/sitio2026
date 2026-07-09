@@ -77,7 +77,7 @@ export default function Mapas() {
     const handleSubmit = async (values) => {
         try {
             if (editingMapa) {
-                await api.put(`/mapas/${editingMapa.id}`, values);
+                await api.patch(`/mapas/${editingMapa.id}`, values);
                 message.success('Mapa actualizado exitosamente');
             } else {
                 await api.post('/mapas/create', values);

@@ -72,7 +72,7 @@ export default function Cuadernillos() {
     const handleSubmit = async (values) => {
         try {
             if (editingCuadernillo) {
-                await api.put(`/cuadernillos/${editingCuadernillo.id}`, values);
+                await api.patch(`/cuadernillos/${editingCuadernillo.id}`, values);
                 message.success('Cuadernillo actualizado');
             } else {
                 await api.post('/cuadernillos', values);
