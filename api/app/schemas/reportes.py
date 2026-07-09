@@ -9,7 +9,7 @@ from app.models.reportes import MesEnum
 class ReporteCreate(BaseModel):
     titulo: str
     fecha: Optional[datetime] = None
-    periocidad: PeriocidadEnum = None
+    periocidad: Optional[PeriocidadEnum] = None
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     tema_ids: Optional[List[int]] = None
@@ -31,7 +31,7 @@ class ReporteOut(BaseModel):
     id: int
     titulo: str
     fecha: Optional[datetime] = None
-    periocidad: PeriocidadEnum = None    
+    periocidad: Optional[PeriocidadEnum] = None   
     archivo: Optional[str] = None
     slug: Optional[str] = None
     claves: Optional[str] = None    
@@ -46,7 +46,7 @@ class ReporteResponse(BaseModel):
     id: int
     titulo: str
     fecha: Optional[datetime] = None
-    periocidad: PeriocidadEnum = None
+    periocidad: Optional[PeriocidadEnum] = None
     archivo: Optional[str] = None
     slug: Optional[str] = None
     claves: Optional[str] = None    
