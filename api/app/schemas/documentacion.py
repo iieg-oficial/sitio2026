@@ -1,9 +1,9 @@
 from typing import Optional, List
 from app.schemas.subject import SubjectFlat
+from app.schemas.sistemas import SistemasOut
 from pydantic import BaseModel, field_validator
 from enum import Enum
 from app.models.documentacion import TipoEnum
-from app.schemas.proyectos import ProyectosOut
 
 class DocumentacionCreate(BaseModel):
     titulo: str
@@ -14,11 +14,20 @@ class DocumentacionCreate(BaseModel):
     claves: Optional[str] = None    
     slug: Optional[str] = None
     tema_ids: Optional[List[int]] = None
-    proyectos: Optional[List[int]] = None
+    sistema_ids: Optional[List[int]] = None
 
     @field_validator('tema_ids', mode='before')
     @classmethod
     def clean_tema_ids(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, list):
+            return [x for x in v if x is not None and x != 0]
+        return v
+
+    @field_validator('sistema_ids', mode='before')
+    @classmethod
+    def clean_sistema_ids(cls, v):
         if v is None:
             return []
         if isinstance(v, list):
@@ -37,7 +46,7 @@ class DocumentacionOut(BaseModel):
     slug: Optional[str] = None
 
     temas: Optional[List[SubjectFlat]] = []
-    proyectos: Optional[List[ProyectosOut]] = []
+    sistemas: Optional[List[SistemasOut]] = []
 
     class Config:
         from_attributes = True
@@ -53,7 +62,7 @@ class DocumentacionResponse(BaseModel):
     slug: Optional[str] = None
 
     temas: Optional[List[SubjectFlat]] = []
-    proyectos: Optional[List[ProyectosOut]] = []
+    sistemas: Optional[List[SistemasOut]] = []
 
     class Config:
         from_attributes = True

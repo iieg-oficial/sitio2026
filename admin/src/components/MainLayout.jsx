@@ -115,12 +115,6 @@ export default function MainLayout() {
                     label: 'Perfiles',
                     onClick: () => navigate('/perfiles')
                 },
-                {
-                    key: '/proyectos',
-                    icon: <MenuOutlined />,
-                    label: 'Proyectos',
-                    onClick: () => navigate('/proyectos')
-                },
             ],         
         });
 
@@ -136,30 +130,17 @@ export default function MainLayout() {
                     onClick: () => navigate('/docs_iieg')
                 },
                 {
-                    key: '/organigrama',
+                    key: '/directorio',
                     icon: <MenuOutlined />,
-                    label: 'Organigrama',
-                    children:[
-                        {
-                            key: '/directorio',
-                            icon: <MenuOutlined />,
-                            label: 'Directorio',
-                            onClick: () => navigate('/directorio')
-                        }
-                    ],
+                    label: 'Directorio',
+                    onClick: () => navigate('/directorio')                        
                 },
                 {
-                    key: '/organos_m',
+                    key: '/organos',
                     icon: <MenuOutlined />,
                     label: 'Organos',
-                    children:[
-                        {
-                            key: '/organos',
-                            icon: <MenuOutlined />,
-                            label: 'Organos',
-                            onClick: () => navigate('/organos')
-                        }
-                    ],
+                    onClick: () => navigate('/organos')
+                        
                 },
                 {
                     key: '/archivos',

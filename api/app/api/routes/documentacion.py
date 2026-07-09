@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Documentacion, Usuario, Subject, Proyectos
+from app.models import Documentacion, Usuario, Subject, Sistemas
 from app.models.documentacion import TipoEnum
 from app.schemas import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
 
@@ -17,12 +17,12 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
         select(Subject).where(Subject.id.in_(tema_ids))
     ).scalars().all()
 
-def _load_proyectos(db: Session, proyecto_ids: list[int]) -> list[Proyectos]:
-    """Carga los objetos Proyectos dado una lista de IDs, ignorando IDs inválidos."""
-    if not proyecto_ids:
+def _load_sistemas(db: Session, sistema_ids: list[int]) -> list[Sistemas]:
+    """Carga los objetos sistemas dado una lista de IDs, ignorando IDs inválidos."""
+    if not sistema_ids:
         return []
     return db.execute(
-        select(Proyectos).where(Proyectos.id.in_(proyecto_ids))
+        select(Sistemas).where(Sistemas.id.in_(sistema_ids))
     ).scalars().all()
 
 @router.get("", response_model=DocumentacionList)
@@ -33,7 +33,7 @@ async def listar_documentaciones(
         db.query(Documentacion)
         .options(
             joinedload(Documentacion.temas), 
-            joinedload(Documentacion.proyectos)
+            joinedload(Documentacion.sistemas)
         )
         .all()
     )
@@ -45,16 +45,6 @@ async def crear_documentacion(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    proyectos = (
-        db.query(Proyectos).filter(Proyectos.id.in_(documentacion_in.proyectos)).all()
-        if documentacion_in.proyectos 
-        else []
-    )
-    if documentacion_in.proyectos and len(proyectos) != len(documentacion_in.proyectos):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Uno o más proyectos proporcionados no existen.",
-        )
     
     slug = slugify(documentacion_in.titulo)
     base_slug = slug
@@ -75,7 +65,7 @@ async def crear_documentacion(
         slug=slug,
     )
 
-    nuevo.proyectos = proyectos
+    nuevo.sistemas = _load_sistemas(db, documentacion_in.sistema_ids or [])
     nuevo.temas = _load_temas(db, documentacion_in.tema_ids or [])
     
     db.add(nuevo)
@@ -88,7 +78,7 @@ async def crear_documentacion(
         db.query(Documentacion)
         .options(
             joinedload(Documentacion.temas),
-            joinedload(Documentacion.proyectos)
+            joinedload(Documentacion.sistemas)
         )
         .filter(Documentacion.id == nuevo.id)
         .first()
@@ -112,7 +102,7 @@ def get_documentacion_slug(
         db.query(Documentacion)
         .options(
             joinedload(Documentacion.temas),
-            joinedload(Documentacion.proyectos)
+            joinedload(Documentacion.sistemas)
         )
         .filter(Documentacion.slug == slug)
         .first()
@@ -146,7 +136,7 @@ async def actualizar_documentacion(
         db.query(Documentacion)
         .options(
             joinedload(Documentacion.temas),
-            joinedload(Documentacion.proyectos),
+            joinedload(Documentacion.sistemas),
         )
         .filter(Documentacion.id == documentacion_id)
         .first()
@@ -156,21 +146,9 @@ async def actualizar_documentacion(
             status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
         )
     
-    if documentacion_in.proyectos is not None:
-        proyectos = (
-            db.query(Proyectos).filter(Proyectos.id.in_(documentacion_in.proyectos)).all()
-            if documentacion_in.proyectos else []
-        )
-        if len(proyectos) != len(documentacion_in.proyectos):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Uno o más proyectos proporcionados no existen.",
-            )
-        documentacion.proyectos = proyectos
-
     update_data = dict(documentacion_in)
 
-    if "titulo" in update_data and update_data["titulo"] != documentacion.titulo:
+    if "titulo" in update_data and update_data["titulo"] and update_data["titulo"] != documentacion.titulo:
         slug = slugify(update_data["titulo"])
         base_slug = slug
         contador = 1
@@ -183,14 +161,29 @@ async def actualizar_documentacion(
     elif "slug" in update_data and not update_data["slug"]:
         del update_data["slug"]
 
+    # Actualizar relacion many-to-many de sistemas
+    if "sistema_ids" in update_data:
+        documentacion.sistemas = _load_sistemas(db, update_data.pop("sistema_ids") or [])
+    else:
+        update_data.pop("sistema_ids", None)
+
+    # Actualizar relacion many-to-many de temas
+    if "tema_ids" in update_data:
+        documentacion.temas = _load_temas(db, update_data.pop("tema_ids") or [])
+    else:
+        update_data.pop("tema_ids", None)
+
     campos = [
-        "nombre", "descripcion", "anyo", "archivo", "tipo", "claves"
+        "titulo", "descripcion", "anyo", "archivo", "tipo", "claves"
     ]
 
     for campo in campos:
-        valor = getattr(documentacion_in, campo, None)
+        valor = update_data.get(campo)
         if valor is not None:
             setattr(documentacion, campo, valor)
+
+    if "slug" in update_data:
+        documentacion.slug = update_data["slug"]
         
 
     db.commit()
@@ -200,13 +193,14 @@ async def actualizar_documentacion(
         db.query(Documentacion)
         .options(
             joinedload(Documentacion.temas),
-            joinedload(Documentacion.proyectos)
+            joinedload(Documentacion.sistemas)
         )
         .filter(Documentacion.id == documentacion_id)
         .first()
     )
     
     return documentacion
+
 
 @router.delete("/{documentacion_id}")
 async def eliminar_documentacion(
@@ -218,7 +212,7 @@ async def eliminar_documentacion(
         db.query(Documentacion)
         .options(
             joinedload(Documentacion.temas),
-            joinedload(Documentacion.proyectos)
+            joinedload(Documentacion.sistemas)
         )
         .filter(Documentacion.id == documentacion_id)
         .first()
