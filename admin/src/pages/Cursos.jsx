@@ -102,6 +102,7 @@ export default function Cursos() {
     const formValues = {
       ...record,
       inicio: record.inicio ? record.inicio.split('T')[0] : '',
+      fin: record.fin ? record.fin.split('T')[0] : '',
       modulos: record.modulos ? record.modulos.map(m => m.id) : [],
       instituciones: record.instituciones ? record.instituciones.map(i => i.id) : [],
       perfiles: record.perfiles ? record.perfiles.map(p => p.id) : [],
@@ -179,6 +180,13 @@ export default function Cursos() {
       key: 'inicio',
       render: (date) => new Date(date).toLocaleDateString('es-MX'),
       sorter: (a, b) => a.inicio.localeCompare(b.inicio)
+    },
+    {
+      title: 'Fecha de finalizacion',
+      dataIndex: 'fin',
+      key: 'fin',
+      render: (date) => new Date(date).toLocaleDateString('es-MX'),
+      sorter: (a, b) => a.fin.localeCompare(b.fin)
     },
     {
       title: 'Acciones',

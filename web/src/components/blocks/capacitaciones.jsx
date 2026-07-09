@@ -58,15 +58,25 @@ export default function Capacitaciones() {
         setItemOffset(newOffset)
     }
 
+    const esFechaPasada = (fechaStr) => {
+        const fecha = new Date(fechaStr);
+        const ahora = new Date();
+        return ahora > fecha;
+    };
+    
+
     return (
         <div>
             <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover border-tertiary px-5 xl:px-5 2xl:px-0'>
                 {capacitacionesDestacadas.map(capacitacion => (
                     <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" target="_blank" rel="noopener noreferrer">
-                    <div className='grid md:grid-cols-6' key={capacitacion.id}>                        
+                    <div className='grid md:grid-cols-6' key={capacitacion.id}>                                               
                         <div className='md:col-span-2'></div>
                         <div className='md:col-span-4'>
                             <h3 className='text-44 text-primary'>{capacitacion.titulo}</h3>
+                            {esFechaPasada(capacitacion.fin) && (
+                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
+                            )} 
                             <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez mt-5' />
                             <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
                                 <span className="material-symbols--chevron-right"></span>
@@ -82,7 +92,10 @@ export default function Capacitaciones() {
                     <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl' key={capacitacion.id}>                        
                         <div className='md:col-span-2'></div>
                         <div className='md:col-span-4 p-6'>
-                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>    
+                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>
+                            {esFechaPasada(capacitacion.fin) && (
+                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
+                            )}     
                             <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez mt-5' />                        
                             <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
                                 <span className="material-symbols--chevron-right"></span>

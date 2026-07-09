@@ -154,7 +154,14 @@ export const CamposComunes = ({ form }) => (
         <Form.Item
             name="inicio"
             label="Fecha de inicio"
-            rules={[{ required: true, message: 'Por favor seleccione una fecha de inicio' }]}
+            rules={[{ required: false, message: 'Por favor seleccione una fecha de inicio' }]}
+        >
+            <Input type="date" />
+        </Form.Item>
+        <Form.Item
+            name="fin"
+            label="Fecha de finalizacion"
+            rules={[{ required: false, message: 'Por favor seleccione una fecha de finalizacion' }]}
         >
             <Input type="date" />
         </Form.Item>
