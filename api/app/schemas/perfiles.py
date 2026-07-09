@@ -13,14 +13,14 @@ class AreaEnum(str, Enum):
 
 class PerfilesCreate(BaseModel):
     nombre: str
-    descripcion: str | None = None
+    descripcion: Optional[str] = None
     area: AreaEnum | None = None
     slug: Optional[str] = None
 
 class PerfilesOut(BaseModel):
     id: int
     nombre: str
-    descripcion: str | None = None
+    descripcion: Optional[str] = None
     area: AreaEnum | None = None
     slug: Optional[str] = None
 

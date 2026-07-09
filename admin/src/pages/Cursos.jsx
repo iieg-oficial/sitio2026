@@ -140,7 +140,7 @@ export default function Cursos() {
     try {
       const payload = { ...values, tema_ids: selectedTemas };      
       if (editingCurso) {
-        await api.put(`/cursos/${editingCurso.id}`, payload);
+        await api.patch(`/cursos/${editingCurso.id}`, payload);
         message.success('Curso actualizado exitosamente');
       } else {
         await api.post('/cursos/create', payload);

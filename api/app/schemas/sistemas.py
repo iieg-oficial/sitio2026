@@ -6,8 +6,8 @@ from app.models.sistemas import TipoSistemaEnum
 
 class SistemasCreate(BaseModel):
     titulo: str
-    descripcion: str
-    link: str
+    descripcion: Optional[str]
+    link: Optional[str]
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None 
     claves: Optional[str] = None    
