@@ -26,7 +26,6 @@ from app.models.docs_iieg import DocsIIEG
 from app.models.banner import Banner
 from app.models.contacto import Contacto
 from app.models.cuadernillos import Cuadernillo
-from app.models.proyectos import Proyectos
 
 __all__ = [
     "Base",

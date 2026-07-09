@@ -24,7 +24,7 @@ export default function Documentacion() {
     const proyectos = useMemo(() => {
         const map = new Map();
         documentaciones.forEach(doc => {
-            doc.proyectos?.forEach(proyecto => {
+            doc.sistemas?.forEach(proyecto => {
                 if (!map.has(proyecto.id)) {
                     map.set(proyecto.id, proyecto)
                 }
@@ -87,7 +87,7 @@ export default function Documentacion() {
             const matchesTema = !selectedTemaId || post.temas?.some(tema => !tema.parent_id && tema.id === Number(selectedTemaId));
             const matchesSubtema = !selectedSubtemaId || post.temas?.some(tema => tema.id === Number(selectedSubtemaId));
             const matchesTipo = !selectedTipo || post.tipo === selectedTipo;
-            const matchesProyecto = !selectedProyecto || post.proyectos?.some(proyecto => proyecto.id === Number(selectedProyecto));
+            const matchesProyecto = !selectedProyecto || post.sistemas?.some(proyecto => proyecto.id === Number(selectedProyecto));
 
             return matchesSearch && matchesTema && matchesSubtema && matchesTipo && matchesProyecto;
         })
@@ -193,7 +193,7 @@ export default function Documentacion() {
                             >
                                 <option value='' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
                                 {proyectos.map(proyecto => (
-                                    <option key={proyecto.id} value={proyecto.id} className='w-full rounded-lg bg-card text-titulo px-4 py-2'>{proyecto.nombre}</option>
+                                    <option key={proyecto.id} value={proyecto.id} className='w-full rounded-lg bg-card text-titulo px-4 py-2'>{proyecto.titulo}</option>
                                 ))}
                             </select>
                         </div>

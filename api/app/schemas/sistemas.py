@@ -25,6 +25,7 @@ class SistemasCreate(BaseModel):
             return [x for x in v if x is not None and x != 0]
         return v
 
+
 class SistemasOut(BaseModel):
     id: int
     titulo: str

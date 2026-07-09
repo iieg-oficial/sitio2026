@@ -22,7 +22,6 @@ import Cursos from '../pages/Cursos';
 import DocsIieg from '../pages/DocsIieg';
 import Banners from '../pages/Banner';
 import Cuadernillos from '../pages/Cuadernillos';
-import Proyectos from '../pages/Proyectos';
 
 import { protectedRoute } from './helpers';
 
@@ -53,5 +52,4 @@ export const editorRoutes = [
   protectedRoute('docs_iieg', <DocsIieg />, ADMIN_EDITOR),
   protectedRoute('banners', <Banners />, ADMIN_EDITOR),
   protectedRoute('cuadernillos', <Cuadernillos />, ADMIN_EDITOR),
-  protectedRoute('proyectos', <Proyectos />, ADMIN_EDITOR),
 ];

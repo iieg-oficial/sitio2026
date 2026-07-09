@@ -42,4 +42,6 @@ class Sistemas(Base):
         back_populates="sistemas",
         lazy="selectin",
     )
+
+    documentacion = relationship("Documentacion", secondary="documentacion_sistemas", back_populates="sistemas")
     
