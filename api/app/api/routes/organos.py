@@ -39,7 +39,7 @@ def create_organos(
     db.refresh(db_organos)
     return db_organos
 
-@router.put("/{id}", response_model=OrganosOut)
+@router.patch("/{id}", response_model=OrganosOut)
 def update_organos(
     id: int,
     organos: OrganosCreate,

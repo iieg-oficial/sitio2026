@@ -108,7 +108,7 @@ async def obtener_reporte(
         )
     return reporte
 
-@router.put("/{reporte_id}", response_model=ReporteOut)
+@router.patch("/{reporte_id}", response_model=ReporteOut)
 async def actualizar_reporte(
     reporte_id: int,
     reporte_in: ReporteCreate,

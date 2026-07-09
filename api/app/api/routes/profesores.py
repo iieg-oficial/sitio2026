@@ -54,7 +54,7 @@ async def crear_profesor(
     db.refresh(nuevo)
     return nuevo
 
-@router.put("/{profesor_id}", response_model=ProfesoresOut)
+@router.patch("/{profesor_id}", response_model=ProfesoresOut)
 async def actualizar_profesor(
     profesor_id: int,
     profesor_in: ProfesoresCreate,

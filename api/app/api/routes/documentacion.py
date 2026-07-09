@@ -135,7 +135,7 @@ async def obtener_documentacion(
         )
     return documentacion
 
-@router.put("/{documentacion_id}", response_model=DocumentacionOut)
+@router.patch("/{documentacion_id}", response_model=DocumentacionOut)
 async def actualizar_documentacion(
     documentacion_id: int,
     documentacion_in: DocumentacionCreate,

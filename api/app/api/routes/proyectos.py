@@ -52,7 +52,7 @@ async def crear_proyecto(
     db.refresh(nuevo)
     return nuevo
 
-@router.put("/{proyecto_id}", response_model=ProyectosOut)
+@router.patch("/{proyecto_id}", response_model=ProyectosOut)
 async def actualizar_proyecto(
     proyecto_id: int,
     proyecto_in: ProyectosCreate,

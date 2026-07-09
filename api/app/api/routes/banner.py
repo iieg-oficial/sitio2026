@@ -49,7 +49,7 @@ def create_banner(
     db.refresh(db_banner)
     return db_banner
 
-@router.put("/{id}", response_model=BannerOut)
+@router.patch("/{id}", response_model=BannerOut)
 def update_banner(
     id: int,
     banner: BannerCreate,
