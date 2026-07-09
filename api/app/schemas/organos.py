@@ -3,8 +3,8 @@ from typing import List, Optional
 
 class OrganosBase(BaseModel):
     titulo: str
-    descripcion: str | None = None
-    link: str | None = None
+    descripcion: Optional[str] = None
+    link: Optional[str] = None
     slug: Optional[str] = None
 
 class OrganosCreate(OrganosBase):

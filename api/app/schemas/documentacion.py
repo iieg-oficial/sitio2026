@@ -7,7 +7,7 @@ from app.schemas.proyectos import ProyectosOut
 
 class DocumentacionCreate(BaseModel):
     titulo: str
-    descripcion: str
+    descripcion: Optional[str]
     anyo: Optional[int] = None
     archivo: Optional[str] = None
     tipo : Optional[TipoEnum] = None
@@ -29,7 +29,7 @@ class DocumentacionCreate(BaseModel):
 class DocumentacionOut(BaseModel):
     id: int
     titulo: str
-    descripcion: str
+    descripcion: Optional[str]
     anyo: Optional[int] = None
     archivo: Optional[str] = None
     tipo : Optional[TipoEnum] = None
@@ -45,7 +45,7 @@ class DocumentacionOut(BaseModel):
 class DocumentacionResponse(BaseModel):
     id: int
     titulo: str
-    descripcion: str
+    descripcion: Optional[str]
     anyo: Optional[int] = None
     archivo: Optional[str] = None
     tipo : Optional[TipoEnum] = None

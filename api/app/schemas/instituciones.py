@@ -3,8 +3,8 @@ from typing import List, Optional
 
 class InstitucionesCreate(BaseModel):
     nombre: str
-    descripcion: str
-    logo: str
+    descripcion: Optional[str]
+    logo: Optional[str]
 
 class InstitucionesOut(BaseModel):
     id: int

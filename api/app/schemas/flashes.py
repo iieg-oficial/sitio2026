@@ -7,8 +7,8 @@ from app.models.flashes import PeriocidadEnum, MesEnum
 
 class FlashesCreate(BaseModel):
     titulo: str
-    desc_jal: str
-    desc_nac: str
+    desc_jal: Optional[str]
+    desc_nac: Optional[str]
     periocidad: PeriocidadEnum
     fecha_publicacion: Optional[datetime] = None
     mes: Optional[MesEnum] = None
@@ -31,8 +31,8 @@ class FlashesCreate(BaseModel):
 class FlashesOut(BaseModel):
     id: int
     titulo: str
-    desc_jal: str
-    desc_nac: str
+    desc_jal: Optional[str]
+    desc_nac: Optional[str]
     periocidad: PeriocidadEnum
     fecha_publicacion: Optional[datetime] = None
     mes: Optional[MesEnum] = None
@@ -50,8 +50,8 @@ class FlashesOut(BaseModel):
 class FlashesResponse(BaseModel):
     id: int
     titulo: str
-    desc_jal: str
-    desc_nac: str
+    desc_jal: Optional[str]
+    desc_nac: Optional[str]
     periocidad: PeriocidadEnum
     fecha_publicacion: Optional[datetime] = None
     mes: Optional[MesEnum] = None
