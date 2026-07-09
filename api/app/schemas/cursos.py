@@ -13,6 +13,7 @@ class CursosCreate(BaseModel):
     titulo: str
     descripcion: str = None
     inicio: datetime = None
+    fin: datetime = None
     formato: str = None
     Horario: str = None
     Objetivo: str = None
@@ -48,6 +49,7 @@ class CursosOut(BaseModel):
     titulo: str | None = None
     descripcion: str | None = None
     inicio: datetime | None = None
+    fin: datetime | None = None
     formato: str | None = None
     Horario: str | None = None
     Objetivo: str | None = None

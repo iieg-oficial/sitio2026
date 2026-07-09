@@ -39,6 +39,12 @@ export default function Convocatorias() {
         return <div>Cargando ...</div>;
     }
 
+    const esFechaPasada = (fechaStr) => {
+        const fecha = new Date(fechaStr);
+        const ahora = new Date();
+        return ahora > fecha;
+    };
+
     return (
         <>
             <Helmet>
@@ -61,11 +67,13 @@ export default function Convocatorias() {
                                     <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Descarga el archivo informativo</span>
                                 </TrackedLink>
                             )}
-                            {singleConvocatoria.formulario && (
+                            {singleConvocatoria.formulario && !esFechaPasada(singleConvocatoria.fin) ? (
                                 <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.formulario} target="_blank">
                                     <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
                                 </TrackedLink>
-                            )}
+                            ): 
+                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
+                            }
                         </div>
                     </div>
                 </main>
