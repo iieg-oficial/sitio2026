@@ -107,7 +107,7 @@ export default function Reportes() {
         try {
             const payload = { ...values, tema_ids: selectedSubjects };
             if (editingReporte) {
-                await api.put(`/reportes/${editingReporte.id}`, payload);
+                await api.patch(`/reportes/${editingReporte.id}`, payload);
                 message.success('Reporte actualizado exitosamente');
             } else {
                 await api.post('/reportes/create', payload);

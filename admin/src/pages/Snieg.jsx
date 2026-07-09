@@ -63,7 +63,7 @@ export default function Snieg() {
     const handleSubmit = async (values) => {
         try {
             if (editingSnieg) {
-                await api.put(`/snieg/${editingSnieg.id}`, values);
+                await api.patch(`/snieg/${editingSnieg.id}`, values);
                 message.success('Snieg / CEIEG actualizado correctamente');
             } else {
                 await api.post('/snieg/create', values);

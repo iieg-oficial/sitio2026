@@ -64,7 +64,7 @@ export default function Profesores() {
     const handleSubmit = async (values) => {
         try {
             if (editingProfesor) {
-                await api.put(`/profesores/${editingProfesor.id}`, values);
+                await api.patch(`/profesores/${editingProfesor.id}`, values);
                 message.success('Profesor actualizado exitosamente');
             } else {
                 await api.post('/profesores/create', values);

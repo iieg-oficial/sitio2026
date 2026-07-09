@@ -64,7 +64,7 @@ export default function Modulos() {
     const handleSubmit = async (values) => {
         try {
             if (editingModulo) {
-                await api.put(`/modulos/${editingModulo.id}`, values);
+                await api.patch(`/modulos/${editingModulo.id}`, values);
                 message.success('Modulo actualizado exitosamente');
             } else {
                 await api.post('/modulos/create', values);

@@ -111,7 +111,7 @@ export default function Documentacion() {
         try {
             const payload = { ...values, tema_ids: selectedSubjects };
             if (editingDocumentacion) {
-                await api.put(`/documentacion/${editingDocumentacion.id}`, payload);
+                await api.patch(`/documentacion/${editingDocumentacion.id}`, payload);
                 message.success('Documentación actualizada exitosamente');
             } else {
                 await api.post('/documentacion/create', payload);

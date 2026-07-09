@@ -64,7 +64,7 @@ export default function Organos() {
     const handleSubmit = async (values) => {
         try {
             if (editingOrgano) {
-                await api.put(`/organos/${editingOrgano.id}`, values);
+                await api.patch(`/organos/${editingOrgano.id}`, values);
                 message.success('Organo actualizado correctamente');
             } else {
                 await api.post('/organos/create', values);

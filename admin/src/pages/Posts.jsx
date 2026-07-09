@@ -96,7 +96,7 @@ export default function Posts() {
             };
             console.log('Payload enviado:', payload); // <-- temporal
             if (editingPost) {
-                await api.put(`/posts/${editingPost.id}`, payload);
+                await api.patch(`/posts/${editingPost.id}`, payload);
                 message.success('Post actualizado exitosamente');
             } else {
                 await api.post('/posts/create', payload);
