@@ -69,7 +69,7 @@ export default function Capacitaciones() {
         <div>
             <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover border-tertiary px-5 xl:px-5 2xl:px-0'>
                 {capacitacionesDestacadas.map(capacitacion => (
-                    <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" target="_blank" rel="noopener noreferrer">
+                    <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" rel="noopener noreferrer">
                     <div className='grid md:grid-cols-6' key={capacitacion.id}>                                               
                         <div className='md:col-span-2'></div>
                         <div className='md:col-span-4'>
