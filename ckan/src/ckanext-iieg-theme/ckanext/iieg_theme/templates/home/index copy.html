@@ -1,0 +1,58 @@
+{% ckan_extends %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ h.url_for_static('/css/iieg_theme.css') }}" />
+{% endblock %}
+
+{% block primary_content %}
+  <div role="main">
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="container">
+            {% block search %}
+            {% snippet 'home/snippets/search.html', search_facets=search_facets %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+
+    <div class="main module-feeds">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            {# Note: this featured_group block is used as an example in the theming
+            tutorial in the docs! If you change this code, be sure to check
+            whether you need to update the docs. #}
+            {# Start template block example. #}
+            {% block featured_group %}
+            {{ h.recently_changed_packages_activity_stream(limit=4) }}
+            {% endblock %}
+            {# End template block example. #}
+          </div>
+          <div class="col-md-6">
+            {% block featured_organization %}
+            {# Show a list of the site's most popular groups. #}
+              <h3 class="FFF">Most popular groups PRINCIAPL</h3>
+
+              {# Call the group_list.html snippet conditional. #}
+              {% if h.iieg_theme_show_most_popular_groups() %}
+                {% snippet 'snippets/iieg_theme_most_popular_groups.html' %}
+              {% else %}
+                {{ super() }}
+              {% endif %}
+
+                {# Call the group_list.html snippet CUSTOM. #}
+                {% snippet 'snippets/iieg_theme_most_popular_groups.html',
+                groups=h.iieg_theme_most_popular_groups() %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,52 @@
+<div class="container my-5">
+    <h2 class="mb-4">{{ _('Categories') }}</h2>
+    
+    <!-- Iniciamos el contenedor Grid con Bootstrap -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        
+        <!-- Iteramos sobre todos los grupos usando nuestro nuevo helper -->
+        {% for group in h.iieg_theme_all_groups() %}
+            <div class="col">
+                <!-- Tarjeta contenedora con posición relativa para el stretched-link -->
+                <div class="card h-100 shadow-sm border text-center p-3 position-relative d-flex flex-column align-items-center justify-content-center">
+                    
+                    <!-- Contenedor para la imagen con tamaño controlado -->
+                    <div class="group-grid-avatar mb-3 d-flex align-items-center justify-content-center" style="height: 100px; width: 100px;">
+                        
+                        <!-- Usamos tu helper existente para obtener la URL de imagen limpia o validamos la nativa -->
+                        {% set group_img = h.iieg_theme_get_entity_image(group.name, 'group') %}
+                        
+                        {% if group_img %}
+                            <img src="{{ group_img }}" 
+                                 alt="{{ group.title or group.name }}" 
+                                 class="img-fluid rounded" 
+                                 style="max-height: 100%; max-width: 100%; object-fit: contain;" />
+                        {% else %}
+                            <!-- Icono por defecto en caso de que el grupo no tenga un logo asignado -->
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center w-100 h-100">
+                                <i class="fa fa-users fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Título del Grupo y Enlace -->
+                    <div class="card-body p-0 w-100">
+                        <h5 class="card-title text-dark m-0 px-2 text-truncate">
+                            <!-- stretched-link hace que toda la tarjeta sea clickeable de forma correcta y limpia -->
+                            <a href="{{ h.url_for('group.read', id=group.name) }}" class="stretched-link text-decoration-none text-reset fw-bold">
+                                {{ group.title or group.name }}
+                            </a>
+                        </h5>
+                    </div>
+                    
+                </div>
+            </div>
+        {% else %}
+            <!-- Mensaje por si no se encuentra ningún grupo en la plataforma -->
+            <div class="col-12 text-center">
+                <p class="text-muted">{{ _('No se encontraron grupos disponibles.') }}</p>
+            </div>
+        {% endfor %}
+        
+    </div>
+</div>
