@@ -3,4 +3,5 @@ export const pageComponentMap = {
     "convocatorias": ['convocatorias'],
     "capacitaciones": ['capacitaciones'],
     "mapas-historicos": ['mapas'],
+    "flashes": ['flashes'],
 };
