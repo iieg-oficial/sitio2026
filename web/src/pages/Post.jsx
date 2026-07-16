@@ -20,7 +20,7 @@ function Post() {
     const [loadError, setLoadError] = useState(false)
     const [activeTab, setActiveTab] = useState(0)    
     const [searchTerm, setSearchTerm] = useState("");
-    const keys = ['titulo', 'resumen', 'contenido', 'keywords', 'subject.titulo'];
+    const keys = ['titulo', 'resumen', 'contenido', 'keywords', 'subject.titulo', 'claves', 'temas', 'temas.titulo'];
 
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
@@ -53,14 +53,18 @@ function Post() {
         showData();        
     }, []);
 
-    const filteredPosts = useMemo( () => ( 
-        !searchTerm 
-        ? posts 
-        : posts.filter(post => {
-            return keys.some(key => {
+const filteredPosts = useMemo(() => (
+    !searchTerm 
+    ? posts 
+    : posts.filter(post => {
+        const term = searchTerm.toLowerCase();
+        const simpleKeys = ['titulo', 'resumen', 'contenido', 'keywords', 'subject.titulo', 'claves'];
+        const matchesSimple = simpleKeys.some(key => {
             const value = key.split('.').reduce((obj, part) => obj?.[part], post);
-            return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());            
+            return value?.toString().toLowerCase().includes(term);
         });
+        const matchesTema = post.temas?.some(t => t.titulo?.toLowerCase().includes(term));
+        return matchesSimple || matchesTema;
     })
 ), [posts, searchTerm]);
 
