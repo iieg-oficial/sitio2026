@@ -48,6 +48,14 @@ function PaginaPorSlug({ slug }) {
         <title>{page.title}</title>
         {page.description_meta && <meta name="description" content={page.description_meta} />}
         {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
+        <meta property="og:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="article" />
+        {/* Twitter Cards (Específico para X / Twitter) */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={page.title} />
+        <meta name="twitter:description" content={page.description_meta} />
+        <meta name="twitter:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
     </Helmet>
     <article>
         <section className="page-header text-center py-12">

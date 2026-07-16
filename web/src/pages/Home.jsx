@@ -75,6 +75,14 @@ function HomePage() {
                 <title>{page?.title || 'Inicio - IIEG'}</title>
                 {page?.description_meta && <meta name="description" content={page.description_meta} />}
                 {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
+                <meta property="og:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
+                <meta property="og:url" content={window.location.href} />
+                <meta property="og:type" content="article" />
+                {/* Twitter Cards (Específico para X / Twitter) */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={page?.title || 'Instituto de Información Estadística y Geográfica - IIEG'} />
+                <meta name="twitter:description" content={page?.description_meta || 'Conoce Jalisco, nuestro territorio y sus recursos naturales; las características de su población y las condiciones en las que vive; así como su situación económica y las oportunidades que ofrece nuestro estado, sus municipios y los diferentes ordenes de gobierno.'} />
+                <meta name="twitter:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
             </Helmet>
             <section className="h-auto md:h-[550px] lg:h-[800px]" role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
