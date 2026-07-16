@@ -20,6 +20,7 @@ class PostCreate(BaseModel):
     claves: Optional[str] = None    
     tema_ids: Optional[List[int]] = None
     slug: Optional[str] = None
+    video: Optional[str] = None
 
     @field_validator('tema_ids', mode='before')
     @classmethod
@@ -41,6 +42,7 @@ class PostOut(BaseModel):
     claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
+    video: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -57,6 +59,7 @@ class PostResponse(BaseModel):
     claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
+    video: Optional[str] = None
 
     class Config:                              
         from_attributes = True

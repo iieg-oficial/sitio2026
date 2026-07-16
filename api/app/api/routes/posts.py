@@ -91,6 +91,7 @@ async def crear_post(
         claves=post_in.claves,
         fecha=post_in.fecha,
         slug=slug,
+        video=post_in.video,
     )
     nuevo.temas = _load_temas(db, post_in.tema_ids or [])
     

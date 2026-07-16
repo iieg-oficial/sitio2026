@@ -22,6 +22,7 @@ class Posts(Base):
     fecha = Column(DateTime, default=datetime.utcnow, nullable=True)
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
+    video= Column(String(200), nullable=True)
     
     gallery_images = relationship(
         "GalleryImage",
