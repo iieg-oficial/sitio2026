@@ -263,12 +263,13 @@ export default function Flashes() {
 
             <div className='grid lg:grid-cols-3 container mx-auto gap-4'>
                 {currentFlashes.length > 0 ? currentFlashes.map(flash => (
+                    
                     <ConditionalLink
                         key={flash.id}
-                        link={flash.link}
-                        target="_blank"
+                        link={`/flashes/${flash.slug}`}
                         rel="noopener noreferrer"
                     >
+                        
                         <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mb-4 mx-auto container bg-white mt-8 hover:border hover:border-tertiary group'>
                             <h3 className='text-18 text-titulos'>{flash.titulo}</h3>
                             <div className='grid grid-cols-1 grid-cols-6 gap-6 mt-8'>
@@ -280,13 +281,13 @@ export default function Flashes() {
                                         <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                     )}
                                 </div>
-                                { flash.link ?
+                                { flash.slug ?
                                     <div className='col-span-2 mt-6'>
-                                        <TrackedLink to={flash.link} className="" target="_blank" rel="noopener noreferrer">
+                                        
                                             <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
                                                 <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                             </div>
-                                        </TrackedLink>
+                                        
                                     </div>
                                 : null }
                             </div>

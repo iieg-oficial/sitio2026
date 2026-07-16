@@ -90,7 +90,7 @@ export default function Capacitaciones() {
                 {currentItems.map(capacitacion => (
                     <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" rel="noopener noreferrer">
                     <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl' key={capacitacion.id}>                        
-                        <div className='md:col-span-2'></div>
+                        <div className='md:col-span-2'></div>                        
                         <div className='md:col-span-4 p-6'>
                             <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>
                             {esFechaPasada(capacitacion.fin) && (
