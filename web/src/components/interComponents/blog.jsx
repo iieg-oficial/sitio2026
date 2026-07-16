@@ -55,11 +55,18 @@ export default function Blog() {
   return (
     <>    
         <Helmet>
-            <title>{singlePost.titulo}</title>
-            <meta name="description" content={singlePost.resumen} />
+            <title>{singlePost.titulo}</title>            
             <meta property="og:title" content={singlePost.titulo} />
             <meta property="og:description" content={singlePost.resumen} />
+            <meta property="og:image" content={singlePost.gallery_images[0].url ? singlePost.gallery_images[0].url : "/demo.jpg"} />
             <meta property="og:url" content={window.location.href} />
+            <meta property="og:type" content="article" />
+            <meta name="keywords" content={singlePost.claves} />
+            {/* Twitter Cards (Específico para X / Twitter) */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={singlePost.resumen} />
+            <meta name="twitter:description" content={singlePost.resumen} />
+            <meta name="twitter:image" content={singlePost.gallery_images[0].url ? singlePost.gallery_images[0].url : "/demo.jpg"} />
         </Helmet>
         <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
             <div className='md:col-span-1'><Backlink /></div>
@@ -71,7 +78,7 @@ export default function Blog() {
                         <p className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>{singlePost.subject?.titulo}</p>
                     : null}
                 </div>
-                <div dangerouslySetInnerHTML={{__html: singlePost.contenido}} className='mt-5 prose max-w-none' />
+                <div dangerouslySetInnerHTML={{__html: singlePost.contenido}} className='mt-5 prose max-w-none mb-15' />
                 {singlePost.video && (
                     <iframe className="aspect-video w-full" 
                     src={embedUrl} 
@@ -79,13 +86,17 @@ export default function Blog() {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen />
                 )}
-                
                 {singlePost.gallery_images && singlePost.gallery_images.length > 0 ? (
                     <section className='my-25'>
                         <h2 className='text-28 font-extrabold text-primary text-center mb-4'>Galería de Imágenes</h2>
                         <Galeria images={singlePost.gallery_images} />
                     </section> 
-                ) : null}
+                ) : 
+                    <section className='my-25'>
+                        <h2 className='text-28 font-extrabold text-primary text-center mb-4'>Galería de Imágenes</h2>
+                        <img src={singlePost.gallery_images[0].url} alt="" />
+                    </section> 
+                }
                 <div>
                 <ShareButtons
                     url={postUrl}

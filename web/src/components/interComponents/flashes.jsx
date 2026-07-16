@@ -38,11 +38,18 @@ export default function Flashes() {
         return (
         <>
             <Helmet>
-                <title>{flash.titulo}</title>
-                <meta name="description" content={flash.resumen} />
+                <title>{flash.titulo}</title>                
                 <meta property="og:title" content={flash.titulo} />
-                <meta property="og:description" content={flash.resumen} />
+                <meta name="description" content={flash.desc_jal} />
+                <meta property="og:image" content={flash.postlink ? flash.postlink : "/demo.jpg"} />
                 <meta property="og:url" content={window.location.href} />
+                <meta property="og:type" content="article" />
+                <meta name="keywords" content={flash.claves} />
+                {/* Twitter Cards (Específico para X / Twitter) */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={flash.titulo} />
+                <meta name="twitter:description" content={flash.desc_jal} />
+                <meta name="twitter:image" content={flash.postlink ? flash.postlink : "/demo.jpg"} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <section className="page-header text-center py-12">

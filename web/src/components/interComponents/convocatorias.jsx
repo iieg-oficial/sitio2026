@@ -48,11 +48,18 @@ export default function Convocatorias() {
     return (
         <>
             <Helmet>
-                <title>{singleConvocatoria.nombre}</title>
-                <meta name="description" content={singleConvocatoria.resumen} />
+                <title>{singleConvocatoria.nombre}</title>                
                 <meta property="og:title" content={singleConvocatoria.nombre} />
-                <meta property="og:description" content={singleConvocatoria.resumen} />
+                <meta name="description" content={singleConvocatoria.resumen} />
+                <meta property="og:image" content={singleConvocatoria.postlink ? singleConvocatoria.postlink : "/demo.jpg"} />
                 <meta property="og:url" content={window.location.href} />
+                <meta property="og:type" content="article" />
+                <meta name="keywords" content={singleCapacitacion.clave} />
+                {/* Twitter Cards (Específico para X / Twitter) */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={singleConvocatoria.titulo} />
+                <meta name="twitter:description" content={singleConvocatoria.descripcion} />
+                <meta name="twitter:image" content={singleConvocatoria.postlink ? singleConvocatoria.postlink : "/demo.jpg"} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <Backlink />

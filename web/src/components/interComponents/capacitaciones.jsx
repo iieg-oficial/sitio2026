@@ -48,10 +48,17 @@ export default function Capacitaciones() {
         <>
             <Helmet>
                 <title>{singleCapacitacion.titulo}</title>
-                <meta name="description" content={singleCapacitacion.resumen} />
                 <meta property="og:title" content={singleCapacitacion.titulo} />
-                <meta property="og:description" content={singleCapacitacion.resumen} />
+                <meta property="og:description" content={singleCapacitacion.descripcion} />
+                <meta property="og:image" content={singleCapacitacion.postlink ? singleCapacitacion.postlink : "/demo.jpg"} />
                 <meta property="og:url" content={window.location.href} />
+                <meta property="og:type" content="article" />
+                <meta name="keywords" content={singleCapacitacion.clave} />
+                {/* Twitter Cards (Específico para X / Twitter) */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={singleCapacitacion.titulo} />
+                <meta name="twitter:description" content={singleCapacitacion.descripcion} />
+                <meta name="twitter:image" content={singleCapacitacion.postlink ? singleCapacitacion.postlink : "/demo.jpg"} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <BackLink />
