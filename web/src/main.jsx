@@ -47,6 +47,7 @@ const router = createBrowserRouter([
             { path: '/busqueda', element: <BusquedaGlobal /> },
             { path: '/:slug', element: <DynamicPage /> },
             { path: '/comunidad/:slug', element: <PaginaIndividual /> },
+            { path: '/flashes/:slug', element: <PaginaIndividual /> },
             { path: '/capacitaciones/:slug', element: <PaginaIndividual /> },
             { path: '/convocatoria/:slug', element: <PaginaIndividual /> },
             { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
