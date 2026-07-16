@@ -9,10 +9,20 @@ import Backlink from '../pageComponents/Backlink'
 import Galeria from '../interComponents/galeria'
 import ShareButtons from '../pageComponents/ShareButtons'
 
+
+
 export default function Blog() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
     const postUrl = `http://localhost:13010/comunidad/${slug}`;
     const [singlePost, setSinglePost] = useState(null);
+
+    // Función Helper para obtener el ID de YouTube de casi cualquier URL
+    const getYouTubeId = (url) => {
+        if (!url) return null;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    };
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -27,11 +37,21 @@ export default function Blog() {
         fetchPost();
     }, [slug]); 
 
+    
 
     //check if singlePost exists before render
     if (!singlePost) {
         return <div>Cargando ...</div>;
     }
+
+    const videoId = getYouTubeId(singlePost.video);
+
+    if (!videoId) {
+        return <p className="text-red-500">URL de video no válida</p>;
+    }
+
+    const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}`;
+
   return (
     <>    
         <Helmet>
@@ -52,6 +72,14 @@ export default function Blog() {
                     : null}
                 </div>
                 <div dangerouslySetInnerHTML={{__html: singlePost.contenido}} className='mt-5 prose max-w-none' />
+                {singlePost.video && (
+                    <iframe className="aspect-video w-full" 
+                    src={embedUrl} 
+                    title="YouTube video player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen />
+                )}
+                
                 {singlePost.gallery_images && singlePost.gallery_images.length > 0 ? (
                     <section className='my-25'>
                         <h2 className='text-28 font-extrabold text-primary text-center mb-4'>Galería de Imágenes</h2>

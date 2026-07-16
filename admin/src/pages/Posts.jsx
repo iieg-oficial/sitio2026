@@ -135,23 +135,11 @@ export default function Posts() {
             sorter: (a, b) => a.slug.localeCompare(b.slug)
         },
         {
-            title: 'Autor',
-            dataIndex: 'autor',
-            key: 'autor',
-            sorter: (a, b) => a.autor.localeCompare(b.autor)
-        },
-        {
             title: 'Fecha',
             dataIndex: 'fecha',
             key: 'fecha',
             render: (date) => new Date(date).toLocaleDateString('es-MX'),
             sorter: (a, b) => new Date(a.fecha) - new Date(b.fecha)
-        },
-        {
-            title: 'Claves',
-            dataIndex: 'claves',
-            key: 'claves',
-            sorter: (a, b) => a.claves.localeCompare(b.claves)                   
         },
         {
             title: 'Tema',
@@ -267,7 +255,7 @@ export default function Posts() {
 
                     <Form.Item name="claves"
                         label="Palabras clave"
-                        rules={[{ required: true, message: 'Por favor ingrese las palabras clave' }]}
+                        rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
                     >
                         <Input />
                     </Form.Item>
@@ -279,6 +267,12 @@ export default function Posts() {
                             setSelectedSubjects(ids);
                         }}
                     />
+                    <Form.Item name="video"
+                        label="Video"
+                        rules={[{ required: false, message: 'Por favor ingrese url' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                     <Form.Item label="Galería de imágenes">
                         <UploadAcervoMultiple
                             bucket="portal"
