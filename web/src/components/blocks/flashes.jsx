@@ -17,7 +17,7 @@ export default function Flashes() {
     const [selectedMonth, setSelectedMonth] = useState("");
     const [itemOffset, setItemOffset] = useState(0);
     const keys = ['titulo', 'desc_jal', 'desc_nac', 'periocidad', 'fuente', 'temas.titulo'];
-    const itemsPerPage = 3;
+    
 
     const fetchFlashes = async () => {
         const response = await api.get('/flashes')
@@ -30,6 +30,7 @@ export default function Flashes() {
     }
 
     const hasActiveFilters = Boolean(searchTerm.trim() || selectedTemaId || selectedSubtemaId || selectedYear || selectedMonth);
+    const itemsPerPage = hasActiveFilters ? 12 : 3;
 
     const flashesWithoutLast = useMemo(() => {
         if (!lastFlash) return flashes;
@@ -100,7 +101,7 @@ export default function Flashes() {
 
     useEffect(() => {
         setItemOffset(0);
-    }, [searchTerm, selectedTemaId, selectedSubtemaId, selectedYear, selectedMonth]);
+    }, [searchTerm, selectedTemaId, selectedSubtemaId, selectedYear, selectedMonth, itemsPerPage]);
 
     const filteredFlashes = useMemo(() => {
         const normalizedSearch = searchTerm.toLowerCase().trim();
