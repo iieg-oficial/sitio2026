@@ -11,8 +11,7 @@ reporte_temas = Table(
     Column("subject_id", Integer, ForeignKey("subject.id"), primary_key=True),
 )
 
-class PeriocidadEnum(str, enum.Enum):
-    diaria = "diaria"
+class PeriocidadEnum(str, enum.Enum):    
     mensual = "mensual"
     bimestral = "bimestral"
     trimestral = "trimestral"

@@ -13,7 +13,6 @@ flash_temas = Table(
 )
 
 class PeriocidadEnum(str, enum.Enum):
-    diaria = "diaria"
     mensual = "mensual"
     bimestral = "bimestral"
     trimestral = "trimestral"
