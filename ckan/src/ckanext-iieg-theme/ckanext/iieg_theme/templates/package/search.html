@@ -1,0 +1,10 @@
+{% ckan_extends %}
+
+{% block subtitle %}{{ _(dataset_type.title()) }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{{ h.nav_link(_(dataset_type.title() + 's'), named_route='%s.search' % dataset_type) }}</li>
+{% endblock %}
+
+{% block package_search_results_api_inner %}
+{% endblock %}

@@ -205,7 +205,12 @@ export default function Mapas() {
                     {currentItems.map(mapa => (
                         <a href={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
                                             <div key={mapa.id} className="p-4 overflow-hidden mapa h-96 relative rounded-4xl">                    
-                                                <img src={mapa.imagen ? mapa.imagen : "/demo.jpg"} alt={mapa.titulo} className='image-mapa rounded-4xl'/>
+                                                
+                                                
+                                                {mapa.imagen && (
+                                                    <img src={mapa.imagen} alt={mapa.titulo} />
+                                                )}
+                                                <img src="https://iieg.jalisco.gob.mx/acervo/portal/mapas/demo.jpg" alt="pruebasimg" />
                                                 <div className='info'>
                                                     <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
                                                         <h3 className='text-white'>{mapa.titulo}</h3>

@@ -1,0 +1,60 @@
+{% ckan_extends %}
+
+{% block facet_list_item %}
+{# FILTRO COMPLETO: Solo renderiza si la faceta actual es una de las 3 permitidas #}
+{% if name in ['organization', 'groups', 'tags'] %}
+<section class="module module-narrow module-shallow">
+    {% block facet_list_heading %}
+    <h2 class="module-heading">
+        {{ title }}
+    </h2>
+    {% endblock %}
+
+    {% block facet_list_items %}
+    {% set facet_items = items if items else h.get_facet_items_dict(name, search_facets) %}
+    {% if facet_items %}
+        <div class="mx-2 my-2" aria-label="{{ _('Filter by: {title}').format(title=title) }}">
+            <div class="row {% if name in ['groups', 'organization'] %} text-center {% else %} {% endif %}">
+                {% for item in facet_items %}
+                
+                {% set href = h.remove_url_param(name, item.name, extras=extras, alternative_url=alternative_url) if item.active else h.add_url_param(new_params={name: item.name}, extras=extras, alternative_url=alternative_url) %}
+                {% set label = label_function(item) if label_function else item.display_name %}
+                {% set label_truncated = label|truncate(22) if not label_function else label %}
+                {% set count = count_label(item['count']) if count_label else ('%d' % item['count']) %}
+                
+                <div class="col {% if item.active %} active {% endif %}">
+                <a hx-boost="true" href="{{ href }}" aria-label="{{ _('Search datasets by {name}: {label}').format(name=name, label=label) }}" data-bs-title="{{ label }} ({{ count }})" data-bs-toggle="tooltip" >
+                    
+                    {# ================================================== #}
+                    {# RENDERIZADO PARA GRUPOS Y ORGANIZACIONES           #}
+                    {# ================================================== #}
+                    {% if name in ['groups', 'organization'] %}
+                        {% set facet_image = h.iieg_theme_get_entity_image(item.name, name) %}
+                        
+                        {% if facet_image %}
+                            {# Si tiene imagen REAL capturada, muestra SOLO la miniatura #}
+                            <img src="{{ facet_image }}" alt="{{ label }}" class="facet-img-thumb" style="width: 45px; height: 45px; object-fit: contain;">
+                        {% else %}
+                            {# Si no tiene imagen real (devolvió ''), imprime el texto plano #}
+                            <span class="item-label">{{ label_truncated }} ({{ count }})</span>
+                        {% endif %}
+                    {% endif %}
+
+                    {# ================================================== #}
+                    {# RENDERIZADO EXCLUSIVO PARA TAGS                    #}
+                    {# ================================================== #}
+                    {% if name == 'tags' %}
+                        <span class="item-label">{{ label_truncated }} ({{ count }})</span>
+                    {% endif %}
+
+                    {% if item.active %}<span class="facet-close"> <i class="fa fa-solid fa-circle-xmark"></i></span>{% endif %}
+                </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %} 
+    {% endblock %} 
+</section>
+{% endif %}
+{% endblock %}

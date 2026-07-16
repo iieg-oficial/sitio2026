@@ -1,0 +1,83 @@
+/*
+ * ============================================================
+ *  Tema IIEG para CKAN — Estilos base
+ * ============================================================
+ */
+
+/* ---------- Variables de color institucional IIEG ---------- */
+:root {
+  --iieg-primary:     #003f7d;   /* Azul institucional */
+  --iieg-secondary:   #0074c2;   /* Azul secundario */
+  --iieg-accent:      #f5a623;   /* Naranja acento */
+  --iieg-bg:          #f4f6f9;   /* Fondo general */
+  --iieg-text:        #2c3e50;   /* Texto principal */
+  --iieg-border:      #dce3ea;
+  --iieg-white:       #ffffff;
+}
+
+/* ---------- Navbar ---------- */
+.navbar-default {
+  background-color: var(--iieg-primary);
+  border-color: var(--iieg-primary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav > li > a {
+  color: var(--iieg-white) !important;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: var(--iieg-accent) !important;
+  background-color: transparent;
+}
+
+/* ---------- Botones ---------- */
+.btn-primary {
+  background-color: var(--iieg-secondary);
+  border-color: var(--iieg-secondary);
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--iieg-primary);
+  border-color: var(--iieg-primary);
+}
+
+/* ---------- Encabezados ---------- */
+h1, h2, h3 {
+  color: var(--iieg-primary);
+}
+
+/* ---------- Links ---------- */
+a {
+  color: var(--iieg-secondary);
+}
+
+a:hover {
+  color: var(--iieg-primary);
+}
+
+/* ---------- Footer ---------- */
+footer {
+  background-color: var(--iieg-primary);
+  color: var(--iieg-white);
+  padding: 2rem 0;
+  margin-top: 3rem;
+}
+
+footer a {
+  color: var(--iieg-accent);
+}
+
+footer a:hover {
+  color: var(--iieg-white);
+}
+
+/* ---------- Fondo general ---------- */
+body {
+  background-color: var(--iieg-bg);
+  color: var(--iieg-text);
+}

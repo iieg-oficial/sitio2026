@@ -15,6 +15,10 @@ RUN cd /srv/app/src && \
     pip install --no-cache-dir -e ckanext-s3filestore && \
     pip install --no-cache-dir -r ckanext-s3filestore/requirements.txt
 
-RUN pip install --no-cache-dir cookiecutter
+RUN pip install --no-cache-dir cookiecutter flask-debugtoolbar
+
+# Tema personalizado IIEG
+COPY --chown=ckan:ckan src/ckanext-iieg-theme /srv/app/src/ckanext-iieg-theme
+RUN pip install --no-cache-dir -e /srv/app/src/ckanext-iieg-theme
 
 USER ckan

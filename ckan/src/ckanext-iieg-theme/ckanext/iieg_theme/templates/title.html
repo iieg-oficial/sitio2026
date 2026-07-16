@@ -1,0 +1,51 @@
+
+
+<div id="title" class="organization-title container-fluid" >
+    <div class="background-overlay">
+        <div class="restricted-max-width">
+            <div class="col-xs-12 col-md-10 col-md-offset-1">
+                <div id="title-container" class="col-xs-12 col-md-8 text-left">
+                    {% if request.endpoint in ['dataset.search', 'package.search'] %}
+                    <h1 class="page-title">{{ _('Datasets') }}</h1>
+                    <p class="page-subtitle text-muted">{{ _('Explore el catálogo de datos abiertos disponibles.') }}</p>
+
+                {# 2. SI ESTÁ EN EL DIRECTORIO GENERAL DE ORGANIZACIONES #}
+                {% elif request.endpoint == 'organization.index' %}
+                    <h1 class="page-title">{{ _('Organizations') }}</h1>
+                    <p class="page-subtitle text-muted">{{ _('Busque y encuentre las dependencias públicas que generan datos.') }}</p>
+
+                {# 3. SI ESTÁ DENTRO DEL PERFIL DE UNA ORGANIZACIÓN ESPECÍFICA #}
+                {# Nota: CKAN inyecta 'organization' o 'group' en la vista 'organization.read' #}
+                {% elif organization or group %}
+                    {% set org_obj = organization if organization else group %}
+                    <h1 class="page-title">{{ org_obj.display_name or org_obj.name }}</h1>
+                    {% if org_obj.description %}
+                        <p class="page-subtitle text-muted">{{ h.markdown_extract(org_obj.description, extract_length=150) }}</p>
+                    {% endif %}
+
+                {# 4. SI ESTÁ EN LA VISTA DE UN DATASET ESPECÍFICO (Ficha de metadatos) #}
+                {% elif pkg %}
+                    <h1 class="page-title">{{ pkg.title or pkg.name }}</h1>
+                    {% if pkg.notes %}
+                        <p class="page-subtitle text-muted">{{ h.markdown_extract(pkg.notes, extract_length=150) }}</p>
+                    {% endif %}
+
+                {# 5. SI ES LA PÁGINA DE INICIO (HOME) #}
+                {% elif request.endpoint == 'home.index' %}
+                    <h1 class="page-title">{{ _('Portal de Datos Abiertos') }}</h1>
+
+                {# 6. CUALQUIER OTRA PÁGINA (Fallback usando el título base de la plantilla si existe) #}
+                {% else %}
+                    <h1 class="page-title">
+                        {% if self.title is defined %}
+                            {{ self.title() }}
+                        {% else %}
+                            {{ _('Datos Abiertos') }}
+                        {% endif %}
+                    </h1>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+{% ckan_extends %}
+
+{% block footer_content %}
+    <div class="row">
+      <div class="col-md-8 footer-links">
+      </div>
+      <div class="col-md-4 attribution">
+        {% block footer_lang %}
+          {% snippet "snippets/language_selector.html" %}
+        {% endblock %}
+      </div>
+    </div>
+    {% endblock %}
