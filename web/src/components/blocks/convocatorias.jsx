@@ -60,10 +60,10 @@ export default function Convocatorias() {
 
     return (
         <div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 rounded-3xl p-4 container mx-auto'>
+            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto'>
                 {currentItems.map(convocatoria => (
                     <TrackedLink to={`/convocatorias/${convocatoria.slug}`} className="" rel="noopener noreferrer">
-                        <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl' key={convocatoria.id}>                        
+                        <div className='grid md:grid-cols-6 hover:border hover:border-tertiary group rounded-3xl' key={convocatoria.id}>                        
                             <div className='md:col-span-2'></div>
                                 <div className='md:col-span-4 p-6'>
                                     <h3 className='text-28 text-primary'>{convocatoria.titulo}</h3>                            
@@ -71,9 +71,9 @@ export default function Convocatorias() {
                                         <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
                                     )} 
                                     <div dangerouslySetInnerHTML={{__html: convocatoria.descripcion}} className='diez mt-5' />                        
-                                    <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
-                                    <span className="material-symbols--chevron-right"></span>
-                                </div>
+                                    <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                        <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                    </div>
                             </div>                        
                         </div>
                     </TrackedLink>
@@ -81,7 +81,8 @@ export default function Convocatorias() {
             </div>
 
 
-            <ReactPaginate
+            {/*
+                <ReactPaginate
                 previousLabel={"Ant"}
                 nextLabel={"Sig"}
                 breakLabel={"..."}
@@ -94,6 +95,22 @@ export default function Convocatorias() {
                 activeClassName={"active"}
                 forcePage={Math.floor(itemOffset / itemsPerPage)}
             />
+            */}
+
+            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto'>
+                <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl group'>                        
+                    <div className='md:col-span-2'></div>
+                        <div className='md:col-span-4 p-6'>
+                            <h3 className='text-28 text-primary'>Sesiones informativas</h3>                            
+                                <div className='diez mt-5'>                        
+                                    <p>Presentaciones orientadas a dar a conocer el trabajo, productos y servicios del IIEG, en función de las necesidades del público participante.</p>
+                                </div>
+                                <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                    <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                </div>
+                            </div>                        
+                        </div>
+            </div>
         </div>
     )
 }
