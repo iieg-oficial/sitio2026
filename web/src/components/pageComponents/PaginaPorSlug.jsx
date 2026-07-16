@@ -57,7 +57,7 @@ function PaginaPorSlug({ slug }) {
         <meta name="twitter:description" content={page.description_meta} />
         <meta name="twitter:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
     </Helmet>
-    <article>
+    <article className="px-5 2xl:px-0">
         <section className="page-header text-center py-12">
             <div className="container mx-auto grid md:grid-cols-12 gap-1">  
               {interno && <div className='md:col-span-1'><Backlink /></div>}            
