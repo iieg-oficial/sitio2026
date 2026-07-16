@@ -3,10 +3,13 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
 import Backlink from '../pageComponents/Backlink'
+import { Download, X } from "lucide-react";
+import TrackedLink from '@components/blocks/boton'
 
 export default function Mapas() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
     const [singleMapa, setSingleMapa] = useState(null);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const fetchMapa = async () => {
@@ -19,6 +22,11 @@ export default function Mapas() {
         }
         fetchMapa();
     }, [slug]); 
+
+
+      const handleDownload = () => {
+            setOpen(false);
+        };
 
 
     //check if singleMapa exists before render
@@ -47,11 +55,62 @@ export default function Mapas() {
                         <p className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>{singleMapa.tipo}</p> 
                         <p className='bg-[#E5E0E0] text-body rounded-2xl px-4 py-2 text-14'>{singleMapa.tipo}</p>
                     </div>
+                    {singleMapa.imagen && (
                     <div className='my-8'>
-                        <a href={singleMapa.archivo} target="_blank" rel="noopener noreferrer" className='text-white bg-[#454545] rounded-3xl px-4 py-2 text-baseinline-block'>
+                        <button
+                            onClick={() => setOpen(true)}
+                            className="text-white bg-[#454545] rounded-3xl px-4 py-2 text-baseinline-block"
+                        >
                             Descargar imagen original
-                        </a>
+                        </button>
+                            {open && (
+                                <div
+                                className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+                                onClick={() => setOpen(false)}
+                                >
+                                <div
+                                    className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 relative"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <button
+                                    onClick={() => setOpen(false)}
+                                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+                                    aria-label="Cerrar"
+                                    >
+                                    <X size={20} />
+                                    </button>
+                        
+                                    <h2 className="text-lg font-semibold text-tertiary mb-2">
+                                    Importante
+                                    </h2>
+                                    <p className="text-base text-body mb-6">
+                                    Información no oficial, sin efectos legales, este material se difunde exclusivamente por su valor historico-cultural y para fines de investigación
+                                    </p>
+                        
+                                    <div className="flex gap-3 justify-end">
+                                    <button
+                                        onClick={() => setOpen(false)}
+                                        className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    {console.log('objeto completo:', singleMapa)}
+                                    <TrackedLink 
+                                        key={singleMapa.id} 
+                                        to={singleMapa.imagen} 
+                                        target="_blank" 
+                                        download={singleMapa.imagen}
+                                        onClick={() => setOpen(false)}
+                                        className="bg-primary text-white rounded-3xl px-4 py-2">
+                                        <Download size={18} className='float-right ml-3 mt-1'/>
+                                        Descargar
+                                    </TrackedLink>
+                                    </div>
+                                </div>
+                                </div>
+                            )}
                     </div>
+                    )}
                     <div className='mb-4 gap-4 grid grid-cols-6'>
                         
                         { singleMapa.autor && singleMapa.autor.trim() !== '' && (
@@ -149,6 +208,12 @@ export default function Mapas() {
                         </>
                             
                         )}
+
+                        <>
+                        <div className='col-span-6 text-14'>
+                            <i>***Información no oficial, sin efectos legales, este material se difunde exclusivamente por su valor historico-cultural y para fines de investigación</i>
+                        </div>
+                        </>
 
                     </div>                                
                 </div>
