@@ -37,10 +37,16 @@ export default function Mapas() {
     <>    
         <Helmet>
             <title>{singleMapa.titulo}</title>
-            <meta name="description" content={singleMapa.resumen} />
-            <meta property="og:title" content={singleMapa.titulo} />
-            <meta property="og:description" content={singleMapa.resumen} />
-            <meta property="og:url" content={window.location.href} />
+             <meta property="og:title" content={singleMapa.titulo} />
+                <meta name="description" content={singleMapa.informacion} />
+                <meta property="og:image" content={singleMapa.imagen ? singleMapa.imagen : "/demo.jpg"} />
+                <meta property="og:url" content={window.location.href} />
+                <meta property="og:type" content="article" />
+                {/* Twitter Cards (Específico para X / Twitter) */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={singleMapa.titulo} />
+                <meta name="twitter:description" content={singleMapa.informacion} />
+                <meta name="twitter:image" content={singleMapa.imagen ? singleMapa.imagen : "/demo.jpg"} />
         </Helmet>
         <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
             <div className='md:col-span-1'><Backlink /></div>

@@ -108,6 +108,14 @@ const filteredPosts = useMemo(() => (
         <title>{page?.title }</title>
         {page?.description_meta && <meta name="description" content={page.description_meta} />}
         {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
+        <meta property="og:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="article" />
+        {/* Twitter Cards (Específico para X / Twitter) */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={page?.title } />
+        <meta name="twitter:description" content={page?.description_meta || 'comunicacion y agenda'} />
+        <meta name="twitter:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
     </Helmet>
         <article className="px-5 xl:px-5 2xl:px-0 ">
             <div className='page-header text-center py-12'>
