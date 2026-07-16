@@ -23,19 +23,19 @@ function Footer() {
                                     <span class="line-md--instagram"></span>
                                 </a>
 
-                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                <a href="https://www.facebook.com/IIEGJalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
                                     <span class="ri--facebook-fill"></span>
                                 </a>
                                 
-                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                <a href="https://x.com/IIEGJ" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
                                     <span class="pajamas--twitter"></span>
                                 </a>
                                 
-                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                <a href="www.linkedin.com/company/iiegjalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
                                     <span class="ri--linkedin-fill"></span>
                                 </a>
                                 
-                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                <a href="https://www.youtube.com/@IIEGJaliscoGob" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
                                     <span class="mdi--youtube"></span>
                                 </a>
                             </div>                            
