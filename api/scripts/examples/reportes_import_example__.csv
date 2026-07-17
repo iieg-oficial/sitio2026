@@ -1,0 +1,3 @@
+titulo,slug,fecha,periocidad,mes,anyo,archivo,claves,tema_ids,tema_slugs
+Anuario estadistico 2025,,2025-12-31,anual,diciembre,2025,https://acervo.ejemplo.gob.mx/reportes/anuario-2025.pdf,anuario|estadistica|2025,,empleo-y-ocupacion
+Boletin mensual de empleo,boletin-mensual-empleo,2026-01-15T08:30:00,mensual,enero,2026,/media/reportes/boletin-empleo-enero-2026.pdf,empleo|mercado laboral,,empleo-y-ocupacion
