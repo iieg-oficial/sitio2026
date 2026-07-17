@@ -7,7 +7,7 @@ from app.models.sistemas import TipoSistemaEnum
 class SistemasCreate(BaseModel):
     titulo: str
     descripcion: Optional[str]
-    link: Optional[str]
+    link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None 
     claves: Optional[str] = None    
@@ -30,7 +30,7 @@ class SistemasOut(BaseModel):
     id: int
     titulo: str
     descripcion: str
-    link: str
+    link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
     claves: Optional[str] = None    
@@ -46,7 +46,7 @@ class SistemasResponse(BaseModel):
     id: int
     titulo: str
     descripcion: str
-    link: str
+    link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
     claves: Optional[str] = None    

@@ -87,12 +87,35 @@ def get_all_groups_list():
         return groups
     except Exception:
         return []
+
+def get_localized_current_url(locale: str) -> str:
+    '''Generates the current URL with a new locale safely, without Jinja2 **kwargs issues.'''
+    try:
+        from flask import request
+        endpoint = request.endpoint
+        if not endpoint:
+            # Fallback for non-flask or outside request context
+            return toolkit.url_for(toolkit.h.current_url(), locale=locale)
+            
+        args = dict(request.view_args or {})
+        # Actualizamos o añadimos el locale
+        args['locale'] = locale
+        
+        # Generamos la nueva URL
+        return toolkit.url_for(endpoint, **args)
+    except Exception:
+        # Fallback de seguridad
+        try:
+            return toolkit.url_for(toolkit.h.current_url(), locale=locale)
+        except Exception:
+            return ''
     
 class IiegThemePlugin(plugins.SingletonPlugin):
     """Plugin principal del tema IIEG para CKAN."""
 
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigDeclaration)
+    plugins.implements(plugins.ITranslation)
 
     # Declare that this plugin will implement ITemplateHelpers.
     plugins.implements(plugins.ITemplateHelpers)
@@ -119,6 +142,7 @@ class IiegThemePlugin(plugins.SingletonPlugin):
                 'iieg_theme_get_entity_image': get_entity_image_url,
                 'get_iieg_group_image': self._get_group_image_by_package,
                 'iieg_theme_all_groups': get_all_groups_list,
+                'iieg_theme_get_localized_url': get_localized_current_url,
                 }
     
     # IConfigDeclaration
@@ -127,6 +151,16 @@ class IiegThemePlugin(plugins.SingletonPlugin):
         declaration.declare_bool(
             key.ckan.iieg_theme.show_most_popular_groups)
         
+    # ITranslation
+    def i18n_directory(self):
+        import os
+        return os.path.join(os.path.dirname(__file__), 'i18n')
+
+    def i18n_domain(self):
+        return 'ckanext-iieg_theme'
+
+    def i18n_locales(self):
+        return ['en', 'es']
 
     def show_most_popular_groups():
         '''Return the value of the most_popular_groups config setting.

@@ -21,7 +21,7 @@ class Sistemas(Base):
     id = Column(Integer, primary_key=True, index=True)  
     titulo = Column(String, nullable=False)
     descripcion = Column(Text, nullable=False)
-    link = Column(String, nullable=False)
+    link = Column(String, nullable=True)
     tipo = Column(
         Enum(
             TipoSistemaEnum,
