@@ -1,2 +1,2 @@
-title,description,link_interno,slug_custom,description_meta,keywords_meta,parent_id,slug
-Transparencia,Seccion de transparencia institucional.,true,transparencia,Informacion publica y obligaciones de transparencia.,"transparencia,datos abiertos,gestion publica",,transparencia
+title,description,link_interno,activar,slug_custom,description_meta,keywords_meta,order,slug
+Transparencia,Seccion de transparencia institucional.,true,true,transparencia,Informacion publica y obligaciones de transparencia.,"transparencia,datos abiertos,gestion publica",1,transparencia
