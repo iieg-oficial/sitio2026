@@ -14,7 +14,7 @@ from sqlalchemy import select
 sys.path.append(str(Path(__file__).parent.parent))
 
 from app.core.database import SessionLocal
-from app.models import Posts, Subject
+from app.models import Posts, Subject, GalleryImage
 
 
 class TipTapHTMLParser(HTMLParser):
@@ -280,6 +280,7 @@ def normalize_row(row: dict) -> dict:
         "slug": slug,
         "tema_ids": tema_ids,
         "tema_slugs": tema_slugs,
+        "gallery_images": split_values(row.get("gallery_images")),
     }
 
 
@@ -320,9 +321,22 @@ def resolve_temas(db, tema_ids: list[int], tema_slugs: list[str]) -> list[Subjec
     return temas
 
 
+def apply_gallery_images(post: Posts, urls: list[str]) -> None:
+    """Reemplaza las imágenes de galería del post con la lista de URLs dada.
+
+    Si la lista está vacía, las imágenes existentes se eliminan (cascade).
+    El orden de las URLs se conserva como atributo `order`.
+    """
+    post.gallery_images = [
+        GalleryImage(url=url, order=idx)
+        for idx, url in enumerate(urls)
+    ]
+
+
 def build_or_update_post(db, payload: dict, mode: str) -> tuple[Posts, str]:
     existing = db.execute(select(Posts).where(Posts.slug == payload["slug"])).scalars().first()
     temas = resolve_temas(db, payload["tema_ids"], payload["tema_slugs"])
+    gallery_urls = payload.get("gallery_images", [])
 
     if existing and mode == "insert":
         payload["slug"] = unique_slug(db, payload["slug"])
@@ -337,6 +351,7 @@ def build_or_update_post(db, payload: dict, mode: str) -> tuple[Posts, str]:
         existing.claves = payload["claves"]
         existing.video = payload["video"]
         existing.temas = temas
+        apply_gallery_images(existing, gallery_urls)
         return existing, "updated"
 
     post = Posts(
@@ -350,6 +365,7 @@ def build_or_update_post(db, payload: dict, mode: str) -> tuple[Posts, str]:
         slug=unique_slug(db, payload["slug"]),
     )
     post.temas = temas
+    apply_gallery_images(post, gallery_urls)
     db.add(post)
     return post, "created"
 
