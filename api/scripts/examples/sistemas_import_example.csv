@@ -1,2 +1,2 @@
-titulo,descripcion,link,tipo,imagen,claves,slug,destacado,orden
-Tablero economico,Visualizacion de indicadores economicos clave.,https://iieg.gob.mx/tablero-economico,plataforma,/media/sistemas/tablero-economico.jpg,tablero|economia|indicadores,tablero-economico,true,1
+titulo,descripcion,link,tipo,imagen,claves,slug,destacado,orden,temas_slugs
+Tablero economico,Visualizacion de indicadores economicos clave.,https://iieg.gob.mx/tablero-economico,plataforma,/media/sistemas/tablero-economico.jpg,tablero|economia|indicadores,tablero-economico,true,1,actividad-economica-e-industria

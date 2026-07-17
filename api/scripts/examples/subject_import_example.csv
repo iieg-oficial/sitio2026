@@ -1,42 +1,51 @@
 titulo,descripcion,parent_id,slug
-Límites administrativos,,4,
-Infraestructura vial,,4,
-Uso de suelo y vegetación,,4,
-Espacios públicos,,4,
-Movilidad y transporte,,4,
-Clima,,5,
-Agua,,5,
-Ecosistemas y biodiversidad,,5,
-"Suelos, erosión y geología",,5,
-Población y estructura,,6,
-Fecundidad y natalidad,,6,
-Grupos de edad,,6,
-Migración,,6,
-Empleo y ocupación,,7,
-Actividad económica e industria,,7,
-Comercio,,7,
-Comercio exterior,,7,
-Inflación y precios,,7,
-Remesas,,7,
-Sector primario,,7,
-Pobreza,,8,
-Marginación,,8,
-Igualdad de género,,8,
-Alimentación,,8,
-Vivienda,,8,
-Establecimientos y cobertura,,9,
-Mortalidad por causa,,9,
-Acceso a servicios de salud,,9,
-Derechohabiencia,,9,
-Alfabetización y rezago,,10,
-Infraestructura educativa,,10,
-Escolarización y matrícula,,10,
-Incidencia delictiva,,11,
-Personas desaparecidas,,11,
-Victimización y percepción,,11,
-Acceso a la justicia,,11,
-Reinserción social,,11,
-Finanzas públicas,,12,
-Derechos humanos,,12,
-Derechos ciudadanos,,12,
-Participación ciudadana,,12,
+Territorio,,4,territorio
+Medio Ambiente,,4,medio-ambiente
+Poblacion,,4,poblacion
+Economia,,4,economia
+Bienestar Social,,4,bienestar-social
+Salud,,4,salud
+Educacion,,4,educacion
+Seguridad,,4,seguridad
+Gobierno y Participacion,,4,gobierno-y-participacion
+Limites administrativos,,4,limites-administrativos
+Infraestructura vial,,4,infraestructura-vial
+Uso de suelo y vegetacion,,4,uso-de-suelo-y-vegetacion
+Espacios publicos,,4,espacios-publicos
+Movilidad y transporte,,4,movilidad-y-transporte
+Clima,,5,clima
+Agua,,5,agua
+Ecosistemas y biodiversidad,,5,ecosistemas-y-biodiversidad
+Suelos erosion y geologia,,5,suelos-erosion-y-geologia
+Poblacion y estructura,,6,poblacion-y-estructura
+Fecundidad y natalidad,,6,fecundidad-y-natalidad
+Grupos de edad,,6,grupos-de-edad
+Migracion,,6,migracion
+Empleo y ocupacion,,7,empleo-y-ocupacion
+Actividad economica e industria,,7,actividad-economica-e-industria
+Comercio,,7,comercio
+Comercio exterior,,7,comercio-exterior
+Inflacion y precios,,7,inflacion-y-precios
+Remesas,,7,remesas
+Sector primario,,7,sector-primario
+Pobreza,,8,pobreza
+Marginacion,,8,marginacion
+Igualdad de genero,,8,igualdad-de-genero
+Alimentacion,,8,alimentacion
+Vivienda,,8,vivienda
+Establecimientos y cobertura,,9,establecimientos-y-cobertura
+Mortalidad por causa,,9,mortalidad-por-causa
+Acceso a servicios de salud,,9,acceso-a-servicios-de-salud
+Derechohabiencia,,9,derechohabiencia
+Alfabetizacion y rezago,,10,alfabetizacion-y-rezago
+Infraestructura educativa,,10,infraestructura-educativa
+Escolarizacion y matricula,,10,escolarizacion-y-matricula
+Incidencia delictiva,,11,incidencia-delictiva
+Personas desaparecidas,,11,personas-desaparecidas
+Victimizacion y percepcion,,11,victimizacion-y-percepcion
+Acceso a la justicia,,11,acceso-a-la-justicia
+Reinsercion social,,11,reinsercion-social
+Finanzas publicas,,12,finanzas-publicas
+Derechos humanos,,12,derechos-humanos
+Derechos ciudadanos,,12,derechos-ciudadanos
+Participacion ciudadana,,12,participacion-ciudadana

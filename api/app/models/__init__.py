@@ -57,5 +57,4 @@ __all__ = [
     "Banner",
     "Contacto",
     "Cuadernillo",
-    "Proyectos",
 ]

@@ -7,7 +7,7 @@ MODEL_NAME = "Documentacion"
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Importador para el modelo Documentacion")
+    parser = argparse.ArgumentParser(description="Importador genérico para el modelo Documentacion")
     parser.add_argument("source", help="Ruta al archivo .json o .csv")
     parser.add_argument(
         "--mode",

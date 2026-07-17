@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from slugify import slugify
-from sqlalchemy import select
+from sqlalchemy import select, inspect
 from sqlalchemy.sql.sqltypes import Boolean, Date, DateTime, Enum, Integer, JSON
 
 sys.path.append(str(Path(__file__).parent.parent))
@@ -204,6 +204,78 @@ def find_row_value(row: dict[str, Any], field_name: str) -> Any:
     return None
 
 
+def split_values(value: object) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    return [item.strip() for item in str(value).split("|") if item.strip()]
+
+
+def resolve_relationships(db, model_cls, row: dict[str, Any]) -> dict[str, Any]:
+    relationships_payload = {}
+    mapper = inspect(model_cls)
+    
+    for rel in mapper.relationships:
+        rel_name = rel.key
+        target_cls = rel.mapper.class_
+        
+        candidates_slugs = [f"{rel_name}_slugs"]
+        if rel_name.endswith("es"):
+            candidates_slugs.append(f"{rel_name[:-2]}_slugs")
+        if rel_name.endswith("s"):
+            candidates_slugs.append(f"{rel_name[:-1]}_slugs")
+            
+        candidates_ids = [c.replace("_slugs", "_ids") for c in candidates_slugs]
+        
+        slugs_val = None
+        for c in candidates_slugs:
+            slugs_val = find_row_value(row, c)
+            if slugs_val is not None:
+                break
+                
+        ids_val = None
+        for c in candidates_ids:
+            ids_val = find_row_value(row, c)
+            if ids_val is not None:
+                break
+                
+        if slugs_val is None and ids_val is None:
+            continue
+            
+        slugs = split_values(slugs_val)
+        ids = [int(i) for i in split_values(ids_val) if str(i).isdigit()]
+        
+        items = []
+        if ids:
+            items_by_id = db.execute(select(target_cls).where(target_cls.id.in_(ids))).scalars().all()
+            found_ids = {item.id for item in items_by_id}
+            missing_ids = [i for i in ids if i not in found_ids]
+            if missing_ids:
+                print(f"ADVERTENCIA: No existen {rel_name} con id: {missing_ids}")
+            items.extend(items_by_id)
+            
+        if slugs:
+            if hasattr(target_cls, "slug"):
+                items_by_slug = db.execute(select(target_cls).where(target_cls.slug.in_(slugs))).scalars().all()
+                found_slugs = {item.slug for item in items_by_slug}
+                missing_slugs = [s for s in slugs if s not in found_slugs]
+                if missing_slugs:
+                    print(f"ADVERTENCIA: No existen {rel_name} con slug: {missing_slugs}")
+                
+                existing_ids = {item.id for item in items}
+                items.extend([item for item in items_by_slug if item.id not in existing_ids])
+            else:
+                print(f"ADVERTENCIA: {target_cls.__name__} no tiene campo 'slug' para resolver {rel_name}")
+                
+        if not rel.uselist:
+            relationships_payload[rel_name] = items[0] if items else None
+        else:
+            relationships_payload[rel_name] = items
+            
+    return relationships_payload
+
+
 def build_payload(model_cls, row: dict[str, Any]) -> dict[str, Any]:
     payload: dict[str, Any] = {}
     columns = model_cls.__table__.columns
@@ -259,8 +331,8 @@ def unique_slug(db, model_cls, requested_slug: str, current_id: int | None = Non
         counter += 1
 
 
-def upsert_row(db, model_cls, payload: dict[str, Any], mode: str, key_field: str | None):
-    if not payload:
+def upsert_row(db, model_cls, payload: dict[str, Any], relationships_payload: dict[str, Any], mode: str, key_field: str | None):
+    if not payload and not relationships_payload:
         raise ValueError("El registro no contiene columnas válidas para importar")
 
     existing = None
@@ -279,12 +351,16 @@ def upsert_row(db, model_cls, payload: dict[str, Any], mode: str, key_field: str
     if existing:
         for field, value in payload.items():
             setattr(existing, field, value)
+        for field, value in relationships_payload.items():
+            setattr(existing, field, value)
         return existing, "updated"
 
     if "slug" in payload:
         payload["slug"] = unique_slug(db, model_cls, payload["slug"])
 
     instance = model_cls(**payload)
+    for field, value in relationships_payload.items():
+        setattr(instance, field, value)
     db.add(instance)
     return instance, "created"
 
@@ -315,7 +391,8 @@ def import_model_data(
     try:
         for index, row in enumerate(rows, start=1):
             payload = build_payload(model_cls, row)
-            _, action = upsert_row(db, model_cls, payload, mode, effective_key_field)
+            relationships_payload = resolve_relationships(db, model_cls, row)
+            _, action = upsert_row(db, model_cls, payload, relationships_payload, mode, effective_key_field)
 
             if action == "created":
                 created += 1
