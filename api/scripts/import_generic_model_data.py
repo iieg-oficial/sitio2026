@@ -276,6 +276,59 @@ def resolve_relationships(db, model_cls, row: dict[str, Any]) -> dict[str, Any]:
     return relationships_payload
 
 
+def resolve_fk_slugs(db, model_cls, row: dict[str, Any], payload: dict[str, Any]) -> None:
+    """Resuelve columnas `{fk_field}_slug` a su ID correspondiente.
+
+    Por ejemplo, si el modelo tiene `parent_id` (FK a la misma tabla u otra),
+    y el CSV contiene `parent_slug`, busca el registro por slug y asigna el ID.
+    Esto permite usar slugs legibles en los CSV en lugar de IDs numéricos.
+    """
+    columns = {col.name: col for col in model_cls.__table__.columns}
+    mapper = inspect(model_cls)
+    fk_map: dict[str, Any] = {}  # fk_col_name -> target ORM class
+
+    for column in model_cls.__table__.columns:
+        for fk in column.foreign_keys:
+            target_table_name = fk.column.table.name
+            # Buscar la clase ORM que corresponde a esa tabla
+            for mapped_cls in Base.__subclasses__():
+                if hasattr(mapped_cls, "__table__") and mapped_cls.__table__.name == target_table_name:
+                    fk_map[column.name] = mapped_cls
+                    break
+
+    for fk_col_name, target_cls in fk_map.items():
+        # Sólo actuar si el CSV NO proveyó el ID directamente
+        if payload.get(fk_col_name) is not None:
+            continue
+
+        # Buscar columna `{fk_col_name}_slug` o `{base}_slug` (quitar sufijo _id)
+        slug_candidates = [f"{fk_col_name}_slug"]
+        if fk_col_name.endswith("_id"):
+            slug_candidates.append(f"{fk_col_name[:-3]}_slug")
+
+        slug_val = None
+        for candidate in slug_candidates:
+            slug_val = find_row_value(row, candidate)
+            if slug_val is not None:
+                break
+
+        if not slug_val or str(slug_val).strip() == "":
+            continue
+
+        slug_str = str(slug_val).strip()
+        if not hasattr(target_cls, "slug"):
+            print(f"ADVERTENCIA: {target_cls.__name__} no tiene campo 'slug'; no se puede resolver {fk_col_name}")
+            continue
+
+        found = db.execute(select(target_cls).where(target_cls.slug == slug_str)).scalars().first()
+        if found is None:
+            raise ValueError(
+                f"No existe {target_cls.__name__} con slug='{slug_str}' "
+                f"(referenciado en '{fk_col_name}_slug')"
+            )
+        payload[fk_col_name] = found.id
+
+
 def build_payload(model_cls, row: dict[str, Any]) -> dict[str, Any]:
     payload: dict[str, Any] = {}
     columns = model_cls.__table__.columns
@@ -391,6 +444,7 @@ def import_model_data(
     try:
         for index, row in enumerate(rows, start=1):
             payload = build_payload(model_cls, row)
+            resolve_fk_slugs(db, model_cls, row, payload)
             relationships_payload = resolve_relationships(db, model_cls, row)
             _, action = upsert_row(db, model_cls, payload, relationships_payload, mode, effective_key_field)
 
