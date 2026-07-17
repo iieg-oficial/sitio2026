@@ -188,7 +188,7 @@ export default function Sistemas() {
                 <Form.Item name="descripcion" label="Descripción" rules={[{ required: true }]}>
                     <RichTextEditor />
                 </Form.Item>
-                <Form.Item name="link" label="Link" rules={[{ required: true }]}>
+                <Form.Item name="link" label="Link" rules={[{ required: false }]}>
                     <Input />
                 </Form.Item>
                 <Form.Item name="tipo" label="Tipo" rules={[{ required: true }]}>
