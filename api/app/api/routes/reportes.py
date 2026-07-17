@@ -162,35 +162,3 @@ async def eliminar_reporte(
     return reporte
 
 
-@router.get("/periocidad")
-def listar_periocidades():
-    return {
-        "periocidad": {
-            periocidad.name: periocidad.value for periocidad in PeriocidadEnum
-        }
-    }
-
-
-@router.get("/meses")
-def listar_meses():
-    return {
-        "meses": {
-            mes.name: mes.value for mes in MesEnum
-        }
-    }
-
-
-@router.get("/slug/{slug}", response_model=ReporteOut)
-def get_reporte_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener un reporte por slug"""
-    reporte = db.execute(
-        select(Reportes).where(Reportes.slug == slug)
-    ).scalars().first()
-    if not reporte:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Reporte no encontrado"
-        )
-    return reporte
