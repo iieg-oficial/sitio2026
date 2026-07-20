@@ -128,7 +128,9 @@ function BusquedaGlobal() {
                             <TrackedLink to={link} key={result.id}>
                                 <div key={result.id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
                                     <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#6618a2]">
-                                        {result.type}
+                                        {result.type == "Cursos" ?
+                                            result.tipo_curso : result.type
+                                        }
                                     </p>
 
                                     {result.description && (

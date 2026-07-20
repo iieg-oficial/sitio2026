@@ -54,7 +54,7 @@ export default function Convocatorias() {
                 <meta property="og:image" content={singleConvocatoria.postlink ? singleConvocatoria.postlink : "/demo.jpg"} />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
-                <meta name="keywords" content={singleCapacitacion.clave} />
+                <meta name="keywords" content={singleConvocatoria.clave} />
                 {/* Twitter Cards (Específico para X / Twitter) */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={singleConvocatoria.titulo} />
