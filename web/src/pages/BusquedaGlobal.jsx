@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import HeaderSearch from '@components/HeaderSearch'
 import { searchSiteContent } from '@services/globalSearchService'
 import { useDebounce } from '@hooks/useDebounce'
+import TrackedLink from '@components/blocks/boton'
 
 function BusquedaGlobal() {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -64,7 +65,7 @@ function BusquedaGlobal() {
     }
 
     return (
-        <section className="container mx-auto px-4 py-8">
+        <section className="container mx-auto px-5 py-15">
             <Helmet>
                 <title>Busqueda general del sitio</title>
                 <meta name="description" content="Resultados del buscador global del portal" />
@@ -108,30 +109,58 @@ function BusquedaGlobal() {
             )}
 
             {!loading && results.length > 0 && (
-                <ul className="space-y-4">
-                    {results.map((result) => (
-                        <li key={result.id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#6618a2]">{result.type}</p>
+                <div>
+                    {results.map((result) => {
+                        
+                        const tipovalido = ["Flashes", "Comunidad", "Cursos", "Mapa", "Pagina"].includes(result.type);
+                        {console.log("resultados", result)}
 
-                            {result.external ? (
-                                <a
-                                    href={result.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="text-lg font-semibold text-gray-900 hover:text-[#6618a2]"
-                                >
-                                    {result.title}
+                        if (tipovalido){
+
+                            const url = result.url
+                            const link = result.tipo_curso == "capacitacion" ? `/capacitaciones/${url.substring(url.lastIndexOf('/') + 1)}` 
+                            : result.tipo_curso == "convocatoria" ? `/convocatoria/${url.substring(url.lastIndexOf('/') + 1)}`
+                            : result.url;
+
+                            {console.log("link", link)}
+                        
+                        return (                            
+                            <TrackedLink to={link} key={result.id}>
+                                <div key={result.id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+                                    <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#6618a2]">
+                                        {result.type}
+                                    </p>
+
+                                    {result.description && (
+                                        <p className="mt-2 text-sm text-gray-600">{result.description}</p>
+                                    )}
+                                </div>
+                            </TrackedLink>
+                        );
+
+                        } else {
+                            const link = result.archivo !== "" ? result.archivo 
+                                : result.link !== ""    ? result.link 
+                                : result.enlace !== ""  ? result.enlace 
+                                : result.url;
+                            return (
+                                <a href={link} key={result.id} target="_blank" rel="noopener noreferrer">
+                                    <div key={result.id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+                                        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#6618a2]">
+                                            {result.type}
+                                        </p>
+                                        <p className="font-medium text-gray-900">{result.title}</p>
+                                        {result.description && (
+                                            <p className="mt-2 text-sm text-gray-600">{result.description}</p>
+                                        )}
+                                    </div>
                                 </a>
-                            ) : (
-                                <Link to={result.url} className="text-lg font-semibold text-gray-900 hover:text-[#6618a2]">
-                                    {result.title}
-                                </Link>
-                            )}
+                            );
+                        }
 
-                            {result.description && <p className="mt-2 text-sm text-gray-600">{result.description}</p>}
-                        </li>
-                    ))}
-                </ul>
+
+                    })}
+                </div>
             )}
         </section>
     )
