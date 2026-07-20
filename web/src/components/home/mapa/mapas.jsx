@@ -31,11 +31,11 @@ export default function Mapas() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 extra:max-w-[1980px] mx-auto w-full">
             {mapasFiltrados.map(mapa => (
-                <a href={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
+                <TrackedLink to={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
                     <div key={mapa.id} className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">                    
                         <img src={mapa.imagen ? mapa.imagen : "/demo.jpg"} alt={mapa.titulo} className='image-mapa rounded-4xl'/>
-                        <div className='info px-5'>
-                            <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
+                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
+                            
                                 <h3 className='text-white'>{mapa.titulo}</h3>
                                 
                                 <div className='flex mb-5 mt-8 gap-2'>  
@@ -43,10 +43,10 @@ export default function Mapas() {
                                     {mapa.tipo ? <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>{mapa.tipo}</p> : null}                                    
                                 </div>
                                 
-                            </TrackedLink>
+                            
                         </div>
                     </div>
-                </a>
+                </TrackedLink>
             ))}
         </div>
     )
