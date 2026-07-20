@@ -8,7 +8,10 @@ class SearchResultItem(BaseModel):
     description: str = ""
     url: str
     external: bool = False
-
+    archivo: str = ""
+    link: str = ""
+    enlace: str = ""
+    tipo_curso: str = ""
 
 class SearchResponse(BaseModel):
     query: str
