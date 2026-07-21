@@ -143,8 +143,31 @@ class IiegThemePlugin(plugins.SingletonPlugin):
                 'get_iieg_group_image': self._get_group_image_by_package,
                 'iieg_theme_all_groups': get_all_groups_list,
                 'iieg_theme_get_localized_url': get_localized_current_url,
+                'total_datasets': self._obtener_total_datasets,
+                'iieg_datasets_populares': self._obtener_datasets_populares
                 }
     
+    def _obtener_total_datasets(self):
+        try:
+            # Llamada segura a la API interna de CKAN
+            result = toolkit.get_action('package_search')({}, {'q': '*:*', 'rows': 0})
+            return result['count']
+        except Exception:
+            return 0
+
+    def _obtener_datasets_populares(self, limite=5):
+        try:
+            context = {'ignore_auth': True}
+            data_dict = {
+                'q': '*:*', 
+                'sort': 'views_total desc', 
+                'rows': int(limite)
+            }
+            result = toolkit.get_action('package_search')(context, data_dict)
+            return result.get('results', [])
+        except Exception:
+            return []
+
     # IConfigDeclaration
 
     def declare_config_options(self, declaration: Declaration, key: Key):
