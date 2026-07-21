@@ -144,6 +144,8 @@ services:
       args:
         CKAN_BASE_IMAGE: ckan/ckan-base:2.11.5
     container_name: portal-ckan-dev
+    command: ckan -c /srv/app/ckan.ini run -H 0.0.0.0 -p 5000
+    entrypoint: ["/bin/sh", "-c", "python3 /srv/app/prerun.py && ckan -c /srv/app/ckan.ini run -H 0.0.0.0"]
     ports:
       - "${CKAN_PORT:?CKAN_PORT is required}:5000"
     depends_on:
@@ -168,8 +170,11 @@ services:
       CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME:?CKAN_SYSADMIN_NAME is required}
       CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD:?CKAN_SYSADMIN_PASSWORD is required}
       CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
-      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg_theme
+      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg_theme stats
       CKAN__ROOT_PATH: /datos-abiertos/{{LANG}}
+      CKAN_TRACKING_ENABLED: "True"
+      CKAN___SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
+      CKANEXT__S3FILESTORE__SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
       CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
       CKANEXT__S3FILESTORE__REGION_NAME: us-east-1
