@@ -33,6 +33,10 @@ export default function Mapas() {
     if (!singleMapa) {
         return <div>Cargando ...</div>;
     }
+
+    const original = singleMapa.imagen
+    const thumb = original.substring(original.lastIndexOf('/') + 1);
+                        
   return (
     <>    
         <Helmet>
@@ -52,7 +56,8 @@ export default function Mapas() {
             <div className='md:col-span-1'><Backlink /></div>
             <main className='md:col-span-11 grid grid-cols-1 md:px-2 lg:grid-cols-12 gap-6'>
                 <div className='col-span-1 lg:col-span-5'>
-                    <img src={singleMapa.imagen ? singleMapa.imagen : "/demo.jpg"} alt={singleMapa.titulo} className='rounded-4xl w-full' />
+                    {/*<img src={singleMapa.imagen ? singleMapa.imagen : "/demo.jpg"} alt={singleMapa.titulo} className='rounded-4xl w-full' />*/}                    
+                    <img src={singleMapa.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=400` : "/demo.jpg"} alt={singleMapa.titulo} className='image-mapa rounded-4xl'/>                                                                     
                 </div>
                 <div className='col-span-1 lg:col-span-7'>
                     <h1 className='text-center lg:text-left text-primary text-28'>{singleMapa.titulo}</h1>

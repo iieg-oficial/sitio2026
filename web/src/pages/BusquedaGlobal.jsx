@@ -122,7 +122,6 @@ function BusquedaGlobal() {
                             : result.tipo_curso == "convocatoria" ? `/convocatoria/${url.substring(url.lastIndexOf('/') + 1)}`
                             : result.url;
 
-                            {console.log("link", link)}
                         
                         return (                            
                             <TrackedLink to={link} key={result.id}>

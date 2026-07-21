@@ -95,6 +95,7 @@ export default function Sistemas() {
         </button>
     );
 
+
     return (
         <div className='container mx-auto px-2'>
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo buscas?" />
@@ -123,36 +124,41 @@ export default function Sistemas() {
 
                     {filteredByTab.length > 0 && (
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            {currentSystems.map((sistema) => (
-                                <a href={sistema.link} target="_blank" rel="noopener noreferrer" key={sistema.id}>
-                                <div key={sistema.id} className='mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 cursor-pointer hover:border-primary hover:border group'>
-                                    <div className='md:col-span-2'>
-                                        <img
-                                            src={sistema.imagen ? sistema.imagen : '/demo.jpg'}
-                                            alt={sistema.titulo}
-                                            className="mb-3 h-auto w-full rounded-lg object-cover"
-                                        />
-                                    </div>
-                                    <div className='md:col-span-4'>
-                                        <h3 className="mb-3 text-primary">
-                                            {sistema.titulo}
-                                        </h3>
-                                        <div className="diez" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
-                                    </div>
-                                    <div className='md:col-span-6'>
-                                        {sistema.tipo && (
-                                            <span className={`e${sistema.tipo} text-titulo rounded-2xl px-4 py-2 text-14`}>
-                                                {sistema.tipo.replace('-', ' ')}
-                                            </span>
-                                        )}
-                                        
-                                        <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
-                                            <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                            {currentSystems.map((sistema) => {
+                                const original = sistema.imagen
+                                const thumb = original.substring(original.lastIndexOf('/') + 1);
+                                return (
+                                    <a href={sistema.link} target="_blank" rel="noopener noreferrer" key={sistema.id}>
+                                    <div key={sistema.id} className='mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 cursor-pointer hover:border-primary hover:border group'>
+                                        <div className='md:col-span-2'>
+                                            <img
+                                                src={sistema.imagen ? sistema.imagen : '/demo.jpg'}
+                                                {/* src={sistema.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/sistemas/${thumb}?w=400` : '/demo.jpg'}*/}
+                                                alt={sistema.titulo}
+                                                className="mb-3 h-auto w-full rounded-lg object-cover"
+                                            />
+                                        </div>
+                                        <div className='md:col-span-4'>
+                                            <h3 className="mb-3 text-primary">
+                                                {sistema.titulo}
+                                            </h3>
+                                            <div className="diez" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
+                                        </div>
+                                        <div className='md:col-span-6'>
+                                            {sistema.tipo && (
+                                                <span className={`e${sistema.tipo} text-titulo rounded-2xl px-4 py-2 text-14`}>
+                                                    {sistema.tipo.replace('-', ' ')}
+                                                </span>
+                                            )}
+                                            
+                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                                <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                </a>
-                            ))}
+                                    </a>
+                                );
+                            })}
                         </div>
                     )}
 

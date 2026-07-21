@@ -202,40 +202,36 @@ export default function Mapas() {
             {/* ── Grid de resultados ── */}
             {!loading && currentItems.length > 0 && (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 my-15">
-                    {currentItems.map(mapa => (
-                        <a href={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
-                                            <div key={mapa.id} className="p-4 overflow-hidden mapa h-96 relative rounded-4xl">                    
-                                                
-                                                
-                                                {mapa.imagen && (
-                                                    <img src={mapa.imagen} alt={mapa.titulo} />
-                                                )}
-                                                <img src="https://iieg.jalisco.gob.mx/acervo/portal/mapas/demo.jpg" alt="pruebasimg" />
-                                                <div className='info'>
-                                                    <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
-                                                        <h3 className='text-white'>{mapa.titulo}</h3>
-                                                        {/*
+                    {currentItems.map(mapa => {
 
-                                                        https://iieg.jalisco.gob.mx/acervo/portal/geografia-medio-ambiente/mapas-riesgos/14001_riesgo_geolog.jpg
-                                                        https://iieg.jalisco.gob.mx/api/administrador/acervo/thumb/1/geografia-medio-ambiente/mapas-riesgos/14001_riesgo_geolog.jpg?w=120
-                                                        
-                                                        http://localhost:18080/acervo/portal/1b4a9dd7-59a5-402c-827b-3d113a074259.png
-                                                        http://localhost:18080/api/administrador/acervo/thumb/1/1b4a9dd7-59a5-402c-827b-3d113a074259.png
-                                                        */}
-                                                        <div className='flex mb-4 gap-2'> 
-                                                            {mapa.anyo ? (
-                                                                <p className='bg-card text-titulo rounded-2xl px-4 py-2 text-14'>{mapa.anyo}</p>
-                                                            ) : null}
-                                                            {mapa.tipo ? (
-                                                                <p className='bg-etiqueta-sec text-primary rounded-2xl px-4 py-2 text-14'>{mapa.tipo}</p>
-                                                            ) : null}
-                                                        </div>
-                                                        
-                                                    </TrackedLink>
+                        const original = mapa.imagen
+                        const thumb = original.substring(original.lastIndexOf('/') + 1);
+                        return (
+                            <a href={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
+                                                <div key={mapa.id} className="p-4 overflow-hidden mapa h-96 relative rounded-4xl">                    
+                                                    
+
+                                                    {mapa.imagen && (
+                                                        <img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280`} alt={mapa.titulo} />
+                                                    )}
+                                                    <div className='info'>
+                                                        <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
+                                                            <h3 className='text-white'>{mapa.titulo}</h3>
+                                                            <div className='flex mb-4 gap-2'> 
+                                                                {mapa.anyo ? (
+                                                                    <p className='bg-card text-titulo rounded-2xl px-4 py-2 text-14'>{mapa.anyo}</p>
+                                                                ) : null}
+                                                                {mapa.tipo ? (
+                                                                    <p className='bg-etiqueta-sec text-primary rounded-2xl px-4 py-2 text-14'>{mapa.tipo}</p>
+                                                                ) : null}
+                                                            </div>
+                                                            
+                                                        </TrackedLink>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </a>
-                    ))}
+                            </a>
+                        );
+                    })}     
                 </div>
             )}
 
@@ -252,7 +248,8 @@ export default function Mapas() {
                 onPageChange={handlePageClick}
                 containerClassName={"pagination"}
                 activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / itemsPerPage)}
+                forcePage={Math.floor(itemOffset / ITEMS_PER_PAGE
+)}
             />
             )}
         </div>

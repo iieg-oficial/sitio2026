@@ -30,10 +30,16 @@ export default function Mapas() {
     
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 extra:max-w-[1980px] mx-auto w-full">
-            {mapasFiltrados.map(mapa => (
+            {mapasFiltrados.map((mapa) => {
+                
+                const original = mapa.imagen
+                const thumb = original.substring(original.lastIndexOf('/') + 1);
+
+                return (
                 <TrackedLink to={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
-                    <div key={mapa.id} className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">                    
-                        <img src={mapa.imagen ? mapa.imagen : "/demo.jpg"} alt={mapa.titulo} className='image-mapa rounded-4xl'/>
+                    <div key={mapa.id} className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
+                
+                        <img src={mapa.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=400` : "/demo.jpg"} alt={mapa.titulo} className='image-mapa rounded-4xl'/>                                                
                         <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
                             
                                 <h3 className='text-white'>{mapa.titulo}</h3>
@@ -47,7 +53,8 @@ export default function Mapas() {
                         </div>
                     </div>
                 </TrackedLink>
-            ))}
+                );
+            })}
         </div>
     )
 }
