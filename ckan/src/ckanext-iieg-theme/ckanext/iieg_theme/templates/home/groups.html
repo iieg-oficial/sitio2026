@@ -1,0 +1,26 @@
+<div class="featured-groups container-fluid">
+    <div class="restricted-max-width">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+            {% for group in groups %}
+                <div class="group-container col-xs-12 col-sm-4 col-md-3 invisible {{ 'with-edit-button' if can_update else '' }}">
+                    <a href="{{ h.url_for('group_read', action='read', id=group.name) }}">
+                    
+                    <div class="group ">
+                        <div class="group-text">
+                            <img src="{{ group.image_display_url or h.url_for_static('/base/images/placeholder-group.png') }}" alt="" data-replace="svg">                            
+
+                            <div class="group-table">
+                                <div class="group-cell">
+                                    {{ group.display_name }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    </a>
+                    
+                </div>
+            {%- endfor -%}
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 export const pageComponentMap = {
-    "blog": ['blog'],
+    "comunidad": ['blog'],
     "convocatorias": ['convocatorias'],
     "capacitaciones": ['capacitaciones'],
     "mapas-historicos": ['mapas'],
+    "flashes": ['flashes'],
 };

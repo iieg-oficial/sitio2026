@@ -1,6 +1,6 @@
 export const pageMap = {
-    "conocenos": ['informacion', 'mision_vision','valores', 'normatividad', 'plan_institucional', 'plan_trabajo'],
-    "organigrama": ['director', 'directorio'],
+    "conocenos": ['informacion', 'mision_vision','valores', 'plan_institucional', 'plan_trabajo','normatividad'],
+    "organigrama": ['organigrama','director'],
     "organos-de-gobierno": ['organos'],
     "sistema-institucional-de-archivo": ['archivo'],
     "contabilidad-gubernamental": ['contabilidad'],

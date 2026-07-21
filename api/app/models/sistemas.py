@@ -12,9 +12,8 @@ sistema_temas = Table(
 
 class TipoSistemaEnum(str, enum.Enum):
     plataforma = "plataforma"
-    datos = "datos-recientes"
+    datos_recientes = "datos-recientes"
     estadistica = "estadistica"
-    otro = "otro"
 
 class Sistemas(Base):
     __tablename__ = "sistemas"
@@ -22,8 +21,15 @@ class Sistemas(Base):
     id = Column(Integer, primary_key=True, index=True)  
     titulo = Column(String, nullable=False)
     descripcion = Column(Text, nullable=False)
-    link = Column(String, nullable=False)
-    tipo = Column(Enum(TipoSistemaEnum), nullable=False)
+    link = Column(String, nullable=True)
+    tipo = Column(
+        Enum(
+            TipoSistemaEnum,
+            values_callable=lambda enum: [e.value for e in enum],
+            name="tiposistemaenum",
+        ),
+        nullable=False,
+    )
     imagen = Column(String, nullable=True)
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
@@ -36,4 +42,6 @@ class Sistemas(Base):
         back_populates="sistemas",
         lazy="selectin",
     )
+
+    documentacion = relationship("Documentacion", secondary="documentacion_sistemas", back_populates="sistemas")
     

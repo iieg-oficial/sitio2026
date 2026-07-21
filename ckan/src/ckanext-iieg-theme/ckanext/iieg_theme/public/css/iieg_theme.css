@@ -1,0 +1,229 @@
+/*
+ * ============================================================
+ *  Tema IIEG para CKAN — Estilos base
+ * ============================================================
+ */
+
+/* ---------- Variables de color institucional IIEG ---------- */
+:root {
+  --iieg-primary:     #5c2472;   /* Azul institucional */
+  --iieg-secondary:   #ff8300;   /* Azul secundario */
+  --iieg-accent:      #172a55;   /* Naranja acento */
+  --iieg-bg:          #fff;   /* Fondo general */
+  --iieg-text:        #465055;   /* Texto principal */  
+  --iieg-white:       #ffffff;
+}
+
+/* =====================================================
+   The "account masthead" bar across the top of the site
+   ===================================================== */
+
+.account-masthead {
+    background-color: var(--iieg-primary) !important;
+}
+/* The "bubble" containing the number of new notifications. */
+.account-masthead .account .notifications a span {
+  background-color: white;
+}
+
+.account-masthead .account ul li{
+  border: none !important;
+}
+/* The text and icons in the user account info. */
+.account-masthead .account ul li a {
+  color: white;
+}
+/* The user account info text and icons, when the user's pointer is hovering
+   over them. */
+.account-masthead .account ul li a:hover {
+  color: white;
+  background-color: var(--iieg-secondary);
+}
+
+
+/* ========================================================================
+   The main masthead bar that contains the site logo, nav links, and search
+   ======================================================================== */
+
+.masthead {
+  background-color: var(--iieg-primary) !important;
+}
+/* The "navigation pills" in the masthead (the links to Datasets,
+   Organizations, etc) when the user's pointer hovers over them. */
+.masthead .navigation .nav-pills li a:hover {
+  background-color: var(--iieg-secondary);
+  color: white;
+}
+/* The "active" navigation pill (for example, when you're on the /dataset page
+   the "Datasets" link is active). */
+.masthead .navigation .nav-pills li.active a {
+  background-color: var(--iieg-accent);
+}
+/* The "box shadow" effect that appears around the search box when it
+   has the keyboard cursor's focus. */
+.masthead input[type="text"]:focus {
+  -webkit-box-shadow: inset 0px 0px 2px 0px var(--iieg-accent);
+  box-shadow: inset 0px 0px 2px 0px var(--iieg-accent);
+}
+
+
+/* ===========================================
+   The content in the middle of the front page
+   =========================================== */
+
+/* Remove the "box shadow" effect around various boxes on the page. */
+.box {
+  box-shadow: none;
+}
+/* Remove the borders around the "Welcome to CKAN" and "Search Your Data"
+   boxes. */
+.hero .box {
+  border: none;
+}
+
+
+/* Change the colors of the "Search Your Data" box. */
+.homepage .module-search .module-content {
+  color: var(--iieg-text);
+  background-color: white;
+}
+/* Change the background color of the "Popular Tags" box. */
+.homepage .module-search .tags {
+  background-color: var(--iieg-secondary);
+}
+/* Remove some padding. This makes the bottom edges of the "Welcome to CKAN"
+   and "Search Your Data" boxes line up. */
+.module-content:last-child {
+  padding-bottom: 0px;
+}
+.homepage .module-search {
+  padding: 0px;
+}
+/* Add a border line between the top and bottom halves of the front page. */
+.homepage [role="main"] {}
+
+
+/* ====================================
+   The footer at the bottom of the site
+   ==================================== */
+
+.site-footer,
+body {
+  background-color: var(--iieg-primary) !important;
+}
+/* The text in the footer. */
+.site-footer,
+.site-footer label,
+.site-footer small {
+  color: var(--iieg-bg);
+}
+/* The link texts in the footer. */
+.site-footer a {
+  color: var(--iieg-bg);
+}
+
+.site-footer a:hover{
+  color: var(--iieg-secondary);
+}
+
+/* ---------- Botones ---------- */
+.btn-primary {
+  background-color: var(--iieg-secondary);
+  border-color: var(--iieg-secondary);
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--iieg-primary);
+  border-color: var(--iieg-primary);
+}
+
+/* ---------- Encabezados ---------- */
+h1, h2, h3 {
+  color: var(--iieg-primary);
+}
+
+/* ---------- Links ---------- */
+a {
+  color: var(--iieg-secondary);
+}
+
+a:hover {
+  color: var(--iieg-primary);
+}
+
+/* ---------- Fondo general ---------- */
+body, .main {
+  background-image: none !important;
+  background-color: var(--iieg-bg) !important;
+  color: var(--iieg-text);
+}
+
+/*grid*/
+.media-heading{
+  float:left;
+  margin-right: 10px !important;
+}
+
+.media-item, .module-item {
+  width: 20% !important;
+}
+
+.media-item span.count, .module-item span.count{
+  margin-top: 5px;
+  display: block;
+}
+.search-form{
+  width: 100%;
+  float: left;
+}
+
+#dataset-search-form .input-group,
+#group-datasets-search-form .input-group{
+  width: 65% !important;
+  float: left;
+}
+
+.list-unstyled {
+  padding-left: 0;
+  width: 100% !important;
+  float: left !important;
+}
+
+.dataset-heading{
+  font-size: 36px !important;
+}
+
+.empty, .texto{
+  font-size:18px !important;
+  color: var(--iieg-text) !important;
+}
+
+.dataset-item{
+  padding-right: 15px;
+}
+
+.dataset-item:hover{
+  border-right: 5px solid var(--iieg-primary);
+}
+.dataset-resources li a{
+  background-color: var(--iieg-secondary) !important;
+}
+
+.badge-default[href]:hover, .badge-default[href]:focus{
+  background-color: var(--iieg-accent) !important;
+}
+
+.masthead .main-navbar ul li:hover a, 
+.masthead .main-navbar ul li:focus a, .masthead .main-navbar ul li.active a,
+.account-masthead .account ul li a:hover{
+  background-color: var(--iieg-accent) !important;
+}
+
+.account-masthead .account ul li a{
+  color: #fff !important;
+}
+.masthead .main-navbar ul li a{
+  font-size: 18px !important;
+}

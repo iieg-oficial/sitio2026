@@ -30,6 +30,7 @@ from app.schemas.contacto import ContactoCreate, ContactoOut, ContactoResponse
 from app.schemas.cuadernillos import CuadernilloCreate, CuadernilloOut, CuadernilloResponse
 from app.schemas.search import SearchResultItem, SearchResponse
 
+
 __all__ = [ 
     "UsuarioCreate",
     "UsuarioUpdate",
@@ -120,5 +121,5 @@ __all__ = [
     "CuadernilloOut",
     "CuadernilloResponse",
     "SearchResultItem",
-    "SearchResponse",
+    "SearchResponse"
 ]

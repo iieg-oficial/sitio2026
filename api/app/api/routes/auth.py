@@ -73,6 +73,11 @@ async def get_current_user_info(current_user: Usuario = Depends(get_current_user
     return current_user
 
 
+@router.get("/csrf")
+async def refresh_csrf_token(current_user: Usuario = Depends(get_current_user)):
+    return {"csrf_token": crear_csrf_token(current_user.username)}
+
+
 @router.get("/verificar")
 async def verify_token(current_user: Usuario = Depends(get_current_user)):
     return {"valid": True}

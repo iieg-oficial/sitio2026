@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import parse from 'html-react-parser';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -66,7 +67,7 @@ export default function DocsIieg() {
     const handleSubmit = async (values) => {
         try {
             if (editingDoc) {
-                await api.put(`/docs_iieg/${editingDoc.id}`, values);
+                await api.patch(`/docs_iieg/${editingDoc.id}`, values);
                 message.success('Documento del IIEG actualizado exitosamente');
             } else {
                 await api.post('/docs_iieg/create', values);
@@ -90,7 +91,12 @@ export default function DocsIieg() {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
-            sorter: (a, b) => a.descripcion.localeCompare(b.descripcion)
+            render: (text) => <div style={{ maxHeight: '100px', overflow: 'hidden' }}>{parse(text)}</div>,
+            sorter: (a, b) => {
+                const cleanA = a.descripcion.replace(/<[^>]*>/g, '');
+                const cleanB = b.descripcion.replace(/<[^>]*>/g, '');
+                return cleanA.localeCompare(cleanB);
+            }
         },
         {
             title: 'Tipo',
@@ -193,7 +199,7 @@ export default function DocsIieg() {
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
-                                folder="/documentos-iieg/imagenes"
+                                folder="/documentosIieg/imagenes"
                                 label="Subir imagen"
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
@@ -226,7 +232,7 @@ export default function DocsIieg() {
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
-                                folder="/documentos-iieg/documentos"
+                                folder="/documentosIieg/documentos"
                                 label="Subir documento"
                                 onUploaded={(media) => {
                                     form.setFieldValue('documento', media.url);

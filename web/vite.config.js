@@ -8,11 +8,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, __dirname, '');
 
-    const ckanProxy = {
-        target: 'http://ckan:5000',
-        changeOrigin: true,
-    };
-
     return {
         plugins: [react()],
         root: '.',
@@ -22,21 +17,17 @@ export default defineConfig(({ mode }) => {
             strictPort: true,
             proxy: {
                 '/datos-abiertos': {
-                    ...ckanProxy,
-                    rewrite: (path) => path.replace(/^\/datos-abiertos/, '') || '/',
+                    target: 'http://ckan:5000',
+                    changeOrigin: true,
+                    rewrite: (path) => {
+                        const rewritten = path.replace(/^\/datos-abiertos(?=\/|$)/, '');
+                        return rewritten || '/';
+                    },
+                    headers: {
+                        'X-Script-Name': '/datos-abiertos',
+                        'X-Forwarded-Prefix': '/datos-abiertos',
+                    }
                 },
-                '/dataset': ckanProxy,
-                '/organization': ckanProxy,
-                '/group': ckanProxy,
-                '/tag': ckanProxy,
-                '/harvest': ckanProxy,
-                '/user': ckanProxy,
-                '/base': ckanProxy,
-                '/webassets': ckanProxy,
-                '/fanstatic': ckanProxy,
-                '/storage': ckanProxy,
-                '/uploads': ckanProxy,
-                '/api/3': ckanProxy,
                 '/api': {
                     target: 'http://api:8000',
                     changeOrigin: true,

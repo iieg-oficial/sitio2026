@@ -64,7 +64,7 @@ export default function Organos() {
     const handleSubmit = async (values) => {
         try {
             if (editingOrgano) {
-                await api.put(`/organos/${editingOrgano.id}`, values);
+                await api.patch(`/organos/${editingOrgano.id}`, values);
                 message.success('Organo actualizado correctamente');
             } else {
                 await api.post('/organos/create', values);
@@ -88,7 +88,13 @@ export default function Organos() {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
-            sorter: (a, b) => a.descripcion.localeCompare(b.descripcion)
+            sorter: (a, b) => a.descripcion.localeCompare(b.descripcion),
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'Link',

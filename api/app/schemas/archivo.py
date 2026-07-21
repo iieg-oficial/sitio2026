@@ -7,7 +7,7 @@ from app.schemas.subject import SubjectFlat
 class ArchivoCreate(BaseModel):
     titulo: str
     fecha: Optional[datetime] = None
-    tipo: str = None
+    tipo: Optional[str] = None
     archivo: Optional[str] = None
     tema_ids: Optional[List[int]] = None
     periocidad: Optional[str] = None
@@ -27,7 +27,7 @@ class ArchivoOut(BaseModel):
     id: int
     titulo: str
     fecha: Optional[datetime] = None
-    tipo: str = None
+    tipo: Optional[str] = None
     archivo: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
     periocidad: Optional[str] = None
@@ -41,7 +41,7 @@ class ArchivoResponse(BaseModel):
     id: int
     titulo: str
     fecha: Optional[datetime] = None
-    tipo: str = None
+    tipo: Optional[str] = None
     archivo: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
     periocidad: Optional[str] = None

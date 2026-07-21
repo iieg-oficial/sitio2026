@@ -14,10 +14,14 @@ export default function Reportes() {
     const [editingReporte, setEditingReporte] = useState(null);
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [periocidad, setPeriocidad] = useState([]);
+    const [meses, setMeses] = useState([]);
 
     useEffect(() => {
         fetchReportes();
         fetchSubjects();
+        fetchPeriocidad();
+        fetchMeses();
     }, []);
 
     const fetchSubjects = async () => {
@@ -41,6 +45,25 @@ export default function Reportes() {
         }
     };
 
+    const fetchPeriocidad = async () => {
+        try {
+            const response = await api.get('/reportes/periocidad');
+            setPeriocidad(response.data.periocidad || {});
+        } catch (error) {
+            message.error('Error al cargar periocidad');
+            console.log(error);
+        }
+    };
+
+    const fetchMeses = async () => {
+        try {
+            const response = await api.get('/reportes/meses');
+            setMeses(response.data.meses || {});
+        } catch (error) {
+            message.error('Error al cargar meses');
+        }
+    };
+
     const handleCreate = () => {
         setEditingReporte(null);
         setSelectedSubjects([]);
@@ -52,7 +75,12 @@ export default function Reportes() {
         setEditingReporte(record);
         const ids = (record.temas ?? []).map((t) => t.id);
         setSelectedSubjects(ids);
-        form.setFieldsValue(record);
+        form.setFieldsValue({
+            ...record,
+            fecha: record.fecha ? record.fecha.slice(0, 10) : undefined,
+            periocidad: record.periocidad,
+            mes: record.mes,
+        });
         setModalVisible(true);
     };
 
@@ -79,7 +107,7 @@ export default function Reportes() {
         try {
             const payload = { ...values, tema_ids: selectedSubjects };
             if (editingReporte) {
-                await api.put(`/reportes/${editingReporte.id}`, payload);
+                await api.patch(`/reportes/${editingReporte.id}`, payload);
                 message.success('Reporte actualizado exitosamente');
             } else {
                 await api.post('/reportes/create', payload);
@@ -183,8 +211,8 @@ export default function Reportes() {
                     </Form.Item>                   
                     <Form.Item
                         name="fecha"
-                        label="Fecha"
-                        rules={[{ required: true, message: 'Por favor seleccione la fecha' }]}
+                        label="Fecha de publicación"
+                        rules={[{ required: false, message: 'Por favor seleccione la fecha' }]}
                     >
                         <Input type="date" />
                     </Form.Item>
@@ -195,14 +223,39 @@ export default function Reportes() {
                             setSelectedSubjects(ids);
                         }}
                     />
-                    <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingresa la periocidad' }]}>
-                        <Select placeholder="Selecciona la periocidad" options={[
-                            { value: 'diaria', label: 'Diaria'},
-                            { value: 'mensual', label: 'Mensual'},
-                            { value: 'anual', label: 'Anual'},
-                        ]}
-                        />
+                    <Form.Item name="periocidad" label="Periocidad" rules={[{ required: false, message: 'Por favor ingresa la periocidad' }]}>
+                        <Select 
+                            placeholder="Selecciona la periocidad"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={Object.entries(periocidad).map(([key, value]) => ({ 
+                                value: key,
+                                label: value 
+                            }))}
+                        />  
                     </Form.Item>
+                     <Form.Item name="mes" label="Mes" rules={[{ required: true, message: 'Por favor ingresa el mes' }]}>
+                        <Select 
+                            placeholder="Selecciona el mes"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={Object.entries(meses).map(([key, value]) => ({ 
+                                value: key,
+                                label: value 
+                            }))}
+                        />  
+                    </Form.Item>
+                    <Form.Item name="anyo" label="Año" rules={[{ required: true, message: 'Por favor ingresa el año' }]}>
+                        <Input />
+                     </Form.Item>
                     <Form.Item
                         name="archivo"
                         label="Archivo"

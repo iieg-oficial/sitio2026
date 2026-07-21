@@ -3,15 +3,24 @@ from datetime import datetime
 from typing import Optional, List
 from app.schemas.subject import SubjectFlat
 
+class GalleryImageOut(BaseModel):
+    id: int
+    url: str
+    order: int
+    class Config:
+        from_attributes = True
+
 class PostCreate(BaseModel):
     titulo: str
-    resumen: str = ""
-    contenido: str
+    resumen: Optional[str] = None
+    contenido: Optional[str]
+    gallery_urls: list[str] = []
     autor: str = "IIEG"
     fecha: Optional[datetime] = None
     claves: Optional[str] = None    
     tema_ids: Optional[List[int]] = None
     slug: Optional[str] = None
+    video: Optional[str] = None
 
     @field_validator('tema_ids', mode='before')
     @classmethod
@@ -25,13 +34,15 @@ class PostCreate(BaseModel):
 class PostOut(BaseModel):
     id: int
     titulo: str
-    resumen: str
-    contenido: str
-    autor: str
-    fecha: datetime
+    resumen: Optional[str]
+    contenido: Optional[str]
+    gallery_images: list[GalleryImageOut]
+    autor: Optional[str]
+    fecha: Optional[datetime]
     claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
+    video: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -40,13 +51,15 @@ class PostOut(BaseModel):
 class PostResponse(BaseModel):
     id: int
     titulo: str
-    resumen: str
-    contenido: str
-    autor: str
-    fecha: datetime
+    resumen: Optional[str]
+    contenido: Optional[str]
+    gallery_images: list[GalleryImageOut]
+    autor: Optional[str]
+    fecha: Optional[datetime]
     claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
+    video: Optional[str] = None
 
     class Config:                              
         from_attributes = True

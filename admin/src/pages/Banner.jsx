@@ -66,7 +66,7 @@ export default function Banner() {
     const handleSubmit = async (values) => {
         try {
             if (editingBanner) {
-                await api.put(`/banner/${editingBanner.id}`, values);
+                await api.patch(`/banner/${editingBanner.id}`, values);
                 message.success('Banner actualizado correctamente');
             } else {
                 await api.post('/banner/create', values);
@@ -171,7 +171,7 @@ export default function Banner() {
                 okText={editingBanner ? 'Actualizar' : 'Crear'}
                 cancelText="Cancelar"
             >
-                <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{ color_fondo: '#1677ff' }}>
+                <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{ color_fondo: '#8936ab' }}>
                     <Form.Item name="titulo" label="Título" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>

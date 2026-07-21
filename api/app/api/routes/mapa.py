@@ -55,7 +55,7 @@ def create_mapa(
     db.refresh(db_mapa)
     return db_mapa
 
-@router.put("/{id}", response_model=MapaOut)
+@router.patch("/{id}", response_model=MapaOut)
 def update_mapa(
     id: int,
     mapa: MapaCreate,

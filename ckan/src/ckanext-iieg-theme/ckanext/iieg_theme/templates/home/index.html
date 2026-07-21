@@ -1,0 +1,127 @@
+{% ckan_extends %}
+
+
+{% block primary_content %}
+  <div role="main">
+
+      
+        {% include "home/title_1.html" %}
+
+        <div class="1 container">
+        {% block featured_group %}
+          <div class="dd">
+            <div class="custom-activity-stream">
+              <h2>ultimos editados</h2>
+              {% for activity in h.recently_changed_packages_activity_stream(limit=4) %}
+                {# Creamos una variable corta para acceder fácilmente al dataset #}
+                {% set pkg = activity.data.package %}
+                
+                {% if pkg %}
+                  <div class="activity-item" style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                    
+                    <!-- 1. IMAGEN (Usa la de la organización si existe) -->
+                    <div class="activity-image">
+                      {% if pkg.organization and pkg.organization.image_url %}
+                        {# Nota: Si las imágenes están en el almacenamiento local de CKAN, #}
+                        {# a veces necesitas anteponer el path de uploads, o usar la URL completa si ya viene así. #}
+                        <img src="/uploads/group/{{ pkg.organization.image_url }}" alt="{{ pkg.organization.title }}" style="width: 50px; height: 50px; object-fit: contain;">
+                      {% else %}
+                        <!-- Imagen por defecto si no hay logo de organización -->
+                        <img src="/base/images/placeholder-organization.png" alt="No image" style="width: 50px; height: 50px;">
+                      {% endif %}
+                    </div>
+
+                    <div class="activity-details">
+                      <!-- 2. NOMBRE DEL DATASET (Con enlace al dataset) -->
+                      <h4 style="margin: 0;">
+                        <a href="{{ h.url_for('dataset.read', id=pkg.name) }}">
+                          {{ pkg.title or pkg.name }}
+                        </a>
+                      </h4>
+                      
+                      <p style="margin: 5px 0 0 0; font-size: 0.9em; color: #555;">
+                        <!-- 3. AUTOR / CREADOR -->
+                        <span>{{ _('By: ')}}
+                          {% if pkg.author %}
+                            {{ pkg.author }}
+                          {% else %}
+                            {{ activity.data.actor | default('Usuario') }}
+                          {% endif %}
+                        </span>
+                        | 
+                        <!-- 4. FECHA MODIFICACIÓN -->
+                        <span>
+                          {{ _('Date: ')}}{{ h.render_datetime(activity.timestamp, with_hours=True) }}
+                        </span>
+                      </p>
+                    </div>
+
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="grupos">
+            {% snippet 'snippets/iieg_theme_all_groups.html' %}
+          </div>
+
+        {% endblock %}
+        </div>
+        <div class="2 container">
+          <h2>organizaciones</h2>
+        {% block featured_organization %}
+            {% snippet 'home/snippets/featured_organization.html' %}
+            {% endblock %}
+          </div>
+        
+
+        <div class="custom-tags-section container" style="margin-top: 30px;">
+          <h3>Etiquetas populares recientes</h3>
+          
+          {# Usamos el stream de actividad que sabemos que sí funciona en tu CKAN #}
+          {% set stream = h.recently_changed_packages_activity_stream(limit=10) %}
+          
+          {% if stream %}
+            <div class="tags-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
+              {# Usamos un set de Jinja para evitar duplicar etiquetas visualmente #}
+              {% set etiquetas_renderizadas = [] %}
+              
+              {% for activity in stream %}
+                {% set pkg = activity.data.package %}
+                {% if pkg and pkg.tags %}
+                  {% for tag in pkg.tags %}
+                    {# Verificamos si es un diccionario (estructura normal) o un string #}
+                    {% set tag_name = tag.name if tag.name is defined else tag %}
+                    
+                    {% if tag_name not in etiquetas_renderizadas %}
+                      {# Agregamos la etiqueta a nuestra lista de control #}
+                      {% set _ = etiquetas_renderizadas.append(tag_name) %}
+                      
+                      <a href="{{ h.url_for('dataset.search', tags=tag_name) }}" 
+                        class="tag-pill" 
+                        style="display: inline-block; padding: 6px 12px; background-color: #f1f1f1; color: #333; border-radius: 20px; text-decoration: none; font-size: 0.9em; transition: background 0.2s;"
+                        onmouseover="this.style.backgroundColor='#e2e2e2'"
+                        onmouseout="this.style.backgroundColor='#f1f1f1'">
+                        
+                        <i class="fa fa-tag" style="margin-right: 5px; color: #666;"></i>
+                        {{ tag.display_name if tag.display_name is defined else tag_name }}
+                      </a>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+              
+              {% if etiquetas_renderizadas|length == 0 %}
+                <p style="color: #777; font-style: italic;">No hay etiquetas recientes en los últimos conjuntos de datos.</p>
+              {% endif %}
+            </div>
+          {% else %}
+            <p style="color: #777; font-style: italic;">No hay etiquetas disponibles en este momento.</p>
+          {% endif %}
+        </div>
+
+</div>
+{% endblock %}
+
+

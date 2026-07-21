@@ -2,7 +2,8 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
-import { useEffect } from 'react'
+import Image from '@tiptap/extension-image'
+import { useEffect, useRef } from 'react'
 
 const ToolbarButton = ({ onClick, active, title, children }) => (
   <button
@@ -26,17 +27,55 @@ const ToolbarButton = ({ onClick, active, title, children }) => (
 )
 
 export default function RichTextEditor({ value, onChange }) {
+  
+  const fileInputRef = useRef(null);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      Image.configure({
+        allowBase64: true, // Permite imágenes locales en formato Base64
+      }),
     ],
     content: value || '',
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML())  // notifica al Form con HTML string
     },
-  })
+  });
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    
+    if (file) {
+      // Validar que realmente sea una imagen
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecciona un archivo de imagen válido.');
+        return;
+      }
+
+      const reader = new FileReader();
+      
+      reader.onload = () => {
+        const base64Url = reader.result;
+        // Insertamos la imagen usando el string Base64 generado
+        editor.chain().focus().setImage({ src: base64Url }).run();
+      };
+
+      reader.readAsDataURL(file); // Convierte el archivo local a Base64
+    }
+    
+    // Limpiar el input para poder subir la misma imagen seguidas si se desea
+    event.target.value = '';
+  };
+
+  const triggerLocalUpload = () => {
+    // Simula el click en el input oculto
+    fileInputRef.current?.click();
+  };
+
+  if (!editor) return null;
 
   // Sincroniza cuando el Form carga datos (edición)
   useEffect(() => {
@@ -81,12 +120,22 @@ export default function RichTextEditor({ value, onChange }) {
         <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('right').run()} active={editor.isActive({ textAlign: 'right' })} title="Alinear derecha">
           →
         </ToolbarButton>
+        <ToolbarButton onClick={triggerLocalUpload} title="Insertar imagen">
+          Imagen
+        </ToolbarButton>
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
       </div>
 
       {/* Área de edición */}
       <EditorContent
         editor={editor}
-        style={{ padding: '12px', minHeight: 120, fontSize: 14 }}
+        style={{ padding: '12px', minHeight: 220, fontSize: 18 }}
       />
     </div>
   )

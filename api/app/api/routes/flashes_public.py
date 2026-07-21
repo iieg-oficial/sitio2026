@@ -4,12 +4,12 @@ from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_db
 from app.models import Flashes
-from app.schemas.flashes import FlashesResponse, FlashesOut
+from app.schemas.flashes import FlashesResponse, FlashesOut, FlashesList
 
 router = APIRouter(prefix="/flashes", tags=["flashes-public"])  
 
 
-@router.get("", response_model=FlashesResponse)
+@router.get("", response_model=FlashesList)
 def read_flashes(
     db: Session = Depends(get_db),
 ):

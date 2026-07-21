@@ -83,7 +83,7 @@ export default function Preguntas() {
                 tema_ids: selectedSubjects
             };
             if (editingPregunta) {
-                await api.put(`/preguntas/${editingPregunta.id}`, payload);
+                await api.patch(`/preguntas/${editingPregunta.id}`, payload);
                 message.success('Pregunta actualizada exitosamente');
             } else {
                 await api.post('/preguntas/create', payload);
@@ -101,13 +101,25 @@ export default function Preguntas() {
             title: 'Pregunta',
             dataIndex: 'pregunta',
             key: 'pregunta',
-            sorter: (a, b) => a.pregunta.localeCompare(b.pregunta)
+            sorter: (a, b) => a.pregunta.localeCompare(b.pregunta),
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'Respuesta',
             dataIndex: 'respuesta',
             key: 'respuesta',
-            sorter: (a, b) => a.respuesta.localeCompare(b.respuesta)
+            sorter: (a, b) => a.respuesta.localeCompare(b.respuesta),
+            render: (text) => (
+                <div
+                className="tiptap-content"
+                dangerouslySetInnerHTML={{ __html: text }}
+                />
+            ),
         },
         {
             title: 'Tema',

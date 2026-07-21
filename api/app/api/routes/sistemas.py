@@ -4,6 +4,7 @@ from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Sistemas, Usuario, Subject
+from app.models.sistemas import TipoSistemaEnum
 from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse, SistemasList
 
 router = APIRouter(prefix="/sistemas", tags=["sistemas"])
@@ -16,6 +17,12 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
     return db.execute(
         select(Subject).where(Subject.id.in_(tema_ids))
     ).scalars().all()
+
+@router.get("/tree", response_model=list[SistemasOut])
+async def obtener_sistemas_tree(    
+    db: Session = Depends(get_db)):
+    sistemas = db.execute(select(Sistemas).where(Sistemas.parent_id == None)).scalars().all()
+    return sistemas
 
     
 @router.get("/", response_model=SistemasList)
@@ -64,6 +71,14 @@ def create_sistemas(
     db.refresh(db_sistemas)
     return db_sistemas
 
+@router.get("/tipos")
+def get_tipos():
+    return{
+        "tipos": {
+            tipo.name: tipo.value for tipo in TipoSistemaEnum
+        }
+    }
+
 @router.get("/{id}", response_model=SistemasOut)
 def get_sistemas_id(
     id: int,
@@ -78,7 +93,7 @@ def get_sistemas_id(
         )
     return db_sistemas
 
-@router.put("/{id}", response_model=SistemasOut)
+@router.patch("/{id}", response_model=SistemasOut)
 def update_sistemas(
     id: int,
     sistemas: SistemasCreate,
@@ -133,7 +148,6 @@ def delete_sistemas(
     db.delete(db_sistemas)
     db.commit()
     return db_sistemas
-
 @router.get("/slug/{slug}", response_model=SistemasResponse)
 def get_sistemas_slug(
     slug: str,

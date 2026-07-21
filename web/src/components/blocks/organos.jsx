@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
+import TrackedLink from '@components/blocks/boton'
+import ConditionalLink from '../pageComponents/ConditionalLink'
 
 export default function Organos() {
     const [organos, setOrganos] = useState([])
@@ -15,15 +17,27 @@ export default function Organos() {
     }, [location])
 
     return (
-        <div>
-            <h1>Organos</h1>
-            {organos.map(organo => (
-                <div key={organo.id}>
-                    <p>{organo.nombre}</p>
-                    <p>{organo.descripcion}</p>
-                    <a href={organo.link}>Ver más</a>
+        <div className='container mx-auto px-2 mb-15'>
+        {organos.map(organo => (
+            <ConditionalLink
+            key={organo.id}
+            link={organo.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            >
+            <div className={`bg-card rounded-3xl p-8 mb-5 ${organo.link ? "hover:border-1 hover:border-tertiary" : ""}`}>
+                <h2 className='text-primary'>{organo.titulo}</h2>
+                <div dangerouslySetInnerHTML={{__html: organo.descripcion}} className='diez' />
+                {organo.link && (
+                <div className='mb-4 h-10'>
+                    <div className='col-span-1 bg-white shadow-lg h-[40px] w-[40px] rounded-full flex items-center justify-center transition-shadow duration-300 hover:shadow-xl float-right'>
+                    <span className="quill--link-out text-tertiary"></span>
+                    </div>
                 </div>
-            ))}
+                )}
+            </div>
+            </ConditionalLink>
+        ))}
         </div>
     )
 }

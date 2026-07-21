@@ -4,6 +4,7 @@ from sqlalchemy import select
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models import Reportes, Usuario, Subject
+from app.models.reportes import PeriocidadEnum, MesEnum
 from app.schemas import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
 
 router = APIRouter(prefix="/reportes", tags=["reportes"])
@@ -47,6 +48,8 @@ async def crear_reporte(
         titulo=reporte_in.titulo,
         fecha=reporte_in.fecha,    
         periocidad=reporte_in.periocidad,
+        mes=reporte_in.mes,
+        anyo=reporte_in.anyo,
         archivo=reporte_in.archivo,
         claves=reporte_in.claves,
         slug=slug,
@@ -57,6 +60,41 @@ async def crear_reporte(
     db.commit()
     db.refresh(nuevo)
     return nuevo
+
+
+@router.get("/periocidad")
+def listar_periocidades():
+    return {
+        "periocidad": {
+            periocidad.name: periocidad.value for periocidad in PeriocidadEnum
+        }
+    }
+
+
+@router.get("/meses")
+def listar_meses():
+    return {
+        "meses": {
+            mes.name: mes.value for mes in MesEnum
+        }
+    }
+
+
+@router.get("/slug/{slug}", response_model=ReporteOut)
+def get_reporte_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un reporte por slug"""
+    reporte = db.execute(
+        select(Reportes).where(Reportes.slug == slug)
+    ).scalars().first()
+    if not reporte:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Reporte no encontrado"
+        )
+    return reporte
+
 
 @router.get("/{reporte_id}", response_model=ReporteResponse)
 async def obtener_reporte(
@@ -70,7 +108,7 @@ async def obtener_reporte(
         )
     return reporte
 
-@router.put("/{reporte_id}", response_model=ReporteOut)
+@router.patch("/{reporte_id}", response_model=ReporteOut)
 async def actualizar_reporte(
     reporte_id: int,
     reporte_in: ReporteCreate,
@@ -123,17 +161,4 @@ async def eliminar_reporte(
     db.commit()
     return reporte
 
-@router.get("/slug/{slug}", response_model=ReporteOut)
-def get_reporte_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener un reporte por slug"""
-    reporte = db.execute(
-        select(Reportes).where(Reportes.slug == slug)
-    ).scalars().first()
-    if not reporte:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Reporte no encontrado"
-        )
-    return reporte
+

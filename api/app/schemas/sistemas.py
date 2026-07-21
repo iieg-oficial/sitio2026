@@ -2,17 +2,12 @@ from pydantic import BaseModel, field_validator
 from enum import Enum
 from typing import List, Optional
 from app.schemas.subject import SubjectFlat
-
-class TipoSistemaEnum(str, Enum):
-    plataforma = "plataforma"
-    datos = "datos-recientes"
-    estadistica = "estadistica"
-    otro = "otro"
+from app.models.sistemas import TipoSistemaEnum
 
 class SistemasCreate(BaseModel):
     titulo: str
-    descripcion: str
-    link: str
+    descripcion: Optional[str]
+    link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None 
     claves: Optional[str] = None    
@@ -30,11 +25,12 @@ class SistemasCreate(BaseModel):
             return [x for x in v if x is not None and x != 0]
         return v
 
+
 class SistemasOut(BaseModel):
     id: int
     titulo: str
     descripcion: str
-    link: str
+    link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
     claves: Optional[str] = None    
@@ -50,7 +46,7 @@ class SistemasResponse(BaseModel):
     id: int
     titulo: str
     descripcion: str
-    link: str
+    link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
     claves: Optional[str] = None    

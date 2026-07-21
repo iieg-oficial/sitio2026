@@ -1,0 +1,52 @@
+{% ckan_extends %}
+
+{% block header_logo %}
+  {% if g.site_logo %}
+      <a class="logo" href="{{ h.url_for('home.index') }}">
+        {% if g.site_logo.startswith('http://') or g.site_logo.startswith('https://') %}
+          {# Caso 1: URL remota externa #}
+          <img src="{{ g.site_logo }}" alt="{{ g.site_title }}"
+            aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
+        {% elif g.site_logo.startswith('/datos-abiertos') %}
+          {# Caso 2: La ruta almacenada ya trae la ruta base del portal #}
+          <img src="{{ g.site_logo.replace('/datos-abiertos', '', 1) if g.site_logo.startswith('/datos-abiertos/datos-abiertos') else g.site_logo }}" alt="{{ g.site_title }}"
+            aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
+        {% else %}
+          {# Caso 3: Archivo relativo estático estándar #}
+          <img src="{{ h.url_for_static(g.site_logo) }}" alt="{{ g.site_title }}"
+            aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
+        {% endif %}
+      </a>
+  {% else %}
+      <h1>
+        <a href="{{ h.url_for('home.index') }}">{{ g.site_title }}</a>
+      </h1>
+    {% if g.site_description %}
+      <h2>{{ g.site_description }}</h2>
+    {% endif %}
+  {% endif %}
+{% endblock %}
+
+{% block header_site_navigation_tabs %}
+  <!-- Enlaces nativos de CKAN (Datasets, Organizaciones, Grupos) -->
+  {% set org_type = h.default_group_type('organization') %}
+  {% set group_type = h.default_group_type('group') %}
+
+              {{ h.build_nav_main(
+                (dataset_type ~ '.search', h.humanize_entity_type('package', dataset_type, 'main nav') or _('Datasets'), ["dataset", "resource"]),
+                (org_type ~ '.index',
+                  h.humanize_entity_type('organization', org_type, 'main nav') or _('Organizations'), ['organization'])
+              ) }}
+
+  <!-- AGREGA AQUÍ TUS ELEMENTOS PERSONALIZADOS -->
+  
+  <!-- Opción A: Enlace a una página interna o externa usando HTML puro -->
+  <li>
+    <a href="https://iieg.gob.mx/ns/" target="_blank">IIEG</a>
+  </li>
+  
+
+{% endblock %}
+
+{% block header_site_search %}
+{% endblock %}

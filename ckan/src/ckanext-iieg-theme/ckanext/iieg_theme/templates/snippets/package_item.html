@@ -1,0 +1,90 @@
+{% ckan_extends %}
+
+{% block package_item %}
+    <li class="{{ item_class or "dataset-item" }} position-relative">
+        {% block content %}
+        <div class="dataset-content">
+            <div class="row">
+                <div class="col col-md-8">
+                    {% block heading %}
+                        <h2 class="dataset-heading">
+                            {% block heading_private %}
+                            {% if package.private %}
+                                <span class="dataset-private badge bg-secondary">
+                                    <i class="fa fa-lock"></i>
+                                    {{ _('Private') }}
+                                </span>
+                            {% endif %}
+                            {% endblock %}
+                            
+                            {% block heading_title %}                                    
+                                <a href="{{ h.url_for('%s.read' % package.type, id=package.name) }}" class="stretched-link text-decoration-none text-reset" aria-label="{{ _('Navigate to dataset: {title}').format(title=title|truncate(80)) }}">
+                                    {{title|truncate(80)}}
+                                </a>                                  
+                            {% endblock %}
+                            
+                            {% block heading_meta %}
+                            {% if package.get('state', '').startswith('draft') %}
+                                <span class="badge bg-info">{{ _('Draft') }}</span>
+                            {% elif package.get('state', '').startswith('deleted') %}
+                                <span class="badge bg-danger">{{ _('Deleted') }}</span>
+                            {% endif %}
+                            {% endblock %}
+                        </h2>
+                    {% endblock %}
+                    
+                    {% block notes %}
+                        {% if notes %}
+                            <div class="position-relative" style="z-index: 2;">{{ notes|urlize }}</div>
+                        {% else %}
+                            <p class="empty">{{ h.humanize_entity_type('package', package.type, 'no description') or _("There is no description for this dataset.") }}</p>
+                        {% endif %}
+                    {% endblock %}
+                </div>
+                
+                <div class="col col-md-4 text-end">
+                    {% block resources %}
+                        {% block resources_outer %}
+                            <div>
+                                <!-- OBTENCIÓN DE LA IMAGEN MEDIANTE TU HELPER EXISTENTE -->
+                                {% if package.groups and package.groups[0] %}
+                                    {% set group_obj = package.groups[0] %}
+                                    
+                                    <!-- Obtenemos el identificador limpio (por si viene como dict o string) -->
+                                    {% set group_identifier = group_obj.name if group_obj.name is defined else group_obj %}
+                                    
+                                    <!-- Usamos tu helper para obtener la URL procesada por la API -->
+                                    {% set group_img_url = h.iieg_theme_get_entity_image(group_identifier, 'group') %}
+                                    
+                                    {% if group_img_url %}
+                                            <a href="{{ h.url_for('group.read', id=group_identifier) }}">
+                                                <img src="{{ group_img_url }}" 
+                                                     alt="Logo del Grupo" 
+                                                     class="img-fluid rounded" 
+                                                     style="max-height: 50px; max-width: 100px; object-fit: contain;" />
+                                            </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <ul class="dataset-resources list-unstyled position-relative" style="z-index: 2;">
+                            {% block resources_inner %}                    
+                            
+                                <!-- Formatos de los recursos (Badges PNG, CSV, etc) -->
+                                {% if package.resources and not hide_resources %}
+                                    {% for resource in h.dict_list_reduce(package.resources, 'format') %}
+                                    <li>
+                                        <a href="{{ h.url_for(package.type ~ '.read', id=package.name) }}" class="badge badge-default" data-format="{{ resource.lower() }}">{{ resource }}</a>
+                                    </li>
+                                    {% endfor %}
+                                {% endif %}
+                            
+                            {% endblock %}
+                            </ul>
+                        {% endblock %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </li>
+{% endblock %}

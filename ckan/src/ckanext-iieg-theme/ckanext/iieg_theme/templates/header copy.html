@@ -1,0 +1,19 @@
+{% ckan_extends %}
+
+{% block header_site_navigation_tabs %}
+  <!-- Enlaces nativos de CKAN (Datasets, Organizaciones, Grupos) -->
+  {{ h.nav_link(_('Datasets'), 'dataset.search') }}
+  {{ h.nav_link(_('Organizations'), 'organization.index') }}
+
+  <!-- AGREGA AQUÍ TUS ELEMENTOS PERSONALIZADOS -->
+  
+  <!-- Opción A: Enlace a una página interna o externa usando HTML puro -->
+  <li>
+    <a href="https://iieg.gob.mx/ns/" target="_blank">IIEG</a>
+  </li>
+  
+
+  <!-- Opción B: Si tienes una página estática creada en CKAN (ej. con ckanext-pages) -->
+  {# {{ h.nav_link(_('Mi Página'), 'pages.show', page='mi-pagina') }} #}
+
+{% endblock %}

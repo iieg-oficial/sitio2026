@@ -15,6 +15,13 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await api.get('/autenticacion/perfil');
             setUser(response.data);
+
+            if (!sessionStorage.getItem('csrf_token')) {
+                const csrfResponse = await api.get('/autenticacion/csrf');
+                if (csrfResponse.data?.csrf_token) {
+                    sessionStorage.setItem('csrf_token', csrfResponse.data.csrf_token);
+                }
+            }
         } catch (error) {
             setUser(null);
         } finally {

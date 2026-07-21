@@ -44,8 +44,7 @@ def create_cursos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    """Crear un nuevo curso"""
-
+    
     # Validar y obtener objetos de las relaciones many-to-many
     modulos = (
         db.query(Modulos).filter(Modulos.id.in_(cursos.modulos)).all()
@@ -103,6 +102,7 @@ def create_cursos(
         titulo=cursos.titulo,
         descripcion=cursos.descripcion,
         inicio=cursos.inicio,
+        fin=cursos.fin,
         formato=cursos.formato,
         Horario=cursos.Horario,
         Objetivo=cursos.Objetivo,
@@ -115,6 +115,8 @@ def create_cursos(
         contacto=cursos.contacto,
         destacado=cursos.destacado,
         clave=cursos.clave,
+        archivo=cursos.archivo,
+        formulario=cursos.formulario,
         slug=slug,
     )
     
@@ -171,7 +173,7 @@ def get_cursos_slug(
     return db_cursos
 
 
-@router.put("/{curso_id}", response_model=CursosOut)
+@router.patch("/{curso_id}", response_model=CursosOut)
 def update_cursos(
     curso_id: int,
     cursos: CursosCreate,
@@ -266,9 +268,9 @@ def update_cursos(
 
     # Actualizar solo campos escalares (NO incluir las relaciones many-to-many)
     campos_escalares = [
-        "titulo", "descripcion", "inicio", "formato", "Horario", "Objetivo",
+        "titulo", "descripcion", "inicio", "fin", "formato", "Horario", "Objetivo",
         "p_ingreso", "p_egreso", "tipo_curso", "inscripcion", "acreditacion",
-        "vigencia", "contacto", "destacado", "clave"
+        "vigencia", "contacto", "destacado", "clave", "archivo", "formulario"
     ]
     for campo in campos_escalares:
         valor = getattr(cursos, campo, None)

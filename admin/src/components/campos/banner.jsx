@@ -7,6 +7,7 @@ export const CamposBannerFull = () => {
     const form = Form.useFormInstance();
     const imagenDesktop = Form.useWatch('imagen_desktop', form);
     const imagenMobile = Form.useWatch('imagen_mobile', form);
+    
 
     return (
         <>
@@ -59,14 +60,37 @@ export const CamposBannerFull = () => {
     );
 };
 
-export const CamposBannerMin = () => (
-    <>
-        <Form.Item name="color_fondo" label="Color de Fondo" rules={[{ required: false }]}>
-            <ColorPickerField name="color_fondo" />
-        </Form.Item>
-        <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
-            <Input />
-        </Form.Item>
-    </>
-);
-        
+export const CamposBannerMin = () => {
+    const form = Form.useFormInstance();
+    const imagen = Form.useWatch('imagen', form);
+
+    return (
+        <>
+            <Form.Item name="color_fondo" label="Color de Fondo" initialValue="#8936ab" rules={[{ required: false }]}>
+                <ColorPickerField name="color_fondo" />
+            </Form.Item>
+            <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>            
+                <Space direction="vertical" style={{ width: '100%' }}>
+                        <UploadAcervo
+                            bucket="portal"
+                            folder="/banners"
+                            label="Subir imagen "
+                            onUploaded={(media) => {
+                                form.setFieldValue('imagen', media.url);
+                            }}
+                        />
+                        <Form.Item name="imagen" noStyle>
+                            <Input placeholder="URL imagen" />
+                        </Form.Item>
+                        {imagen ? (
+                            <Image
+                                src={imagen}
+                                alt="Vista previa imagen"
+                                style={{ maxWidth: 260, borderRadius: 6 }}
+                            />
+                        ) : null}
+                    </Space>
+            </Form.Item>
+        </>
+    );
+};   

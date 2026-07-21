@@ -1,17 +1,35 @@
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
+import TrackedLink from '@components/blocks/boton'
+import Backlink from '../pageComponents/Backlink'
+import Galeria from '../interComponents/galeria'
+import ShareButtons from '../pageComponents/ShareButtons'
+
+
 
 export default function Blog() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
+    const postUrl = `http://localhost:13010/comunidad/${slug}`;
     const [singlePost, setSinglePost] = useState(null);
+
+    // Función Helper para obtener el ID de YouTube de casi cualquier URL
+    const getYouTubeId = (url) => {
+        if (!url) return null;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    };
 
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const response = await api.get(`/posts/${slug}`);
+                const response = await api.get(`/posts/slug/${slug}`);
                 setSinglePost(response.data);
+                
             } catch (error) {
                 console.error("Error al obtener el post:", error);
             }
@@ -19,32 +37,73 @@ export default function Blog() {
         fetchPost();
     }, [slug]); 
 
+    
 
     //check if singlePost exists before render
     if (!singlePost) {
         return <div>Cargando ...</div>;
     }
+
+    const videoId = getYouTubeId(singlePost.video);
+
+    if (!videoId) {
+        return <p className="text-red-500">URL de video no válida</p>;
+    }
+
+    const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}`;
+
   return (
     <>    
         <Helmet>
-            <title>{singlePost.titulo}</title>
-            <meta name="description" content={singlePost.resumen} />
+            <title>{singlePost.titulo}</title>            
             <meta property="og:title" content={singlePost.titulo} />
             <meta property="og:description" content={singlePost.resumen} />
+            <meta property="og:image" content={singlePost.gallery_images[0].url ? singlePost.gallery_images[0].url : "/demo.jpg"} />
             <meta property="og:url" content={window.location.href} />
+            <meta property="og:type" content="article" />
+            <meta name="keywords" content={singlePost.claves} />
+            {/* Twitter Cards (Específico para X / Twitter) */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={singlePost.resumen} />
+            <meta name="twitter:description" content={singlePost.resumen} />
+            <meta name="twitter:image" content={singlePost.gallery_images[0].url ? singlePost.gallery_images[0].url : "/demo.jpg"} />
         </Helmet>
-        <article className='my-40 relative flex flex-col items-center'>
-            <main className='mx-auto w-7/12 p-10 border-2 border-amber-950 z-10 relative bg-white'>
-                <h1 className='text-3xl font-bold mb-4'>{singlePost.titulo}</h1>
-                <div dangerouslySetInnerHTML={{__html: singlePost.contenido}} className='mt-5 prose max-w-none' />
-                <div className='mt-8 text-sm text-gray-500 border-t pt-4'>
-                    <p><strong>Autor:</strong> {singlePost.autor}</p>
-                    <p><strong>Fecha:</strong> {new Date(singlePost.fecha).toLocaleDateString()}</p>
-                    {singlePost.subject && (
-                        <p><strong>Categoría:</strong> {singlePost.subject.titulo}</p>
-                    )}
+        <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
+            <div className='md:col-span-1'><Backlink /></div>
+            <main className='md:col-span-11'>
+                <h1 className='text-44 font-extrabold mb-4 text-primary'>{singlePost.titulo}</h1>
+                <div className="flex gap-4 my-5 flex-wrap">
+                    <p className='bg-[#ccc] text-body rounded-2xl px-4 py-2 text-14'>{format(new Date(singlePost.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                    {singlePost.subject ?
+                        <p className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>{singlePost.subject?.titulo}</p>
+                    : null}
                 </div>
-            </main>
+                <div dangerouslySetInnerHTML={{__html: singlePost.contenido}} className='mt-5 prose max-w-none mb-15' />
+                {singlePost.video && (
+                    <iframe className="aspect-video w-full" 
+                    src={embedUrl} 
+                    title="YouTube video player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen />
+                )}
+                {singlePost.gallery_images && singlePost.gallery_images.length > 0 ? (
+                    <section className='my-25'>
+                        <h2 className='text-28 font-extrabold text-primary text-center mb-4'>Galería de Imágenes</h2>
+                        <Galeria images={singlePost.gallery_images} />
+                    </section> 
+                ) : 
+                    <section className='my-25'>
+                        <h2 className='text-28 font-extrabold text-primary text-center mb-4'>Galería de Imágenes</h2>
+                        <img src={singlePost.gallery_images[0].url} alt="" />
+                    </section> 
+                }
+                <div>
+                <ShareButtons
+                    url={postUrl}
+                    title={singlePost.titulo}
+                />
+                </div>
+            </main>            
         </article>
     </>
   );

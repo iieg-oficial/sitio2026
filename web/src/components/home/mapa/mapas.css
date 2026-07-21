@@ -1,8 +1,33 @@
+.mapa {
+  position: relative;
+  cursor: pointer;
+}
 
-.image-mapa {
-  transition: transform 0.5s ease;
+.mapa .image-mapa {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
 }
 
 .mapa:hover .image-mapa {
-  transform: scale(1.2);
+  transform: scale(1.1);
+}
+
+.mapa .info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.mapa:hover .info {
+  opacity: 1;
+  transform: translateY(0);
 }

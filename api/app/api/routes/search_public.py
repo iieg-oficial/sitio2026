@@ -158,6 +158,15 @@ def _build_result_url(model_name: str, row) -> str:
     if model_name == "Posts":
         return f"/comunidad/{row.slug}" if getattr(row, "slug", None) else "/comunidad"
 
+    if model_name == "Mapa":
+        return f"/mapas-historicos/{row.slug}" if getattr(row, "slug", None) else "/mapas-historicos"
+
+    if model_name == "Cursos":
+        return f"/cursos/{row.slug}" if getattr(row, "slug", None) else "/cursos"
+
+    if model_name == "Flashes":
+        return f"/flashes/{row.slug}" if getattr(row, "slug", None) else "/flashes"
+
     slug = getattr(row, "slug", None)
     if slug:
         prefix = ROUTE_PREFIX_BY_MODEL.get(model_name)
@@ -277,7 +286,11 @@ def global_search(
                     "title": title,
                     "description": description,
                     "url": url,
+                    "tipo_curso": _stringify(getattr(row, "tipo_curso", None)),
                     "external": _external_url(url),
+                    "archivo": _stringify(getattr(row, "archivo", None)),
+                    "link": _stringify(getattr(row, "link", None)),
+                    "enlace": _stringify(getattr(row, "enlace", None)),
                     "_score": score,
                 }
             )

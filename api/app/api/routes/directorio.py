@@ -44,7 +44,7 @@ def create_directorio(
     db.refresh(db_directorio)
     return db_directorio
 
-@router.put("/{directorio_id}", response_model=DirectorioOut)
+@router.patch("/{directorio_id}", response_model=DirectorioOut)
 def update_directorio(
     directorio_id: int,
     directorio: DirectorioCreate,

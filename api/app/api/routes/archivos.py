@@ -71,7 +71,7 @@ async def obtener_archivo(
     return archivo
 
 
-@router.put("/{archivo_id}", response_model=ArchivoOut)
+@router.patch("/{archivo_id}", response_model=ArchivoOut)
 async def actualizar_archivo(
     archivo_id: int,
     archivo_in: ArchivoCreate,

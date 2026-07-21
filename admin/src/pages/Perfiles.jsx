@@ -64,7 +64,7 @@ export default function Perfiles() {
     const handleSubmit = async (values) => {
         try {
             if (editingPerfil) {
-                await api.put(`/perfiles/${editingPerfil.id}`, values);
+                await api.patch(`/perfiles/${editingPerfil.id}`, values);
                 message.success('Perfil actualizado exitosamente');
             } else {
                 await api.post('/perfiles/create', values);

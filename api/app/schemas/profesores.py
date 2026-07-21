@@ -3,16 +3,16 @@ from typing import List, Optional
 
 class ProfesoresCreate(BaseModel):
     nombre: str
-    puesto: str
-    descripcion: str
+    puesto: Optional[str]
+    descripcion: Optional[str]
     foto: str | None = None
     slug: Optional[str] = None
 
 class ProfesoresOut(BaseModel):
     id: int
     nombre: str
-    puesto: str
-    descripcion: str
+    puesto: Optional[str]
+    descripcion: Optional[str]
     foto: str | None = None
     slug: Optional[str] = None
 

@@ -1,6 +1,8 @@
 function NotFound() {
     return (
-        <h1>Pagina no encontrada - 404</h1>
+        <main className="container px-5 mx-auto text-center pt-10 pb-20">
+            <h1>Pagina no encontrada</h1>
+        </main>
     );
 }
 

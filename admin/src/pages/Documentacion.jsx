@@ -4,8 +4,10 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 const { Title } = Typography;
+const { Option } = Select;
 
 export default function Documentacion() {
     const [documentaciones, setDocumentaciones] = useState([]);
@@ -14,18 +16,33 @@ export default function Documentacion() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingDocumentacion, setEditingDocumentacion] = useState(null);
     const [subjects, setSubjects] = useState([]);
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [tipo, setTipo] = useState([]);
+    const [sistemasOptions, setSistemasOptions] = useState([]);
+    const [selectedSistemas, setSelectedSistemas] = useState([]);
 
     useEffect(() => {
         fetchDocumentaciones();
         fetchSubjects();
+        fetchTipo();
+        fetchSistemas();
     }, []);
+
+    const fetchTipo = async () => {
+        try{
+            const response = await api.get('/documentacion/tipos');
+            setTipo(response.data.tipos || {});
+        } catch (error){
+            message.error('Error al obtener los tipos');
+        }
+    }
 
     const fetchSubjects = async () => {
         try {
-            const response = await api.get('/subject');
+            const response = await api.get('/subject/tree');
             setSubjects(response.data);
-        } catch (error) {
-            console.error('Error al obtener subjects:', error);
+        } catch {
+            message.error('Error al cargar temas');
         }
     };
 
@@ -41,15 +58,34 @@ export default function Documentacion() {
         }
     };
 
-    const handleCreate = () => {
+    const fetchSistemas = async () => {
+        try {
+            const response = await api.get('/sistemas');
+            setSistemasOptions(response.data.sistemas || []);
+        } catch {
+            message.error('Error al cargar sistemas');
+        }
+    };
+
+    const handleCreate = () => {        
         setEditingDocumentacion(null);
+        setSelectedSubjects([]);
+        setSelectedSistemas([]);
         form.resetFields();
         setModalVisible(true);
     };
 
     const handleEdit = (record) => {
         setEditingDocumentacion(record);
-        form.setFieldsValue(record);
+        // Pre-cargar los temas seleccionados desde el registro
+        const ids = (record.temas ?? []).map((t) => t.id);
+        const idsp = (record.sistemas ?? []).map((t) => t.id);
+        const formValues = { 
+            ...record
+        };
+        setSelectedSubjects(ids);        
+        setSelectedSistemas(idsp);  
+        form.setFieldsValue(formValues);
         setModalVisible(true);
     };
 
@@ -75,11 +111,12 @@ export default function Documentacion() {
 
     const handleSubmit = async (values) => {
         try {
+            const payload = { ...values, tema_ids: selectedSubjects, sistema_ids: selectedSistemas };
             if (editingDocumentacion) {
-                await api.put(`/documentacion/${editingDocumentacion.id}`, values);
+                await api.patch(`/documentacion/${editingDocumentacion.id}`, payload);
                 message.success('Documentación actualizada exitosamente');
             } else {
-                await api.post('/documentacion/create', values);
+                await api.post('/documentacion/create', payload);
                 message.success('Documentación creada exitosamente');
             }
             setModalVisible(false);
@@ -98,16 +135,17 @@ export default function Documentacion() {
         },
         {
             title: 'Tema',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
-            render: (subject_id) => subjects.find((s) => s.id === subject_id)?.titulo,
-            sorter: (a, b) => a.subject.titulo.localeCompare(b.subject.titulo)
+            dataIndex: 'temas',
+            key: 'temas',
+            render: (temas = []) => temas.map((t) => t.titulo).join(', '),
+            sorter: (a, b) => a.temas.map((t) => t.titulo).join(', ').localeCompare(b.temas.map((t) => t.titulo).join(', '))
         },
         {
-            title: 'Palabras clave',
-            dataIndex: 'claves',
-            key: 'claves',
-            sorter: (a, b) => a.claves.localeCompare(b.claves)
+            title: 'sistema',
+            dataIndex: 'sistemas',
+            key: 'sistemas',
+            render: (sistemas = []) => sistemas.map((t) => t.titulo).join(', '),
+            sorter: (a, b) => a.sistemas.map((t) => t.titulo).join(', ').localeCompare(b.sistemas.map((t) => t.titulo).join(', '))
         },
         {
             title: 'Acciones',
@@ -183,69 +221,82 @@ export default function Documentacion() {
                     >
                         <RichTextEditor />
                     </Form.Item>
-                    <Form.Item name="claves"
-                        label="Palabras clave"
-                        rules={[{ required: true, message: 'Por favor ingrese las palabras clave' }]}
+                    <Form.Item name="anyo"
+                        label="Año"
+                        rules={[{ required: false, message: 'Por favor ingrese el año' }]}
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="metodologia"
-                        label="archivo metodología"
-                        rules={[{ required: false, message: 'Por favor ingrese la metodología' }]}
-                    >
-                        <Space direction="vertical" style={{ width: '100%' }}>
-                            <UploadAcervo
-                                bucket="portal"
-                                folder="/metodologias"
-                                label="Subir metodología"
-                                onUploaded={(media) => {
-                                    form.setFieldValue('metodologia', media.url);
-                                }}
-                            />
-                            <Form.Item name="metodologia" noStyle>
-                                <Input placeholder="Subir metodología" />
-                            </Form.Item>
-                            {form.getFieldValue('metodologia') ? (
-                                <a href={form.getFieldValue('metodologia')} target="_blank" rel="noopener noreferrer">
-                                    Ver metodología
-                                </a>
-                            ) : null}
-                        </Space>
-                    </Form.Item>
-                    <Form.Item name="codigo"
-                        label="archivo código"
+                    <Form.Item name="archivo"
+                        label="Archivo"
                         rules={[{ required: false, message: 'Por favor ingrese el archivo' }]}
                     >
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
-                                folder="/codigos"
-                                label="Subir código"
+                                folder="/documentacion"
+                                label="Subir archivo"
                                 onUploaded={(media) => {
-                                    form.setFieldValue('codigo', media.url);
+                                    form.setFieldValue('archivo', media.url);
                                 }}
                             />
-                            <Form.Item name="codigo" noStyle>
-                                <Input placeholder="Subir código" />
+                            <Form.Item name="archivo" noStyle>
+                                <Input placeholder="Subir archivo" />
                             </Form.Item>
-                            {form.getFieldValue('codigo') ? (
-                                <a href={form.getFieldValue('codigo')} target="_blank" rel="noopener noreferrer">
-                                    Ver código
+                            {form.getFieldValue('archivo') ? (
+                                <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">
+                                    Ver archivo
                                 </a>
                             ) : null}
                         </Space>
                     </Form.Item>
-                    <Form.Item name="subject_id"
-                        label="Tema"
-                        rules={[{ required: true, message: 'Por favor seleccione un tema' }]}
-                    >
+                    <Form.Item name="tipo" label="Tipo" rules={[{ required: false, message: 'Por favor ingresa el tipo ' }]}>
                         <Select
-                            placeholder="Selecciona un tema"
-                            options={subjects.map((s) => ({
-                                value: s.id,
-                                label: s.titulo
-                            }))}
-                        />
+                        placeholder="Selecciona un tipo"
+                        allowClear
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        options={Object.entries(tipo).map(([key, value]) => ({
+                            key,
+                            value,
+                            label: value,
+                        }))}
+                    />
+                    </Form.Item>
+                    <TemaSelector
+                        temas={subjects}
+                        seleccionados={selectedSubjects}
+                        onChange={(ids) => {                                    
+                        setSelectedSubjects(ids);
+                        }}
+                    />
+                    <Form.Item name="sistemas" label="Proyectos" rules={[{ required: false, message: 'Selecciona un  proyecto' }]}>
+                        <Select
+                        mode="multiple"
+                        placeholder="Selecciona uno o más proyectos"
+                        allowClear
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        value={selectedSistemas}
+                        onChange={(ids) => setSelectedSistemas(ids)}
+                        options={sistemasOptions.map((s) => ({
+                            value: s.id,
+                            label: s.titulo,
+                        }))}
+                    />
+                    </Form.Item>
+                    
+                    <Form.Item name="claves"
+                        label="Palabras clave"
+                        rules={[{ required: true, message: 'Por favor ingrese las palabras clave' }]}
+                    >
+                        <Input />
                     </Form.Item>
                     
                 </Form>

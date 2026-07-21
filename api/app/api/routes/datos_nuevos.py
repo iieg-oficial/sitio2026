@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import DatosNuevos, Usuario     
+from app.models import DatosNuevos, Usuario  
+from app.models.datos_nuevos import NuevoEnum   
 from app.schemas.datos_nuevos import DatosNuevosOut, DatosNuevosResponse, DatosNuevosCreate
 
 router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos"])
@@ -36,13 +37,14 @@ def create_datos_nuevos(
         cifras=datos_nuevos.cifras,
         descripcion=datos_nuevos.descripcion,
         slug=slug,
+        tipo=datos_nuevos.tipo,
     )
     db.add(db_datos_nuevos)
     db.commit()
     db.refresh(db_datos_nuevos)
     return db_datos_nuevos
 
-@router.put("/{id}", response_model=DatosNuevosOut)
+@router.patch("/{id}", response_model=DatosNuevosOut)
 def update_datos_nuevos(
     id: int,
     datos_nuevos: DatosNuevosCreate,
@@ -91,6 +93,16 @@ def delete_datos_nuevos(
     db.delete(db_datos_nuevos)
     db.commit()
     return db_datos_nuevos
+
+
+@router.get("/tipo")
+def get_tipos(
+):
+    return {
+        "tipos": {
+            tipo.name: tipo.value for tipo in NuevoEnum
+        }
+    }
 
 @router.get("/slug/{slug}", response_model=DatosNuevosOut)
 def get_datos_nuevos_slug(

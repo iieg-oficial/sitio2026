@@ -51,6 +51,7 @@ class Cursos(Base):
     titulo = Column(String(200), nullable=False)
     descripcion = Column(Text, nullable=True)
     inicio = Column(DateTime, default=datetime.utcnow, nullable=True)
+    fin = Column(DateTime, default=datetime.utcnow, nullable=True)
     formato = Column(String(100), nullable=True)
     Horario = Column(String(100), nullable=True)
     Objetivo = Column(Text, nullable=True)
@@ -66,6 +67,9 @@ class Cursos(Base):
     vigencia = Column(String(200), nullable=True)
     contacto = Column(String(200), nullable=True)
     clave = Column(String(200), nullable=True)
+
+    archivo = Column(String, nullable=True)
+    formulario = Column(String, nullable=True)
 
     temas = relationship(
         "Subject",

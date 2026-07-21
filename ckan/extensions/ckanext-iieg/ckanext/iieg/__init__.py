@@ -1,1 +1,0 @@
-"""CKAN theme package for IIEG."""

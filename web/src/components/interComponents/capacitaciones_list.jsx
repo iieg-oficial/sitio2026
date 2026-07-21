@@ -1,53 +1,63 @@
-import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
-import api from '@services/apiService'
 
-export default function CapacitacionesList() {
-    const { slug } = useParams(); // obtiene el id del elemento clicleable
-    const [singleCapacitacion, setSingleCapacitacion] = useState(null);
+export default function CapacitacionesList({ curso }) {
+    const [singleCapacitacion, setSingleCapacitacion] = useState(curso ?? null);
     const [activeTab, setActiveTab] = useState(null);
 
     useEffect(() => {
-            const fetchCapacitacion = async () => {
-                try {
-                    const response = await api.get(`/cursos-public/${slug}`);
-                    setSingleCapacitacion(response.data);
-                } catch (error) {
-                    console.error("Error al obtener la capacitación:", error);
-                }
-            }
-            fetchCapacitacion();
-        }, [slug]);
+        setSingleCapacitacion(curso ?? null);
+    }, [curso]);
 
-        if (!singleCapacitacion) {
+    useEffect(() => {
+        if (Array.isArray(singleCapacitacion?.modulos) && singleCapacitacion.modulos.length > 0) {
+            setActiveTab([...singleCapacitacion.modulos].reverse()[0].nombre);
+        }
+    }, [singleCapacitacion]);
+
+    if (!singleCapacitacion) {
         return <div>Cargando ...</div>;
     }
 
+    const modulosReversed = Array.isArray(singleCapacitacion?.modulos)
+        ? [...singleCapacitacion.modulos].reverse()
+        : [];
+    const profesoresReversed = Array.isArray(singleCapacitacion?.profesores)
+        ? [...singleCapacitacion.profesores].reverse()
+        : [];
+
     return (
         <>
-        <section className='container mx-auto'>
-                    <h2>Módulos</h2>
-                    <div className='flex justify-center mt-8'>
-                        {singleCapacitacion.modulos.map((modulo) => (
+        <section className='lg:w-10/12 mx-auto'>
+            <section className='my-15'>
+                    <div className='grid grid-cols-6 gap-5'>
+                        <div className='col-span-1'>
+                            <img src="" alt="" />
+                        </div>
+                        <div className='col-span-5'>
+                            <h2 className='text-primary text-36 font-extrabold'>Módulos del programa</h2>
+                        </div>
+                    </div>
+                    
+                    <div className='flex justify-left mt-8 gap-4 mx-auto w-8/12 '>
+                        {modulosReversed.map((modulo) => (
                             <button 
                             key={modulo.id}
                             onClick={() => setActiveTab(modulo.nombre)}
-                            className={`px-4 py-2 rounded-lg border-2 font-semibold transition-colors ${activeTab === modulo.nombre
-                                ? 'bg-blue-600 text-white border-blue-600'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'}`
+                            className={`px-4 py-2 rounded-lg font-extrabold text-28 transition-colors ${activeTab === modulo.nombre
+                                ? 'bg-etiqueta-sec text-tertiary border-tertiary border-1'
+                                : 'bg-white text-titulo hover:bg-etiqueta-sec hover:text-tertiary hover:border-1'}`
                             }
                             >
                                 {modulo.nombre}
                             </button>
                         ))}
                     </div>
-                    <div className='border-2 border-gray-200 p-5 my-5'>
-                        {singleCapacitacion.modulos.map((modulo) => {
+                    <div className='p-5 my-5 mx-auto md:px-10 xl:px-25 w-8/12 '>
+                        {modulosReversed.map((modulo) => {
                             if (activeTab === modulo.nombre) {
                                 return (
                                     <div key={modulo.id}>
-                                        <h2>{modulo.nombre}</h2>
-                                        <p>{modulo.descripcion}</p>
+                                        <div dangerouslySetInnerHTML={{__html: modulo.descripcion}} className='mt-5 prose max-w-none cursos' />                        
                                     </div>
                                 )}
                             } 
@@ -55,17 +65,29 @@ export default function CapacitacionesList() {
                     </div>
                 </section>
 
-                <section className='container mx-auto'>
-                    <h2>Profesores</h2>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto w-11/12 md:w-8/12'>
-                        {singleCapacitacion.profesores.map((profesor) => (
-                           <div key={profesor.id} className='border-2 border-gray-200 p-5 my-5'>
-                            <p>{profesor.nombre}</p>
-                            <p>{profesor.descripcion}</p>
+                <section className=''>
+                    <div className='grid grid-cols-6 gap-5'>
+                        <div className='col-span-1'>
+                            <img src="" alt="" />
+                        </div>
+                        <div className='col-span-5'>
+                            <h2 className='text-primary text-36 font-extrabold'>Conoce a los profesores</h2>
+                        </div>
+                    </div>
+                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mx-auto lg:w-8/12'>
+                        {profesoresReversed.map((profesor) => (
+                           <div key={profesor.id} className='bg-card p-5 my-5 grid lg:grid-cols-6 rounded-3xl gap-4'>
+                            <div className='col-span-2'></div>
+                            <div className='col-span-4'>
+                                <p className='text-tertiary font-bold text-22 mb-5'>{profesor.nombre}</p>
+                                <p className='text-titulo font-bold text-18'>{profesor.puesto}</p>
+                                <div dangerouslySetInnerHTML={{__html: profesor.descripcion}} className='mt-5 prose max-w-none diez mt-5' />
+                            </div>
                            </div>
                         ))}
                     </div>                    
                 </section>
+        </section>
         </>
     )
 }

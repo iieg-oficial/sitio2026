@@ -7,7 +7,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig(({ mode }) => {
-    const { VITE_ADMIN_PORT, VITE_ADMIN_HOST } = loadEnv(mode, __dirname, '');
+    const {
+        VITE_ADMIN_PORT,
+        VITE_ADMIN_HOST,
+        VITE_ADMIN_API_PROXY_TARGET,
+    } = loadEnv(mode, __dirname, '');
+
+    const apiProxyTarget = VITE_ADMIN_API_PROXY_TARGET ?? 'http://api:8000';
 
     return {
         plugins: [react()],
@@ -18,8 +24,9 @@ export default defineConfig(({ mode }) => {
             strictPort: true,
             proxy: {
                 '/api': {
-                    target: 'http://api:8000',
-                    changeOrigin: true,
+                    target: apiProxyTarget,
+                    // Keep localhost host header so backend redirects don't expose Docker-only hostnames.
+                    changeOrigin: false,
                 },
             },
             watch: {
@@ -49,4 +56,3 @@ export default defineConfig(({ mode }) => {
         },
     };
 });
-

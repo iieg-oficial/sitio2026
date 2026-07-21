@@ -3,21 +3,20 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional, List
 from app.schemas.subject import SubjectFlat
-
-class PeriocidadEnum(str, Enum):
-    diaria = "diaria"
-    mensual = "mensual"
-    anual = "anual"
+from app.models.reportes import PeriocidadEnum
+from app.models.reportes import MesEnum
 
 class ReporteCreate(BaseModel):
     titulo: str
     fecha: Optional[datetime] = None
-    periocidad: PeriocidadEnum = None
+    periocidad: Optional[PeriocidadEnum] = None
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     tema_ids: Optional[List[int]] = None
     claves: Optional[str] = None    
     slug: Optional[str] = None
+    mes: Optional[MesEnum] = None
+    anyo: Optional[int] = None
 
     @field_validator('tema_ids', mode='before')
     @classmethod
@@ -32,11 +31,13 @@ class ReporteOut(BaseModel):
     id: int
     titulo: str
     fecha: Optional[datetime] = None
-    periocidad: PeriocidadEnum = None    
+    periocidad: Optional[PeriocidadEnum] = None   
     archivo: Optional[str] = None
     slug: Optional[str] = None
     claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
+    mes: Optional[MesEnum] = None
+    anyo: Optional[int] = None
 
     class Config:
         from_attributes = True
@@ -45,11 +46,13 @@ class ReporteResponse(BaseModel):
     id: int
     titulo: str
     fecha: Optional[datetime] = None
-    periocidad: PeriocidadEnum = None
+    periocidad: Optional[PeriocidadEnum] = None
     archivo: Optional[str] = None
     slug: Optional[str] = None
     claves: Optional[str] = None    
     temas: Optional[List[SubjectFlat]] = []
+    mes: Optional[MesEnum] = None
+    anyo: Optional[int] = None
 
     class Config:
         from_attributes = True

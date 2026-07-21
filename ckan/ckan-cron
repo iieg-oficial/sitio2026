@@ -1,0 +1,3 @@
+# Ejecuta la actualización de tracking todos los días a las 2:00 AM
+0 2 * * * root /usr/local/bin/ckan -c /srv/app/ckan.ini tracking update >> /var/log/ckan_tracking.log 2>&1
+# Es OBLIGATORIO dejar una línea en blanco al final de este archivo para que cron lo procese bien

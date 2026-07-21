@@ -17,11 +17,19 @@ class Posts(Base):
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
     resumen = Column(Text)
-    contenido = Column(Text, nullable=False)
+    contenido = Column(Text, nullable=False)    
     autor = Column(String(100), default="IIEG")
-    fecha = Column(DateTime, default=datetime.utcnow)
+    fecha = Column(DateTime, default=datetime.utcnow, nullable=True)
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
+    video= Column(String(200), nullable=True)
+    
+    gallery_images = relationship(
+        "GalleryImage",
+        back_populates="post",
+        cascade="all, delete-orphan",
+        order_by="GalleryImage.order",
+    )
 
     temas = relationship(
         "Subject",
@@ -29,3 +37,11 @@ class Posts(Base):
         back_populates="posts",
         lazy="selectin",
     )
+
+class GalleryImage(Base):
+    __tablename__ = "gallery_images"
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Integer, ForeignKey("posts.id"))
+    url = Column(String, nullable=False)
+    order = Column(Integer, default=0)
+    post = relationship("Posts", back_populates="gallery_images")

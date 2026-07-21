@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import (
     auth, borradores, media, menu, pages, pages_public, preview, public, users, posts, posts_public, subject, subject_public, 
@@ -42,7 +42,7 @@ def create_app() -> FastAPI:
     )
 
 
-
+    app.mount("/static", StaticFiles(directory="static"), name="static")
     app.include_router(auth.router, prefix=settings.admin_prefix)
     app.include_router(users.router, prefix=settings.admin_prefix)
     app.include_router(pages.router, prefix=settings.admin_prefix)
@@ -97,6 +97,8 @@ def create_app() -> FastAPI:
     app.include_router(cuadernillos.router,prefix=settings.admin_prefix) 
     app.include_router(cuadernillos_public.router,prefix=settings.web_prefix)
     app.include_router(search_public.router,prefix=settings.web_prefix)
+
+       
 
     @app.get("/", tags=["health"])
     async def healthcheck():

@@ -83,7 +83,7 @@ export default function Archivos() {
             // Incluir los temas seleccionados (fuera del Form) en el payload
             const payload = { ...values, tema_ids: selectedSubjects };
             if (editingArchivo) {
-                await api.put(`/archivos/${editingArchivo.id}`, payload);
+                await api.patch(`/archivos/${editingArchivo.id}`, payload);
                 message.success('Archivo actualizado exitosamente');
             } else {
                 await api.post('/archivos/create', payload);

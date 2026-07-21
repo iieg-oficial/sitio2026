@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate'
+import TrackedLink from '@components/blocks/boton'
 
 // ─── Utilidad: mezcla aleatoria (Fisher-Yates) ────────────────────────────────
 function shuffleArray(arr) {
@@ -117,142 +118,139 @@ export default function Mapas() {
 
     // ── Render ────────────────────────────────────────────────────────────────
     return (
-        <div>
+        <div className="container mx-auto px-2 ">
             {/* ── Panel de filtros ── */}
-            <div className="mb-6 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                <div className="flex flex-wrap items-end gap-3">
 
-                    {/* Búsqueda por palabra clave */}
-                    <div className="flex-1 min-w-[200px]">
-                        <label className="mb-1 block text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                            Palabra clave
-                        </label>
+            <div className="mx-auto container md:w-6/12 mb-15">
                         <input
                             type="search"
                             value={keyword}
                             onChange={handleKeywordChange}
-                            placeholder="Título, autor, ubicación..."
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 focus:border-[#6618a2] focus:outline-none focus:ring-2 focus:ring-[#6618a2]/20"
+                            placeholder="Filtrar por palabras clave"
+                            className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
                         />
                     </div>
+            
+                <div className="flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5">
 
                     {/* Filtro: Año */}
-                    <div className="min-w-[130px]">
-                        <label className="mb-1 block text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                    <div className="">
+                        <label className='block text-14 text-primary'>
                             Año
                         </label>
                         <select
                             value={filterAnyo}
                             onChange={e => setFilterAnyo(e.target.value)}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 focus:border-[#6618a2] focus:outline-none focus:ring-2 focus:ring-[#6618a2]/20"
+                            className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                         >
-                            <option value="">Todos</option>
+                            <option value="" className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
                             {anyoOptions.map(y => (
-                                <option key={y} value={y}>{y}</option>
+                                <option key={y} value={y}className='w-full rounded-lg bg-card text-titulo px-4 py-2'>{y}</option>
                             ))}
                         </select>
                     </div>
 
                     {/* Filtro: Tipo */}
-                    <div className="min-w-[160px]">
-                        <label className="mb-1 block text-xs font-semibold text-gray-600 uppercase tracking-wide">
+                    <div className="">
+                        <label className='block text-14 text-primary'>
                             Tipo
                         </label>
                         <select
                             value={filterTipo}
                             onChange={e => setFilterTipo(e.target.value)}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 focus:border-[#6618a2] focus:outline-none focus:ring-2 focus:ring-[#6618a2]/20"
+                            className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                         >
-                            <option value="">Todos</option>
+                            <option value="" className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
                             {tipoOptions.map(tipo => (
-                                <option key={tipo} value={tipo}>{tipo}</option>
+                                <option key={tipo} value={tipo} className='w-full rounded-lg bg-card text-titulo px-4 py-2'>
+                                    {tipo}
+                                </option>
                             ))}
                         </select>
                     </div>
 
                     {/* Botón limpiar filtros */}
                     {hasActiveFilters && (
+                         <div className='flex items-end'>
                         <button
                             onClick={clearFilters}
-                            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+                            className='w-full rounded-lg border border-titulo bg-card px-4 py-2 text-sm text-titulo cursor-pointer hover:text-tertiary'
                         >
-                            ✕ Limpiar
+                            Limpiar filtros
                         </button>
+                        </div>
                     )}
                 </div>
 
-                {/* Contador de resultados */}
-                {!loading && (
-                    <p className="mt-3 text-xs text-gray-500">
-                        {hasActiveFilters
-                            ? `${filtered.length} resultado${filtered.length !== 1 ? 's' : ''} encontrado${filtered.length !== 1 ? 's' : ''}`
-                            : `${mapas.length} mapas en total`
-                        }
-                    </p>
-                )}
-            </div>
+            
 
             {/* ── Estados: cargando / error / sin resultados ── */}
             {loading && (
-                <p className="py-8 text-center text-sm text-gray-500">Cargando mapas...</p>
+                <p className="py-8 text-center text-sm text-gray-500 my-15">Cargando mapas...</p>
             )}
             {loadError && (
-                <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 my-15">
                     No se pudieron cargar los mapas. Intenta recargar la página.
                 </p>
             )}
             {!loading && !loadError && filtered.length === 0 && (
-                <p className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
+                <p className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600 my-15">
                     No se encontraron mapas con los filtros seleccionados.
                 </p>
             )}
 
             {/* ── Grid de resultados ── */}
             {!loading && currentItems.length > 0 && (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    {currentItems.map(mapa => (
-                        <div key={mapa.id} className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition">
-                            {mapa.imagen && (
-                                <img
-                                    src={mapa.imagen}
-                                    alt={mapa.titulo}
-                                    className="mb-3 h-40 w-full rounded-lg object-cover"
-                                />
-                            )}
-                            <h3 className="mb-1 text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
-                                {mapa.titulo}
-                            </h3>
-                            {mapa.anyo && <p className="text-xs text-gray-500">📅 {mapa.anyo}</p>}
-                            {mapa.autor && <p className="text-xs text-gray-500">✍️ {mapa.autor}</p>}
-                            <Link to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2] hover:underline">
-                                Ver más
-                            </Link>
-                        </div>
-                    ))}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 my-15">
+                    {currentItems.map(mapa => {
+
+                        const original = mapa.imagen
+                        const thumb = original.substring(original.lastIndexOf('/') + 1);
+                        return (
+                            <a href={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
+                                                <div key={mapa.id} className="p-4 overflow-hidden mapa h-96 relative rounded-4xl">                    
+                                                    
+
+                                                    {mapa.imagen && (
+                                                        <img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280`} alt={mapa.titulo} />
+                                                    )}
+                                                    <div className='info'>
+                                                        <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
+                                                            <h3 className='text-white'>{mapa.titulo}</h3>
+                                                            <div className='flex mb-4 gap-2'> 
+                                                                {mapa.anyo ? (
+                                                                    <p className='bg-card text-titulo rounded-2xl px-4 py-2 text-14'>{mapa.anyo}</p>
+                                                                ) : null}
+                                                                {mapa.tipo ? (
+                                                                    <p className='bg-etiqueta-sec text-primary rounded-2xl px-4 py-2 text-14'>{mapa.tipo}</p>
+                                                                ) : null}
+                                                            </div>
+                                                            
+                                                        </TrackedLink>
+                                                    </div>
+                                                </div>
+                            </a>
+                        );
+                    })}     
                 </div>
             )}
 
             {/* ── Paginación ── */}
             {!loading && pageCount > 1 && (
                 <ReactPaginate
-                    breakLabel="..."
-                    nextLabel="Siguiente ›"
-                    previousLabel="‹ Anterior"
-                    onPageChange={handlePageClick}
-                    pageRangeDisplayed={5}
-                    pageCount={pageCount}
-                    renderOnZeroPageCount={null}
-                    containerClassName="mt-6 flex flex-wrap justify-center gap-1"
-                    pageClassName="page-item"
-                    pageLinkClassName="flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 text-sm hover:bg-gray-100"
-                    previousClassName="page-item"
-                    previousLinkClassName="flex items-center gap-1 rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100"
-                    nextClassName="page-item"
-                    nextLinkClassName="flex items-center gap-1 rounded-md border border-gray-300 px-3 py-1 text-sm hover:bg-gray-100"
-                    activeClassName="active"
-                    activeLinkClassName="!bg-[#6618a2] !text-white !border-[#6618a2]"
-                    disabledLinkClassName="opacity-40 cursor-not-allowed"
-                />
+                previousLabel={"<"}
+                nextLabel={">"}
+                breakLabel={"..."}
+                breakClassName={"break-me"}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination"}
+                activeClassName={"active"}
+                forcePage={Math.floor(itemOffset / ITEMS_PER_PAGE
+)}
+            />
             )}
         </div>
     )

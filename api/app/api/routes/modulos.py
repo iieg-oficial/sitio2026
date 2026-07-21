@@ -53,7 +53,7 @@ def create_modulo(
     db.refresh(db_modulo)
     return db_modulo
 
-@router.put("/{id}", response_model=ModulosOut)
+@router.patch("/{id}", response_model=ModulosOut)
 def update_modulo(
     id: int,
     modulo: ModulosCreate,
