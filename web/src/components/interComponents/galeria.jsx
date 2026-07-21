@@ -32,11 +32,16 @@ export default function Galeria({ images }) {
                 modules={[FreeMode, Navigation, Thumbs]}
                 className="mySwiper2"
             >
-                {images.map((imagen) => (
-                    <SwiperSlide key={imagen.id}>
-                        <img src={imagen.url} alt={`Imagen ${imagen.id}`} />
-                    </SwiperSlide>
-                ))}
+                {images.map((imagen) => {
+                    const original = imagen
+                    const thumb = original.substring(original.lastIndexOf('/') + 1);
+                    return (
+                        <SwiperSlide key={imagen.id}>
+                            <img src={imagen.url} alt={`Imagen ${imagen.id}`} />
+                            {/*<img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/blog/${thumb}?w=1280`} alt={`Imagen ${imagen.id}`} />*/}
+                        </SwiperSlide>
+                    );
+                })}
             </Swiper>
             <Swiper
                 onSwiper={setThumbsSwiper}
