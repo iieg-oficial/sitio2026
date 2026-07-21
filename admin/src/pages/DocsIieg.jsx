@@ -199,7 +199,7 @@ export default function DocsIieg() {
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
-                                folder="/documentos-iieg/imagenes"
+                                folder="/documentosIieg/imagenes"
                                 label="Subir imagen"
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
@@ -232,7 +232,7 @@ export default function DocsIieg() {
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
-                                folder="/documentos-iieg/documentos"
+                                folder="/documentosIieg/documentos"
                                 label="Subir documento"
                                 onUploaded={(media) => {
                                     form.setFieldValue('documento', media.url);

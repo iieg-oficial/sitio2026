@@ -125,18 +125,21 @@ export default function Sistemas() {
                     {filteredByTab.length > 0 && (
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             {currentSystems.map((sistema) => {
+
                                 const original = sistema.imagen
-                                const thumb = original.substring(original.lastIndexOf('/') + 1);
+                                const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
+                                
+
                                 return (
                                     <a href={sistema.link} target="_blank" rel="noopener noreferrer" key={sistema.id}>
                                     <div key={sistema.id} className='mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 cursor-pointer hover:border-primary hover:border group'>
                                         <div className='md:col-span-2'>
                                             <img
-                                                src={sistema.imagen ? sistema.imagen : '/demo.jpg'}
-                                                {/* src={sistema.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/sistemas/${thumb}?w=400` : '/demo.jpg'}*/}
+                                                src={sistema.imagen ? sistema.imagen : '/demo.jpg'}                                                
                                                 alt={sistema.titulo}
                                                 className="mb-3 h-auto w-full rounded-lg object-cover"
                                             />
+                                            {/* src={sistema.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/sistemas/${thumb}?w=400` : '/demo.jpg'} */}
                                         </div>
                                         <div className='md:col-span-4'>
                                             <h3 className="mb-3 text-primary">
