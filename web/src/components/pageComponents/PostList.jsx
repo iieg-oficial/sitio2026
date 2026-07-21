@@ -45,34 +45,41 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
                 <p>No se encontraron resultados.</p>
             ) : (
                 <section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6 container mx-auto">
-                    {results.map((post) => (
-                        <TrackedLink to={`/comunidad/${post.slug}`} className="" rel="noopener noreferrer" key={post.id}>
-                            <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid md:grid-cols-2 gap-4 px-5 group">
-                                <div>
-                                    <img src={post.gallery_images?.[0]?.url ?? "/demo.jpg"} alt={post.titulo} />
-                                </div>
-                                <div>
-                                    <h3 className="text-primary font-extrabold text-28">{post.titulo}</h3>
-                                    <div className="flex gap-4 my-4 flex-wrap">
-                                        <p className='bg-[#ccc] text-body rounded-2xl px-4 py-2 text-14'>
-                                            {isValid(new Date(post.fecha))
-                                                ? format(new Date(post.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })
-                                                : 'Fecha no disponible'}
-                                        </p>
-                                        {post.temas?.map((tema) => (
-                                            <p key={tema.id} className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>
-                                                {tema.titulo}
+                    {results.map((post) => {
+
+                        const original = post..gallery_images?.[0]?.url
+                        const thumb = original.substring(original.lastIndexOf('/') + 1);
+
+                        return(
+                            <TrackedLink to={`/comunidad/${post.slug}`} className="" rel="noopener noreferrer" key={post.id}>
+                                <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid md:grid-cols-2 gap-4 px-5 group">
+                                    <div>
+                                        <img src={post.gallery_images?.[0]?.url ?? "/demo.jpg"} alt={post.titulo} />
+                                        {/*<img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/blog/${thumb}?w=400` ?? "/demo.jpg"} alt={post.titulo} />*/}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-primary font-extrabold text-28">{post.titulo}</h3>
+                                        <div className="flex gap-4 my-4 flex-wrap">
+                                            <p className='bg-[#ccc] text-body rounded-2xl px-4 py-2 text-14'>
+                                                {isValid(new Date(post.fecha))
+                                                    ? format(new Date(post.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })
+                                                    : 'Fecha no disponible'}
                                             </p>
-                                        ))}
-                                    </div>
-                                    <div dangerouslySetInnerHTML={{ __html: post.resumen }} className='mt-5 prose max-w-none' />
-                                    <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
-                                        <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                            {post.temas?.map((tema) => (
+                                                <p key={tema.id} className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>
+                                                    {tema.titulo}
+                                                </p>
+                                            ))}
+                                        </div>
+                                        <div dangerouslySetInnerHTML={{ __html: post.resumen }} className='mt-5 prose max-w-none' />
+                                        <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                            <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </TrackedLink>
-                    ))}
+                            </TrackedLink>
+                        );
+                    })}
                 </section>
             )}
         </>
