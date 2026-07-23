@@ -3,10 +3,7 @@ set -euo pipefail
 
 cd /app
 
-echo "▶️ Applying database migrations (Alembic)..."
-python -m alembic -c alembic.ini upgrade head
 
-echo "✅ Database migrations applied."
 
 echo "▶️ Running database bootstrap (scripts/init_db.py)..."
 python scripts/init_db.py
