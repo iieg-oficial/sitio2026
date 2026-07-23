@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 revision = 'ee37ba52b458'
-down_revision = '001'
+down_revision = 'f3a8b2c1d9e7'
 branch_labels = None
 depends_on = None
 
@@ -27,7 +27,7 @@ def upgrade() -> None:
     sa.Column('reviewed_by', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('reviewed_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['draft_id'], ['drafts.id'], ),
+    sa.ForeignKeyConstraint(['draft_id'], ['borradores.id'], ),
     sa.ForeignKeyConstraint(['reviewed_by'], ['usuarios.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['usuarios.id'], ),
     sa.PrimaryKeyConstraint('id')
