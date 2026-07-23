@@ -18,12 +18,15 @@ def aplicar_migraciones():
         return
 
     print("▶️ Aplicando migraciones Alembic...")
-    subprocess.run(
-        [sys.executable, "-m", "alembic", "-c", str(alembic_ini), "upgrade", "head"],
-        check=True,
-        cwd=root,
-    )
-    print("✅ Migraciones aplicadas.")
+    try:
+        subprocess.run(
+            [sys.executable, "-m", "alembic", "-c", str(alembic_ini), "upgrade", "head"],
+            check=True,
+            cwd=root,
+        )
+        print("✅ Migraciones aplicadas.")
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️  Alembic falló ({e}); se continuará con create_all() como respaldo.")
 
 
 def crear_tablas():
