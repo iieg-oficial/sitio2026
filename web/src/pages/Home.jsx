@@ -15,7 +15,7 @@ function HomePage() {
     const fetchPageHome = async () => {
         setLoading(true)
         try {
-            const res = await api.get('/paginas/slug/home')
+            const res = await api.get('/paginas/slug/home/')
             setPage(res.data)            
         } catch (err) {
             console.error("Error fetching page home:", err)
