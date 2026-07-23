@@ -17,6 +17,10 @@ ifeq ($(ENV),prod)
 	COMPOSE_FILES := -f docker-compose.yml
 	ENV_FILE      := .env.production
 	MSG_ENV       := Producción (administración)
+else ifeq ($(ENV),prod-local)
+	COMPOSE_FILES := -f docker-compose.yml
+	ENV_FILE      := .env.production.local
+	MSG_ENV       := Producción (prueba local)
 else ifeq ($(ENV),gcp)
 	COMPOSE_FILES := -f docker-compose.yml -f docker-compose.gcp.yml
 	ENV_FILE      := .env.production
