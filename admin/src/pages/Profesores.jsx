@@ -21,7 +21,7 @@ export default function Profesores() {
     const fetchProfesores = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/profesores');
+            const response = await api.get('/profesores/');
             setProfesores(response.data.profesores);
         } catch {
             message.error('Error al cargar profesores');
@@ -51,7 +51,7 @@ export default function Profesores() {
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
-                    await api.delete(`/profesores/${record.id}`);
+                    await api.delete(`/profesores/${record.id}/`);
                     message.success('Profesor eliminado exitosamente');
                     fetchProfesores();
                 } catch {
@@ -64,10 +64,10 @@ export default function Profesores() {
     const handleSubmit = async (values) => {
         try {
             if (editingProfesor) {
-                await api.patch(`/profesores/${editingProfesor.id}`, values);
+                await api.patch(`/profesores/${editingProfesor.id}/`, values);
                 message.success('Profesor actualizado exitosamente');
             } else {
-                await api.post('/profesores/create', values);
+                await api.post('/profesores/create/', values);
                 message.success('Profesor creado exitosamente');
             }
             setModalVisible(false);
