@@ -20,7 +20,7 @@ export default function Cuadernillos() {
 
     const fetchMunicipios = async () => {
         try {
-            const response = await api.get('/cuadernillos/municipios');
+            const response = await api.get('/cuadernillos/municipios/');
             setMunicipios(response.data.municipios || {});
         } catch (error) {
             message.error('Error al obtener los municipios');
@@ -30,7 +30,7 @@ export default function Cuadernillos() {
     const fetchCuadernillos = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/cuadernillos');
+            const response = await api.get('/cuadernillos/');
             setCuadernillos(response.data.cuadernillos);
         } catch (error) {
             message.error('Error al obtener los cuadernillos');
@@ -59,7 +59,7 @@ export default function Cuadernillos() {
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
-                    await api.delete(`/cuadernillos/${record.id}`);
+                    await api.delete(`/cuadernillos/${record.id}/`);
                     message.success('Cuadernillo eliminado');
                     fetchCuadernillos();
                 } catch (error) {
@@ -72,10 +72,10 @@ export default function Cuadernillos() {
     const handleSubmit = async (values) => {
         try {
             if (editingCuadernillo) {
-                await api.patch(`/cuadernillos/${editingCuadernillo.id}`, values);
+                await api.patch(`/cuadernillos/${editingCuadernillo.id}/`, values);
                 message.success('Cuadernillo actualizado');
             } else {
-                await api.post('/cuadernillos', values);
+                await api.post('/cuadernillos/', values);
                 message.success('Cuadernillo creado');
             }
             setModalVisible(false);

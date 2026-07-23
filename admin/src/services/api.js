@@ -55,10 +55,13 @@ const api = axios.create({
     }
 });
 
+// api.js
 api.interceptors.request.use(
     (config) => {
-        config.baseURL = toSameOriginApiPath(config.baseURL);
-        config.url = toSameOriginApiPath(config.url);
+        // Solo normalizamos si la URL suministrada es absoluta o empieza con http
+        if (config.url?.startsWith('http')) {
+            config.url = toSameOriginApiPath(config.url);
+        }
 
         if (['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase())) {
             const csrfToken = sessionStorage.getItem('csrf_token');
@@ -68,9 +71,7 @@ api.interceptors.request.use(
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 api.interceptors.response.use(
