@@ -26,5 +26,8 @@ export default function BlockRenderer({ block }) {
         return null
     }   
 
+    // Pasa las props de forma segura (si block.props es null/undefined usa un objeto vacío)
+    const props = block.props || {}
+
     return <Component {...block.props} />
 }

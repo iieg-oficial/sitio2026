@@ -19,7 +19,7 @@ function Footer() {
                                 />
                             </div>
                             <div className='flex md:justify-start justify-center gap-4 content-end'>
-                                <a href="" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                <a href="https://www.instagram.com/iiegjalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
                                     <span class="line-md--instagram"></span>
                                 </a>
 
