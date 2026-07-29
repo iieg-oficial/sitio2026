@@ -37,8 +37,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
-    ports:
-      - "${POSTGRES_PORT:?POSTGRES_PORT is required}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:
@@ -53,8 +51,6 @@ services:
     image: redis:8-alpine
     container_name: portal-redis
     restart: unless-stopped
-    ports:
-      - "${REDIS_PORT:?REDIS_PORT is required}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -78,8 +74,6 @@ services:
       CKAN_DB_PASSWORD: ${CKAN_DB_PASSWORD:?CKAN_DB_PASSWORD is required}
       DATASTORE_RO_USER: datastore_default
       DATASTORE_RO_PASSWORD: ${DATASTORE_RO_PASSWORD:?DATASTORE_RO_PASSWORD is required}
-    ports:
-      - "${CKAN_DB_PORT:?CKAN_DB_PORT is required}:5432"
     volumes:
       - ckan_db_data:/var/lib/postgresql/data
       - ./ckan/postgres-init:/docker-entrypoint-initdb.d:ro
@@ -95,8 +89,6 @@ services:
     image: ckan/ckan-solr:2.11-solr9
     container_name: portal-ckan-solr
     restart: unless-stopped
-    ports:
-      - "${CKAN_SOLR_PORT:?CKAN_SOLR_PORT is required}:8983"
     volumes:
       - ckan_solr_data:/var/solr
     healthcheck:
@@ -117,8 +109,6 @@ services:
     restart: unless-stopped
     command: ckan -c /srv/app/ckan.ini run -H 0.0.0.0 -p 5000
     entrypoint: ["/bin/sh", "-c", "python3 /srv/app/prerun.py && ckan -c /srv/app/ckan.ini run -H 0.0.0.0"]
-    ports:
-      - "${CKAN_PORT:?CKAN_PORT is required}:5000"
     depends_on:
       ckan-db:
         condition: service_healthy
@@ -175,8 +165,6 @@ services:
       dockerfile: Dockerfile
     container_name: portal-api
     restart: unless-stopped
-    ports:
-      - "${API_PORT:?API_PORT is required}:8000"
     depends_on:
       postgres:
         condition: service_healthy

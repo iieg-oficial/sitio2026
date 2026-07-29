@@ -1,56 +1,40 @@
-import { Link } from 'react-router'
-import TagManager from 'react-gtm-module'
+// TrackedLink.jsx
+import { Link } from 'react-router';
 
-const TrackedLink = ({ 
-    to = '#', children, className, eventData = {}, target = '_self', rel = 'noopener noreferrer',  download,  onClick, }) => {
-
-  const destination = typeof to === 'string' && to ? to : '#'
-
-  const requiresBrowserNavigation =
-    typeof to === 'string' && (
-      to.startsWith('/datos-abiertos') ||
-      /^(https?:|mailto:|tel:)/.test(destination)
-    )
-
-const handleClick = (e) => {
-    // Si 'children' es JSX (un objeto), extraemos un texto genérico de fallback
-    const linkText = typeof children === 'string' ? children : 'tracked_element'
-
+export default function TrackedLink({ to = '#', children, className, onClick, ...props }) {
+  const handleClick = (e) => {
+    // 1. Envío seguro a GTM (sin invocar funciones inexistentes del paquete react-gtm)
     try {
-      TagManager.dataLayer({
-        dataLayer: {
+      if (typeof window !== 'undefined' && window.dataLayer) {
+        window.dataLayer.push({
           event: 'link_click',
-          link_text: linkText,
-          link_destination: destination,
-          ...eventData
-        }
-      })
+          link_text: typeof children === 'string' ? children : 'menu_link',
+          link_destination: to,
+        });
+      }
     } catch (err) {
-      console.warn("GTM DataLayer error:", err)
+      console.warn("GTM push error:", err);
     }
- 
-    if (onClick) onClick(e) // ejecuta el callback adicional (ej: cerrar el popup)
-  }
 
+    // 2. Validación estricta antes de invocar cualquier onClick
+    if (typeof onClick === 'function') {
+      onClick(e);
+    }
+  };
 
-  if (requiresBrowserNavigation || target !== '_self' || download) {
+  // Si es enlace externo
+  if (typeof to === 'string' && (to.startsWith('http://') || to.startsWith('https://'))) {
     return (
-      <a href={destination} 
-      className={className} 
-      onClick={handleClick} 
-      target={target} 
-      rel={rel}
-      download={download}>
+      <a href={to} className={className} onClick={handleClick} target="_blank" rel="noopener noreferrer">
         {children}
       </a>
-    )
+    );
   }
 
+  // Navegación interna con React Router
   return (
-      <Link to={destination} className={className} onClick={handleClick}>
-        {children}
-      </Link>
-  )
+    <Link to={to} className={className} onClick={handleClick} {...props}>
+      {children}
+    </Link>
+  );
 }
-
-export default TrackedLink
