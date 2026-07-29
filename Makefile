@@ -37,20 +37,24 @@ help:
 	@echo ''
 	@echo '${YELLOW}IIEG Portal - Comandos disponibles${RESET}'
 	@echo ''
-	@echo 'Uso: ${YELLOW}make <comando> [ENV=dev|prod|gcp]${RESET} (por defecto ENV=dev)'
+	@echo 'Uso: ${YELLOW}make <comando> [ENV=dev|prod|prod-local|gcp]${RESET} (por defecto ENV=dev)'
 	@echo ''
 	@echo '${GREEN}Entornos:${RESET}'
-	@echo '  ${YELLOW}dev${RESET}   - Desarrollo local (acervo en misma máquina via iieg-network)'
-	@echo '  ${YELLOW}prod${RESET}  - Producción administración (servidor aislado, acervo por URL pública)'
-	@echo '  ${YELLOW}gcp${RESET}   - Producción GCP (todo en una VM, conecta a iieg-network)'
+	@echo '  ${YELLOW}dev${RESET}        - Desarrollo local (acervo en misma máquina via iieg-network)'
+	@echo '  ${YELLOW}prod${RESET}       - Producción administración (servidor aislado, acervo por URL pública)'
+	@echo '  ${YELLOW}prod-local${RESET} - Producción prueba local (usa .env.production.local y oculta puertos)'
+	@echo '  ${YELLOW}gcp${RESET}        - Producción GCP (todo en una VM, conecta a iieg-network)'
 	@echo ''
 	@echo '${GREEN}Comandos:${RESET}'
-	@echo '  ${YELLOW}make up${RESET}          - Inicia el entorno (en segundo plano)'
-	@echo '  ${YELLOW}make build${RESET}       - Reconstruye e inicia el entorno'
-	@echo '  ${YELLOW}make down${RESET}        - Detiene los contenedores'
-	@echo '  ${YELLOW}make logs${RESET}        - Muestra logs en tiempo real'
-	@echo '  ${YELLOW}make restart${RESET}     - Reinicia el entorno'
-	@echo '  ${YELLOW}make clean${RESET}       - Borra contenedores, redes y volúmenes (pide confirmación, FORCE=1 lo salta)'
+	@echo '  ${YELLOW}make up${RESET}               - Inicia el entorno (en segundo plano)'
+	@echo '  ${YELLOW}make build${RESET}            - Reconstruye e inicia el entorno'
+	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
+	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
+	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
+	@echo '  ${YELLOW}make clean${RESET}            - Borra contenedores, redes y volúmenes (pide confirmación)'
+	@echo '  ${YELLOW}make up-prod-local${RESET}    - Inicia el entorno en modo producción local'
+	@echo '  ${YELLOW}make down-prod-local${RESET}  - Detiene el entorno en modo producción local'
+	@echo '  ${YELLOW}make restart-prod-local${RESET}- Reinicia el entorno en modo producción local'
 	@echo ''
 	@echo '${GREEN}Shells (entran al contenedor del ENV actual):${RESET}'
 	@echo '  ${YELLOW}make shell-api${RESET}   - bash en api'
@@ -87,6 +91,15 @@ logs:
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) logs -f
 
 restart: down up
+
+up-prod-local:
+	$(MAKE) up ENV=prod-local
+
+down-prod-local:
+	$(MAKE) down ENV=prod-local
+
+restart-prod-local:
+	$(MAKE) restart ENV=prod-local
 
 clean:
 	@echo "${RED}⚠ Esto borra contenedores, redes y volúmenes de TODOS los modos (dev/prod/gcp).${RESET}"

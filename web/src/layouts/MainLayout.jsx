@@ -1,9 +1,10 @@
-import { useContext } from 'react';
+import { useContext, Suspense } from 'react';
 import { Outlet } from 'react-router';
 import Footer from '@components/Footer';
 import GlobalContext from '@contexts/GlobalContext';
 import Navbardinamic from '@components/menu/Navbardinamic';
 import { useScrollToHash } from "@hooks/useScrollToHash";
+
 
 const MainLayout = () => {
     const { isMenuPreview } = useContext(GlobalContext);
@@ -18,7 +19,9 @@ const MainLayout = () => {
             )}
             <Navbardinamic />
             <main id="main" className="">
-                <Outlet />
+                <Suspense fallback={<div className="text-center py-20">Cargando sección...</div>}>
+                 <Outlet />
+                </Suspense>
             </main>
             <Footer />
         </div>
