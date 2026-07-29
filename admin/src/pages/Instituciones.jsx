@@ -184,6 +184,7 @@ export default function Instituciones() {
                             <UploadAcervo
                                 bucket="portal"
                                 folder="/instituciones"
+                                apiKey={import.meta.env.VITE_acervo_keyApi} 
                                 label="Subir logo"
                                 onUploaded={(media) => {
                                     form.setFieldValue('logo', media.url);

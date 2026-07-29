@@ -3,7 +3,7 @@ import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import mediaService from '@services/mediaService';
 
-function UploadAcervoMultiple({ onUploaded, bucket = 'portal', folder = '/' , label = 'Subir Archivos' }) {
+function UploadAcervoMultiple({ onUploaded, bucket = 'portal', folder = '/' , label = 'Subir Archivos', apiKey = import.meta.env.VITE_acervo_keyApi }) {
 
     const [uploading, setUploading] = useState(false);
 
@@ -17,7 +17,7 @@ function UploadAcervoMultiple({ onUploaded, bucket = 'portal', folder = '/' , la
     const uploadBatch = async (files) => {
         setUploading(true);
         try {
-            const result = await mediaService.uploadMultipleFiles(files, { bucket, folder });
+            const result = await mediaService.uploadMultipleFiles(files, { bucket, folder, apiKey });
 
             const exitosos = result?.successful ?? [];
             const fallidos = result?.failed ?? [];

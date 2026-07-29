@@ -191,6 +191,7 @@ export default function Profesores() {
                             <UploadAcervo
                                 bucket="portal"
                                 folder="/profesores"
+                                apiKey={import.meta.env.VITE_acervo_keyApi} 
                                 label="Subir foto"
                                 onUploaded={(media) => {
                                     form.setFieldValue('foto', media.url);

@@ -114,7 +114,7 @@ export const uploadMediaFile = async (file, options = {}) => {
             formData.append('bucket', options.bucket);
         }
 
-        const response = await api.post('/multimedia', formData, {
+        const config = {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -126,7 +126,15 @@ export const uploadMediaFile = async (file, options = {}) => {
                     options.onProgress(percentCompleted);
                 }
             }
-        });
+        };
+
+        if (options.apiKey) {
+            // Se asume que el backend espera esta cabecera para la validación,
+            // puede ser 'x-api-key' o 'Authorization': \`Bearer \${options.apiKey}\`
+            config.headers['x-api-key'] = options.apiKey;
+        }
+
+        const response = await api.post('/multimedia', formData, config);
 
         if (response.data && response.data.id) {
             await saveToIndexedDB(response.data.id, file);

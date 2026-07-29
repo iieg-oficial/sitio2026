@@ -2,13 +2,14 @@ import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import mediaService from '@services/mediaService';
 
-function UploadAcervo({ onUploaded, bucket = 'portal', folder = '/' , label = 'Subir Archivo' }) {
+function UploadAcervo({ onUploaded, bucket = 'portal', folder = '/' , label = 'Subir Archivo', apiKey = import.meta.env.VITE_acervo_keyApi }) {
     
     const handleUpload = async ({ file, onSuccess, onError, onProgress }) => {
         try {
             const result = await mediaService.uploadMediaFile(file, {
                 bucket,
                 folder,
+                apiKey,
                 onProgress: (percent) => onProgress({ percent }),
             });
             onSuccess(result);
