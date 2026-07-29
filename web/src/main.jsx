@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { createRoot } from 'react-dom/client'
 import ReactGA from 'react-ga4';
 import TagManager from 'react-gtm-module';
+import { HelmetProvider } from 'react-helmet-async';
 import './index.css'
 import MainProvider from '@providers/MainProvider';
 import Home from '@pages/Home';
@@ -10,6 +11,7 @@ import Post from '@pages/Post';
 import BusquedaGlobal from '@pages/BusquedaGlobal';
 import PaginaIndividual from './components/pageComponents/PaginaIndividual'
 import ClasificadorCultivos from '@pages/ClasificadorCultivos'
+import PaginaDinamica from './components/pageComponents/PaginaDinamica';
 
 const env = import.meta.env;
 const MODE = env.VITE_NODE_ENV
@@ -58,5 +60,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')).render(
-    <RouterProvider router={router} />
+    <HelmetProvider>
+        <RouterProvider router={router} />
+    </HelmetProvider>
 )

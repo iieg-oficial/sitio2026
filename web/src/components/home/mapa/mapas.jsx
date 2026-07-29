@@ -20,9 +20,6 @@ export default function Mapas() {
                 }
         }
 
-        if (loading || !mapas || mapas.length === 0) {
-            return null // O puedes retornar un skeleton / loader
-        }
 
         const handleResize = () => {
             setIsMobile(window.innerWidth < 768)

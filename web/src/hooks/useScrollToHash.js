@@ -9,7 +9,10 @@ export function useScrollToHash() {
   useEffect(() => {
     // Solo actuar cuando la navegación terminó (state === "idle")
     if (navigation.state !== "idle") return;
-    if (!hash) return;
+    if (!hash) {
+      window.scrollTo(0, 0);
+      return;
+    }
 
     const tryScroll = (attempts = 0) => {
       const el = document.querySelector(hash);

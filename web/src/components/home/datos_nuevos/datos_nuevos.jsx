@@ -9,7 +9,7 @@ export default function DatosNuevos() {
 
     useEffect(() => {
         const fetchDatosNuevos = async () => {
-            const response = await api.get('/datos-nuevos/')
+            const response = await api.get('/datos-nuevos')
             setDatosNuevos(response.data.datos_nuevos)
         }
         fetchDatosNuevos()

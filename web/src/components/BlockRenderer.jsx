@@ -26,6 +26,11 @@ export default function BlockRenderer({ block }) {
         return null
     }   
 
+    if (typeof Component !== 'function') {
+        console.warn(`El bloque de tipo "${block.type}" no tiene un componente válido asignado.`);
+        return null; // O un <div>Bloque no soportado</div> en lugar de romper la app
+    }
+
     // Pasa las props de forma segura (si block.props es null/undefined usa un objeto vacío)
     const props = block.props || {}
 
