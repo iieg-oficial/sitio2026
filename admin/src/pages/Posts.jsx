@@ -277,6 +277,7 @@ export default function Posts() {
                         <UploadAcervoMultiple
                             bucket="portal"
                             folder="/blog"
+                            apiKey={import.meta.env.VITE_acervo_keyApi} 
                             label="Subir archivo"
                             onUploaded={(urls) => {
                                 setGalleryImages((prev) => [...prev, ...urls]);

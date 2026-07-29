@@ -265,6 +265,7 @@ export default function Reportes() {
                              <UploadAcervo
                                 bucket="portal"
                                 folder="/reportes"
+                                apiKey={import.meta.env.VITE_acervo_keyApi} 
                                 label="Subir archivo"
                                 onUploaded={(media) => {
                                     form.setFieldValue('archivo', media.url);
