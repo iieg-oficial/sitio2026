@@ -212,6 +212,7 @@ export default function Sistemas() {
                         <UploadAcervo
                             bucket="portal"
                             folder="/sistemas"
+                            apiKey={import.meta.env.VITE_acervo_keyApi} 
                             label="Subir imagen"
                             onUploaded={(media) => {
                                 form.setFieldValue('imagen', media.url);

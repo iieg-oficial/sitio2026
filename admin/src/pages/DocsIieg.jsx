@@ -200,6 +200,7 @@ export default function DocsIieg() {
                             <UploadAcervo
                                 bucket="portal"
                                 folder="/documentosIieg/imagenes"
+                                apiKey={import.meta.env.VITE_acervo_keyApi} 
                                 label="Subir imagen"
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
@@ -233,6 +234,7 @@ export default function DocsIieg() {
                             <UploadAcervo
                                 bucket="portal"
                                 folder="/documentosIieg/documentos"
+                                apiKey={import.meta.env.VITE_acervo_keyApi} 
                                 label="Subir documento"
                                 onUploaded={(media) => {
                                     form.setFieldValue('documento', media.url);
