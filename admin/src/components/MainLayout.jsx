@@ -154,7 +154,7 @@ export default function MainLayout() {
         menuItems.push({
             key: '/sistemas_i',
             icon: <MenuOutlined />,
-            label: 'Sistemas',
+            label: 'Productos',
             onClick: () => navigate('/sistemas')
         });
 
@@ -172,7 +172,7 @@ export default function MainLayout() {
                 {
                     key: '/flashes',
                     icon: <MenuOutlined />,
-                    label: 'Flashes',
+                    label: 'Datos exprés',
                     onClick: () => navigate('/flashes')
                 },
                 {
@@ -198,13 +198,13 @@ export default function MainLayout() {
                 {
                     key: '/posts',
                     icon: <MenuOutlined />,
-                    label: 'Posts',
+                    label: 'Comunicación institucional',
                     onClick: () => navigate('/posts')
                 },
                 {
                     key: '/cursos',
                     icon: <MenuOutlined />,
-                    label: 'Cursos',
+                    label: 'Educación continua',
                     onClick: () => navigate('/cursos')
                 }
             ],
