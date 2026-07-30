@@ -114,7 +114,7 @@ const filteredPosts = useMemo(() => (
         {/* Twitter Cards (Específico para X / Twitter) */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={page?.title } />
-        <meta name="twitter:description" content={page?.description_meta || 'comunicacion y agenda'} />
+        <meta name="twitter:description" content={page?.description_meta || 'Comunicación institucional'} />
         <meta name="twitter:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
     </Helmet>
         <article className="px-5 xl:px-5 2xl:px-0 ">
