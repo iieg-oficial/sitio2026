@@ -131,19 +131,29 @@ services:
       CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME:?CKAN_SYSADMIN_NAME is required}
       CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD:?CKAN_SYSADMIN_PASSWORD is required}
       CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
-      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity iieg_theme stats
+      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg_theme stats
       CKAN__ROOT_PATH: /datos-abiertos/{{LANG}}
       CKAN_TRACKING_ENABLED: "True"
       CKAN___SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CKANEXT__S3FILESTORE__SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
+      # HOST_NAME = endpoint_url de boto3. Con path-style, boto3 construye:
+      # HOST_NAME / BUCKET / STORAGE_PATH / archivo
+      # => https://iieg.jalisco.gob.mx/acervo / portal / datos-abiertos / file  ✅
+      # Por eso HOST_NAME debe incluir /acervo (usar ACERVO_S3_URL, no ACERVO_S3_HOST)
       CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
       CKANEXT__S3FILESTORE__REGION_NAME: us-east-1
       CKANEXT__S3FILESTORE__AWS_ACCESS_KEY_ID: ${ACERVO_ACCESS_KEY:?ACERVO_ACCESS_KEY is required}
       CKANEXT__S3FILESTORE__AWS_SECRET_ACCESS_KEY: ${ACERVO_SECRET_KEY:?ACERVO_SECRET_KEY is required}
       CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
-      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: datos-abiertos
+      # AWS_STORAGE_PATH = prefijo de carpeta dentro del bucket (sin /acervo, ya está en HOST_NAME)
+      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:-datos-abiertos}
       CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
+      # Evita que CKAN verifique el bucket al arrancar (HeadBucket → 403 → crash loop)
+      # El error de autenticación aparecerá al subir un archivo, no al iniciar
+      CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
+      # DOWNLOAD_PROXY = URL pública base para los links de descarga
+      # Apunta a /acervo/ en tu propio Nginx para que éste lo proxee al acervo externo
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
     volumes:
       - ckan_storage:/var/lib/ckan
