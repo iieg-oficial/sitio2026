@@ -44,7 +44,7 @@ export default function Posts() {
             const response = await api.get('/posts');
             setPosts(response.data.posts);
         } catch {
-            message.error('Error al cargar posts');
+            message.error('Error al cargar');
         } finally {
             setLoading(false);
         }
@@ -70,18 +70,18 @@ export default function Posts() {
 
     const handleDelete = (record) => {
         Modal.confirm({
-            title: '¿Está seguro de eliminar este post?',
-            content: `Se eliminará el post: ${record.titulo}`,
+            title: '¿Está seguro de eliminar?',
+            content: `Se eliminará: ${record.titulo}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
                     await api.delete(`/posts/${record.id}`);
-                    message.success('Post eliminado exitosamente');
+                    message.success('eliminado exitosamente');
                     fetchPosts();
                 } catch {
-                    message.error('Error al eliminar post');
+                    message.error('Error al eliminar');
                 }
             }
         });
@@ -97,15 +97,15 @@ export default function Posts() {
             console.log('Payload enviado:', payload); // <-- temporal
             if (editingPost) {
                 await api.patch(`/posts/${editingPost.id}`, payload);
-                message.success('Post actualizado exitosamente');
+                message.success('Actualizado exitosamente');
             } else {
                 await api.post('/posts/create', payload);
-                message.success('Post creado exitosamente');
+                message.success('creado exitosamente');
             }
             setModalVisible(false);
             fetchPosts();
         } catch {
-            message.error(editingPost ? 'Error al actualizar post' : 'Error al crear post');
+            message.error(editingPost ? 'Error al actualizar' : 'Error al crear');
         }
     };
 
@@ -176,13 +176,13 @@ export default function Posts() {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <Title level={2} style={{ margin: 0 }}>Administración de Posts</Title>
+                <Title level={2} style={{ margin: 0 }}>Comunicación Institucional</Title>
                 <Button
                     type="primary"
                     icon={<PlusOutlined />}
                     onClick={handleCreate}
                 >
-                    Nuevo Post
+                    Nuevo
                 </Button>
             </div>
 
@@ -195,13 +195,13 @@ export default function Posts() {
                     pagination={{
                         pageSize: 10,
                         showSizeChanger: true,
-                        showTotal: (total) => `Total ${total} posts`
+                        showTotal: (total) => `Total ${total}`
                     }}
                 />
             </Card>
 
             <Modal
-                title={editingPost ? 'Editar Post' : 'Nuevo Post'}
+                title={editingPost ? 'Editar' : 'Nuevo'}
                 open={modalVisible}
                 onCancel={() => setModalVisible(false)}
                 onOk={() => form.submit()}
