@@ -267,7 +267,6 @@ export default function Flashes() {
                             <UploadAcervo
                                 bucket="portal"
                                 folder="/flashes"
-                                apiKey={import.meta.env.VITE_acervo_keyApi} 
                                 label="Subir flash"
                                 onUploaded={(media) => {
                                     form.setFieldValue('link', media.url);
