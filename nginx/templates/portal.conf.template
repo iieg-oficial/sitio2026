@@ -40,20 +40,47 @@ server {
     }
 
     location = /datos-abiertos/login {
-        return 301 /datos-abiertos/user/login;
+        return 301 /datos-abiertos/es/user/login;
     }
 
     location = /datos-abiertos {
         client_max_body_size 100M;
-        return 301 /datos-abiertos/;
+        return 301 /datos-abiertos/es/;
     }
 
     location = /datos-abiertos/logout {
-        return 301 /datos-abiertos/user/logout;
+        return 301 /datos-abiertos/es/user/logout;
     }
 
     location = /datos-abiertos/register {
-        return 301 /datos-abiertos/user/register;
+        return 301 /datos-abiertos/es/user/register;
+    }
+
+    # -----------------------------------------------------------------------
+    # CKAN usa ROOT_PATH=/datos-abiertos/{{LANG}} — necesita el idioma en la URL.
+    # Cuando CKAN redirige tras guardar un form, genera /datos-abiertos/group/X
+    # (sin /es/). Nginx reescribiría a /group/X y CKAN devolvería 0 bytes.
+    # Estas reglas atrapan esas rutas sin idioma y añaden /es/ antes de proxear.
+    # Son más específicas que /datos-abiertos (^~ usa el prefijo más largo).
+    # -----------------------------------------------------------------------
+    location ^~ /datos-abiertos/group/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
+    }
+
+    location ^~ /datos-abiertos/organization/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
+    }
+
+    location ^~ /datos-abiertos/dataset/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
+    }
+
+    location ^~ /datos-abiertos/user/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
+    }
+
+    location ^~ /datos-abiertos/tag/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
     }
 
     location ^~ /datos-abiertos {
@@ -127,6 +154,31 @@ server {
     location ^~ /portal-admin {
         alias /usr/share/nginx/html/portal-admin;
         try_files $uri $uri/ /portal-admin/index.html;
+    }
+
+    # -----------------------------------------------------------------------
+    # Redirecciones para rutas CKAN sin prefijo /datos-abiertos
+    # CKAN a veces redirige a /group/X, /dataset/X, etc. directamente.
+    # Sin estas reglas Nginx las pasa al SPA de React → pantalla blanca.
+    # -----------------------------------------------------------------------
+    location ^~ /group/ {
+        return 301 /datos-abiertos$request_uri;
+    }
+
+    location ^~ /organization/ {
+        return 301 /datos-abiertos$request_uri;
+    }
+
+    location ^~ /dataset/ {
+        return 301 /datos-abiertos$request_uri;
+    }
+
+    location ^~ /user/ {
+        return 301 /datos-abiertos$request_uri;
+    }
+
+    location ^~ /tag/ {
+        return 301 /datos-abiertos$request_uri;
     }
 
     location / {
