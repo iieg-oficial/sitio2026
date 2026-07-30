@@ -12,11 +12,13 @@ function Footer() {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-0 md:gap-8">
                         <div className='mb-8 md:mb-0 md:col-span-2 xl:col-span-1 grid'>
                             <div>
+                                <a href="/">
                                 <img
                                     src="/ico_iieg_logo.svg"
                                     alt="IIEG Logo"
                                     className="mb-12 mx-auto md:ml-0"
                                 />
+                                </a>
                             </div>
                             <div className='flex md:justify-start justify-center gap-4 content-end'>
                                 <a href="https://www.instagram.com/iiegjalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
@@ -43,12 +45,12 @@ function Footer() {
 
                         <div className='mb-8 md:mb-0 md:col-span-2 xl:col-span-1'>
                             <div>
-                                <a href='' target='_blank'>
+                                <a href='https://jalisco.gob.mx/inicio' target='_blank'>
                                     <img src="/ico_gobjal_logo.svg" alt="Link al sitio del gobierno de jalisco" className="mx-auto mb-12 md:mr-0 xl:mx-auto" />
                                 </a>
                             </div>
                             <div className='grid content-end'>
-                                <a href='' target='_blank'>
+                                <a href='https://consultapublicamx.plataformadetransparencia.org.mx/' target='_blank'>
                                     <img src="/img_transparencia.png" alt="Link a la plataforma de transparencia" className="mx-auto mt-4 md:mr-0 xl:mx-auto" />
                                 </a>
                             </div>
@@ -63,7 +65,7 @@ function Footer() {
                                 <a href='/conocenos' className='linkfooter'>Conócenos</a>
                             </li>
                             <li className='mb-8'>
-                                <a href='/sistemas-de-informacion' className='linkfooter'>Sistemas de Información</a>
+                                <a href='/nuestros-productos' className='linkfooter'>Nuestros Productos</a>
                             </li>
                             <li className='mb-8'>
                                 <a href='/datos-abiertos' className='linkfooter'>Datos Abiertos y documentación</a>
@@ -80,7 +82,7 @@ function Footer() {
                                 <a href='' target='_blank' className='linkfooter'>Transparencia</a>
                             </li>
                             <li className='mb-8'>
-                                <a href='' target='_blank' className='linkfooter'>Sitio anterior</a>
+                                <a href='https://iieg.gob.mx/' target='_blank' className='linkfooter'>Sitio anterior</a>
                             </li>
                             <li className='mb-8'>
                                 <a href='/aviso-de-privacidad' className='linkfooter'>Aviso de privacidad</a>
