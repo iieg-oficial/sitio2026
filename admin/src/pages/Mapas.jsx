@@ -248,7 +248,6 @@ export default function Mapas() {
                             <UploadAcervo
                                 bucket="portal"
                                 folder="/mapas"
-                                apiKey={import.meta.env.VITE_acervo_keyApi} 
                                 label="Subir imagen"
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
@@ -271,7 +270,6 @@ export default function Mapas() {
                             <UploadAcervo
                                 bucket="portal"
                                 folder="/mapas"
-                                apiKey={import.meta.env.VITE_acervo_keyApi} 
                                 label="Subir archivo"
                                 onUploaded={(media) => {
                                     form.setFieldValue('archivo', media.url);

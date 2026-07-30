@@ -42,6 +42,14 @@ class AcervoService:
             ),
         }
         self.default_bucket = settings.acervo_bucket_name
+        
+        if getattr(settings, "acervo_api_key", None):
+            def inject_api_key(request, **kwargs):
+                header_name = getattr(settings, "acervo_api_key_header", "x-api-key")
+                request.headers[header_name] = settings.acervo_api_key
+            for client in self._clients.values():
+                client.meta.events.register('before-send.s3', inject_api_key)
+                
         self._ensure_buckets_exist()
 
     def _ensure_buckets_exist(self):

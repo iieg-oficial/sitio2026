@@ -152,7 +152,6 @@ export default function Cuadernillos() {
                         <UploadAcervo 
                             bucket="portal"
                             folder="/cuadernillos"
-                            apiKey={import.meta.env.VITE_acervo_keyApi} 
                             label="Subir Archivo"
                             onUploaded={(media) =>
                                 form.setFieldsValue({ archivo: media.url })
