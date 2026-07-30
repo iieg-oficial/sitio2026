@@ -208,7 +208,6 @@ export const CamposComunes = ({ form }) => (
             <UploadAcervo 
                 bucket="portal"
                 folder="/cursos"
-                apiKey={import.meta.env.VITE_acervo_keyApi} 
                 label="Subir archivo"
                 onUploaded={(media) => {
                     form.setFieldsValue({ archivo: media.url });

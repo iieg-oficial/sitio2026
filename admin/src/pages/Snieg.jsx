@@ -151,7 +151,6 @@ export default function Snieg() {
                             <UploadAcervo
                                 bucket="portal"
                                 folder="/snieg"
-                                apiKey={import.meta.env.VITE_acervo_keyApi} 
                                 label="Subir imagen"
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
