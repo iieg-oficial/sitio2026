@@ -157,7 +157,7 @@ export default function Sistemas() {
     return (
        <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <Title level={2} style={{ margin: 0 }}>Nuestros productos/Title>
+                <Title level={2} style={{ margin: 0 }}>Nuestros productos</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
                     Crear producto
                 </Button>
