@@ -48,14 +48,6 @@ export default function MainLayout() {
             label: 'Usuarios',
             onClick: () => navigate('/users')
         });
-        menuItems.push({
-            key: '/revision',
-            icon: <AuditOutlined />,
-            label: pendingCount > 0
-                ? <span>Revisiones <Badge count={pendingCount} size="small" /></span>
-                : 'Revisiones',
-            onClick: () => navigate('/revision')
-        });
 
         menuItems.push({
             key: '/paginas',
@@ -73,12 +65,7 @@ export default function MainLayout() {
             label: 'Media',
             onClick: () => navigate('/media')
         });
-        menuItems.push({
-            key: '/menu',
-            icon: <MenuOutlined />,
-            label: 'Menú',
-            onClick: () => navigate('/menu')
-        });
+
 
          menuItems.push({
             key: '/catalogos',

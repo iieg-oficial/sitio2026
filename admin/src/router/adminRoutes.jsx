@@ -7,6 +7,6 @@ const ADMIN = ['tetlamamakani'];
 
 export const adminRoutes = [
   protectedRoute('users', <Users />, ADMIN),
-  protectedRoute('revision', <RevisionQueue />, ADMIN),
+  // protectedRoute('revision', <RevisionQueue />, ADMIN),
   protectedRoute('paginas', <Paginas />, ADMIN),
 ];
