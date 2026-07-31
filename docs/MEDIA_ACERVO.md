@@ -15,12 +15,12 @@ Esta guía explica cómo usar el **Acervo** (almacenamiento S3-compatible con Se
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| `GET` | `/api/portal-admin/multimedia?bucket=portal` | Lista archivos del bucket portal (lee de DB) |
-| `GET` | `/api/portal-admin/multimedia?bucket=iieg` | Lista archivos del bucket iieg (lee directo de S3) |
-| `POST` | `/api/portal-admin/multimedia` | Sube archivo. Body: `file`, `folder`, `alt`, `bucket` |
-| `DELETE` | `/api/portal-admin/multimedia/{id}?bucket=<bucket>` | Borra. Para iieg el id viene como `iieg:<object-name>` |
-| `GET` | `/api/portal-admin/multimedia/carpetas` | Lista carpetas (solo aplica a bucket portal) |
-| `POST` | `/api/portal-admin/multimedia/carpetas` | Crea carpeta (solo portal) |
+| `GET` | `/api/sitio-admin/multimedia?bucket=portal` | Lista archivos del bucket portal (lee de DB) |
+| `GET` | `/api/sitio-admin/multimedia?bucket=iieg` | Lista archivos del bucket iieg (lee directo de S3) |
+| `POST` | `/api/sitio-admin/multimedia` | Sube archivo. Body: `file`, `folder`, `alt`, `bucket` |
+| `DELETE` | `/api/sitio-admin/multimedia/{id}?bucket=<bucket>` | Borra. Para iieg el id viene como `iieg:<object-name>` |
+| `GET` | `/api/sitio-admin/multimedia/carpetas` | Lista carpetas (solo aplica a bucket portal) |
+| `POST` | `/api/sitio-admin/multimedia/carpetas` | Crea carpeta (solo portal) |
 
 > Las peticiones requieren cookie de auth (`access_token`) y header `X-CSRF-Token` en métodos mutables. El interceptor de axios en `admin/src/services/api.js` los inyecta automáticamente, así que normalmente no tienes que pensar en eso.
 
