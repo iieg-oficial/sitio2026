@@ -1,2 +1,14 @@
 nombre,descripcion,tipo,imagen,link,documento,fecha,slug
-Plan institucional 2026,Documento rector del plan institucional.,plan_institucional,/media/docs/plan-institucional.jpg,https://iieg.gob.mx/plan-2026,https://acervo.ejemplo.gob.mx/docs/plan-institucional-2026.pdf,2026-01-15,plan-institucional-2026
+Calidad,Nos distinguimos por aplicar altos estándares técnicos y metodológicos que aseguran la confiabilidad de la información que producimos y difundimos.,valor,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_calidad.png,,,,
+Responsabilídad,"Reconocemos la trascendencia social de la información que publicamos y asumimos el deber ético de gestionarla con integridad, conscientes de su impacto en las decisiones públicas y en la vida de la sociedad.",valor,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_responsabilidad.png,,,,
+Innovación,"Buscamos continuamente mejorar nuestros procesos y productos a través del uso de tecnologías de vanguardia (novedosas), para ofrecer información más accesible, útil y relevante.",valor,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_innovacion.png,,,,
+Colaboración,"Compartimos metodologías y tecnologías para fomentar la replicabilidad, y brindamos capacitación y asesoría para ampliar la utilidad social de la información.",valor,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_colaboracion.png,,,,
+Objetividad,"Garantizamos que la información estadística y geográfica se genera, analiza y difunde con imparcialidad, sustentada en evidencia científica y metodológica.",valor,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_objetividad.png,,,,
+Pertinencia,"Generamos y entregamos información oportuna y relevante, que atiende directamente a las necesidades y prioridades de la sociedad y los tomadores de decisiones.",valor,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_pertinencia.png,,,,
+Información oficial confiable,,plan_institucional,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_plan_institucional_01.png,,,,
+Sistema interoperable estatal,,plan_institucional,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_plan_institucional_02.png,,,,
+Gestión tecnológica innovadora,,plan_institucional,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_plan_institucional_03.png,,,,
+Acceso abierto a datos,,plan_institucional,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_plan_institucional_04.png,,,,
+Capacitación y asesoría,,plan_institucional,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_plan_institucional_05.png,,,,
+Información geoespacial,,plan_institucional,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_plan_institucional_06.png,,,,
+Gestión institucional eficiente,,plan_institucional,https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/imagenes/ico_plan_institucional_07.png,,,,
