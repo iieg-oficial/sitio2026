@@ -11,7 +11,7 @@ export const pageMap = {
     "reportes": ['reportes'],
     "mapas-historicos": ['mapas'],
     "documentacion": ['documentacion'],
-    "capacitaciones": ['capacitaciones'],
+    "educacion-continua": ['capacitaciones'],
     "convocatorias": ['convocatorias'],
     "cuadernillos": ['cuadernillos']
 };

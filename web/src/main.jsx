@@ -50,7 +50,7 @@ const router = createBrowserRouter([
             { path: '/:slug', element: <DynamicPage /> },
             { path: '/comunidad/:slug', element: <PaginaIndividual /> },
             { path: '/datos-expres/:slug', element: <PaginaIndividual /> },
-            { path: '/capacitaciones/:slug', element: <PaginaIndividual /> },
+            { path: '/educacion-continua/:slug', element: <PaginaIndividual /> },
             { path: '/convocatoria/:slug', element: <PaginaIndividual /> },
             { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
             { path: '/mapas-historicos/:slug', element: <PaginaIndividual /> },

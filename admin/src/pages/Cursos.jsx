@@ -38,7 +38,7 @@ export default function Cursos() {
       const response = await api.get('/cursos');
       setCursos(response.data.cursos);
     } catch (error) {
-      console.error('Error al obtener cursos:', error);
+      console.error('Error al obtener:', error);
     } finally {
       setLoading(false);
     }
@@ -149,7 +149,7 @@ export default function Cursos() {
       setModalVisible(false);
       fetchCursos();
     } catch (error) {
-      message.error(editingCurso ? 'Error al actualizar curso' : 'Error al crear curso');
+      message.error(editingCurso ? 'Error al actualizar' : 'Error al crear');
     }
   };
 
@@ -271,8 +271,8 @@ export default function Cursos() {
               value={tipoCurso}
               onChange={(value) => setTipoCurso(value)}
             >
-              <Option key="capacitacion" value="capacitacion">Capacitación</Option>
-              <Option key="convocatoria" value="convocatoria">Convocatoria</Option>
+              <Option key="capacitacion" value="capacitacion">Educación continua</Option>
+              <Option key="convocatoria" value="convocatoria">Convocatorias</Option>
             </Select>
           </Form.Item>
 
