@@ -9,6 +9,10 @@ RESET  := $(shell tput -Txterm sgr0)
 # Entorno por defecto: dev
 ENV ?= dev
 
+# Entorno que usa `make deploy`. gcp en monolito (el portal comparte VM con el gateway y el
+# acervo); prod en un nodo propio, donde iieg-network no existe porque no cruza de maquina.
+DEPLOY_ENV ?= gcp
+
 # Configuración según entorno
 # - dev:  desarrollo local (acervo y todo en la misma máquina via iieg-network)
 # - prod: producción "administración" (servidor aislado, acervo accedido por URL pública)
@@ -48,7 +52,7 @@ help:
 	@echo '${GREEN}Comandos:${RESET}'
 	@echo '  ${YELLOW}make up${RESET}               - Inicia el entorno (en segundo plano)'
 	@echo '  ${YELLOW}make build${RESET}            - Reconstruye e inicia el entorno'
-	@echo '  ${YELLOW}make deploy${RESET}           - git pull + rebuild en GCP. Lo invoca ecosystem-deploy del gateway'
+	@echo '  ${YELLOW}make deploy [DEPLOY_ENV=gcp|prod]${RESET} - git pull + rebuild. gcp en monolito, prod en nodo propio'
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
@@ -94,7 +98,7 @@ logs:
 restart: down up
 
 deploy:
-	@echo "${GREEN}Desplegando: Producción (GCP)${RESET}"
+	@echo "${GREEN}Desplegando con ENV=$(DEPLOY_ENV)${RESET}"
 	@branch=$$(git branch --show-current 2>/dev/null); \
 	upstream=$$(git rev-parse --abbrev-ref '@{u}' 2>/dev/null); \
 	if [ -z "$$upstream" ]; then \
@@ -114,10 +118,10 @@ deploy:
 			echo "${YELLOW}Git: $$branch sin actualizar, se despliega el árbol actual${RESET}"; \
 		fi; \
 	fi
-	$(MAKE) build ENV=gcp
+	$(MAKE) build ENV=$(DEPLOY_ENV)
 
 _up-prod:
-	$(MAKE) up ENV=gcp
+	$(MAKE) up ENV=$(DEPLOY_ENV)
 
 up-prod-local:
 	$(MAKE) up ENV=prod-local
