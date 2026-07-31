@@ -95,7 +95,25 @@ restart: down up
 
 deploy:
 	@echo "${GREEN}Desplegando: Producción (GCP)${RESET}"
-	git pull --ff-only
+	@branch=$$(git branch --show-current 2>/dev/null); \
+	upstream=$$(git rev-parse --abbrev-ref '@{u}' 2>/dev/null); \
+	if [ -z "$$upstream" ]; then \
+		echo "${YELLOW}Git: $$branch sin upstream, se despliega el árbol actual${RESET}"; \
+	else \
+		git fetch --quiet; \
+		base=$$(git merge-base HEAD '@{u}'); \
+		local_sha=$$(git rev-parse HEAD); \
+		remote_sha=$$(git rev-parse '@{u}'); \
+		if [ "$$base" != "$$local_sha" ] && [ "$$base" != "$$remote_sha" ]; then \
+			echo "${RED}Git: $$branch divergió de $$upstream, resuélvelo antes de desplegar${RESET}"; \
+			exit 1; \
+		fi; \
+		if git merge --ff-only --quiet '@{u}' 2>/dev/null; then \
+			echo "${GREEN}Git: $$branch actualizado desde $$upstream${RESET}"; \
+		else \
+			echo "${YELLOW}Git: $$branch sin actualizar, se despliega el árbol actual${RESET}"; \
+		fi; \
+	fi
 	$(MAKE) build ENV=gcp
 
 _up-prod:
