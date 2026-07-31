@@ -31,7 +31,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup
+.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
 
 help:
 	@echo ''
@@ -72,7 +72,19 @@ help:
 	@echo '  ${YELLOW}make install-slugify${RESET} - Instala python-slugify en el contenedor api'
 	@echo ''
 	@echo '${GREEN}Setup inicial:${RESET}'
-	@echo '  ${YELLOW}make setup${RESET}       - Crea .env.development y .env.production desde los .example si no existen'
+	@echo '  ${YELLOW}make setup${RESET}            - Crea .env.development y .env.production desde los .example si no existen'
+	@echo ''
+	@echo '${GREEN}Seed / Carga de datos de ejemplo (CSVs):${RESET}'
+	@echo '  ${YELLOW}make seed${RESET}             - Importa los CSVs de examples/ en el contenedor api ya levantado'
+	@echo '  ${YELLOW}make up-seed${RESET}          - Levanta el entorno E importa los CSVs al iniciar'
+	@echo '  ${YELLOW}make build-seed${RESET}       - Reconstruye el entorno E importa los CSVs al iniciar'
+	@echo '  ${YELLOW}make up-seed-prod${RESET}         - Igual que up-seed con ENV=prod'
+	@echo '  ${YELLOW}make build-seed-prod${RESET}      - Igual que build-seed con ENV=prod'
+	@echo '  ${YELLOW}make up-seed-prod-local${RESET}   - Igual que up-seed con ENV=prod-local'
+	@echo '  ${YELLOW}make build-seed-prod-local${RESET} - Igual que build-seed con ENV=prod-local'
+	@echo '  ${YELLOW}make up-seed-gcp${RESET}          - Igual que up-seed con ENV=gcp'
+	@echo '  ${YELLOW}make build-seed-gcp${RESET}       - Igual que build-seed con ENV=gcp'
+	@echo '  Opciones opcionales: ${YELLOW}MODE=upsert|insert  DRY_RUN=1  ONLY=page,menu_item  SKIP=mapa${RESET}'
 	@echo ''
 
 up:
@@ -161,5 +173,62 @@ install-api-dep:
 install-slugify:
 	@$(MAKE) install-api-dep ENV=$(ENV) DEP=python-slugify
 
+import-reportes:
+	@$(MAKE) import-data ENV=$(ENV) SCRIPT=api/scripts/import_reportes.py SOURCE=api/scripts/examples/reportes_import_example.csv MODE=$(MODE) DRY_RUN=$(DRY_RUN) ARGS=$(ARGS)
+
+import-posts:
+	@$(MAKE) import-data ENV=$(ENV) SCRIPT=api/scripts/import_posts.py SOURCE=api/scripts/examples/posts_import_example.csv MODE=$(MODE) DRY_RUN=$(DRY_RUN) ARGS=$(ARGS)
+
 setup:
 	@./scripts/init-env.sh
+
+# ── Seed / Carga de datos de ejemplo ────────────────────────────────────────
+# Construye los argumentos opcionales para import_all_examples.py
+SEED_ARGS := --mode $(if $(MODE),$(MODE),upsert)
+ifdef DRY_RUN
+	SEED_ARGS += --dry-run
+endif
+ifdef ONLY
+	SEED_ARGS += --only $(ONLY)
+endif
+ifdef SKIP
+	SEED_ARGS += --skip $(SKIP)
+endif
+
+## seed: Ejecuta la importación de CSVs en el contenedor api ya levantado.
+##       Útil cuando el ambiente está corriendo y quieres poblar/repoblar la BD.
+##       Opciones: MODE=upsert|insert  DRY_RUN=1  ONLY=page,menu_item  SKIP=mapa
+seed:
+	@echo "${GREEN}Importando datos de ejemplo (CSVs) → $(MSG_ENV)${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api \
+		python scripts/import_all_examples.py $(SEED_ARGS)
+
+## up-seed: Levanta el entorno (sin rebuild) y activa la carga de CSVs al iniciar.
+up-seed:
+	@echo "${GREEN}Levantando entorno con seed: $(MSG_ENV)${RESET}"
+	SEED_EXAMPLES=true docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
+
+## build-seed: Reconstruye el entorno y activa la carga de CSVs al iniciar.
+##             Equivalente a: SEED_EXAMPLES=true docker compose up --build
+build-seed:
+	@echo "${GREEN}Reconstruyendo entorno con seed: $(MSG_ENV)${RESET}"
+	SEED_EXAMPLES=true docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d --build
+
+## Atajos rápidos por entorno
+up-seed-prod:
+	$(MAKE) up-seed ENV=prod
+
+build-seed-prod:
+	$(MAKE) build-seed ENV=prod
+
+up-seed-prod-local:
+	$(MAKE) up-seed ENV=prod-local
+
+build-seed-prod-local:
+	$(MAKE) build-seed ENV=prod-local
+
+up-seed-gcp:
+	$(MAKE) up-seed ENV=gcp
+
+build-seed-gcp:
+	$(MAKE) build-seed ENV=gcp
