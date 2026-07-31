@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-1.8.0-blue?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.9.0-blue?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=for-the-badge&logo=fastapi)
 ![CKAN](https://img.shields.io/badge/CKAN-2.11.5-7B7B7B?style=for-the-badge)
