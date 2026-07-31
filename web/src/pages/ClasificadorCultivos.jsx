@@ -32,14 +32,14 @@ export default function ClasificadorCultivos() {
                 <title>{page?.title || 'Clasificador de Cultivos - IIEG'}</title>
                 {page?.description_meta && <meta name="description" content={page.description_meta} />}
                 {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
-                <meta property="og:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
+                <meta property="og:image" content={page?.postlink ? page.postlink : "/demo.jpg"} />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 {/* Twitter Cards (Específico para X / Twitter) */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={page?.title || 'Clasificador de Cultivos - IIEG'} />
                 <meta name="twitter:description" content={page?.description_meta || 'Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.'} />
-                <meta name="twitter:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
+                <meta name="twitter:image" content={page?.postlink ? page.postlink : "/demo.jpg"} />
             </Helmet>
             <div className='mx-auto container mb-15'>
                 <div className='mt-5'>
@@ -59,16 +59,16 @@ export default function ClasificadorCultivos() {
                 </section>
                 <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-50 gap-12 text-center diez">
                     <div>
-                        <img src="/demo.jpg" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
-                        <p>Modelos de IA detectan y clasifican a gran escala, cultivos a través de la interpretación de imágenes satelitales.</p>
+                        <img src="/cultivos/ico_cultivos_01.png" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
+                        <p>Se detectaron y clasificaron, a gran escala, cultivos agrícolas, a través de la interpretación de imágenes satelitales por medio del entrenamiento de modelos de IA.</p>
                     </div>
                     <div>
-                        <img src="/demo.jpg" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
-                        <p>Segmentación de parcelas: identifica los límites de las parcelas agrícolas con ayuda de imágenes satelitales del Programa NICFI</p>
+                        <img src="/cultivos/ico_cultivos_02.png" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
+                        <p>Se realizaron dos macroprocesos, uno fue la segmentación de las parcelas. Fueron identificados sus límites utilizando las imágenes satelitales del Programa NICFI.</p>
                     </div>
                     <div>
-                        <img src="/demo.jpg" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
-                        <p>Clasificación del tipo de cultivo: clasifica el tipo de cultivo dentro de cada parcela identificada, utilizando series de tiempo de imágenes satelitales provenientes de Sentinel-1 y Sentinel-2.</p>
+                        <img src="/cultivos/ico_cultivos_03.png" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
+                        <p>En el segundo macroproceso nuestros modelos trabajaron con series de tiempo de imágenes satelitales de Sentinel-1 y Sentinel-2, para la clasificación del tipo de cultivo dentro de cada parcela.</p>
                     </div>
                 </section>
                 <section>
@@ -88,25 +88,22 @@ export default function ClasificadorCultivos() {
                         </div>
                         <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
                             <b className='text-44 text-tertiary'>+9.9%</b><br></br>
-                            <p className='text-18 text-titulo'>Mejora en IoU (de 0.668 a 0.734) mejora en IoU (5-ch vs. 3-ch ConvNet)</p>
+                            <p className='text-18 text-titulo'>Mejora en IoU (de 0.668 a 0.734) <br /> mejora en IoU (5-ch vs. 3-ch ConvNet)</p>
                         </div>
                         <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
                             <b className='text-44 text-tertiary'>+5.8%</b><br></br>
-                            <p className='text-18 text-titulo'>Mejora en Average Precision (AP) Mejora en AP (5-ch vs. 3-ch ConvNet)</p>
+                            <p className='text-18 text-titulo'>Mejora en Average Precision (AP) <br /> Mejora en AP (5-ch vs. 3-ch ConvNet)</p>
                         </div>
                     </div>
                 </section>
                 <section className="px-2 mt-50">
                     <h2 className="text-primary text-center font-extrabold">Imágenes de la plataforma</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-15 mb-25 text-center">
+                    <div className="grid grid-cols-1 gap-4 mt-15 mb-25 text-center">
                         <div>
-                            <img src={page?.imagen ? page.imagen : "/demo.jpg"} alt={page?.titulo} className='image-mapa rounded-4xl'/>
+                            <img src="/cultivos/g1.png" alt={page?.titulo} className='image-mapa rounded-4xl'/>
                         </div>
                         <div>
-                            <img src={page?.imagen ? page.imagen : "/demo.jpg"} alt={page?.titulo} className='image-mapa rounded-4xl'/>
-                        </div>
-                        <div>
-                            <img src={page?.imagen ? page.imagen : "/demo.jpg"} alt={page?.titulo} className='image-mapa rounded-4xl'/>
+                            <img src="/cultivos/g2.png" alt={page?.titulo} className='image-mapa rounded-4xl'/>
                         </div>
                     </div>
                 </section>
