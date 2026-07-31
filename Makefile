@@ -31,7 +31,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup
+.PHONY: help up build deploy _up-prod down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup
 
 help:
 	@echo ''
@@ -48,6 +48,7 @@ help:
 	@echo '${GREEN}Comandos:${RESET}'
 	@echo '  ${YELLOW}make up${RESET}               - Inicia el entorno (en segundo plano)'
 	@echo '  ${YELLOW}make build${RESET}            - Reconstruye e inicia el entorno'
+	@echo '  ${YELLOW}make deploy${RESET}           - git pull + rebuild en GCP. Lo invoca ecosystem-deploy del gateway'
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
@@ -91,6 +92,14 @@ logs:
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) logs -f
 
 restart: down up
+
+deploy:
+	@echo "${GREEN}Desplegando: Producción (GCP)${RESET}"
+	git pull --ff-only
+	$(MAKE) build ENV=gcp
+
+_up-prod:
+	$(MAKE) up ENV=gcp
 
 up-prod-local:
 	$(MAKE) up ENV=prod-local
