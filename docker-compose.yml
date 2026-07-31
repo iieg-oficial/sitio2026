@@ -218,6 +218,7 @@ services:
       ACERVO_IIEG_BUCKET_NAME: ${ACERVO_IIEG_BUCKET_NAME:?ACERVO_IIEG_BUCKET_NAME is required}
       ACERVO_API_KEY: ${ACERVO_API_KEY}
       ACERVO_API_KEY_HEADER: ${ACERVO_API_KEY_HEADER:-x-api-key}
+      SEED_EXAMPLES: ${SEED_EXAMPLES:-false}
     networks:
       portal_network:
         aliases:
