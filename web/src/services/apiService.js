@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_WEB_API_URL || '/api/portal';
+const API_URL = import.meta.env.VITE_WEB_API_URL || '/api/sitio';
 const API_TIMEOUT = import.meta.env.VITE_API_TIMEOUT || 10000;
 
 const api = axios.create({
