@@ -221,13 +221,13 @@ def resolve_relationships(db, model_cls, row: dict[str, Any]) -> dict[str, Any]:
         rel_name = rel.key
         target_cls = rel.mapper.class_
         
-        candidates_slugs = [f"{rel_name}_slugs"]
+        candidates_slugs = [f"{rel_name}_slugs", f"{rel_name}_slug"]
         if rel_name.endswith("es"):
-            candidates_slugs.append(f"{rel_name[:-2]}_slugs")
+            candidates_slugs.extend([f"{rel_name[:-2]}_slugs", f"{rel_name[:-2]}_slug"])
         if rel_name.endswith("s"):
-            candidates_slugs.append(f"{rel_name[:-1]}_slugs")
+            candidates_slugs.extend([f"{rel_name[:-1]}_slugs", f"{rel_name[:-1]}_slug"])
             
-        candidates_ids = [c.replace("_slugs", "_ids") for c in candidates_slugs]
+        candidates_ids = [c.replace("_slugs", "_ids").replace("_slug", "_id") for c in candidates_slugs]
         
         slugs_val = None
         for c in candidates_slugs:
@@ -345,7 +345,7 @@ def build_payload(model_cls, row: dict[str, Any]) -> dict[str, Any]:
         payload[column.name] = convert_value(column, raw_value)
 
     if "slug" in columns and not payload.get("slug"):
-        source_fields = ["titulo", "title", "nombre", "name", "label"]
+        source_fields = ["titulo", "title", "nombre", "name", "label", "pregunta"]
         for field_name in source_fields:
             source_value = payload.get(field_name)
             if source_value:
