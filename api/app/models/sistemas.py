@@ -32,7 +32,7 @@ class Sistemas(Base):
     )
     imagen = Column(String, nullable=True)
     claves = Column(String(200), nullable=True)
-    slug = Column(String(200), nullable=False)
+    slug = Column(String(200), nullable=True)
     destacado = Column(Boolean, default=False, nullable=True)
     orden = Column(Integer, default=0, nullable=True)
 

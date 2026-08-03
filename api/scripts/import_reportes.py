@@ -135,7 +135,7 @@ def resolve_temas(db, tema_ids: list[int], tema_slugs: list[str]) -> list[Subjec
         found_ids = {tema.id for tema in temas_by_id}
         missing_ids = [tema_id for tema_id in tema_ids if tema_id not in found_ids]
         if missing_ids:
-            raise ValueError(f"No existen temas con id: {missing_ids}")
+            print(f"AVISO: no existen temas con id {missing_ids}, se omiten")
         temas.extend(temas_by_id)
 
     if tema_slugs:
@@ -143,7 +143,7 @@ def resolve_temas(db, tema_ids: list[int], tema_slugs: list[str]) -> list[Subjec
         found_slugs = {tema.slug for tema in temas_by_slug}
         missing_slugs = [tema_slug for tema_slug in tema_slugs if tema_slug not in found_slugs]
         if missing_slugs:
-            raise ValueError(f"No existen temas con slug: {missing_slugs}")
+            print(f"AVISO: no existen temas con slug {missing_slugs}, se omiten")
 
         existing_ids = {tema.id for tema in temas}
         temas.extend([tema for tema in temas_by_slug if tema.id not in existing_ids])

@@ -146,7 +146,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Importa posts desde un archivo JSON o CSV. "
-            "El campo contenido debe ser JSON de TipTap (doc serializado)."
+            "El campo contenido puede ser JSON de TipTap (doc serializado), "
+            "HTML (contenido_html) o texto plano (contenido_texto / contenido). "
+            "Usa la columna opcional 'formato' (tiptap|html|texto) para forzar el modo."
         )
     )
     parser.add_argument("source", help="Ruta al archivo .json o .csv")
@@ -209,7 +211,21 @@ def split_values(value: object) -> list[str]:
     return [item.strip() for item in str(value).split("|") if item.strip()]
 
 
+def _validate_tiptap_doc(content_obj: dict) -> None:
+    if not isinstance(content_obj, dict):
+        raise ValueError("contenido debe ser un objeto JSON")
+    if content_obj.get("type") != "doc":
+        raise ValueError("contenido debe tener type='doc' para TipTap")
+    if not isinstance(content_obj.get("content"), list):
+        raise ValueError("contenido debe incluir content como lista")
+
+
 def parse_tiptap_content(value: object) -> str:
+    """Parsea contenido que DEBE ser JSON válido de TipTap (modo estricto).
+
+    Úsalo cuando la fila declara explícitamente formato='tiptap'. Lanza
+    ValueError si el valor no es JSON o no tiene la forma de un doc TipTap.
+    """
     if value is None or value == "":
         raise ValueError("El campo contenido es obligatorio")
 
@@ -226,13 +242,7 @@ def parse_tiptap_content(value: object) -> str:
     else:
         raise ValueError("contenido debe ser objeto JSON o string JSON")
 
-    if not isinstance(content_obj, dict):
-        raise ValueError("contenido debe ser un objeto JSON")
-    if content_obj.get("type") != "doc":
-        raise ValueError("contenido debe tener type='doc' para TipTap")
-    if not isinstance(content_obj.get("content"), list):
-        raise ValueError("contenido debe incluir content como lista")
-
+    _validate_tiptap_doc(content_obj)
     return json.dumps(content_obj, ensure_ascii=False)
 
 
@@ -250,6 +260,69 @@ def parse_tiptap_from_html(value: object) -> str:
     return json.dumps(tiptap_doc, ensure_ascii=False)
 
 
+def parse_tiptap_from_text(value: object) -> str:
+    """Convierte texto plano a un doc de TipTap.
+
+    Cada línea se convierte en un párrafo independiente. Las líneas en blanco
+    se conservan como párrafos vacíos (para respetar separación entre bloques).
+    """
+    if value is None:
+        raise ValueError("contenido_texto no puede ser nulo")
+
+    text = str(value).replace("\r\n", "\n").replace("\r", "\n")
+    if not text.strip():
+        raise ValueError("contenido_texto no puede estar vacío")
+
+    lines = text.split("\n")
+    content: list[dict] = []
+    for line in lines:
+        stripped = line.strip()
+        if stripped:
+            content.append(
+                {"type": "paragraph", "content": [{"type": "text", "text": stripped}]}
+            )
+        else:
+            content.append({"type": "paragraph", "content": []})
+
+    # Evita dejar el doc vacío si por alguna razón no quedó ningún párrafo
+    if not content:
+        content = [{"type": "paragraph", "content": [{"type": "text", "text": text.strip()}]}]
+
+    doc = {"type": "doc", "content": content}
+    return json.dumps(doc, ensure_ascii=False)
+
+
+def parse_tiptap_content_auto(value: object) -> str:
+    """Intenta interpretar 'contenido' como JSON de TipTap y, si no lo es,
+    cae automáticamente a texto plano en vez de fallar.
+
+    Esto es lo que se usa cuando la fila NO declara un campo 'formato'
+    explícito: permite mezclar filas con JSON de TipTap y filas con texto
+    plano en el mismo archivo de origen sin que el import se detenga.
+    """
+    if isinstance(value, dict):
+        _validate_tiptap_doc(value)
+        return json.dumps(value, ensure_ascii=False)
+
+    text = str(value)
+    stripped = text.strip()
+
+    # Solo probamos el parseo estricto de JSON si "huele" a objeto JSON;
+    # así evitamos que json.loads lance ruido para texto plano normal.
+    if stripped.startswith("{"):
+        try:
+            content_obj = json.loads(stripped)
+        except json.JSONDecodeError:
+            content_obj = None
+
+        if isinstance(content_obj, dict) and content_obj.get("type") == "doc":
+            _validate_tiptap_doc(content_obj)
+            return json.dumps(content_obj, ensure_ascii=False)
+
+    # No es JSON de TipTap válido: lo tratamos como texto plano
+    return parse_tiptap_from_text(text)
+
+
 def normalize_row(row: dict) -> dict:
     titulo = (row.get("titulo") or "").strip()
     if not titulo:
@@ -259,15 +332,48 @@ def normalize_row(row: dict) -> dict:
     tema_ids = [int(item) for item in split_values(row.get("tema_ids"))]
     tema_slugs = split_values(row.get("tema_slugs"))
 
+    formato = (row.get("formato") or "").strip().lower()
+
     contenido_raw = row.get("contenido")
     if contenido_raw in (None, "") and "contenido_json" in row:
         contenido_raw = row.get("contenido_json")
 
-    if contenido_raw not in (None, ""):
+    contenido_html_raw = row.get("contenido_html")
+    contenido_texto_raw = row.get("contenido_texto")
+
+    if formato in ("tiptap", "json"):
+        if contenido_raw in (None, ""):
+            raise ValueError("formato='tiptap' requiere el campo contenido con JSON válido")
         contenido = parse_tiptap_content(contenido_raw)
+
+    elif formato in ("html",):
+        source_html = contenido_html_raw if contenido_html_raw not in (None, "") else contenido_raw
+        if source_html in (None, ""):
+            raise ValueError("formato='html' requiere contenido_html (o contenido con HTML)")
+        contenido = parse_tiptap_from_html(source_html)
+
+    elif formato in ("texto", "text", "plano", "plain"):
+        source_text = contenido_texto_raw if contenido_texto_raw not in (None, "") else contenido_raw
+        if source_text in (None, ""):
+            raise ValueError("formato='texto' requiere contenido_texto (o contenido con texto plano)")
+        contenido = parse_tiptap_from_text(source_text)
+
+    elif formato:
+        raise ValueError(f"formato desconocido: '{formato}' (usa tiptap, html o texto)")
+
     else:
-        contenido_html_raw = row.get("contenido_html")
-        contenido = parse_tiptap_from_html(contenido_html_raw)
+        # Sin 'formato' explícito: auto-detección por orden de prioridad
+        if contenido_raw not in (None, ""):
+            contenido = parse_tiptap_content_auto(contenido_raw)
+        elif contenido_html_raw not in (None, ""):
+            contenido = parse_tiptap_from_html(contenido_html_raw)
+        elif contenido_texto_raw not in (None, ""):
+            contenido = parse_tiptap_from_text(contenido_texto_raw)
+        else:
+            raise ValueError(
+                "Debes incluir 'contenido' (TipTap o texto), 'contenido_html' "
+                "o 'contenido_texto'"
+            )
 
     return {
         "titulo": titulo,
@@ -386,7 +492,12 @@ def main() -> None:
 
     try:
         for index, row in enumerate(rows, start=1):
-            payload = normalize_row(row)
+            try:
+                payload = normalize_row(row)
+            except ValueError as exc:
+                titulo = row.get("titulo") or row.get("title") or "?"
+                raise ValueError(f"Fila [{index}] '{titulo}': {exc}") from exc
+
             _, action = build_or_update_post(db, payload, args.mode)
             if action == "created":
                 created += 1
