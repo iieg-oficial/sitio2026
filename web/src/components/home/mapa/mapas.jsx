@@ -59,7 +59,7 @@ export default function Mapas() {
                         <img 
                             src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=400` : "/demo.jpg"} 
                             alt={mapa.titulo} 
-                            className='image-mapa rounded-4xl'
+                            className='rounded-full'
                             />
                         <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
                             
