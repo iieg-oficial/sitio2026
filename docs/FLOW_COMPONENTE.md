@@ -197,8 +197,8 @@ app.include_router(banner_public.router, prefix=settings.web_prefix)
 ```
 
 Tras esto:
-- Admin (con auth): `/api/portal-admin/banner/*`
-- Public: `/api/portal/banner`
+- Admin (con auth): `/api/sitio-admin/banner/*`
+- Public: `/api/sitio/banner`
 
 ## Paso 7 — CMS (Admin)
 
