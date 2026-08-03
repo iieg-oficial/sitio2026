@@ -105,7 +105,7 @@ export default function Contacto() {
                 </div>
             </div>
 
-            <div className="overflow-hidden h-full min-h-[400px] lg:min-h-full">
+            <div className="h-full min-h-[400px] lg:min-h-full px-2 py-8 lg:pl-0 lg:pr-8">
                 <MapaContacto />
             </div>
         </>

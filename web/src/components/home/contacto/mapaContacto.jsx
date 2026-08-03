@@ -6,6 +6,7 @@ const API_KEY = import.meta.env.VITE_MAPALAB_API_KEY || '';
 const SEDE_MARKER = '20.68443473644039,-103.44669185275052';
 const SEDE_ZOOM = '16';
 const SEDE_DIRECCION = 'Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.';
+const SEDE_TITULO = 'Instituto de Información Estadística y Geográfica de Jalisco';
 
 export default function MapaContacto() {
     const configurado = Boolean(BASE_URL && API_KEY);
@@ -17,6 +18,8 @@ export default function MapaContacto() {
                 api-key={API_KEY}
                 base-url={BASE_URL}
                 marker={SEDE_MARKER}
+                marker-title={SEDE_TITULO}
+                marker-description={SEDE_DIRECCION}
                 zoom={SEDE_ZOOM}
                 width="100%"
                 height="100%"
