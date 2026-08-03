@@ -9,6 +9,10 @@ RESET  := $(shell tput -Txterm sgr0)
 # Entorno por defecto: dev
 ENV ?= dev
 
+# Entorno que usa `make deploy`. gcp en monolito (el portal comparte VM con el gateway y el
+# acervo); prod en un nodo propio, donde iieg-network no existe porque no cruza de maquina.
+DEPLOY_ENV ?= gcp
+
 # Configuración según entorno
 # - dev:  desarrollo local (acervo y todo en la misma máquina via iieg-network)
 # - prod: producción "administración" (servidor aislado, acervo accedido por URL pública)
@@ -31,7 +35,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
+.PHONY: help up build deploy _up-prod down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
 
 help:
 	@echo ''
@@ -48,6 +52,7 @@ help:
 	@echo '${GREEN}Comandos:${RESET}'
 	@echo '  ${YELLOW}make up${RESET}               - Inicia el entorno (en segundo plano)'
 	@echo '  ${YELLOW}make build${RESET}            - Reconstruye e inicia el entorno'
+	@echo '  ${YELLOW}make deploy [DEPLOY_ENV=gcp|prod]${RESET} - git pull + rebuild. gcp en monolito, prod en nodo propio'
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
@@ -103,6 +108,32 @@ logs:
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) logs -f
 
 restart: down up
+
+deploy:
+	@echo "${GREEN}Desplegando con ENV=$(DEPLOY_ENV)${RESET}"
+	@branch=$$(git branch --show-current 2>/dev/null); \
+	upstream=$$(git rev-parse --abbrev-ref '@{u}' 2>/dev/null); \
+	if [ -z "$$upstream" ]; then \
+		echo "${YELLOW}Git: $$branch sin upstream, se despliega el árbol actual${RESET}"; \
+	else \
+		git fetch --quiet; \
+		base=$$(git merge-base HEAD '@{u}'); \
+		local_sha=$$(git rev-parse HEAD); \
+		remote_sha=$$(git rev-parse '@{u}'); \
+		if [ "$$base" != "$$local_sha" ] && [ "$$base" != "$$remote_sha" ]; then \
+			echo "${RED}Git: $$branch divergió de $$upstream, resuélvelo antes de desplegar${RESET}"; \
+			exit 1; \
+		fi; \
+		if git merge --ff-only --quiet '@{u}' 2>/dev/null; then \
+			echo "${GREEN}Git: $$branch actualizado desde $$upstream${RESET}"; \
+		else \
+			echo "${YELLOW}Git: $$branch sin actualizar, se despliega el árbol actual${RESET}"; \
+		fi; \
+	fi
+	$(MAKE) build ENV=$(DEPLOY_ENV)
+
+_up-prod:
+	$(MAKE) up ENV=$(DEPLOY_ENV)
 
 up-prod-local:
 	$(MAKE) up ENV=prod-local

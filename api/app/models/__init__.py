@@ -3,7 +3,7 @@ from app.models.borrador import Borrador
 from app.models.media import Media, MediaFolder
 from app.models.menu_item import MenuItem
 from app.models.page import Page
-from app.models.posts import Posts, GalleryImage
+from app.models.posts import GalleryImage, Posts
 from app.models.user import Usuario
 from app.models.subject import Subject
 from app.models.datos_nuevos import DatosNuevos
@@ -35,6 +35,7 @@ __all__ = [
     "Media",
     "MediaFolder",
     "Borrador",
+    "GalleryImage",
     "Posts",
     "GalleryImage",
     "Subject",

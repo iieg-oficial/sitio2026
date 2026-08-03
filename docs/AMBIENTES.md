@@ -59,8 +59,8 @@ Todas vía nginx en el puerto `NGINX_PORT` de tu `.env` (default `18080`):
 |---|---|
 | Portal web | http://localhost:18080 |
 | CMS admin | http://localhost:18080/portal-admin |
-| API portal | http://localhost:18080/api/portal/... |
-| API admin | http://localhost:18080/api/portal-admin/... |
+| API portal | http://localhost:18080/api/sitio/... |
+| API admin | http://localhost:18080/api/sitio-admin/... |
 | CKAN | http://localhost:18080/datos-abiertos/ |
 
 **Solo en dev** también hay puertos directos (sin nginx):

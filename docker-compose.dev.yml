@@ -15,6 +15,8 @@ services:
         VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:?VITE_GOOGLE_ANALYTICS_ID is required}
         VITE_WEB_API_URL: ${VITE_WEB_API_URL:?VITE_WEB_API_URL is required}
         VITE_ADMIN_API_URL: ${VITE_ADMIN_API_URL:?VITE_ADMIN_API_URL is required}
+        VITE_MAPALAB_BASE_URL: ${VITE_MAPALAB_BASE_URL:?VITE_MAPALAB_BASE_URL is required}
+        VITE_MAPALAB_API_KEY: ${VITE_MAPALAB_API_KEY:?VITE_MAPALAB_API_KEY is required}
     container_name: portal-nginx_dev
     ports:
       - "${NGINX_PORT:?NGINX_PORT is required}:80"
@@ -218,16 +220,16 @@ services:
         condition: service_healthy
     environment:
       PROJECT_NAME: Portal IIEG
-      VERSION: "1.8.0"
+      VERSION: "1.9.0"
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: "30"
       CSRF_TOKEN_EXPIRE_MINUTES: "60"
-      COOKIE_NAME: access_token
+      COOKIE_NAME: sitio_access_token
       COOKIE_MAX_AGE: "1800"
       COOKIE_HTTPONLY: "true"
       COOKIE_SAMESITE: lax
-      ADMIN_PREFIX: /api/portal-admin
-      WEB_PREFIX: /api/portal
+      ADMIN_PREFIX: /api/sitio-admin
+      WEB_PREFIX: /api/sitio
       OPENAPI_URL: /api/openapi.json
       DOCS_URL: /docs
       REDOC_URL: /redoc
@@ -275,6 +277,8 @@ services:
       VITE_WEB_API_URL: ${VITE_WEB_API_URL:?VITE_WEB_API_URL is required}
       VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:?VITE_GOOGLE_ANALYTICS_ID is required}
       VITE_GOOGLE_TAG_MANAGER_ID: ${VITE_GOOGLE_TAG_MANAGER_ID:?VITE_GOOGLE_TAG_MANAGER_ID is required}
+      VITE_MAPALAB_BASE_URL: ${VITE_MAPALAB_BASE_URL:?VITE_MAPALAB_BASE_URL is required}
+      VITE_MAPALAB_API_KEY: ${VITE_MAPALAB_API_KEY:?VITE_MAPALAB_API_KEY is required}
     networks:
       portal_network_dev:
 
