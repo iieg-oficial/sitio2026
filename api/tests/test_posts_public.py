@@ -13,7 +13,7 @@ def test_obtener_post_por_slug_en_ruta_publica(client, db_session):
     db_session.commit()
     db_session.refresh(post)
 
-    response = client.get(f"/api/portal/posts/{post.slug}")
+    response = client.get(f"/api/sitio/posts/{post.slug}")
 
     assert response.status_code == 200
     data = response.json()

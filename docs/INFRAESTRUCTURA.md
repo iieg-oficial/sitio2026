@@ -73,8 +73,8 @@ flowchart LR
     subgraph Portal
         Nginx -->|/| Web[Web SPA]
         Nginx -->|/portal-admin| Admin[Admin SPA]
-        Nginx -->|/api/portal| API[FastAPI :8000]
-        Nginx -->|/api/portal-admin| API
+        Nginx -->|/api/sitio| API[FastAPI :8000]
+        Nginx -->|/api/sitio-admin| API
         Nginx -->|/datos-abiertos/| CKAN[CKAN :5000]
         Nginx -->|/acervo/| Acervo
 
@@ -109,7 +109,7 @@ flowchart LR
 
 Cookie httpOnly + CSRF (token JWT firmado con clave aparte). Detalle:
 
-1. POST `/api/portal-admin/autenticacion/iniciar-sesion` → setea cookie `access_token` (HttpOnly) y retorna `csrf_token` en JSON.
+1. POST `/api/sitio-admin/autenticacion/iniciar-sesion` → setea cookie `access_token` (HttpOnly) y retorna `csrf_token` en JSON.
 2. Frontend guarda CSRF en `sessionStorage` (se borra al cerrar tab).
 3. Axios inyecta header `X-CSRF-Token` en POST/PUT/PATCH/DELETE.
 4. Backend valida cookie y CSRF en métodos mutables (dependency `verify_csrf`).
