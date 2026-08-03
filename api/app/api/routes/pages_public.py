@@ -1,5 +1,7 @@
 from datetime import datetime
+# pyrefly: ignore [missing-import]
 from slugify import slugify
+# pyrefly: ignore [missing-import]
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.api.deps import get_db
@@ -19,7 +21,7 @@ def list_pages(db: Session = Depends(get_db)):
 
 @router.get("/slug/{slug}", response_model=PageUpdate)
 def get_page_by_slug(slug: str, db: Session = Depends(get_db)):
-    page = db.query(Page).filter(Page.slug == slug).first()
+    page = db.query(Page).filter(Page.slug_custom == slug).first()
     if not page:
         raise HTTPException(404)
     return page

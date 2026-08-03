@@ -94,9 +94,6 @@ const Navbardinamic = () => {
         <nav id="menu" className={`navbar col-span-2 lg:col-span-9 ${isOpen ? 'active' : ''}`} role="navigation">
           <div className="menu">
             <ul className="menu">
-              <li key="home" className="current-menu-item">
-                <TrackedLink to="/">Inicio</TrackedLink>
-              </li>
 
               {menuItems
                 .filter((item) => item && item.parent_id === null && item.activar === true)
