@@ -3,6 +3,10 @@ from datetime import datetime
 from typing import Optional, List
 from app.schemas.subject import SubjectFlat
 
+class GalleryImageCreate(BaseModel):
+    url: str
+    order: int
+    
 class GalleryImageOut(BaseModel):
     id: int
     url: str

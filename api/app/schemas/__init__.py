@@ -6,7 +6,7 @@ from app.schemas.menu_item import (
 )
 from app.schemas.page import PageCreate, PageUpdate, PageResponse, PageResponseList, PageTreeOut, PageFlat
 from app.schemas.user import LoginRequest, LoginResponse, UsuarioCreate, UsuarioResponse, UsuarioUpdate
-from app.schemas.posts import PostCreate, PostOut, PostResponse
+from app.schemas.posts import PostCreate, PostOut, PostResponse, GalleryImageCreate, GalleryImageOut
 from app.schemas.subject import SubjectCreate, SubjectOut, SubjectResponse, SubjectFlat
 from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosResponse, DatosNuevosOut
 from app.schemas.flashes import FlashesCreate, FlashesOut, FlashesResponse, FlashesList
@@ -50,6 +50,9 @@ __all__ = [
     "PostCreate",
     "PostOut",
     "PostResponse",
+    "GalleryImageCreate",
+    "GalleryImageOut",
+    "GalleryImageResponse",
     "SubjectCreate",
     "SubjectOut",
     "SubjectResponse",

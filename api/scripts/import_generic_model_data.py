@@ -1,10 +1,11 @@
+from typing import Optional
 import argparse
 import csv
 import json
 import sys
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Optional
 
 from slugify import slugify
 from sqlalchemy import select, inspect
@@ -425,6 +426,7 @@ def import_model_data(
     key_field: str | None = None,
     limit: int | None = None,
     dry_run: bool = False,
+    payload_hook: Optional[Callable[[dict[str, Any], dict[str, Any]], None]] = None,
 ) -> None:
     source = Path(source_path)
     if not source.exists():
@@ -444,9 +446,14 @@ def import_model_data(
     try:
         for index, row in enumerate(rows, start=1):
             payload = build_payload(model_cls, row)
+
+            if payload_hook:
+                payload_hook(row, payload)
+
             resolve_fk_slugs(db, model_cls, row, payload)
             relationships_payload = resolve_relationships(db, model_cls, row)
             _, action = upsert_row(db, model_cls, payload, relationships_payload, mode, effective_key_field)
+            db.flush()
 
             if action == "created":
                 created += 1

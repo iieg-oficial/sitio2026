@@ -40,6 +40,7 @@ class MunicipioEnum(str, enum.Enum):
     encarnacion_de_diaz = "Encarnación de Díaz"
     gomez_farias = "Gómez Farías"
     guachinango = "Guachinango"
+    guadalajara = "Guadalajara"
     hostotipaquillo = "Hostotipaquillo"
     huejucar = "Huejúcar"
     huejuquilla_el_alto = "Huejuquilla el Alto"
@@ -114,6 +115,7 @@ class MunicipioEnum(str, enum.Enum):
     zapotlanejo = "Zapotlanejo"
     san_gabriel = "San Gabriel"
     zapotlan_el_grande = "Zapotlán el Grande"
+    zapopan = "Zapopan"
 
     
 class Cuadernillo(Base):
