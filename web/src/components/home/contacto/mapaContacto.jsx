@@ -18,7 +18,6 @@ export default function MapaContacto() {
                 base-url={BASE_URL}
                 marker={SEDE_MARKER}
                 zoom={SEDE_ZOOM}
-                controls="zoom,fullscreen"
                 width="100%"
                 height="100%"
                 title="Ubicación del IIEG"
