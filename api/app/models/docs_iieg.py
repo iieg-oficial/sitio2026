@@ -16,7 +16,7 @@ class DocsIIEG(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(255), nullable=False)
-    descripcion = Column(Text, nullable=False)
+    descripcion = Column(Text, nullable=True)
     tipo = Column(Enum(TipoDocsEnum), nullable=True)
     imagen = Column(String(255), nullable=True)
     link = Column(String(255), nullable=True)
