@@ -15,7 +15,7 @@ function HomePage() {
     const fetchPageHome = async () => {
         setLoading(true)
         try {
-            const res = await api.get('/paginas/slug/home')
+            const res = await api.get('/paginas/slug/home/')
             setPage(res.data)            
         } catch (err) {
             console.error("Error fetching page home:", err)
@@ -92,7 +92,7 @@ function HomePage() {
                     <div className='bg-primary text-center z-10 mx-auto absolute top-6/12 xl:top-8/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-10 py-11 rounded-2xl w-11/12 xl:w-9/12 xl:w-auto'>
                         <img src="/ico_mapalab.png" alt="MapaLab" className="inline-block mr-2" />
                         <p className='text-center text-white my-8 text-22'>Explora el territorio de Jalisco con datos geoespaciales</p>
-                        <TrackedLink to="/mapalab" className="button bg-medio hover:bg-tertiary text-base">
+                        <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-medio hover:bg-tertiary text-base">
                             Quiero explorar MapaLab
                         </TrackedLink>
                     </div>
@@ -103,7 +103,7 @@ function HomePage() {
             <section className="w-full bg-primary pt-15 pb-32">
                 <div className="container mx-auto grid grid-cols-1 lg:grid-cols-6 gap-4 px-5 xl:px-5 2xl:px-0">
                     <div className='lg:col-span-6'>
-                        <h2 className="text-white text-center">Conoce los datos más recientes</h2>
+                        <h2 className="text-white text-center">Conoce los datos más relevantes</h2>
                     </div>
                     <div className='lg:col-span-2'>                        
                         <BlockRenderer block={{ type: 'datos_nuevos' }} />
@@ -120,9 +120,55 @@ function HomePage() {
             <section className="w-11/12 mx-auto rounded-4xl -mt-18 pt-10 pb-15 bg-card px-8 extra:max-w-[1980px]">
                 <h2 className="text-titulo text-center my-10">Visita nuestras plataformas interactivas</h2>
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
-                <TrackedLink to="/flashes" className="button2 sm:w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
-                    Quiero ver todas las plataformas
+                <TrackedLink to="/nuestros-productos" className="button2 sm:w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                    Conoce todos nuestros productos
                 </TrackedLink>
+                <div className="flex flex-wrap bg-amber-700 pt-20 gap-5 px-20">
+                    <div key="mapa_1" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
+                
+                        <img 
+                            src={"/ico_cuadernillos_municipales_274.png"} 
+                            alt={"Cuadernillos Municipales"} 
+                            className='rounded-4xl bg-white px-16 h-[130px]'
+                            />
+                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
+                            <h3>Cuadernillos Municipales</h3>
+                        </div>
+                    </div>
+                <div key="mapa_2" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
+                
+                        <img 
+                            src={"/ico_reportes_220x144.png"} 
+                            alt={"Reportes"} 
+                            className='rounded-4xl bg-white px-16 py-2'
+                            />
+                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
+                            <h3>Reportes</h3>
+                        </div>
+                    </div>
+                    <div key="mapa_3" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
+                
+                        <img 
+                            src={"/ico_cuadernillos_municipales_274.png"} 
+                            alt={"Cuadernillos Municipales"} 
+                            className=''
+                            />
+                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
+                            <h3>Cuadernillos Municipales</h3>
+                        </div>
+                    </div>
+                    <div key="mapa_4" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
+                
+                        <img 
+                            src={"/ico_cuadernillos_municipales_274.png"} 
+                            alt={"Cuadernillos Municipales"} 
+                            className='rounded-full'
+                            />
+                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
+                            <h3>Cuadernillos Municipales</h3>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section className="w-11/12 mx-auto relative my-15">
@@ -166,29 +212,29 @@ function HomePage() {
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
                     <img src="/ico_contabilidad_normal.png" alt="Contabilidad Gubernamental" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2 text-22">Contabilidad Gubernamental</span>
+                    <span className="block mt-2 text-22">Contabilidad gubernamental</span>
                     </div>                    
                     <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
 
                 <TrackedLink 
-                to="/capacitaciones" 
+                to="/educacion-continua" 
                 target="_self"
                 className="text-primary hover:text-tertiary text-center col-span-1 md:col-span-2 md:col-start-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
-                    <img src="/ico_capacitaciones_normal.png" alt="Capacitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2 text-22">Capacitaciones</span>
+                    <img src="/ico_capacitaciones_normal.png" alt="Educación continua" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <span className="block mt-2 text-22">Educación continua</span>
                     </div>                    
                     <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
 
                 <TrackedLink 
-                to="/comunidad" 
+                to="/comunicacion-institucional" 
                 target="_self"
                 className="text-primary hover:text-tertiary text-center col-span-2 md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
-                    <img src="/ico_noticias_normal.png" alt="Comunidad" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2">Comunidad</span>                    
+                    <img src="/ico_noticias_normal.png" alt="Noticias" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <span className="block mt-2">Noticias</span>                    
                     </div>                    
                     <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>

@@ -27,8 +27,7 @@ import { protectedRoute } from './helpers';
 
 const ADMIN_EDITOR = ['tetlamamakani', 'editora'];
 
-export const editorRoutes = [
-  protectedRoute('menu', <MenuManager />, ADMIN_EDITOR),
+export const editorRoutes = [  
   protectedRoute('pages/edit/:id', <PageEditor />, ADMIN_EDITOR),
   protectedRoute('media', <Media />, ADMIN_EDITOR),
   protectedRoute('posts', <Posts />, ADMIN_EDITOR),

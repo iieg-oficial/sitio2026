@@ -16,7 +16,7 @@ class Preguntas(Base):
     pregunta = Column(String(255), nullable=False)
     respuesta = Column(Text, nullable=False)
     claves = Column(String(200), nullable=True)
-    slug = Column(String(200), nullable=False)
+    slug = Column(String(200), nullable=True)
 
     temas = relationship(
         "Subject",

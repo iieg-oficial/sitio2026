@@ -89,18 +89,18 @@ export default function Flashes() {
 
     const handleDelete = (record) => {
         Modal.confirm({
-            title: '¿Está seguro de eliminar este flash?',
-            content: `Se eliminará el flash: ${record.titulo}`,
+            title: '¿Está seguro de eliminar?',
+            content: `Se eliminará: ${record.titulo}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
                     await api.delete(`/flashes/${record.id}`);
-                    message.success('Flash eliminado exitosamente');
+                    message.success('eliminado exitosamente');
                     fetchFlashes();
                 } catch {
-                    message.error('Error al eliminar el flash');
+                    message.error('Error al eliminar');
                 }
             }
         });
@@ -112,15 +112,15 @@ export default function Flashes() {
             const payload = { ...values, tema_ids: selectedSubjects };
             if (editingFlash) {
                 await api.patch(`/flashes/${editingFlash.id}`, payload);
-                message.success('Flash actualizado exitosamente');
+                message.success('actualizado exitosamente');
             } else {
                 await api.post('/flashes/create', payload);
-                message.success('Flash creado exitosamente');
+                message.success('creado exitosamente');
             }
             setModalVisible(false);
             fetchFlashes();
         } catch {
-            message.error(editingFlash ? 'Error al actualizar el flash' : 'Error al crear el flash');
+            message.error(editingFlash ? 'Error al actualizar' : 'Error al crear');
         }
     }
 
@@ -184,9 +184,9 @@ export default function Flashes() {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <Title level={2} style={{ margin: 0 }}>Administración de Flashes</Title>
+                <Title level={2} style={{ margin: 0 }}>Datos exprés</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-                    Nuevo Flash
+                    Nuevo
                 </Button>
             </div>
 
@@ -199,13 +199,13 @@ export default function Flashes() {
                     pagination={{
                         pageSize: 10,
                         showSizeChanger: true,
-                        showTotal: (total) => `Total ${total} posts`
+                        showTotal: (total) => `Total ${total}`
                     }}      
                 />
             </Card> 
 
             <Modal
-                title={editingFlash ? 'Editar Flash' : 'Crear Flash'}
+                title={editingFlash ? 'Editar' : 'Nuevo'}
                 open={modalVisible}
                 onCancel={() => setModalVisible(false)}
                 onOk={ () => form.submit()}
@@ -267,17 +267,17 @@ export default function Flashes() {
                             <UploadAcervo
                                 bucket="portal"
                                 folder="/flashes"
-                                label="Subir flash"
+                                label="Archivo"
                                 onUploaded={(media) => {
                                     form.setFieldValue('link', media.url);
                                 }}
                             />
                             <Form.Item name="link" noStyle>
-                                <Input placeholder="Subir flash" />
+                                <Input placeholder="Subir archivo" />
                             </Form.Item>
                             {form.getFieldValue('link') ? (
                                 <a href={form.getFieldValue('link')} target="_blank" rel="noopener noreferrer">
-                                    Ver flash
+                                    Ver archivo
                                 </a>
                             ) : null}
                         </Space>

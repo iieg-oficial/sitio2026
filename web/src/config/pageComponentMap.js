@@ -1,7 +1,7 @@
 export const pageComponentMap = {
-    "comunidad": ['blog'],
+    "comunicacion-institucional": ['blog'],
     "convocatorias": ['convocatorias'],
-    "capacitaciones": ['capacitaciones'],
+    "educacion-continua": ['capacitaciones'],
     "mapas-historicos": ['mapas'],
-    "flashes": ['flashes'],
+    "datos-expres": ['flashes'],
 };

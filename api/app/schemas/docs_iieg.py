@@ -7,7 +7,7 @@ from app.models.docs_iieg import TipoDocsEnum
 
 class DocsIIEGCreate(BaseModel):
     nombre: str
-    descripcion: Optional[str]
+    descripcion: Optional[str] = None
     tipo: TipoDocsEnum
     imagen: Optional[str] = None
     link: Optional[str] = None
@@ -19,7 +19,7 @@ class DocsIIEGCreate(BaseModel):
 class DocsIIEGOut(BaseModel):
     id: int
     nombre: str
-    descripcion: Optional[str]
+    descripcion: Optional[str] = None
     tipo: TipoDocsEnum
     imagen: Optional[str] = None
     link: Optional[str] = None

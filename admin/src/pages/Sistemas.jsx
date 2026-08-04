@@ -72,18 +72,18 @@ export default function Sistemas() {
 
     const handleDelete = (record) => {
         Modal.confirm({
-            title: '¿Está seguro de eliminar este sistema?',
-            content: `Se eliminará el sistema: ${record.titulo}`,
+            title: '¿Está seguro de eliminar este producto?',
+            content: `Se eliminará el producto: ${record.titulo}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
                     await api.delete(`/sistemas/${record.id}`);
-                    message.success('Sistema eliminado exitosamente');
+                    message.success('producto eliminado exitosamente');
                     fetchSistemas();
                 } catch {
-                    message.error('Error al eliminar sistema');
+                    message.error('Error al eliminar producto');
                 }
             }
         });
@@ -94,15 +94,15 @@ export default function Sistemas() {
             const payload = { ...values, tema_ids: selectedSubjects };
             if (editingSistema) {
                 await api.patch(`/sistemas/${editingSistema.id}`, payload);
-                message.success('Sistema actualizado exitosamente');
+                message.success('producto actualizado exitosamente');
             } else {
                 await api.post('/sistemas/create', payload);
-                message.success('Sistema creado exitosamente');
+                message.success('producto creado exitosamente');
             }
             setModalVisible(false);
             fetchSistemas();
         } catch {
-            message.error('Error al guardar sistema');
+            message.error('Error al guardar producto');
         }
     };
         
@@ -157,9 +157,9 @@ export default function Sistemas() {
     return (
        <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <Title level={2} style={{ margin: 0 }}>Sistemas</Title>
+                <Title level={2} style={{ margin: 0 }}>Nuestros productos</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-                    Crear Sistema
+                    Crear producto
                 </Button>
             </div>
         <Card>
@@ -171,10 +171,10 @@ export default function Sistemas() {
             pagination={{ 
                 pageSize: 10, 
                 showSizeChanger: true, 
-                showTotal: (total) => `Total ${total} sistemas` }}/>
+                showTotal: (total) => `Total ${total} productos` }}/>
         </Card>
         <Modal
-            title={editingSistema ? 'Editar Sistema' : 'Crear Sistema'}
+            title={editingSistema ? 'Editar producto' : 'Crear producto'}
             open={modalVisible}
             onCancel={() => setModalVisible(false)}
             onOk={form.submit}

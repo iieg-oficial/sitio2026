@@ -48,14 +48,6 @@ export default function MainLayout() {
             label: 'Usuarios',
             onClick: () => navigate('/users')
         });
-        menuItems.push({
-            key: '/revision',
-            icon: <AuditOutlined />,
-            label: pendingCount > 0
-                ? <span>Revisiones <Badge count={pendingCount} size="small" /></span>
-                : 'Revisiones',
-            onClick: () => navigate('/revision')
-        });
 
         menuItems.push({
             key: '/paginas',
@@ -73,12 +65,7 @@ export default function MainLayout() {
             label: 'Media',
             onClick: () => navigate('/media')
         });
-        menuItems.push({
-            key: '/menu',
-            icon: <MenuOutlined />,
-            label: 'Menú',
-            onClick: () => navigate('/menu')
-        });
+
 
          menuItems.push({
             key: '/catalogos',
@@ -167,7 +154,7 @@ export default function MainLayout() {
         menuItems.push({
             key: '/sistemas_i',
             icon: <MenuOutlined />,
-            label: 'Sistemas',
+            label: 'Productos',
             onClick: () => navigate('/sistemas')
         });
 
@@ -185,7 +172,7 @@ export default function MainLayout() {
                 {
                     key: '/flashes',
                     icon: <MenuOutlined />,
-                    label: 'Flashes',
+                    label: 'Datos exprés',
                     onClick: () => navigate('/flashes')
                 },
                 {
@@ -211,13 +198,13 @@ export default function MainLayout() {
                 {
                     key: '/posts',
                     icon: <MenuOutlined />,
-                    label: 'Posts',
+                    label: 'Comunicación institucional',
                     onClick: () => navigate('/posts')
                 },
                 {
                     key: '/cursos',
                     icon: <MenuOutlined />,
-                    label: 'Cursos',
+                    label: 'Educación continua',
                     onClick: () => navigate('/cursos')
                 }
             ],

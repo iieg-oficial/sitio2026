@@ -6,12 +6,12 @@ export const pageMap = {
     "contabilidad-gubernamental": ['contabilidad'],
     "snieg": ['snieg'], 
     "preguntas-frecuentes": ['preguntas'],
-    "sistemas-de-informacion": ['sistemas'],
-    "flashes": ['flashes'],
+    "nuestros-productos": ['sistemas'],
+    "datos-expres": ['flashes'],
     "reportes": ['reportes'],
     "mapas-historicos": ['mapas'],
     "documentacion": ['documentacion'],
-    "capacitaciones": ['capacitaciones'],
+    "educacion-continua": ['capacitaciones'],
     "convocatorias": ['convocatorias'],
     "cuadernillos": ['cuadernillos']
 };

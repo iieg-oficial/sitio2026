@@ -1,51 +1,83 @@
 titulo,descripcion,parent_slug,slug
-Territorio,,,territorio
-Medio Ambiente,,,medio-ambiente
-Poblacion,,,poblacion
-Economia,,,economia
-Bienestar Social,,,bienestar-social
-Salud,,,salud
-Educacion,,,educacion
-Seguridad,,,seguridad
-Gobierno y Participacion,,,gobierno-y-participacion
-Limites administrativos,,territorio,limites-administrativos
-Infraestructura vial,,territorio,infraestructura-vial
-Uso de suelo y vegetacion,,territorio,uso-de-suelo-y-vegetacion
-Espacios publicos,,territorio,espacios-publicos
-Movilidad y transporte,,territorio,movilidad-y-transporte
-Clima,,medio-ambiente,clima
-Agua,,medio-ambiente,agua
-Ecosistemas y biodiversidad,,medio-ambiente,ecosistemas-y-biodiversidad
-Suelos erosion y geologia,,medio-ambiente,suelos-erosion-y-geologia
-Poblacion y estructura,,poblacion,poblacion-y-estructura
-Fecundidad y natalidad,,poblacion,fecundidad-y-natalidad
-Grupos de edad,,poblacion,grupos-de-edad
-Migracion,,poblacion,migracion
-Empleo y ocupacion,,economia,empleo-y-ocupacion
-Actividad economica e industria,,economia,actividad-economica-e-industria
-Comercio,,economia,comercio
-Comercio exterior,,economia,comercio-exterior
-Inflacion y precios,,economia,inflacion-y-precios
-Remesas,,economia,remesas
-Sector primario,,economia,sector-primario
-Pobreza,,bienestar-social,pobreza
-Marginacion,,bienestar-social,marginacion
-Igualdad de genero,,bienestar-social,igualdad-de-genero
-Alimentacion,,bienestar-social,alimentacion
-Vivienda,,bienestar-social,vivienda
-Establecimientos y cobertura,,salud,establecimientos-y-cobertura
-Mortalidad por causa,,salud,mortalidad-por-causa
-Acceso a servicios de salud,,salud,acceso-a-servicios-de-salud
-Derechohabiencia,,salud,derechohabiencia
-Alfabetizacion y rezago,,educacion,alfabetizacion-y-rezago
-Infraestructura educativa,,educacion,infraestructura-educativa
-Escolarizacion y matricula,,educacion,escolarizacion-y-matricula
-Incidencia delictiva,,seguridad,incidencia-delictiva
-Personas desaparecidas,,seguridad,personas-desaparecidas
-Victimizacion y percepcion,,seguridad,victimizacion-y-percepcion
-Acceso a la justicia,,seguridad,acceso-a-la-justicia
-Reinsercion social,,seguridad,reinsercion-social
-Finanzas publicas,,gobierno-y-participacion,finanzas-publicas
-Derechos humanos,,gobierno-y-participacion,derechos-humanos
-Derechos ciudadanos,,gobierno-y-participacion,derechos-ciudadanos
-Participacion ciudadana,,gobierno-y-participacion,participacion-ciudadana
+Territorio,,,
+Límites administrativos,,territorio,
+Infraestructura vial,,territorio,
+Uso de suelo y vegetación,,territorio,
+Espacios públicos,,territorio,
+Movilidad y transporte,,territorio,
+Suelo ejidal,,territorio,
+Medio ambiente,,,
+Clima,,medio-ambiente,
+Agua,,medio-ambiente,
+Ecosistemas y biodiversidad,,medio-ambiente,
+"Suelos, erosión y geología",,medio-ambiente,
+Calidad del aire,,medio-ambiente,
+Residuos sólidos,,medio-ambiente,
+Energía,,medio-ambiente,
+Demografía,,,
+Población y estructura,,demografia,
+Fecundidad y natalidad,,demografia,
+Grupos de edad,,demografia,
+Migración,,demografia,
+Población indígena,,demografia,
+Economía,,,
+Empleo y ocupación,,economia,
+Actividad económica e industria,,economia,
+Comercio,,economia,
+Comercio exterior,,economia,
+Inflación y precios,,economia,
+Remesas,,economia,
+Sector primario,,economia,
+Competitividad e innovación,,economia,
+Inclusión económica,,economia,
+Desarrollo social,,,
+Pobreza y carencias,,desarrollo-social,
+Marginación,,desarrollo-social,
+Igualdad de género,,desarrollo-social,
+Alimentación,,desarrollo-social,
+Vivienda,,desarrollo-social,
+Acceso a servicios de salud,,desarrollo-social,
+Derechohabiencia,,desarrollo-social,
+Entorno urbano y comunitario,,desarrollo-social,
+Salud,,,
+Establecimientos y cobertura,,salud,
+Mortalidad por causa,,salud,
+Acceso a servicios de salud,,salud,
+Derechohabiencia,,salud,
+Enfermedades,,salud,
+Educación,,,
+Alfabetización y rezago,,educacion,
+Infraestructura educativa,,educacion,
+Escolarización y matrícula,,educacion,
+Calidad educativa,,educacion,
+Abandono escolar,,educacion,
+Seguridad,,,
+Incidencia delictiva,,seguridad,
+Personas desaparecidas,,seguridad,
+Victimización y percepción,,seguridad,
+Acceso a la justicia,,seguridad,
+Reinserción social,,seguridad,
+Protección civil,,seguridad,
+Gobierno y ciudadanía,,,
+Desarrollo institucional,,gobierno-y-ciudadania,
+Finanzas públicas,,gobierno-y-ciudadania,
+Derechos humanos,,gobierno-y-ciudadania,
+Derechos ciudadanos,,gobierno-y-ciudadania,
+Participación ciudadana,,gobierno-y-ciudadania,
+Transparencia,,gobierno-y-ciudadania,
+Género,,,
+Ciclo de vida,,,
+Desigualdad y vulnerabilidad,,,
+Escala territorial,,,
+Pueblos originarios,,,
+Acerca del sitio,,,
+Acerca del IIEG,,,
+MapaLab,,,
+Información contable,,,
+Información presupuestal,,,
+Información programática,,,
+Anexos,,, 
+Ley de Disciplina financiera,,, 
+Instrumentos de control y consulta archivistica,,,
+Planeación y normatividad archivística institucional,,,
+Grupo interdisciplinario de archivos,,,

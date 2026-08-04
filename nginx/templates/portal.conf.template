@@ -12,12 +12,15 @@ server {
 
     resolver 127.0.0.11 valid=30s ipv6=off;
 
+    absolute_redirect off;
+
     root /usr/share/nginx/html;
     index index.html;
 
     gzip on;
     gzip_vary on;
     gzip_min_length 1024;
+    gzip_proxied any;
     gzip_types text/plain text/css text/xml text/javascript application/javascript application/json;
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
@@ -28,7 +31,7 @@ server {
     location ^~ /api/ {
         proxy_pass http://portal_api;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -39,26 +42,54 @@ server {
     }
 
     location = /datos-abiertos/login {
-        return 301 /datos-abiertos/user/login;
+        return 301 /datos-abiertos/es/user/login;
     }
 
     location = /datos-abiertos {
-        return 301 /datos-abiertos/;
+        client_max_body_size 100M;
+        return 301 /datos-abiertos/es/;
     }
 
     location = /datos-abiertos/logout {
-        return 301 /datos-abiertos/user/logout;
+        return 301 /datos-abiertos/es/user/logout;
     }
 
     location = /datos-abiertos/register {
-        return 301 /datos-abiertos/user/register;
+        return 301 /datos-abiertos/es/user/register;
+    }
+
+    # -----------------------------------------------------------------------
+    # CKAN usa ROOT_PATH=/datos-abiertos/{{LANG}} — necesita el idioma en la URL.
+    # Cuando CKAN redirige tras guardar un form, genera /datos-abiertos/group/X
+    # (sin /es/). Nginx reescribiría a /group/X y CKAN devolvería 0 bytes.
+    # Estas reglas atrapan esas rutas sin idioma y añaden /es/ antes de proxear.
+    # Son más específicas que /datos-abiertos (^~ usa el prefijo más largo).
+    # -----------------------------------------------------------------------
+    location ^~ /datos-abiertos/group/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
+    }
+
+    location ^~ /datos-abiertos/organization/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
+    }
+
+    location ^~ /datos-abiertos/dataset/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
+    }
+
+    location ^~ /datos-abiertos/user/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
+    }
+
+    location ^~ /datos-abiertos/tag/ {
+        rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
     }
 
     location ^~ /datos-abiertos {
         rewrite ^/datos-abiertos/?(.*)$ /$1 break;
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -72,7 +103,7 @@ server {
     location ^~ /base/ {
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
@@ -81,7 +112,7 @@ server {
     location ^~ /webassets/ {
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
@@ -90,7 +121,7 @@ server {
     location ^~ /_debug_toolbar/ {
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
@@ -100,6 +131,7 @@ server {
         set $acervo_upstream ${ACERVO_UPSTREAM_URL};
         rewrite ^/acervo/(.*)$ /$1 break;
         proxy_pass $acervo_upstream;
+        proxy_ssl_server_name on;
         proxy_http_version 1.1;
         proxy_set_header Host ${ACERVO_UPSTREAM_HOST};
         proxy_set_header X-Real-IP $remote_addr;
@@ -126,7 +158,36 @@ server {
         try_files $uri $uri/ /portal-admin/index.html;
     }
 
+    # -----------------------------------------------------------------------
+    # Redirecciones para rutas CKAN sin prefijo /datos-abiertos
+    # CKAN a veces redirige a /group/X, /dataset/X, etc. directamente.
+    # Sin estas reglas Nginx las pasa al SPA de React → pantalla blanca.
+    # -----------------------------------------------------------------------
+    location ^~ /group/ {
+        return 301 /datos-abiertos$request_uri;
+    }
+
+    location ^~ /organization/ {
+        return 301 /datos-abiertos$request_uri;
+    }
+
+    location ^~ /dataset/ {
+        return 301 /datos-abiertos$request_uri;
+    }
+
+    location ^~ /user/ {
+        return 301 /datos-abiertos$request_uri;
+    }
+
+    location ^~ /tag/ {
+        return 301 /datos-abiertos$request_uri;
+    }
+
     location / {
         try_files $uri $uri/ /index.html;
+    }
+
+    location = /index.html {
+        add_header Cache-Control "no-store";
     }
 }

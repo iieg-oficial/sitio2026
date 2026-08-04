@@ -1,45 +1,40 @@
-import { Link } from 'react-router'
-import TagManager from 'react-gtm-module'
+// TrackedLink.jsx
+import { Link } from 'react-router';
 
-const TrackedLink = ({ to, children, className, eventData = {}, target = '_self', rel = 'noopener noreferrer',  download,  onClick, }) => {
-  const requiresBrowserNavigation =
-    typeof to === 'string' && (
-      to.startsWith('/datos-abiertos') ||
-      /^(https?:|mailto:|tel:)/.test(to)
-    )
-
-const handleClick = (e) => {
-    TagManager.dataLayer({
-      dataLayer: {
-        event: 'link_click',
-        link_text: typeof children === 'string' ? children : 'link',
-        link_destination: to,
-        ...eventData
+export default function TrackedLink({ to = '#', children, className, onClick, ...props }) {
+  const handleClick = (e) => {
+    // 1. Envío seguro a GTM (sin invocar funciones inexistentes del paquete react-gtm)
+    try {
+      if (typeof window !== 'undefined' && window.dataLayer) {
+        window.dataLayer.push({
+          event: 'link_click',
+          link_text: typeof children === 'string' ? children : 'menu_link',
+          link_destination: to,
+        });
       }
-    })
- 
-    if (onClick) onClick(e) // ejecuta el callback adicional (ej: cerrar el popup)
-  }
+    } catch (err) {
+      console.warn("GTM push error:", err);
+    }
 
+    // 2. Validación estricta antes de invocar cualquier onClick
+    if (typeof onClick === 'function') {
+      onClick(e);
+    }
+  };
 
-  if (requiresBrowserNavigation || target !== '_self' || download) {
+  // Si es enlace externo
+  if (typeof to === 'string' && (to.startsWith('http://') || to.startsWith('https://'))) {
     return (
-      <a href={to} 
-      className={className} 
-      onClick={handleClick} 
-      target={target} 
-      rel={rel}
-      download={download}>
+      <a href={to} className={className} onClick={handleClick} target="_blank" rel="noopener noreferrer">
         {children}
       </a>
-    )
+    );
   }
 
+  // Navegación interna con React Router
   return (
-      <Link to={to} className={className} onClick={handleClick}>
-        {children}
-      </Link>
-  )
+    <Link to={to} className={className} onClick={handleClick} {...props}>
+      {children}
+    </Link>
+  );
 }
-
-export default TrackedLink

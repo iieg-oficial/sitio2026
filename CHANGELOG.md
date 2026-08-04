@@ -2,6 +2,35 @@
 
 Todos los cambios notables se documentan en este archivo. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
+## [1.9.0] - 2026-07-31
+
+Preparación para colgar el portal de la raíz del dominio, detrás de gateway-hub.
+
+### Cambiado
+- Prefijos del API: `/api/portal` → `/api/sitio` y `/api/portal-admin` → `/api/sitio-admin`
+  (`WEB_PREFIX` y `ADMIN_PREFIX` en ambos compose). `/api/portal` ya pertenece a mariachi, que lo
+  sirve en el mismo dominio; detrás del gateway las peticiones del portal llegaban a otro servicio.
+  Alcanza a los fallbacks del front, las rutas de `api/tests/`, los `VITE_*` y los docs.
+- Cookie de sesión renombrada a `sitio_access_token`. Con el nombre anterior, `access_token`,
+  entrar al CMS del portal pisaba la sesión de mariachi y viceversa.
+- `.env.production.example` recuperó su nombre: estaba como `.env.productioncopy.example` y
+  `scripts/init-env.sh` no lo encontraba, así que `make setup` no podía crear `.env.production`.
+
+### Corregido
+- El nginx del portal emite redirects relativos (`absolute_redirect off`). Escucha en `:80` sin TLS
+  porque el gateway termina https, así que sus `return 301` salían con esquema `http`: detrás del
+  gateway, `/datos-abiertos` respondía `Location: http://<dominio>/datos-abiertos/es/`.
+
+### Agregado
+- `ACERVO_API_KEY`, `ACERVO_API_KEY_HEADER` y `CKAN_S3_STORAGE_PATH` en `.env.production.example`.
+  El compose ya las consumía, pero ninguna lleva `:?` y faltaban en silencio.
+- Targets `deploy` y `_up-prod`, que son los que invoca `ecosystem-deploy` de gateway-hub. El
+  portal entra al orquestador del ecosistema entre mapalab y el gateway: ocupa `location /`, así
+  que si no está arriba la raíz del dominio responde 502. `deploy` reconstruye en modo `gcp`, no
+  solo levanta, porque los prefijos del API viajan como build args del bundle.
+
+---
+
 ## [1.8.0] - 2026-05-15
 
 Documentación y bump de versión.

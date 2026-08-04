@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     acervo_bucket_name: str
     acervo_use_ssl: bool
     acervo_verify_ssl: bool = True
+    acervo_api_key: str | None = None
+    acervo_api_key_header: str = "x-api-key"
     acervo_iieg_access_key: str
     acervo_iieg_secret_key: str
     acervo_iieg_bucket_name: str

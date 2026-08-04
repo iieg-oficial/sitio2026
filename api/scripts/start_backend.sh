@@ -3,14 +3,19 @@ set -euo pipefail
 
 cd /app
 
-echo "▶️ Applying database migrations (Alembic)..."
-python -m alembic -c alembic.ini upgrade head
 
-echo "✅ Database migrations applied."
 
 echo "▶️ Running database bootstrap (scripts/init_db.py)..."
 python scripts/init_db.py
 echo "✅ Database bootstrap completed."
+
+if [ "${SEED_EXAMPLES:-false}" = "true" ]; then
+    echo "🌱 SEED_EXAMPLES=true — Importing example CSV data..."
+    python scripts/import_all_examples.py --mode upsert
+    echo "✅ Example data import completed."
+else
+    echo "ℹ️  Skipping example CSV import (set SEED_EXAMPLES=true to enable)."
+fi
 
 if [ "${ENV:-production}" = "development" ]; then
     echo "🚀 Launching Uvicorn (development)..."

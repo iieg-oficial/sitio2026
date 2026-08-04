@@ -32,19 +32,28 @@
   {% set org_type = h.default_group_type('organization') %}
   {% set group_type = h.default_group_type('group') %}
 
-              {{ h.build_nav_main(
-                (dataset_type ~ '.search', h.humanize_entity_type('package', dataset_type, 'main nav') or _('Datasets'), ["dataset", "resource"]),
-                (org_type ~ '.index',
-                  h.humanize_entity_type('organization', org_type, 'main nav') or _('Organizations'), ['organization'])
-              ) }}
+  {# 1. Construimos los items base del menú #}
+  {% set nav_items = [
+    (dataset_type ~ '.search', h.humanize_entity_type('package', dataset_type, 'main nav') or _('Datasets'), ["dataset", "resource"]),
+    (org_type ~ '.index', h.humanize_entity_type('organization', org_type, 'main nav') or _('Organizations'), ['organization'])
+  ] %}
 
-  <!-- AGREGA AQUÍ TUS ELEMENTOS PERSONALIZADOS -->
-  
-  <!-- Opción A: Enlace a una página interna o externa usando HTML puro -->
-  <li>
-    <a href="https://iieg.gob.mx/ns/" target="_blank">IIEG</a>
-  </li>
-  
+  {# 2. Agregamos Grupos si hay un usuario en sesión #}
+  {% if c.user %}
+    {% set nav_items = nav_items + [(group_type ~ '.index', h.humanize_entity_type('group', group_type, 'main nav') or _('Groups'), ['group'])] %}
+  {% endif %}
+
+  {# 3. Renderizamos el menú usando la lista de items #}
+  {{ h.build_nav_main(*nav_items) }}
+
+  <!-- Elemento personalizado adicional -->
+  <nav>
+    <ul class="nav nav-pills custom-nav">
+      <li>
+        <a href="https://iieg.gob.mx/ns/" target="_blank">IIEG</a>
+      </li>
+    </ul>
+  </nav>
 
 {% endblock %}
 

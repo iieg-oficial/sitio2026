@@ -38,7 +38,7 @@ export default function Cursos() {
       const response = await api.get('/cursos');
       setCursos(response.data.cursos);
     } catch (error) {
-      console.error('Error al obtener cursos:', error);
+      console.error('Error al obtener:', error);
     } finally {
       setLoading(false);
     }
@@ -118,19 +118,19 @@ export default function Cursos() {
 
   const handleDelete = (record) => {
     Modal.confirm({
-      title: '¿Está seguro de eliminar este curso?',
-      content: `Se eliminará el curso: ${record.titulo}`,
+      title: '¿Está seguro de eliminar?',
+      content: `Se eliminará: ${record.titulo}`,
       okText: 'Eliminar',
       okType: 'danger',
       cancelText: 'Cancelar',
       onOk: async () => {
         try {
           await api.delete(`/cursos/${record.id}`);
-          message.success('Curso eliminado exitosamente');
+          message.success('Eliminado exitosamente');
           fetchCursos();
         } catch (error) {
-          console.error('Error al eliminar curso:', error);
-          message.error('Error al eliminar curso');
+          console.error('Error al eliminar:', error);
+          message.error('Error al eliminar');
         }
       }
     });
@@ -141,15 +141,15 @@ export default function Cursos() {
       const payload = { ...values, tema_ids: selectedTemas };      
       if (editingCurso) {
         await api.patch(`/cursos/${editingCurso.id}`, payload);
-        message.success('Curso actualizado exitosamente');
+        message.success('Actualizado exitosamente');
       } else {
         await api.post('/cursos/create', payload);
-        message.success('Curso creado exitosamente');
+        message.success('Creado exitosamente');
       }
       setModalVisible(false);
       fetchCursos();
     } catch (error) {
-      message.error(editingCurso ? 'Error al actualizar curso' : 'Error al crear curso');
+      message.error(editingCurso ? 'Error al actualizar' : 'Error al crear');
     }
   };
 
@@ -169,7 +169,7 @@ export default function Cursos() {
       sorter: (a, b) => a.titulo.localeCompare(b.titulo)
     },
     {
-      title: 'Tipo de curso',
+      title: 'Tipo',
       dataIndex: 'tipo_curso',
       key: 'tipo_curso',
       sorter: (a, b) => a.tipo_curso.localeCompare(b.tipo_curso)
@@ -216,13 +216,13 @@ export default function Cursos() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <Title level={2} style={{ margin: 0 }}>Administración de Cursos</Title>
+        <Title level={2} style={{ margin: 0 }}>Educación continua</Title>
         <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={handleCreate}
         >
-          Nuevo Curso
+          Nuevo
         </Button>
       </div>
 
@@ -235,13 +235,13 @@ export default function Cursos() {
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
-            showTotal: (total) => `Total ${total} cursos`
+            showTotal: (total) => `Total ${total}`
           }}
         />
       </Card>
 
       <Modal
-        title={editingCurso ? 'Editar Curso' : 'Nuevo Curso'}
+        title={editingCurso ? 'Editar' : 'Nuevo'}
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         onOk={() => form.submit()}
@@ -263,16 +263,16 @@ export default function Cursos() {
 
           <Form.Item
             name="tipo_curso"
-            label="Tipo de curso"
-            rules={[{ required: true, message: 'Por favor seleccione un tipo de curso' }]}
+            label="Tipo"
+            rules={[{ required: true, message: 'Por favor seleccione un tipo' }]}
           >
             <Select
-              placeholder="Seleccione un tipo de curso"
+              placeholder="Seleccione un tipo"
               value={tipoCurso}
               onChange={(value) => setTipoCurso(value)}
             >
-              <Option key="capacitacion" value="capacitacion">Capacitación</Option>
-              <Option key="convocatoria" value="convocatoria">Convocatoria</Option>
+              <Option key="capacitacion" value="capacitacion">Educación continua</Option>
+              <Option key="convocatoria" value="convocatoria">Convocatorias</Option>
             </Select>
           </Form.Item>
 

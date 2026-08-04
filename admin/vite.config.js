@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
                 '/api': {
                     target: apiProxyTarget,
                     // Keep localhost host header so backend redirects don't expose Docker-only hostnames.
-                    changeOrigin: false,
+                    changeOrigin: true,
                 },
             },
             watch: {

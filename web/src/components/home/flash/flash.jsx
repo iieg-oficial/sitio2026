@@ -14,7 +14,7 @@ export default function Flashes() {
 
     useEffect(() => {
         const fetchFlashes = async () => {
-            const response = await api.get('/flashes/last')
+            const response = await api.get('/flashes/last/')
             setFlashes(response.data)
         }
         
@@ -43,7 +43,7 @@ export default function Flashes() {
                 </div>
             ))}
         </div>
-        <TrackedLink to="/flashes" className="button2 block mx-auto w-full sm:w-[350px] text-center lg:float-left mt-3 text-tertiary hover:text-white border-tertiary hover:bg-tertiary">
+        <TrackedLink to="/datos-expres" className="button2 block mx-auto w-full sm:w-[350px] text-center lg:float-left mt-3 text-tertiary hover:text-white border-tertiary hover:bg-tertiary">
             Quiero ver los datos más nuevos
         </TrackedLink>
         </div>

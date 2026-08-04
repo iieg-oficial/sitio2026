@@ -17,6 +17,7 @@ export const CamposBannerFull = () => {
                         bucket="portal"
                         folder="/banners"
                         label="Subir imagen desktop"
+                        apiKey={import.meta.env.ACERVO_API_KEY} // Ejemplo de uso de la variable como prop
                         onUploaded={(media) => {
                             form.setFieldValue('imagen_desktop', media.url);
                         }}
@@ -40,6 +41,7 @@ export const CamposBannerFull = () => {
                         bucket="portal"
                         folder="/banners"
                         label="Subir imagen mobile"
+                        apiKey={import.meta.env.ACERVO_API_KEY} // Ejemplo de uso de la variable como prop
                         onUploaded={(media) => {
                             form.setFieldValue('imagen_mobile', media.url);
                         }}
@@ -74,7 +76,7 @@ export const CamposBannerMin = () => {
                         <UploadAcervo
                             bucket="portal"
                             folder="/banners"
-                            label="Subir imagen "
+                            label="Subir imagen "                            
                             onUploaded={(media) => {
                                 form.setFieldValue('imagen', media.url);
                             }}

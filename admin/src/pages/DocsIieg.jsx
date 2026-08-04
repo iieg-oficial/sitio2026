@@ -174,7 +174,7 @@ export default function DocsIieg() {
                     <Form.Item
                         name="descripcion"
                         label="Descripción"
-                        rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
+                        rules={[{ required: false, message: 'Por favor ingrese la descripción' }]}
                     >
                         <RichTextEditor />
                     </Form.Item>
