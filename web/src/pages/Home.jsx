@@ -123,52 +123,7 @@ function HomePage() {
                 <TrackedLink to="/nuestros-productos" className="button2 sm:w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
                     Conoce todos nuestros productos
                 </TrackedLink>
-                <div className="flex flex-wrap bg-amber-700 pt-20 gap-5 px-20">
-                    <div key="mapa_1" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
-                
-                        <img 
-                            src={"/ico_cuadernillos_municipales_274.png"} 
-                            alt={"Cuadernillos Municipales"} 
-                            className='rounded-4xl bg-white px-16 h-[130px]'
-                            />
-                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                            <h3>Cuadernillos Municipales</h3>
-                        </div>
-                    </div>
-                <div key="mapa_2" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
-                
-                        <img 
-                            src={"/ico_reportes_220x144.png"} 
-                            alt={"Reportes"} 
-                            className='rounded-4xl bg-white px-16 py-2'
-                            />
-                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                            <h3>Reportes</h3>
-                        </div>
-                    </div>
-                    <div key="mapa_3" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
-                
-                        <img 
-                            src={"/ico_cuadernillos_municipales_274.png"} 
-                            alt={"Cuadernillos Municipales"} 
-                            className=''
-                            />
-                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                            <h3>Cuadernillos Municipales</h3>
-                        </div>
-                    </div>
-                    <div key="mapa_4" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
-                
-                        <img 
-                            src={"/ico_cuadernillos_municipales_274.png"} 
-                            alt={"Cuadernillos Municipales"} 
-                            className='rounded-full'
-                            />
-                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                            <h3>Cuadernillos Municipales</h3>
-                        </div>
-                    </div>
-                </div>
+
             </section>
 
             <section className="w-11/12 mx-auto relative my-15">
