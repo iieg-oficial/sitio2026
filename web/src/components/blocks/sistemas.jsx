@@ -129,37 +129,48 @@ export default function Sistemas() {
                                 const original = sistema.imagen
                                 const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
                                 
+                                const hasLink = Boolean(sistema.link);
+                                const CardTag = hasLink ? 'a' : 'div';
 
                                 return (
-                                    <a href={sistema.link} target="_blank" rel="noopener noreferrer" key={sistema.id}>
-                                    <div key={sistema.id} className='mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 cursor-pointer hover:border-primary hover:border group'>
-                                        <div className='md:col-span-2'>
-                                            <img
-                                                src={sistema.imagen ? sistema.imagen : '/demo.jpg'}                                                
-                                                alt={sistema.titulo}
-                                                className="mb-3 h-auto w-full rounded-lg object-cover"
-                                            />
-                                            {/* src={sistema.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/sistemas/${thumb}?w=400` : '/demo.jpg'} */}
-                                        </div>
-                                        <div className='md:col-span-4'>
-                                            <h3 className="mb-3 text-primary">
-                                                {sistema.titulo}
-                                            </h3>
-                                            <div className="diez" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
-                                        </div>
-                                        <div className='md:col-span-6'>
-                                            {sistema.tipo && (
-                                                <span className={`e${sistema.tipo} text-titulo rounded-2xl px-4 py-2 text-14`}>
-                                                    {sistema.tipo.replace('-', ' ')}
-                                                </span>
-                                            )}
-                                            
-                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
-                                                <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                    <CardTag 
+                                        key={sistema.id}
+                                        {...(hasLink ? { href: sistema.link, target: "_blank", rel: "noopener noreferrer" } : {})}
+                                    >
+                                        <div 
+                                            className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 ${
+                                                hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
+                                            }`}
+                                        >
+                                            <div className='md:col-span-2'>
+                                                <img
+                                                    src={sistema.imagen ? sistema.imagen : '/demo.jpg'}                                                
+                                                    alt={sistema.titulo}
+                                                    className="mb-3 h-auto w-full rounded-lg object-cover"
+                                                />
+                                            </div>
+                                            <div className='md:col-span-4'>
+                                                <h3 className="mb-3 text-primary">
+                                                    {sistema.titulo}
+                                                </h3>
+                                                <div className="diez" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
+                                            </div>
+                                            <div className='md:col-span-6'>
+                                                {sistema.tipo && (
+                                                    <span className={`e${sistema.tipo} text-titulo rounded-2xl px-4 py-2 text-14`}>
+                                                        {sistema.tipo.replace('-', ' ')}
+                                                    </span>
+                                                )}
+                                                
+                                                {/* 2. Opcional: Mostrar el botón de flecha solo si hay enlace */}
+                                                {hasLink && (
+                                                    <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                                        <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
-                                    </div>
-                                    </a>
+                                    </CardTag>
                                 );
                             })}
                         </div>

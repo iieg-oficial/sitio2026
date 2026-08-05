@@ -13,11 +13,20 @@ export default function PlataformasSlider() {
     const location = useLocation()
 
     useEffect(() => {
-        const fetchPlataformas = async () => {
-            const response = await api.get('/sistemas/', { params: { destacado: false } })
-            setPlataformas(response.data.sistemas)
+    const fetchPlataformas = async () => {
+        try {
+        const response = await api.get('/sistemas/', {
+            params: {
+            destacado: false,
+            slider: true
+            }
+        })
+        setPlataformas(response.data.sistemas)
+        } catch (error) {
+        console.error('Error al obtener plataformas:', error)
         }
-        fetchPlataformas()
+    }
+    fetchPlataformas()
     }, [location])
 
     return (
