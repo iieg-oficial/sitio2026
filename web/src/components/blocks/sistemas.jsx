@@ -125,17 +125,22 @@ export default function Sistemas() {
                     {filteredByTab.length > 0 && (
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             {currentSystems.map((sistema) => {
-
-                                const original = sistema.imagen
+                                const original = sistema.imagen;
                                 const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
                                 
                                 const hasLink = Boolean(sistema.link);
                                 const CardTag = hasLink ? 'a' : 'div';
 
+                                // 1. Validamos si el enlace es externo (inicia con http/https)
+                                const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);
+
                                 return (
                                     <CardTag 
                                         key={sistema.id}
-                                        {...(hasLink ? { href: sistema.link, target: "_blank", rel: "noopener noreferrer" } : {})}
+                                        {...(hasLink ? { 
+                                            href: sistema.link, 
+                                            ...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})
+                                        } : {})}
                                     >
                                         <div 
                                             className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 ${
@@ -162,7 +167,6 @@ export default function Sistemas() {
                                                     </span>
                                                 )}
                                                 
-                                                {/* 2. Opcional: Mostrar el botón de flecha solo si hay enlace */}
                                                 {hasLink && (
                                                     <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
                                                         <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
