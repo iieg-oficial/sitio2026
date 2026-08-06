@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const DEFAULT_API_URL = '/api/sitio-admin';
+const DEFAULT_API_URL = '/api/portal-admin';
 
 function toSameOriginApiPath(rawUrl) {
     if (!rawUrl) {
