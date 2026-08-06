@@ -60,6 +60,8 @@ def create_sistemas(
         tipo=sistemas.tipo,
         imagen=sistemas.imagen,
         destacado=sistemas.destacado,
+        slider=sistemas.slider,
+        imagen_slider=sistemas.imagen_slider,
         orden=sistemas.orden,
         claves=sistemas.claves,
         slug=slug,

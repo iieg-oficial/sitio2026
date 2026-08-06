@@ -79,7 +79,7 @@ export default function Convocatorias() {
                                     <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
                                 </TrackedLink>
                             ): 
-                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
+                                <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2 mt-5'>Convocatoria cerrada</span>
                             }
                         </div>
                     </div>
