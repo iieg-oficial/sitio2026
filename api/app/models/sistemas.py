@@ -34,6 +34,8 @@ class Sistemas(Base):
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=True)
     destacado = Column(Boolean, default=False, nullable=True)
+    slider = Column(Boolean, default=False, nullable=True)
+    imagen_slider = Column(String, nullable=True)
     orden = Column(Integer, default=0, nullable=True)
 
     temas = relationship(

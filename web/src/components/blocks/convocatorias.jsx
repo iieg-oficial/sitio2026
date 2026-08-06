@@ -59,18 +59,24 @@ export default function Convocatorias() {
     };
 
     return (
-        <div>
-            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto'>
+        <div className='mb-10'>
+            <div className='grid grid-cols-1 gap-4 p-4 container mx-auto bg-card hover:border hover:border-tertiary group rounded-3xl'>
                 {currentItems.map(convocatoria => (
                     <TrackedLink to={`/convocatorias/${convocatoria.slug}`} className="" rel="noopener noreferrer">
-                        <div className='grid md:grid-cols-6 hover:border hover:border-tertiary group rounded-3xl' key={convocatoria.id}>                        
+                        <div className='grid md:grid-cols-6' key={convocatoria.id}>                        
                             <div className='md:col-span-2'></div>
                                 <div className='md:col-span-4 p-6'>
-                                    <h3 className='text-28 text-primary'>{convocatoria.titulo}</h3>                            
-                                    {esFechaPasada(convocatoria.fin) && (
-                                        <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
-                                    )} 
-                                    <div dangerouslySetInnerHTML={{__html: convocatoria.descripcion}} className='diez mt-5' />                        
+                                    <h3 className='text-28 text-primary'>{convocatoria.titulo}</h3>                                                                
+                                    <div dangerouslySetInnerHTML={{__html: convocatoria.descripcion}} className='diez my-5' /> 
+                                    {esFechaPasada(convocatoria.fin) ? (
+                                    <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2'>
+                                        Convocatoria cerrada
+                                    </span>
+                                    ) : (
+                                    <span className='rounded-2xl bg-etiqueta-sec border-tertiary text-tertiary text-14 px-5 py-2'>
+                                        Convocatoria abierta
+                                    </span>
+                                    )}                        
                                     <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
                                         <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                     </div>
@@ -97,15 +103,15 @@ export default function Convocatorias() {
             />
             */}
 
-            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto'>
-                <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl group'>                        
+            <div className='grid grid-cols-1 gap-4 p-4 container mx-auto bg-card rounded-3xl mt-16'>
+                <div className='grid md:grid-cols-6'>                        
                     <div className='md:col-span-2'></div>
                         <div className='md:col-span-4 p-6'>
                             <h3 className='text-28 text-primary'>Sesiones informativas</h3>                            
                                 <div className='diez mt-5'>                        
                                     <p>Presentaciones orientadas a dar a conocer el trabajo, productos y servicios del IIEG, en función de las necesidades del público participante.</p>
                                 </div>
-                                <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 '>
                                     <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                 </div>
                             </div>                        

@@ -47,7 +47,7 @@ export default function ClasificadorCultivos() {
                 </div>
                 <section className="container mx-auto grid grid-cols-1 lg:grid-cols-6 gap-10 px-2">
                     <div className="lg:col-span-2">
-                        <img src="/demo.jpg" alt={page?.title} className='image-mapa rounded-4xl'/>
+                        <img src="/cultivos/ico_clasificador_cultivos.svg" alt={page?.title} className='image-mapa rounded-4xl'/>
                     </div>
                     <div className="lg:col-span-4">
                         <h1>{page?.title || 'Clasificador de Cultivos'}</h1>

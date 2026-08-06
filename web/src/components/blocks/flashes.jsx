@@ -152,11 +152,17 @@ export default function Flashes() {
                     <h3 className='text-28 text-tertiary'>{lastFlash.titulo}</h3>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
                         <div className='bg-white rounded-2xl p-8'>
-                            <h4>Jalisco</h4>
+                            <div className="flex gap-4 items-center">
+                                <img src="/ico_jalisco.svg" alt="Jalisco" className="w-16 h-16 object-contain" />
+                                <h4> Jalisco</h4>
+                            </div>
                             <div dangerouslySetInnerHTML={{__html: lastFlash.desc_jal}} className='mt-5 prose max-w-none' />
                         </div>
                         <div className='bg-white rounded-2xl p-6'>
-                            <h4>Nacional</h4>
+                            <div className="flex gap-4 items-center">
+                                <img src="/ico_Nacional.svg" alt="Nacional" className="w-16 h-16 object-contain" /> 
+                                <h4>Nacional</h4>
+                            </div>
                             <div dangerouslySetInnerHTML={{__html: lastFlash.desc_nac}} className='mt-5 prose max-w-none' />
                         </div>
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
