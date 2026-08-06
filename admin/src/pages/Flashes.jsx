@@ -7,6 +7,7 @@ import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
+import { SafeHtml } from '@components/SafeHtml';
 
 const { Title } = Typography;
 
@@ -171,12 +172,9 @@ export default function Flashes() {
             dataIndex: 'desc_jal', 
             key: 'desc_jal',
             sorter: (a, b) => a.desc_jal.localeCompare(b.desc_jal),
-            render: (text) => (
-                <div
-                className="tiptap-content"
-                dangerouslySetInnerHTML={{ __html: text }}
-                />
-            ),
+            render: 
+                <SafeHtml htmlContent={desc_jal} className='mt-5 prose max-w-none'/>
+            
         },
         {
             title: 'periocidad',

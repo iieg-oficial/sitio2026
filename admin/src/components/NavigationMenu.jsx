@@ -7,6 +7,7 @@ import {
     CloudOutlined, BarChartOutlined, PieChartOutlined, LineChartOutlined,
     AppstoreOutlined, DashboardOutlined, CalendarOutlined, BellOutlined
 } from '@ant-design/icons';
+import { SafeHtml } from '@components/SafeHtml';
 
 const getIconComponent = (iconName) => {
     const iconMap = {
@@ -31,7 +32,7 @@ export default function NavigationMenu({ items = [], customIcons = [], style = {
             if (item.iconId) {
                 const customIcon = customIcons.find(icon => icon.id === item.iconId);
                 if (customIcon) {
-                    icon = <span dangerouslySetInnerHTML={{ __html: customIcon.svg }} />;
+                    icon = <SafeHtml htmlContent={customIcon.svg} className="inline-icon"/>;
                 }
             } else if (item.icon) {
                 const IconComponent = getIconComponent(item.icon);

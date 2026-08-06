@@ -6,6 +6,7 @@ import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
+import { SafeHtml } from '@components/SafeHtml';
 
 const { Title } = Typography;
 
@@ -117,24 +118,15 @@ export default function Preguntas() {
             dataIndex: 'pregunta',
             key: 'pregunta',
             sorter: (a, b) => (a.pregunta || '').localeCompare(b.pregunta || ''),
-            render: (text) => (
-                <div
-                    className="tiptap-content"
-                    dangerouslySetInnerHTML={{ __html: text || '' }}
-                />
-            ),
+            render:  <SafeHtml htmlContent={pregunta} className='mt-5 prose max-w-none'/>
         },
         {
             title: 'Respuesta',
             dataIndex: 'respuesta',
             key: 'respuesta',
             sorter: (a, b) => (a.respuesta || '').localeCompare(b.respuesta || ''),
-            render: (text) => (
-                <div
-                    className="tiptap-content"
-                    dangerouslySetInnerHTML={{ __html: text || '' }}
-                />
-            ),
+            render: 
+                <SafeHtml htmlContent={respuesta} className='mt-5 prose max-w-none'/>
         },
         {
             title: 'Tema',

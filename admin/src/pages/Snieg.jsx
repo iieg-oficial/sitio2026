@@ -6,6 +6,7 @@ import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
+import { SafeHtml } from '@components/SafeHtml';
 
 const { Title } = Typography;
 
@@ -107,12 +108,8 @@ export default function Snieg() {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
-            render: (text) => (
-                <div
-                    className="tiptap-content"
-                    dangerouslySetInnerHTML={{ __html: text || '' }}
-                />
-            ),
+            render: <SafeHtml htmlContent={descripcion} className='mt-5 prose max-w-none'/>
+            
         },
         {
             title: 'Enlace',

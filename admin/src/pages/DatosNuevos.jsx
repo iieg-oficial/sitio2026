@@ -5,6 +5,7 @@ import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
+import { SafeHtml } from '@components/SafeHtml';
 
 const { Title } = Typography;
 
@@ -108,12 +109,8 @@ export default function DatosNuevos() {
             dataIndex: 'descripcion',
             key: 'descripcion',
             sorter: (a, b) => a.descripcion.localeCompare(b.descripcion),
-            render: (text) => (
-                <div
-                className="tiptap-content"
-                dangerouslySetInnerHTML={{ __html: text }}
-                />
-            ),
+            render: <SafeHtml htmlContent={descripcion} className='mt-5 prose max-w-none'/>
+            
         },
         {
             title: 'Acciones',

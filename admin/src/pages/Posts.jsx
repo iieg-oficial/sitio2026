@@ -7,6 +7,7 @@ import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervoMultiple } from '@components/UploadAcervoMultiple';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
+import { SafeHtml } from '@components/SafeHtml';
 
 const { Title } = Typography;
 
@@ -20,6 +21,7 @@ export default function Posts() {
     const [selectedSubjects, setSelectedSubjects] = useState([]);    
     const [galleryImages, setGalleryImages] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+    
 
     useEffect(() => {
         fetchPosts('', 1, pagination.pageSize);
@@ -149,12 +151,8 @@ export default function Posts() {
             dataIndex: 'resumen',
             key: 'resumen',
             sorter: (a, b) => (a.resumen || '').localeCompare(b.resumen || ''),
-            render: (text) => (
-                <div
-                    className="tiptap-content"
-                    dangerouslySetInnerHTML={{ __html: text || '' }}
-                />
-            ),
+            render: <SafeHtml htmlContent={resumen} className='mt-5 prose max-w-none'/>
+            
         },
         {
             title: 'URL Completa',
