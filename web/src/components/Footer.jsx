@@ -85,7 +85,7 @@ function Footer() {
                                 <a href='https://iieg.gob.mx/' target='_blank' className='linkfooter'>Sitio anterior</a>
                             </li>
                             <li className='mb-8'>
-                                <a href='https://iieg.jalisco.gob.mx/aviso-de-privacidad' target='_blank' rel='noopener noreferrer' className='linkfooter'>Aviso de privacidad</a>
+                                <Link to='/aviso-de-privacidad' className='linkfooter'>Aviso de privacidad</Link>
                             </li>
                            </ul>
                         </div>
