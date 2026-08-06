@@ -66,11 +66,17 @@ export default function Convocatorias() {
                         <div className='grid md:grid-cols-6 hover:border hover:border-tertiary group rounded-3xl' key={convocatoria.id}>                        
                             <div className='md:col-span-2'></div>
                                 <div className='md:col-span-4 p-6'>
-                                    <h3 className='text-28 text-primary'>{convocatoria.titulo}</h3>                            
-                                    {esFechaPasada(convocatoria.fin) && (
-                                        <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
-                                    )} 
-                                    <div dangerouslySetInnerHTML={{__html: convocatoria.descripcion}} className='diez mt-5' />                        
+                                    <h3 className='text-28 text-primary'>{convocatoria.titulo}</h3>                                                                
+                                    <div dangerouslySetInnerHTML={{__html: convocatoria.descripcion}} className='diez mt-5' /> 
+                                    {esFechaPasada(convocatoria.fin) ? (
+                                    <span className='rounded-2xl bg-etiqueta-ter text-titulo text-14 px-5 py-2'>
+                                        Convocatoria cerrada
+                                    </span>
+                                    ) : (
+                                    <span className='rounded-2xl bg-etiqueta-sec text-tertiary text-14 px-5 py-2'>
+                                        Convocatoria abierta
+                                    </span>
+                                    )}                        
                                     <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
                                         <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                     </div>
