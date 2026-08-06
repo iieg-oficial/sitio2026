@@ -15,6 +15,8 @@ services:
         VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:?VITE_GOOGLE_ANALYTICS_ID is required}
         VITE_WEB_API_URL: ${VITE_WEB_API_URL:?VITE_WEB_API_URL is required}
         VITE_ADMIN_API_URL: ${VITE_ADMIN_API_URL:?VITE_ADMIN_API_URL is required}
+        VITE_MAPALAB_BASE_URL: ${VITE_MAPALAB_BASE_URL:?VITE_MAPALAB_BASE_URL is required}
+        VITE_MAPALAB_API_KEY: ${VITE_MAPALAB_API_KEY:?VITE_MAPALAB_API_KEY is required}
     container_name: portal-nginx
     restart: unless-stopped
     ports:
