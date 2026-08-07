@@ -39,9 +39,9 @@ export default function PlanInstitucional() {
             <h2 className="text-center mb-15">Plan Institucional</h2>
             
             {planInstitucional.length > 0 ? (
-                <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10">
+                <div className="container mx-auto flex flex-wrap justify-center">
                     {planInstitucional.map((item, idx) => (
-                        <div key={item?.id || idx} className="p-4 my-4 text-center">
+                        <div key={item?.id || idx} className="p-4 my-4 text-center w-full sm:w-[calc(50%-1rem)] md:w-[calc(33%-1rem)] xl:w-[calc(25%-1rem)]">
                             <img 
                                 src={item?.imagen ? item.imagen : "/default.png"} 
                                 alt={item?.nombre || "Plan Institucional"} 
