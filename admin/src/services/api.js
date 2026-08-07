@@ -11,6 +11,7 @@ function toSameOriginApiPath(rawUrl) {
             parsed.pathname?.startsWith('/api/')
             || parsed.hostname === 'api'
             || parsed.hostname === 'portal-api'
+        ) {
             return parsed.pathname || import.meta.env.VITE_ADMIN_API_URL;
         }
     } catch {
