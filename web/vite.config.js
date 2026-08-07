@@ -2,7 +2,6 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { CSP_POLICY, buildCSPString } from "./config/csp.config.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -10,18 +9,7 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, __dirname, '');
 
     return {
-        plugins: [react(),
-            {
-                name: "inject-csp-meta",
-                transformIndexHtml(html) {
-                    const csp = buildCSPString(CSP_POLICY);
-                    return html.replace(
-                    "%CSP_CONTENT%",
-                    csp
-                    );
-                },
-            },
-        ],
+        plugins: [react()],
         root: '.',
         server: {
             host: env.VITE_WEB_HOST ?? '0.0.0.0',
