@@ -1,15 +1,15 @@
 export default function MisionVision() {
     return (
         <div className="container-fluid py-15 bg-card px-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto container">
-                <div className="bg-white p-10 rounded-4xl border border-[#E6EEFF]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mx-auto container">
+                <div className="bg-white p-25 rounded-4xl border border-[#E6EEFF]">
                     <h4 className="text-28 mb-6 text-primary">Misión</h4>
                     <br />
                     <p className="leading-10">
                         Generar, integrar, analizar y difundir información estadística y geográfica con base en metodologías científicas, para apoyar la toma de decisiones públicas y de la sociedad jalisciense mediante productos especializados, asesoría técnica y mecanismos abiertos de consulta; y coordinar el Sistema de Información Estratégica del Estado de Jalisco y sus Municipios como plataforma articuladora de información estratégica para el desarrollo de la entidad.
                     </p>
                 </div>
-                <div className="bg-white p-10 rounded-4xl border border-[#E6EEFF]">
+                <div className="bg-white p-25 rounded-4xl border border-[#E6EEFF]">
                     <h4 className="text-28 mb-6 text-primary">Visión</h4>
                     <br />
                     <p className="leading-10">
