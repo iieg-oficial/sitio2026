@@ -84,7 +84,7 @@ export default function Preguntas() {
                         const isOpen = openPreguntas[pregunta.id] ?? false;
 
                         return (
-                            <div key={pregunta.id} className='mb-5 w-full rounded-2xl bg-card pl-6 p-4 my-5'>
+                            <div key={pregunta.id} className='mb-5 w-full rounded-2xl bg-card pl-11 p-4 px-8 my-5'>
                                 <button
                                     type='button'
                                     onClick={() => togglePregunta(pregunta.id)}
