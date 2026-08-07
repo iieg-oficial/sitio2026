@@ -119,10 +119,10 @@ export default function Sistemas() {
             key: 'link',
         },
         {
-            title: 'Tipo',
-            dataIndex: 'tipo',
-            key: 'tipo',
-            sorter: (a, b) => a.tipo.localeCompare(b.tipo),
+            title: 'Slug',
+            dataIndex: 'slug',
+            key: 'slug',
+            sorter: (a, b) => a.slug.localeCompare(b.slug),
         },
         {
             title: 'Destacado',
