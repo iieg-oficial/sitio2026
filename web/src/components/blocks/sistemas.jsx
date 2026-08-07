@@ -123,7 +123,7 @@ export default function Sistemas() {
                     {filteredByTab.length === 0 && <p>No hay sistemas</p>}
 
                     {filteredByTab.length > 0 && (
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                             {currentSystems.map((sistema) => {
                                 const original = sistema.imagen;
                                 const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
@@ -143,7 +143,7 @@ export default function Sistemas() {
                                         } : {})}
                                     >
                                         <div 
-                                            className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 ${
+                                            className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-5 ${
                                                 hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
                                             }`}
                                         >
@@ -160,9 +160,9 @@ export default function Sistemas() {
                                                 </h3>
                                                 <div className="diez" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
                                             </div>
-                                            <div className='md:col-span-6'>
+                                            <div className='md:col-span-6 mt-5'>
                                                 {sistema.tipo && (
-                                                    <span className={`e${sistema.tipo} text-titulo rounded-2xl px-4 py-2 text-14`}>
+                                                    <span className={`e${sistema.tipo} text-titulo rounded-xl px-4 py-2 text-14`}>
                                                         {sistema.tipo.replace('-', ' ')}
                                                     </span>
                                                 )}
