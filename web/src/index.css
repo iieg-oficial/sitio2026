@@ -172,7 +172,7 @@ li::marker {
   mask-size: 100% 100%;
 }
 
-.diez p{
+.diez p, .diez{
   line-height: 40px;
 }
 
