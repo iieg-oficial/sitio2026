@@ -100,10 +100,10 @@ export default function ClasificadorCultivos() {
                     <h2 className="text-primary text-center font-extrabold">Imágenes de la plataforma</h2>
                     <div className="grid grid-cols-1 gap-4 mt-15 mb-25 text-center">
                         <div>
-                            <img src="/cultivos/g1.png" alt={page?.titulo} className='image-mapa rounded-4xl'/>
+                            <img src="/cultivos/g1.png" alt={page?.titulo} className=''/>
                         </div>
                         <div>
-                            <img src="/cultivos/g2.png" alt={page?.titulo} className='image-mapa rounded-4xl'/>
+                            <img src="/cultivos/g2.png" alt={page?.titulo} className=''/>
                         </div>
                     </div>
                 </section>
