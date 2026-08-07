@@ -57,9 +57,9 @@ export default function Mapas() {
                     <div key={mapa.id} className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
                 
                         <img 
-                            src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=400` : "/demo.jpg"} 
+                            src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=560` : "/demo.jpg"} 
                             alt={mapa.titulo} 
-                            className='rounded-full'
+                            className='w-full h-full object-cover'
                             />
                         <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
                             
