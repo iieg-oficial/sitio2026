@@ -47,3 +47,4 @@ function UploadAcervoMultiple({ onUploaded, bucket = 'portal', folder = '/' , la
 }
 
 export { UploadAcervoMultiple };
+export default UploadAcervoMultiple;
