@@ -1,11 +1,11 @@
 nombre,cargo,director,telefono,email,slug
-Abigail Rizo de la Torre,Dirección General del Instituto de Información Estadística y Geográfica de Jalisco,TRUE,,,
-Gloria Mayela García Alcalá,Directora de Integración Operativa y Planeación,FALSE,,,
-Jessica Margarita Sera Rentería,Directora Jurídica,FALSE,,,
-Paulino Monroy Castillero,Director de Estadística y Análisis Estratégico,FALSE,,,
-Hennessy Amor Becerra Ayala,Director de Información Geoespacial,FALSE,,,
-Eduardo Ulises Moya Sanchez,Director de Inteligencia Artificial y Cómputo de Alto Rendimiento,FALSE,,,
-Renato Salomón Arroyo Duarte,Director del Sistema de Información,FALSE,,,
-Cintia Jaqueline Palencia Chavez,Directora Administrativa,FALSE,,,
-Erica Almaraz Hernández,Directora de Gobernanza y Datos Abiertos,FALSE,,,
-Manuel López González,Comisario del Órgano Interno de Control,FALSE,,,
+Abigail Rizo de la Torre ,Dirección General ,TRUE,,36790,direccion@iieg.gob.mx
+Gloria Mayela García Alcalá,Dirección de Integración Operativa y Planeación ,TRUE,,36750,mayela.garcia@iieg.gob.mx
+Renato Salomón Arroyo Duarte ,Dirección del Sistema de Información ,TRUE,,36770,renato.arroyo@iieg.gob.mx
+Paulino Monroy Castillero,Dirección de Estadística y Análisis Estratégico,TRUE,,36720,paulino.monroy@iieg.gob.mx
+Hennessy Amor Becerra Ayala,Dirección de Información Geoespacial,TRUE,,36730,hennessy.becerra@iieg.gob.mx
+Eduardo Ulises Moya Sanchez,Dirección de Inteligencia Artificial y Cómputo de Alto Rendimiento,TRUE,,36740,ulises.moya@iieg.gob.mx
+Erica Almaraz Hérnandez,Dirección de Gobernanza y Datos Abiertos,TRUE,,36794,erica.almaraz@iieg.gob.mx
+Jessica Margarita Sera Rentería,Dirección Jurídica ,TRUE,,36780,jessica.sera@iieg.gob.mx
+Cintia Jaqueline Palencia Chavez,Dirección Administrativa,TRUE,,36710,jaqueline.palencia@iieg.gob.mx
+Manuel López Gonzalez,Comisario (Órgano Interno de Control),TRUE,,36793,manuel.lopez@iieg.gob.mx
