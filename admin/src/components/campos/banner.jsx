@@ -15,7 +15,7 @@ export const CamposBannerFull = () => {
                 <Space direction="vertical" style={{ width: '100%' }}>
                     <UploadAcervo
                         bucket="portal"
-                        folder="/banners"
+                        folder="/banners/"
                         label="Subir imagen desktop"
                         apiKey={import.meta.env.ACERVO_API_KEY} // Ejemplo de uso de la variable como prop
                         onUploaded={(media) => {
