@@ -11,9 +11,6 @@ from ckan.config.declaration import Declaration, Key
 import ckan.model as model
 import ckan.lib.helpers as h
 
-# Vista de descarga personalizada (reemplaza la de s3filestore para evitar presigned URLs)
-from ckanext.iieg_theme.views import resource_download as iieg_resource_download_view
-
 def show_most_popular_groups():
     '''Return the value of the most_popular_groups config setting.
 
@@ -118,8 +115,8 @@ class IiegThemePlugin(plugins.SingletonPlugin):
 
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigDeclaration)
+    plugins.implements(plugins.IConfigurable)  # Para parchear s3filestore al arrancar
     plugins.implements(plugins.ITranslation)
-    plugins.implements(plugins.IBlueprint)  # Para sobrescribir la descarga de s3filestore
 
     # Declare that this plugin will implement ITemplateHelpers.
     plugins.implements(plugins.ITemplateHelpers)
@@ -172,16 +169,66 @@ class IiegThemePlugin(plugins.SingletonPlugin):
         except Exception:
             return []
 
-    # IBlueprint ----------------------------------------------------------
+    # IConfigurable ----------------------------------------------------------
 
-    def get_blueprint(self):
-        """Registra nuestra ruta de descarga personalizada.
+    def configure(self, config_):
+        """Parchea get_signed_url_to_key de s3filestore para construir URLs
+        directas (sin parámetros X-Amz-*) cuando hay download_proxy configurado.
 
-        Al cargarse DESPUÉS de s3filestore en CKAN__PLUGINS, este blueprint
-        sobrescribe la ruta /dataset/<id>/resource/<resource_id>/download
-        para construir URLs directas sin parámetros X-Amz-* de pre-firma.
+        PROBLEMA ORIGINAL:
+            s3filestore llama a boto3.generate_presigned_url() → genera URL con
+            X-Amz-Signature calculada con el host INTERNO (10.0.0.2:8333).
+            Luego reemplaza solo el host por el download_proxy, pero deja los
+            parámetros X-Amz-* intactos. MinIO rechaza la descarga porque la
+            firma no corresponde al host que recibio la petición.
+
+        SOLUCIÓN:
+            Cuando hay download_proxy configurado, construimos la URL directamente:
+                {download_proxy}/{bucket}/{key_path}
+            Sin firmar, sin parámetros X-Amz-*. Nginx lo proxea a MinIO
+            sin necesidad de autenticación por firma.
         """
-        return iieg_resource_download_view.get_blueprints()
+        try:
+            from ckanext.s3filestore.uploader import BaseS3Uploader
+            import logging
+            import os
+            log = logging.getLogger(__name__)
+
+            _original_get_signed_url = BaseS3Uploader.get_signed_url_to_key
+
+            def _patched_get_signed_url(self_uploader, key, extra_params=None):
+                """URL directa via proxy si está configurado, presigned si no."""
+                if extra_params is None:
+                    extra_params = {}
+
+                if self_uploader.download_proxy:
+                    # Construir URL limpia sin pre-firma:
+                    # {download_proxy}/{bucket}/{key_path}
+                    proxy = self_uploader.download_proxy.rstrip('/')
+                    url = '{}/{}/{}'.format(
+                        proxy,
+                        self_uploader.bucket_name,
+                        key
+                    )
+                    log.debug(
+                        '[iieg_theme] URL de descarga directa (sin presign): %s',
+                        url
+                    )
+                    return url
+
+                # Sin proxy: comportamiento original (presigned URL)
+                return _original_get_signed_url(self_uploader, key, extra_params)
+
+            BaseS3Uploader.get_signed_url_to_key = _patched_get_signed_url
+            log.info(
+                '[iieg_theme] Parche aplicado a s3filestore: '
+                'get_signed_url_to_key usará URL directa cuando hay download_proxy'
+            )
+
+        except ImportError:
+            # s3filestore no está instalado — no hay nada que parchear
+            pass
+
 
     # IConfigDeclaration
 
