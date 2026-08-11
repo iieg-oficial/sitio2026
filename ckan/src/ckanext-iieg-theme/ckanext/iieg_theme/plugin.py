@@ -11,6 +11,9 @@ from ckan.config.declaration import Declaration, Key
 import ckan.model as model
 import ckan.lib.helpers as h
 
+# Vista de descarga personalizada (reemplaza la de s3filestore para evitar presigned URLs)
+from ckanext.iieg_theme.views import resource_download as iieg_resource_download_view
+
 def show_most_popular_groups():
     '''Return the value of the most_popular_groups config setting.
 
@@ -116,6 +119,7 @@ class IiegThemePlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigDeclaration)
     plugins.implements(plugins.ITranslation)
+    plugins.implements(plugins.IBlueprint)  # Para sobrescribir la descarga de s3filestore
 
     # Declare that this plugin will implement ITemplateHelpers.
     plugins.implements(plugins.ITemplateHelpers)
@@ -168,12 +172,23 @@ class IiegThemePlugin(plugins.SingletonPlugin):
         except Exception:
             return []
 
+    # IBlueprint ----------------------------------------------------------
+
+    def get_blueprint(self):
+        """Registra nuestra ruta de descarga personalizada.
+
+        Al cargarse DESPUÉS de s3filestore en CKAN__PLUGINS, este blueprint
+        sobrescribe la ruta /dataset/<id>/resource/<resource_id>/download
+        para construir URLs directas sin parámetros X-Amz-* de pre-firma.
+        """
+        return iieg_resource_download_view.get_blueprints()
+
     # IConfigDeclaration
 
     def declare_config_options(self, declaration: Declaration, key: Key):
         declaration.declare_bool(
             key.ckan.iieg_theme.show_most_popular_groups)
-        
+
     # ITranslation
     def i18n_directory(self):
         import os
