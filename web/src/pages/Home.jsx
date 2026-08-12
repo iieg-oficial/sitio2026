@@ -137,7 +137,7 @@ function HomePage() {
                 </TrackedLink>
             </section>
             <section className="container-fluid relative bg-card py-20">
-                <div className="container mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 gap-4 ">
+                <div className="container mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 gap-10 px-5">
                 
                 <TrackedLink 
                 to="/transparencia" 
