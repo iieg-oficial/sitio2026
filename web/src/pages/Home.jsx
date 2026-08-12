@@ -188,8 +188,8 @@ function HomePage() {
                 target="_self"
                 className="text-primary hover:text-tertiary text-center col-span-2 md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
-                    <img src="/ico_noticias_normal.png" alt="Noticias" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2">Noticias</span>                    
+                    <img src="/ico_noticias_normal.png" alt="Comunicación Institucional" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <span className="block mt-2">Comunicación Institucional</span>                    
                     </div>                    
                     <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
