@@ -106,7 +106,7 @@ export default function Flashes() {
     const filteredFlashes = useMemo(() => {
         const normalizedSearch = searchTerm.toLowerCase().trim();
 
-        return flashesWithoutLast.filter(post => {
+        const filtered = flashesWithoutLast.filter(post => {
             const matchesSearch = !normalizedSearch || keys.some(key => {
                 const value = key.split('.').reduce((obj, part) => obj?.[part], post);
                 return value?.toString().toLowerCase().includes(normalizedSearch);
@@ -124,6 +124,12 @@ export default function Flashes() {
             const matchesMonth = !selectedMonth || publicationDate?.getMonth() + 1 === Number(selectedMonth);
 
             return matchesSearch && matchesTema && matchesSubtema && matchesYear && matchesMonth;
+        });
+
+        return filtered.sort((a, b) => {
+            const dateA = a.fecha_publicacion ? new Date(a.fecha_publicacion).getTime() : 0;
+            const dateB = b.fecha_publicacion ? new Date(b.fecha_publicacion).getTime() : 0;
+            return dateB - dateA;
         });
     }, [flashesWithoutLast, searchTerm, selectedTemaId, selectedSubtemaId, selectedYear, selectedMonth]);
 
