@@ -96,13 +96,13 @@ export default function Contacto() {
                 <div className="my-6 text-20 font-bold text-titulo">
                     
                     <a href="tel:+523337771770" className="text-titulo hover:text-tertiary flex items-center">
-                        <span class="et--phone mr-4 w-[25px] h-[25px]"></span> 
-                        <span className="">33 3777 1770</span>
+                        <span class="et--phone mr-4 w-[25px] h-[25px] flex-none"></span> 
+                        <span className="flex-1">33 3777 1770</span>
                     </a>
                     
                     <p className="mt-2 text-20 font-bold text-titulo flex items-center mt-5">
-                        <span class="mynaui--map-pin w-[25px] h-[25px] mr-4"></span> 
-                        <span>Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.</span>
+                        <span class="mynaui--map-pin w-[25px] h-[25px] mr-4 flex-none"></span> 
+                        <span className="flex-1">Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.</span>
                     </p>
                 </div>
             </div>
