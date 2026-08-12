@@ -84,7 +84,7 @@ function HomePage() {
                 <meta name="twitter:description" content={page?.description_meta || 'Conoce Jalisco, nuestro territorio y sus recursos naturales; las características de su población y las condiciones en las que vive; así como su situación económica y las oportunidades que ofrece nuestro estado, sus municipios y los diferentes ordenes de gobierno.'} />
                 <meta name="twitter:image" content={page?.postlink ? page?.postlink : "/demo.jpg"} />
             </Helmet>
-            <section className="h-auto md:h-[550px] lg:h-[800px]" role="banner">                
+            <section className="h-auto md:h-[600px] lg:h-[675px] 2xl:h-[800px] " role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
             </section>            
             <section className="container-fluid relative grid">
