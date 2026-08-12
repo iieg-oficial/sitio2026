@@ -279,7 +279,7 @@ export default function Flashes() {
                     
                     <ConditionalLink
                         key={flash.id}
-                        link={`/flashes/${flash.slug}`}
+                        link={`/datos-expres/${flash.slug}`}
                         rel="noopener noreferrer"
                     >
                         
