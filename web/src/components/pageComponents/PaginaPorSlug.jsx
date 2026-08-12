@@ -75,9 +75,9 @@ export default function PaginaPorSlug({ slug }) {
       </Helmet>
       <article className="px-5 2xl:px-0">
         <section className="page-header text-center py-12">
-          <div className="container mx-auto">  
+          <div className="container mx-auto grid md:grid-cols-12 gap-1">  
             {interno && <div className='md:col-span-1'><Backlink /></div>}            
-            <h1 className={`text-titulos text-center ${interno ? 'col-span-11' : 'col-span-12'}`}>
+            <h1 className={`text-titulos text-center ${interno ? 'col-span-11 w-full px-2 md:px-0 md:w-3/6' : 'col-span-12 mx-auto'}`}>
               {page.title}
             </h1>            
             <div dangerouslySetInnerHTML={{ __html: page.description }} className='prose w-6/12 mt-5 mx-auto text-18' />            
