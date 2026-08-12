@@ -42,7 +42,7 @@
     }
     h2 {
       font-size: var(--text-44);
-      font-weight: 800;
+      font-weight: 900;
       color: var(--color-titulo);
     }
     h3{
@@ -81,7 +81,7 @@ section[id] {
 }
 
 .button2{
-  @apply border-2 py-2 px-4 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold;
+  @apply border-2 py-4 px-6 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold;
 }
 
 .rsicon{

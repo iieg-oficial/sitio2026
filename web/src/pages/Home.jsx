@@ -92,7 +92,7 @@ function HomePage() {
                     <div className='bg-primary text-center z-10 mx-auto absolute top-6/12 xl:top-8/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-10 py-11 rounded-2xl w-11/12 lg:w-9/12 xl:w-auto'>
                         <img src="/ico_mapalab.png" alt="MapaLab" className="inline-block mr-2" />
                         <p className='text-center text-white my-8 text-22'>Explora el territorio de Jalisco con datos geoespaciales</p>
-                        <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-medio hover:bg-tertiary text-base">
+                        <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-medio hover:bg-tertiary text-base block max-w-[395px] mx-auto">
                             Quiero explorar MapaLab
                         </TrackedLink>
                     </div>
@@ -132,7 +132,7 @@ function HomePage() {
                 <TrackedLink 
                 to="/mapas-historicos" 
                 target="_self"
-                className="button2 block w-[350px] text-center mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                className="button2 block w-[350px] text-center mx-auto mt-10 text-primary hover:text-white border-primary hover:bg-primary">
                     Quiero ver todos los mapas
                 </TrackedLink>
             </section>
