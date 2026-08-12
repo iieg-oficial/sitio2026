@@ -121,7 +121,7 @@ export default function Reportes() {
     }, [temaFilter, subtemas, subtemaFilter]);
 
     const filteredReportes = useMemo(() => {
-        return reportesWithMeta.filter(post => {
+        const filtered = reportesWithMeta.filter(post => {
             const searchTermLower = searchTerm.toLowerCase();
             const matchesSearch = !searchTerm || [
                 post.titulo,
@@ -137,6 +137,12 @@ export default function Reportes() {
             const matchesMonth = !monthFilter || post.month === monthFilter;
 
             return matchesSearch && matchesTema && matchesSubtema && matchesYear && matchesMonth;
+        });
+
+        return filtered.sort((a, b) => {
+            const dateA = a.fecha ? new Date(a.fecha).getTime() : 0;
+            const dateB = b.fecha ? new Date(b.fecha).getTime() : 0;
+            return dateB - dateA;
         });
     }, [reportesWithMeta, searchTerm, temaFilter, subtemaFilter, yearFilter, monthFilter]);
 
