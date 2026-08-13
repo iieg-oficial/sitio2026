@@ -170,7 +170,9 @@ export default function Reportes() {
 
     return (
         <div>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
+            <div className='w-full md:w-11/12 mx-auto md:ml-auto'>
+                <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
+            </div>
 
             <div className='mx-auto px-2 container my-15'>
                 <div className='flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5'>
@@ -252,7 +254,7 @@ export default function Reportes() {
                             
                             <div className="flex items-center gap-2 mb-4 bg-white justify-between">
                                 <p className=' text-22 text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
-                                <div className='bg-[#FF83004D] h-[37px] w-[40px] rounded-full flex items-center justify-center'>
+                                <div className='bg-[#FF83004D] h-[31px] w-[30px] rounded-full flex items-center justify-center'>
                                     <span className="material-symbols--download text-tertiary"></span> 
                                 </div>
                             </div> 
