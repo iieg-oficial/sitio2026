@@ -151,7 +151,7 @@ export default function Sistemas() {
                                                 <img
                                                     src={sistema.imagen ? sistema.imagen : '/demo.jpg'}                                                
                                                     alt={sistema.titulo}
-                                                    className="mb-3 h-auto w-full rounded-lg object-cover md:h-full lg:h-auto mx-auto"
+                                                    className="mb-3 h-auto w-full rounded-lg object-cover md:h-full lg:h-auto md:w-auto lg:w-full"
                                                 />
                                             </div>
                                             <div className='lg:col-span-4'>
