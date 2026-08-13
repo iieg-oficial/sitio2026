@@ -170,7 +170,7 @@ export default function Reportes() {
 
     return (
         <div>
-            <div className='w-full md:w-11/12 mx-auto md:ml-auto'>
+            <div className='w-full md:w-11/12 mx-auto md:ml-auto md:mr-0'>
                 <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
             </div>
 
