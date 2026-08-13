@@ -46,17 +46,17 @@ function Footer() {
                         <div className='mb-8 md:mb-0 md:col-span-2 xl:col-span-1 order-4 xl:order-2'>
                             <div>
                                 <a href='https://jalisco.gob.mx/inicio' target='_blank'>
-                                    <img src="/ico_gobjal_logo.svg" alt="Link al sitio del gobierno de jalisco" className="mx-auto mb-12 md:mr-0 xl:mx-auto" />
+                                    <img src="/ico_gobjal_logo.svg" alt="Link al sitio del gobierno de jalisco" className="mx-auto mb-12 md:mx-auto" />
                                 </a>
                             </div>
                             <div className='grid content-end'>
                                 <a href='https://consultapublicamx.plataformadetransparencia.org.mx/' target='_blank'>
-                                    <img src="/img_transparencia.png" alt="Link a la plataforma de transparencia" className="mx-auto mt-4 md:mr-0 xl:mx-auto" />
+                                    <img src="/img_transparencia.png" alt="Link a la plataforma de transparencia" className="mx-auto mt-4 md:mx-auto" />
                                 </a>
                             </div>
                         </div>
 
-                        <div className='md:col-span-2 xl:col-span-1 order-1 xl:order-3'>
+                        <div className='md:col-span-2 xl:col-span-1 order-1 xl:order-3 text-center md:text-left'>
                            <ul style={{ listStyleType: 'none' }}>
                             <li className='mb-8'>
                                 <a href='/' className='linkfooter'>Inicio</a>
@@ -73,7 +73,7 @@ function Footer() {
                            </ul>
                         </div>
 
-                        <div className='md:col-span-2 xl:col-span-1 order-2 xl:order-4'>
+                        <div className='md:col-span-2 xl:col-span-1 order-2 xl:order-4 text-center md:text-left'>
                            <ul style={{ listStyleType: 'none' }}>
                             <li className='mb-8'>
                                 <a href='' target='_blank' className='linkfooter'>Licitaciones</a>
