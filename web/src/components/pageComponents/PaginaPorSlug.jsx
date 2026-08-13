@@ -81,7 +81,7 @@ export default function PaginaPorSlug({ slug }) {
             <h1 className="text-titulos text-center">
               {page.title}
             </h1> 
-            <div dangerouslySetInnerHTML={{ __html: page.description }} className={interno ? 'md:w-3/6 prose w-6/12 mt-5 mx-auto text-18' : 'md:w-6/12 prose w-6/12 mt-5 mx-auto text-18'} />             
+            <div dangerouslySetInnerHTML={{ __html: page.description }} className={interno ? 'w-11/12 md:w-4/6 prose w-7/12 mt-5 mx-auto text-18' : 'md:w-6/12 prose w-6/12 mt-5 mx-auto text-18'} />             
             </div>             
           </div>
         </section>
