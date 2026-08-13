@@ -76,7 +76,7 @@ function Footer() {
                         <div className='md:col-span-2 xl:col-span-1 order-2 xl:order-4 text-center md:text-left'>
                            <ul style={{ listStyleType: 'none' }}>
                             <li className='mb-8'>
-                                <a href='' target='_blank' className='linkfooter'>Licitaciones</a>
+                                <a href='https://analisis.jalisco.gob.mx/adquis' target='_blank' className='linkfooter'>Licitaciones</a>
                             </li>
                             <li className='mb-8'>
                                 <a href='' target='_blank' className='linkfooter'>Transparencia</a>
