@@ -143,24 +143,24 @@ export default function Sistemas() {
                                         } : {})}
                                     >
                                         <div 
-                                            className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-5 ${
+                                            className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 ${
                                                 hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
                                             }`}
                                         >
-                                            <div className='md:col-span-2'>
+                                            <div className='md:h-[60px] lg:h-auto lg:col-span-2'>
                                                 <img
                                                     src={sistema.imagen ? sistema.imagen : '/demo.jpg'}                                                
                                                     alt={sistema.titulo}
-                                                    className="mb-3 h-auto w-full rounded-lg object-cover"
+                                                    className="mb-3 h-auto w-full rounded-lg object-cover md:h-full lg:h-auto mx-auto"
                                                 />
                                             </div>
-                                            <div className='md:col-span-4'>
+                                            <div className='lg:col-span-4'>
                                                 <h3 className="mb-3 text-primary">
                                                     {sistema.titulo}
                                                 </h3>
                                                 <div className="diez" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
                                             </div>
-                                            <div className='md:col-span-6 mt-5'>
+                                            <div className='lg:col-span-6 mt-5'>
                                                 {sistema.tipo && (
                                                     <span className={`e${sistema.tipo} text-titulo rounded-xl px-4 py-2 text-14`}>
                                                         {sistema.tipo.replace('-', ' ')}
