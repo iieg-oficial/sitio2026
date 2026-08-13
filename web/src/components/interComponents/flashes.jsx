@@ -52,7 +52,7 @@ export default function Flashes() {
                 <meta name="twitter:image" content={flash.postlink ? flash.postlink : "/demo.jpg"} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
-                <section className="page-header text-center py-12">
+                <section className="page-header text-center pb-12">
                     <div className="container mx-auto grid md:grid-cols-12 gap-1">  
                         <div className='md:col-span-1'><BackLink /></div>
                         <div className='md:col-span-11 w-full px-2 md:px-0 md:w-3/6 mx-auto'>
