@@ -67,7 +67,7 @@ export default function Flashes() {
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <section className="page-header text-center pb-12">
                     <div className="container mx-auto grid md:grid-cols-12 gap-1">  
-                        <div className='md:col-span-1'><BackLink /></div>
+                        <div className='md:col-span-1 text-left'><BackLink /></div>
                         <div className='md:col-span-11 w-full px-2 md:px-0 mx-auto md:ml-auto md:mr-0'>
                             <h1 className='text-titulos text-center'>Datos Express</h1>
                             <div className='prose diez mt-5 mx-auto w-8/12 xl:w-7/12'>
