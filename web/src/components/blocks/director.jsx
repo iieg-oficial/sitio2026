@@ -74,7 +74,7 @@ export default function Directorio() {
                 );
             })}
 
-            <div className='grid md:grid-cols-2 gap-4 mt-10'>
+            <div className='grid lg:grid-cols-2 gap-4 mt-10'>
                 {directorios.map(elementos => {
                 const isOpen = idAbierto === elementos.id;
                 
