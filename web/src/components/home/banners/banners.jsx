@@ -39,7 +39,7 @@ export default function Banners() {
             }}
       >
         {banners.map(banner => (
-            <SwiperSlide key={banner.id} className="relative w-full h-full content-center lg:content-none" style={{ backgroundColor: banner.color_fondo}}>
+            <SwiperSlide key={banner.id} className="relative w-full h-full content-center lg:content-normal " style={{ backgroundColor: banner.color_fondo}}>
               {banner.full_screen ? (
                     <>
                         <a href={banner.link} target="_blank" rel="noopener noreferrer">

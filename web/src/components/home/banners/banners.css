@@ -52,7 +52,7 @@
   .swiper-horizontal > .swiper-pagination-bullets, 
   .swiper-pagination-horizontal.swiper-pagination-bullets {
     &.swiper-pagination-bullets-dynamic {
-      bottom: 10% !important;
+      bottom: 30% !important;
     }
   }
 }
@@ -68,8 +68,16 @@
   .swiper-horizontal > .swiper-pagination-bullets, 
   .swiper-pagination-horizontal.swiper-pagination-bullets {
     &.swiper-pagination-bullets-dynamic {
-      width: 1536px !important;
-      bottom: 30% !important;
+      width: 1520px !important;
+      bottom: 4% !important;
+    }
+  }
+}
+@media (width >= 120rem) { 
+  .swiper-horizontal > .swiper-pagination-bullets, 
+  .swiper-pagination-horizontal.swiper-pagination-bullets {
+    &.swiper-pagination-bullets-dynamic {      
+      bottom: 25% !important;
     }
   }
 }
