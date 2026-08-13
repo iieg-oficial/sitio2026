@@ -12,6 +12,7 @@ export default function Flashes() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
     const [flash, setFlashes] = useState(null);    
     const [error, setError] = useState(null);
+    const [page, setPage] = useState(null);
 
         useEffect(() => {
             const fetchFlash = async () => {
@@ -27,6 +28,18 @@ export default function Flashes() {
             }
             fetchFlash();
         }, [slug]);
+
+        useEffect(() => {
+            const fetchPage = async () => {
+                try {
+                    const response = await api.get(`/paginas/slug/datos-expres`);
+                    setPage(response.data);
+                } catch (error) {
+                    console.error("Error al obtener la página:", error);
+                }
+            }
+            fetchPage();
+        }, []);
     
         if (!flash) {
             if (error) {
@@ -55,10 +68,10 @@ export default function Flashes() {
                 <section className="page-header text-center pb-12">
                     <div className="container mx-auto grid md:grid-cols-12 gap-1">  
                         <div className='md:col-span-1'><BackLink /></div>
-                        <div className='md:col-span-11 w-full px-2 md:px-0 md:w-3/6 mx-auto'>
-                            <h1 className='text-titulos text-center'>Flashes</h1>
+                        <div className='md:col-span-11 w-full px-2 md:px-0 mx-auto md:ml-auto md:mr-0'>
+                            <h1 className='text-titulos text-center'>Datos Express</h1>
                             <div className='prose diez mt-5'>
-                                <p>descripcion</p>
+                                <p>{page?.description}</p>
                             </div>
                         </div>
                     </div>
