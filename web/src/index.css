@@ -176,7 +176,7 @@ li::marker {
   line-height: 40px;
 }
 prose{
-  color: var(--color-white);
+  color: var(--color-white) !important;
 }
 .cursos p{
   line-height: 40px;
