@@ -25,7 +25,7 @@ export default function Organos() {
             target="_blank"
             rel="noopener noreferrer"
             >
-            <div className={`bg-card rounded-3xl px-20 px-15 mb-10 ${organo.link ? "hover:border-1 hover:border-tertiary" : ""}`}>
+            <div className={`bg-card rounded-3xl px-10 py-5 md:px-15 md:px-15 xl:p-20 mb-10 ${organo.link ? "hover:border-1 hover:border-tertiary" : ""}`}>
                 <h2 className='text-primary font-extrabold'>{organo.titulo}</h2>
                 <div dangerouslySetInnerHTML={{__html: organo.descripcion}} className='diez my-5' />
                 {organo.link && (
