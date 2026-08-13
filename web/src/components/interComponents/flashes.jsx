@@ -70,7 +70,7 @@ export default function Flashes() {
                         <div className='md:col-span-1'><BackLink /></div>
                         <div className='md:col-span-11 w-full px-2 md:px-0 mx-auto md:ml-auto md:mr-0'>
                             <h1 className='text-titulos text-center'>Datos Express</h1>
-                            <div className='prose diez mt-5'>
+                            <div className='prose diez mt-5 mx-auto w-8/12 xl:w-7/12'>
                                 <p>{page?.description}</p>
                             </div>
                         </div>
