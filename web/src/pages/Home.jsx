@@ -140,7 +140,7 @@ function HomePage() {
                 <div className="container mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 gap-10 px-5">
                 
                 <TrackedLink 
-                to="/transparencia" 
+                to="https://transparencia.jalisco.gob.mx/informacion_fundamental/214" 
                 target="_blank"
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
@@ -151,7 +151,7 @@ function HomePage() {
                 </TrackedLink>
 
                  <TrackedLink 
-                to="/licitaciones" 
+                to="https://analisis.jalisco.gob.mx/adquis" 
                 target="_blank"
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
