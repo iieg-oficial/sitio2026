@@ -322,7 +322,7 @@ export default function Flashes() {
                     marginPagesDisplayed={1}
                     pageRangeDisplayed={2}
                     onPageChange={handlePageClick}
-                    containerClassName='flex justify-center gap-2 pt-8 p-10 list-none'
+                    containerClassName='flex justify-center gap-2 pt-8 p-10 !list-none !my-15'
                     pageClassName='rounded-full border border-primary px-3 py-2 text-sm'
                     activeClassName='bg-primary text-white'
                     previousClassName='rounded-full border border-primary px-3 py-2 text-sm'
