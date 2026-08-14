@@ -51,7 +51,7 @@ export default function Banners() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto px-5 xl:px-5 2xl:px-0 my-[15px] lg:my-[70px] 2xl:my-[96px]">
                         <div>
                             <h2 className='text-white'>{banner.titulo}</h2>                            
-                            <div dangerouslySetInnerHTML={{__html: banner.descripcion}} className='mt-10 prose max-w-none !text-white mb-15' />
+                            <div dangerouslySetInnerHTML={{__html: banner.descripcion}} className='mt-10 prose max-w-none banner !text-white mb-15' />
                             <Link to={banner.link} className="button block font-base float-left bg-medio hover:bg-tertiary">{banner.boton}</Link>
                         </div>
                         <div>
