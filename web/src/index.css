@@ -2,12 +2,36 @@
 @plugin "@tailwindcss/typography";
 
 @font-face {
-  font-family: 'Garet-Medium';
-  src: url(../public/Garet-Medium.woff) format('woff');  
+    font-family: 'Garet-Medium';
+    src: url('../public/fonts/Garet-Medium.woff2') format('woff2'),
+        url('../public/fonts/Garet-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garet-bold';
+    src: url('../public/fonts/Garet-Bold.woff2') format('woff2'),
+        url('../public/fonts/Garet-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garet-Extra';
+    src: url('../public/fonts/Garet-ExtraBold.woff2') format('woff2'),
+        url('../public/fonts/Garet-ExtraBold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
 }
 
 @theme {
     --font-garet: 'Garet-Medium', 'sans-serif';
+    --font-garet-bold: 'Garet-Bold', 'sans-serif';
+    --font-garet-extra: 'Garet-Extra', 'sans-serif';
     --color-primary: #5c2472;
     --color-secondary: #8936ab;
     --color-tertiary: #ff8300;
@@ -37,27 +61,27 @@
     }
     h1 {
       font-size: var(--text-44);
-      font-weight: 900;
+      font-family: var(--font-garet-extra);
       color: var(--color-titulo);
     }
     h2 {
       font-size: var(--text-44);
-      font-weight: 900;
+      font-family: var(--font-garet-extra);
       color: var(--color-titulo);
     }
     h3{
       font-size: var(--text-36);
-      font-weight: 900;
+      font-family: var(--font-garet-extra);
       color: var(--color-titulo);
     }
     h4 {
       font-size: var(--text-28);
-      font-weight: 900;
+      font-family: var(--font-garet-extra);
       color: var(--color-secondary);
     }
     h5 {
       font-size: var(--text-22);
-      font-weight: 700;
+      font-family: var(--font-garet-bold);
       color: var(--color-tertiary);
     }
 }
