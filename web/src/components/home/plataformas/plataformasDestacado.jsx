@@ -19,7 +19,7 @@ export default function PlataformasDestacado() {
             {plataformas.map(plataforma => (
                 <div key={plataforma.id}>
                     <a href={plataforma.link} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center group">
-                        <img src={plataforma.imagen} alt={plataforma.titulo} className="w-full object-cover group-hover:scale-110 rounded-full max-h-[150px]"/>
+                        <img src={plataforma.imagen} alt={plataforma.titulo} className="w-full object-cover group-hover:scale-110 rounded-full max-h-[150px] max-w-[150px]"/>
                         <h3 className="mt-2 text-center text-tertiary text-22">{plataforma.titulo}</h3>
                     </a>
                 </div>
