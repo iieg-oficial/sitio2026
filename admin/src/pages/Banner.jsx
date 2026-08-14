@@ -171,7 +171,7 @@ export default function Banner() {
                 okText={editingBanner ? 'Actualizar' : 'Crear'}
                 cancelText="Cancelar"
             >
-                <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{ color_fondo: '#8936ab' }}>
+                <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{ color_fondo: '#6A2884' }}>
                     <Form.Item name="titulo" label="Título" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
