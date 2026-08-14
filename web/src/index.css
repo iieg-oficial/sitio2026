@@ -47,12 +47,12 @@
     }
     h3{
       font-size: var(--text-36);
-      font-weight: 800;
+      font-weight: 900;
       color: var(--color-titulo);
     }
     h4 {
       font-size: var(--text-28);
-      font-weight: 800;
+      font-weight: 900;
       color: var(--color-secondary);
     }
     h5 {
