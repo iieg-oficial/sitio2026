@@ -52,7 +52,7 @@
   .swiper-horizontal > .swiper-pagination-bullets, 
   .swiper-pagination-horizontal.swiper-pagination-bullets {
     &.swiper-pagination-bullets-dynamic {
-      bottom: 30% !important;
+      bottom: 5% !important;
     }
   }
 }
@@ -61,6 +61,7 @@
   .swiper-pagination-horizontal.swiper-pagination-bullets {
     &.swiper-pagination-bullets-dynamic {
       width: 90% !important;
+      bottom: 25% !important;
     }
   }
  }
@@ -69,7 +70,7 @@
   .swiper-pagination-horizontal.swiper-pagination-bullets {
     &.swiper-pagination-bullets-dynamic {
       width: 1520px !important;
-      bottom: 4% !important;
+      bottom: 20% !important;
     }
   }
 }
