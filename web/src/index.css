@@ -175,7 +175,8 @@ li::marker {
 .diez p, .diez{
   line-height: 40px;
 }
-prose{
+.prose .text-white p,
+.prose .text-white {
   color: var(--color-white) !important;
 }
 .cursos p{
