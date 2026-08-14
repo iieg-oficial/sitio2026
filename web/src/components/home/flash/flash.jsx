@@ -27,7 +27,7 @@ export default function Flashes() {
             {flashes.map(flash => (
                 <div className='' key={flash.id}>
                     <div className='mb-5'>
-                        <h3 className='text-22'>{flash.titulo}</h3>
+                        <h3 className='text-22 text-tertiary font-900'>{flash.titulo}</h3>
                     </div>
                     <div>                        
                         <div dangerouslySetInnerHTML={{ __html: flash.desc_jal }}  className='flash_desc'/>
