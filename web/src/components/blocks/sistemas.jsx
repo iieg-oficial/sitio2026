@@ -172,7 +172,8 @@ export default function Sistemas() {
                                                 )}
                                             </div>
                                         </div>
-                                    </CardTag>
+                                    </div>
+                                    </a>
                                 );
                             })}
                         </div>

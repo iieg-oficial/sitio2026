@@ -190,8 +190,8 @@ services:
       COOKIE_MAX_AGE: "1800"
       COOKIE_HTTPONLY: "true"
       COOKIE_SAMESITE: lax
-      ADMIN_PREFIX: /api/sitio-admin
-      WEB_PREFIX: /api/sitio
+      ADMIN_PREFIX: /api/portal-admin
+      WEB_PREFIX: /api/portal
       OPENAPI_URL: /api/openapi.json
       DOCS_URL: /docs
       REDOC_URL: /redoc

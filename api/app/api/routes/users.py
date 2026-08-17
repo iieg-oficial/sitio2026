@@ -116,13 +116,6 @@ async def actualizar_usuario(
         )
 
     update_data = usuario_in.model_dump(exclude_unset=True)
-
-    if "role" in update_data and current_user.role != "tetlamamakani":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, 
-            detail="No tienes permisos para modificar el rol"
-        )
-    
     for field, value in update_data.items():
         setattr(usuario, field, value)
 

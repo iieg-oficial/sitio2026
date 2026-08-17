@@ -33,13 +33,13 @@ export default function Contacto() {
         <>          
             <div className="bg-white p-8 mx-2 md:mx-0 xl:pl-30">
                 <h2 className="mb-6 text-titulo">¿Tienes dudas? contáctanos</h2>
-                <form onSubmit={handleSubmit} id="contacto-form" className="space-y-5 2xl:pr-40">
+                <form onSubmit={handleSubmit} className="space-y-5 2xl:pr-40">
                     <div>
                         <label className="block text-primary text-14 mb-2">Nombre Completo <span className="text-tertiary">*</span></label>
                         <input 
                             type="text" 
                             placeholder="Ej. Juan Pérez" 
-                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
+                            className="w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
                             value={form.name} 
                             onChange={(e) => setForm({ ...form, name: e.target.value })} 
                             required
@@ -51,7 +51,7 @@ export default function Contacto() {
                         <input 
                             type="email" 
                             placeholder="correo@ejemplo.com" 
-                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
+                            className="w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
                             value={form.email} 
                             onChange={(e) => setForm({ ...form, email: e.target.value })} 
                             required
@@ -63,7 +63,7 @@ export default function Contacto() {
                         <textarea 
                             rows="5" 
                             placeholder="¿En qué podemos ayudarte?" 
-                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all resize-none"
+                            className="w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all resize-none"
                             value={form.message} 
                             onChange={(e) => setForm({ ...form, message: e.target.value })}
                             required
@@ -96,13 +96,11 @@ export default function Contacto() {
                 <div className="my-6 text-20 font-bold text-titulo">
                     
                     <a href="tel:+523337771770" className="text-titulo hover:text-tertiary flex items-center">
-                        <span class="et--phone mr-4 w-[26px] h-[26px] flex-none"></span> 
-                        <span className="flex-1">33 3777 1770</span>
+                        <span class="et--phone mr-4 w-[25px] h-[25px]"></span> <span className="">33 3777 1770</span>
                     </a>
                     
                     <p className="mt-2 text-20 font-bold text-titulo flex items-center mt-5">
-                        <span class="mynaui--map-pin w-[25px] h-[25px] mr-4 flex-none"></span> 
-                        <span className="flex-1">Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.</span>
+                        <span class="mynaui--map-pin w-[25px] h-[25px] mr-4"></span> Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.
                     </p>
                 </div>
             </div>
