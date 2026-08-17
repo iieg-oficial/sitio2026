@@ -3,10 +3,6 @@ import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
 import Image from '@tiptap/extension-image'
-import Table from '@tiptap/extension-table'
-import TableRow from '@tiptap/extension-table-row'
-import TableHeader from '@tiptap/extension-table-header'
-import TableCell from '@tiptap/extension-table-cell'
 import { useEffect, useRef } from 'react'
 
 const ToolbarButton = ({ onClick, active, title, children }) => (
@@ -42,12 +38,6 @@ export default function RichTextEditor({ value, onChange }) {
       Image.configure({
         allowBase64: true, // Permite imágenes locales en formato Base64
       }),
-      Table.configure({
-        resizable: true,
-      }),
-      TableRow,
-      TableHeader,
-      TableCell,
     ],
     content: value || '',
     onUpdate: ({ editor }) => {
@@ -133,50 +123,6 @@ export default function RichTextEditor({ value, onChange }) {
         <ToolbarButton onClick={triggerLocalUpload} title="Insertar imagen">
           Imagen
         </ToolbarButton>
-        <span style={{ borderLeft: '1px solid #ccc', margin: '0 4px' }} />
-        
-        <ToolbarButton 
-          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} 
-          title="Insertar tabla 3x3"
-        >
-          田 Tabla
-        </ToolbarButton>
-        <ToolbarButton 
-          onClick={() => editor.chain().focus().addColumnAfter().run()} 
-          disabled={!editor.isActive('table')}
-          title="Agregar columna a la derecha"
-        >
-          + Columna
-        </ToolbarButton>
-        <ToolbarButton 
-          onClick={() => editor.chain().focus().addRowAfter().run()} 
-          disabled={!editor.isActive('table')}
-          title="Agregar fila abajo"
-        >
-          + Fila
-        </ToolbarButton>
-        <ToolbarButton 
-          onClick={() => editor.chain().focus().deleteColumn().run()} 
-          disabled={!editor.isActive('table')}
-          title="Eliminar columna"
-        >
-          - Columna
-        </ToolbarButton>
-        <ToolbarButton 
-          onClick={() => editor.chain().focus().deleteRow().run()} 
-          disabled={!editor.isActive('table')}
-          title="Eliminar fila"
-        >
-          - Fila
-        </ToolbarButton>
-        <ToolbarButton 
-          onClick={() => editor.chain().focus().deleteTable().run()} 
-          disabled={!editor.isActive('table')}
-          title="Eliminar tabla"
-        >
-          Eliminar Tabla
-        </ToolbarButton>
-        
         <input
           type="file"
           accept="image/*"

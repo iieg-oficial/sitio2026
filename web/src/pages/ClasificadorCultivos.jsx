@@ -45,19 +45,19 @@ export default function ClasificadorCultivos() {
                 <div className='mt-5'>
                     <Backlink />
                 </div>
-                <section className="container mx-auto grid grid-cols-1 md:grid-cols-6 gap-10 px-5">
-                    <div className="md:col-span-2">
-                        <img src="/cultivos/ico_clasificador_cultivos.svg" alt={page?.title} className='image-mapa rounded-4xl mx-auto w-[60%] md:w-full xl:w-[80%] 2xl:w-[70%]'/>
+                <section className="container mx-auto grid grid-cols-1 lg:grid-cols-6 gap-10 px-2">
+                    <div className="lg:col-span-2">
+                        <img src="/demo.jpg" alt={page?.title} className='image-mapa rounded-4xl'/>
                     </div>
                     <div className="lg:col-span-4">
                         <h1>{page?.title || 'Clasificador de Cultivos'}</h1>
-                        <p className="my-5 leading-10 text-22">Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.</p>
-                        <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-base text-white rounded-4xl border border-secondary bg-secondary px-6 py-3 font-extrabold hover:bg-white hover:text-secondary transition-all duration-200 text-center">
+                        <p className="my-5 leading-10">Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.</p>
+                        <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-base text-primary rounded-4xl border border-primary px-6 py-3 font-extrabold hover:bg-primary hover:text-white transition-all duration-200">
                             Ver la documetación del proyecto                                
                         </TrackedLink>
                     </div>
                 </section>
-                <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-25 xl:my-15 gap-12 text-center diez px-5">
+                <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-50 gap-12 text-center diez">
                     <div>
                         <img src="/cultivos/ico_cultivos_01.png" alt={page?.title} className='align-center text-center mx-auto mb-5 w-[60%]'/>
                         <p>Se detectaron y clasificaron, a gran escala, cultivos agrícolas, a través de la interpretación de imágenes satelitales por medio del entrenamiento de modelos de IA.</p>
