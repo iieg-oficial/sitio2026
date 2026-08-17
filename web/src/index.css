@@ -71,7 +71,7 @@
     }
     h3{
       font-size: var(--text-36);
-      font-family: var(--font-garet-extra);
+      font-family: var(--font-garet-bold);
       color: var(--color-titulo);
     }
     h4 {
