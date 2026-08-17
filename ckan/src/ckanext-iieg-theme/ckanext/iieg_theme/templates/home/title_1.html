@@ -19,12 +19,12 @@
                 <div id="stats" class="hidden-xs">
 
                     <div class="estatisticas-box">
-                        <span class="numero">{{ h.total_datasets() }} Datasets publicados</span>
+                        <span class="numero">{{ h.total_datasets() }} {{ _('Datasets publicados') }}</span>
                     </div>
 
                     {# 2. Bloque para listar los más populares #}
                     <div class="datasets-populares">
-                        <span class="numero">Datasets más populares</span>
+                        <span class="numero">{{ _('Datasets más populares') }}</span>
                         <ul>
                         {# Invocamos el helper del plugin pasando el límite que queramos #}
                         {% for dataset in h.iieg_datasets_populares(5) %}
@@ -34,7 +34,7 @@
                             {{ dataset.title or dataset.name }}
                             </a>
                             <span class="badge">
-                            {{ dataset.tracking_summary.total if dataset.tracking_summary else 0 }} visitas
+                            {{ dataset.tracking_summary.total if dataset.tracking_summary else 0 }} {{ _('visitas') }}
                             </span>
                         </li>
                         {% endfor %}
