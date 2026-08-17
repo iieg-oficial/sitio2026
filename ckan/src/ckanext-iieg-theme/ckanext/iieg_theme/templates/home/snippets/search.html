@@ -4,8 +4,8 @@
   {% set placeholder = _('E.g. environment') %}
   {% set dataset_type = h.default_package_type() %}
 
-  <div class="mt-12">
-    <form class="search-form" method="get" action="{% url_for dataset_type ~ '.search' %}">
+  <div class="module-search card box">
+    <form class="module-content search-form" method="get" action="{% url_for dataset_type ~ '.search' %}">
       <div class="search-input form-group search-giant">
         <input aria-label="{% block header_site_search_label %}{{ h.humanize_entity_type('package', dataset_type or 'dataset', 'search placeholder') or _('Search datasets') }}{% endblock %}" 
        id="field-main-search" 

@@ -4,7 +4,7 @@ Conócenos,,TRUE,TRUE,#,,,1,conocenos,
 ¿Qué es el IIEG?,Es un organismo que gestiona y difunde la información estadística y geográfica de interés público para hacerla accesible al público y a los gobiernos.,TRUE,TRUE,conocenos,Es un organismo que gestiona y difunde la información estadística y geográfica de interés público para hacerla accesible al público y a los gobiernos.,,0,,conocenos
 Plan Institucional,,TRUE,TRUE,conocenos#plan-institucional,,,1,,conocenos
 Organigrama y directorio,Organigrama 2026-2030,TRUE,TRUE,organigrama,Organigrama 2026-2030,,2,,conocenos
-Órganos colegiados,"Órganos encargados de la gobernación, toma de decisiones estratégicas y vigilancia del IIEG.",TRUE,TRUE,organos-colegiados,"Órganos encargados de la gobernación, toma de decisiones estratégicas y vigilancia del IIEG.",,3,,conocenos
+Órganos de Gobierno,"Órganos encargados de la gobernación, toma de decisiones estratégicas y vigilancia del IIEG.",TRUE,TRUE,organos-de-gobierno,"Órganos encargados de la gobernación, toma de decisiones estratégicas y vigilancia del IIEG.",,3,,conocenos
 SNIEG / CEIEG,El CEIEG articula los esfuerzos de las dependencias públicas estatales para producir información de calidad e integrar datos locales al SNIEG.,TRUE,TRUE,snieg,El CEIEG articula los esfuerzos de las dependencias públicas estatales para producir información de calidad e integrar datos locales al SNIEG.,,4,,conocenos
 Sistema Institucional de archivo,"Consulta los instrumentos de organización archivística y conoce el trabajo para la gestión, clasificación y conservación de expedientes.",TRUE,TRUE,sistema-institucional-de-archivo,"Consulta los instrumentos de organización archivística y conoce el trabajo para la gestión, clasificación y conservación de expedientes.",,5,,conocenos
 Preguntas frecuentes,En esta sección hemos recopilado las respuestas a las dudas más comunes de los usuarios para ayudarte a resolver tus inquietudes de manera ágil y sencilla.,TRUE,TRUE,preguntas-frecuentes,En esta sección hemos recopilado las respuestas a las dudas más comunes de los usuarios para ayudarte a resolver tus inquietudes de manera ágil y sencilla.,,6,,conocenos
@@ -15,165 +15,12 @@ Reportes,"Publicaciones periódicas, que concentran información oficial de inte
 Datos abiertos y documentación,,TRUE,TRUE,#,,,3,datos-abiertos-y-documentacion,
 Datos abiertos,,FALSE,TRUE,datos-abiertos,,,0,,datos-abiertos-y-documentacion
 Documentación,"Este espacio reúne recursos técnicos, normativos y operativos para facilitar el acceso y la consulta de la información institucional.",TRUE,TRUE,documentacion,"Este espacio reúne recursos técnicos, normativos y operativos para facilitar el acceso y la consulta de la información institucional.",,1,,datos-abiertos-y-documentacion
-Cuadernillos,"Referencia de consulta que preseta información de los 125 municipios de Jalisco mediante los principales idicadores disponibles sobre temas socioeconómicos, territoriales y de gobierno.",TRUE,TRUE,cuadernillos,,,2,,datos-abiertos-y-documentacion
+Cuadernillos,,TRUE,TRUE,cuadernillos,,,2,,datos-abiertos-y-documentacion
 Comunidad,,TRUE,TRUE,#,,,4,comunidad,
 Educación continua,"Te invitamos a explorar nuestras próximas jornadas de capacitación. Aquí encontrarás toda la información necesaria sobre contenidos, fechas de inicio y disponibilidad.",TRUE,TRUE,educacion-continua,"Te invitamos a explorar nuestras próximas jornadas de capacitación. Aquí encontrarás toda la información necesaria sobre contenidos, fechas de inicio y disponibilidad.",,0,,comunidad
 Convocatorias,"Aquí podrás consultar cómo participar en eventos, cursos, prácticas profesionales y servicio social en el IIEG",TRUE,TRUE,convocatorias,"Aquí podrás consultar cómo participar en eventos, cursos, prácticas profesionales y servicio social en el IIEG",,1,,comunidad
-Comunicación Institucional,,TRUE,TRUE,comunicacion-institucional,,,2,,comunidad
-Transparencia,,FALSE,TRUE,https://transparencia.jalisco.gob.mx/informacion_fundamental/214,,,5,,
+Noticias,,TRUE,TRUE,comunicacion-institucional,,,2,,comunidad
+Transparencia,,FALSE,TRUE,#,,,5,,
 Trámites y servicios,,FALSE,TRUE,#,,,6,,
 Mapas Historicos,"La cartografía es una de las herramientas más generosas y completas de la investigación. Durante siglos, los mapas no solo han retratado el territorio, sino que han traducido datos estadísticos y documentales en historias visuales fáciles de entender, transformando la información en decisiones estratégicas.",TRUE,FALSE,mapas-historicos,"La cartografía es una de las herramientas más generosas y completas de la investigación. Durante siglos, los mapas no solo han retratado el territorio, sino que han traducido datos estadísticos y documentales en historias visuales fáciles de entender, transformando la información en decisiones estratégicas.",,7,mapas-historicos,
 Clasificador de cultivos,"Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.",TRUE,TRUE,clasificador-de-cultivos,"Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.",,8,clasificador-de-cultivos,
-Aviso de privacidad, "AVISO DE PRIVACIDAD INTEGRAL
-
-
-
-
-
-El Instituto de Información Estadística y Geográfica del Estado de Jalisco, con domicilio en Calzada de los Pirules 71, Colonia Ciudad Granja, C.P. 45010, en el municipio de Zapopan, Jalisco, es el responsable del uso y protección de los datos personales que nos proporcione, y al respecto le informa lo siguiente:
-
-
-
-
-
-Los datos personales que serán sometidos a tratamiento son:
-
-
-
-
-
-Los datos personales sensibles que serán sometidos a tratamiento son:
-
-
-
-Se informa que, en nuestra página oficial de internet, hacemos uso de “cookies” mismas que nos permiten recabar datos personales de manera automática y simultánea a tiempo que los titulares de los datos personales navegan por nuestro sitio de internet, sin embargo, usted puede bloquearlas para evitar que esto suceda.
-
-
-
-Finalidades
-
-Dichos datos podrán ser recabados directa o indirectamente por medios electrónicos, por escrito y vía telefónica; las finalidades del tratamiento para las cuales se obtienen sus datos personales son:
-
-
-
-
-
-Atención a usuarios del sistema de información;
-
-
-
-Acceso a los productos y servicios reconocidos en el catálogo anual aprobado por nuestra Junta de Gobierno;
-
-
-
-Generación de datos estadísticos y evaluación de la calidad del servicio;
-
-
-
-Registrar solicitudes de acceso a la información o de derechos ARCO, para efectos procesales de notificación seguimiento y respuesta;
-
-
-
-Registro y comunicación con las personas asistentes a las capacitaciones, talleres, diplomados y seminarios impartidas por el instituto, así como la generación de las constancias correspondientes;
-
-
-
-Integrar el acervo de imágenes que respalden las capacitaciones y eventos realizados por el Instituto para su difusión;
-
-
-
-Elaborar los nombramientos de los servidores públicos e integrar sus expedientes laborales;
-
-
-
-Realizar comprobantes de pago con respecto a los sueldos y deducciones del personal del Instituto;
-
-
-
-Cumplimiento de obligaciones que se deriven de una relación contractual establecida;
-
-
-
-Cumplimiento de medidas de seguridad administrativas respecto a los controles de acceso de las personas que laboran en el Instituto, las personas servidoras públicas y público en general, a través de bitácoras de registro;
-
-
-
-Registro de las imágenes captadas por las cámaras de videograbación para la seguridad de las instalaciones;
-
-
-
-Para el procedimiento administrativo de entrega-recepción de las personas servidoras públicas de la entidad que administren fondos, bienes y valores públicos, con respecto a los recursos humanos, materiales, financieros, documentos y demás información generada en el ejercicio de sus funciones; y
-
-
-
-Dar certeza y cumplimiento en el proceso de solicitudes de compra, adquisición o aprovisionamiento por parte de este sujeto obligado, ante la Secretaría de Administración.
-
-
-
-Fundamento legal
-
-Los fundamentos legales que facultan al Instituto de Información Estadística y Geográfica del Estado de Jalisco para llevar a cabo el tratamiento, son los artículos 6, apartado A, fracción II y IV, y 16 segundo párrafo de la Constitución Política de los Estados Unidos Mexicanos; 4 y 9 fracciones II, V y VI de la Constitución Política del Estado de Jalisco; 19, 20 fracción XVI, 64, y 123 de la Ley General de Transparencia y Acceso a la Información Pública; 66.1 fracción I de la Ley Orgánica del Poder Ejecutivo del Estado de Jalisco; 8° párrafo 1, fracción I, incisos j), k) y l); fracción IV, inciso e); artículo 25, fracción VII y 68.1, fracciones II y III de la Ley de Transparencia y Acceso a la Información Pública del Estado de Jalisco y sus Municipios; 3 fracción III, 20, 21, 37, 51 y 59 de la Ley General de Protección de datos Personales en Posesión de sujetos Obligados; 51, fracciones II, III y IV de la Ley de Protección de Datos Personales en Posesión de Sujetos Obligados del Estado de Jalisco y sus Municipios; 17 fracciones I y XII, 44, 54 Bis-4, 54 Bis-5, 56 fracciones III, VI, XVI y XVIII de la Ley para los Servidores Públicos del Estado de Jalisco y sus Municipios; 178 de la Ley de Movilidad, Seguridad Vial y Transporte del Estado de Jalisco; 2 y 26 de la Ley de Entrega-Recepción del Estado de Jalisco y sus Municipios; 53 Bis, punto 1 fracción IV, 53 Ter, punto 1 fracciones I y IX, 53 Quáter, punto 1,fracciones I y II, 53 Quinquies punto 1, fracciones I y II de la Ley de Responsabilidades Políticas y Administrativas del Estado de Jalisco; 57 de la Ley de Compras Gubernamentales, Enajenaciones y Contratación de Servicios del Estado de Jalisco y sus Municipios y; 14 y 24 del Reglamento de la Ley de Transparencia y Acceso a la Información Pública del Estado de Jalisco. Asimismo el acuerdo del Gobernador del Estado DIEGAL ACU 067/2024 y su acuerdo modificatorio DIELAG 002/2025, ambos publicados en el Periódico Oficial "El Estado de Jaliscо", con fechas 09 nueve de diciembre de 2024 dos mil veinticuatro y 01 primero de enero de 2025 dos mil veinticinco, respectivamente, señala que el Organismo Público Descentralizado denominado Instituto de Información Estadística y Geográfica del Estado de Jalisco no está sectorizado ninguna dependencia centralizada, por lo que se observa el Reglamento Interno para el manejo de información pública del Instituto de Información Estadística y Geográfica del estado de Jalisco.
-
-
-
-Transferencias de datos personales
-
-Se informa que no se realizarán transferencias de datos personales, salvo aquéllas que sean necesarias para atender requerimientos de información de una autoridad competente que estén debidamente fundados y motivados, o se esté en alguno de los supuestos de excepciones al consentimiento establecidos en el artículo 75 de la Ley de Protección de Datos Personales en Posesión de Sujetos Obligados del Estado de Jalisco y sus Municipios, con relación a dichas transferencias, los terceros receptores de los datos personales pueden ser los siguientes:
-
-
-
-
-
-El Instituto Mexicano del Seguro Social para la incorporación a los servicios de salud de las personas servidoras públicas;
-
-
-
-El Instituto de Pensiones del Estado de Jalisco para la realización de las aportaciones correspondientes, así como la designación de beneficiarios;
-
-
-
-Las autoridades jurisdiccionales, con la finalidad de dar atención a los requerimientos judiciales;
-
-
-
-Los sujetos obligados a los que se dirijan las solicitudes de información pública que sean de su competencia, con la finalidad de dar el seguimiento que señala la Ley de Transparencia y Acceso a la Información Pública del Estado de Jalisco y sus Municipios;
-
-
-
-La Controlaría, para la presentación de la declaración patrimonial de los servidores públicos, así como para la instauración de procedimientos de responsabilidad administrativa; y
-
-
-
-La Secretaría de Administración del Gobierno del Estado de Jalisco, en el supuesto establecido en el artículo 57 de la Ley de Compras Gubernamentales, Enajenaciones y Contratación de Servicios del Estado de Jalisco y sus Municipios, referente al proceso de compra, adquisición o aprovisionamiento.
-
-
-
-Respecto de los datos personales recabados de un tercero, el promovente deberá dar a conocer el presente aviso de privacidad a dichos terceros, con la finalidad de mantenerlos informados sobre el tratamiento de estos.
-
-
-
-Derechos ARCO
-
-Usted puede solicitar en cualquier momento, el Acceso, Rectificación, Cancelación, Oposición, y/o Portabilidad de sus datos personales, presentando una solicitud de ejercicio de derechos ARCO, en la oficina de la Unidad de Transparencia del Instituto de Información Estadística y Geográfica del Estado de Jalisco, a través de la Plataforma Nacional de Transparencia (PNT), o bien, al correo electrónico transparencia@iieg.gob.mx.
-
-
-
-Cambios al aviso de privacidad
-
-Cualquier cambio al presente aviso de privacidad se hará del conocimiento de los titulares de los datos personales, a través de la página de transparencia de este sujeto obligado, en la siguiente liga electrónica:https://transparencia.jalisco.gob.mx/informacion/contenido/168/214
-
-
-
-Datos de la Unidad de Transparencia
-
-Para cualquier aclaración, duda o comentario adicional al respecto se dejan a disposición los siguientes datos de contacto de la Unidad de Transparencia de este responsable:
-
-Domicilio: Calzada de los Pirules 71, Colonia Ciudad Granja, C.P. 45010, Zapopan, Jalisco.
-
-Teléfono: (33) 37771770, extensión 36780.
-
-Correo electrónico oficial: transparencia@iieg.gob.mx.
-
-
-
-Fecha de actualización: 30 de mayo de 2025",TRUE, FALSE, aviso-de-privacidad,,,9,,

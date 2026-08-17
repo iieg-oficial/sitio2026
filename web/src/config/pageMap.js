@@ -1,7 +1,7 @@
 export const pageMap = {
     "conocenos": ['informacion', 'mision_vision','valores', 'plan_institucional', 'plan_trabajo','normatividad'],
     "organigrama": ['organigrama','director'],
-    "organos-colegiados": ['organos'],
+    "organos-de-gobierno": ['organos'],
     "sistema-institucional-de-archivo": ['archivo'],
     "contabilidad-gubernamental": ['contabilidad'],
     "snieg": ['snieg'], 

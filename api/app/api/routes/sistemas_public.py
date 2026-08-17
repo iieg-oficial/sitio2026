@@ -21,7 +21,6 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 def read_sistemas(
     db: Session = Depends(get_db),
     destacado: bool | None = None,
-    slider: bool | None = None,
     skip: int = 0,
     limit: int = 100,
 ):
@@ -29,16 +28,11 @@ def read_sistemas(
     query = select(Sistemas)
     if destacado is not None:
         query = query.where(Sistemas.destacado == destacado)
-    if slider is not None:
-        query = query.where(Sistemas.slider == slider)
-
+    
     sistemas = db.execute(query.offset(skip).limit(limit)).scalars().all()
     total = db.query(Sistemas)
-
     if destacado is not None:
         total = total.filter(Sistemas.destacado == destacado)
-    if slider is not None:
-        total = total.filter(Sistemas.slider == slider)
     total = total.count()
 
     return {

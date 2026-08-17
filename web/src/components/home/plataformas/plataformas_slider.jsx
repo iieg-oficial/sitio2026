@@ -13,20 +13,11 @@ export default function PlataformasSlider() {
     const location = useLocation()
 
     useEffect(() => {
-    const fetchPlataformas = async () => {
-        try {
-        const response = await api.get('/sistemas/', {
-            params: {
-            destacado: false,
-            slider: true
-            }
-        })
-        setPlataformas(response.data.sistemas)
-        } catch (error) {
-        console.error('Error al obtener plataformas:', error)
+        const fetchPlataformas = async () => {
+            const response = await api.get('/sistemas/', { params: { destacado: false } })
+            setPlataformas(response.data.sistemas)
         }
-    }
-    fetchPlataformas()
+        fetchPlataformas()
     }, [location])
 
     return (
@@ -61,7 +52,6 @@ export default function PlataformasSlider() {
                         <SwiperSlide key={plataforma.id} className="place-items-center p-2 pb-14" >
                             <a href={plataforma.link} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center group">
                                 <img src={plataforma.imagen || "/demo.jpg"} alt={plataforma.titulo} className="w-full object-cover group-hover:scale-110"/>                                
-                                <p>{plataforma.link}</p>
                             </a>
                         </SwiperSlide>
                     ))} 

@@ -177,18 +177,13 @@ async def subir_archivo(
     file_extension = file.filename.split(".")[-1] if "." in file.filename else ""
     unique_name = f"{uuid.uuid4()}.{file_extension}" if file_extension else str(uuid.uuid4())
 
-    # Construir el object key con el prefijo de carpeta para que el archivo
-    # quede en la ruta correcta dentro del bucket (e.g. "banners/uuid.jpg")
-    folder_prefix = folder.strip("/")
-    object_key = f"{folder_prefix}/{unique_name}" if folder_prefix else unique_name
-
     try:
-        url = await acervo_service.upload_file(file, object_key, bucket=bucket)
+        url = await acervo_service.upload_file(file, unique_name, bucket=bucket)
 
         if bucket == PORTAL_BUCKET:
             folder = _ensure_folder_path_exists(db, folder)
             nuevo_media = Media(
-                name=object_key,
+                name=unique_name,
                 original_name=file.filename,
                 type=file.content_type or "application/octet-stream",
                 size=file.size or 0,
@@ -205,8 +200,8 @@ async def subir_archivo(
             return _serialize_media(nuevo_media)
 
         return {
-            "id": f"{bucket}:{object_key}",
-            "name": object_key,
+            "id": f"{bucket}:{unique_name}",
+            "name": unique_name,
             "originalName": file.filename,
             "type": file.content_type or "application/octet-stream",
             "size": file.size or 0,

@@ -15,7 +15,7 @@ export const CamposBannerFull = () => {
                 <Space direction="vertical" style={{ width: '100%' }}>
                     <UploadAcervo
                         bucket="portal"
-                        folder="/banners/"
+                        folder="/banners"
                         label="Subir imagen desktop"
                         apiKey={import.meta.env.ACERVO_API_KEY} // Ejemplo de uso de la variable como prop
                         onUploaded={(media) => {
@@ -39,7 +39,7 @@ export const CamposBannerFull = () => {
                 <Space direction="vertical" style={{ width: '100%' }}>
                     <UploadAcervo
                         bucket="portal"
-                        folder="/banners/"
+                        folder="/banners"
                         label="Subir imagen mobile"
                         apiKey={import.meta.env.ACERVO_API_KEY} // Ejemplo de uso de la variable como prop
                         onUploaded={(media) => {
@@ -75,13 +75,12 @@ export const CamposBannerMin = () => {
                 <Space direction="vertical" style={{ width: '100%' }}>
                         <UploadAcervo
                             bucket="portal"
-                            folder="/banners/"
+                            folder="/banners"
                             label="Subir imagen "                            
                             onUploaded={(media) => {
                                 form.setFieldValue('imagen', media.url);
                             }}
                         />
-                        
                         <Form.Item name="imagen" noStyle>
                             <Input placeholder="URL imagen" />
                         </Form.Item>

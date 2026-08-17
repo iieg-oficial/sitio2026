@@ -1,9 +1,8 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.api.deps import get_current_user
 
 from app.api.routes import (
     auth, borradores, media, menu, pages, pages_public, preview, public, users, posts, posts_public, subject, subject_public, 
@@ -25,13 +24,6 @@ async def lifespan(app: FastAPI):
 
 
 def create_app() -> FastAPI:
-
-    from fastapi import APIRouter
-    admin_router = APIRouter(
-        prefix=settings.admin_prefix,
-        dependencies=[Depends(get_current_user)]
-    )
-
     app = FastAPI(
         title=settings.project_name,
         version=settings.version,
@@ -51,61 +43,60 @@ def create_app() -> FastAPI:
 
 
     app.mount("/static", StaticFiles(directory="static"), name="static")
-    admin_router.include_router(auth.router, prefix=settings.admin_prefix)
-    admin_router.include_router(users.router, prefix=settings.admin_prefix)
-    admin_router.include_router(pages.router, prefix=settings.admin_prefix)
+    app.include_router(auth.router, prefix=settings.admin_prefix)
+    app.include_router(users.router, prefix=settings.admin_prefix)
+    app.include_router(pages.router, prefix=settings.admin_prefix)
     app.include_router(pages_public.router, prefix=settings.web_prefix)
-    admin_router.include_router(menu.router, prefix=settings.admin_prefix)
-    admin_router.include_router(media.router, prefix=settings.admin_prefix)
-    admin_router.include_router(borradores.router, prefix=settings.admin_prefix)
-    admin_router.include_router(preview.admin_router, prefix=settings.admin_prefix)
-    admin_router.include_router(preview.public_router, prefix=settings.web_prefix)
+    app.include_router(menu.router, prefix=settings.admin_prefix)
+    app.include_router(media.router, prefix=settings.admin_prefix)
+    app.include_router(borradores.router, prefix=settings.admin_prefix)
+    app.include_router(preview.admin_router, prefix=settings.admin_prefix)
+    app.include_router(preview.public_router, prefix=settings.web_prefix)
     app.include_router(public.router, prefix=settings.web_prefix)
-    admin_router.include_router(posts.router,prefix=settings.admin_prefix) 
+    app.include_router(posts.router,prefix=settings.admin_prefix) 
     app.include_router(posts_public.router,prefix=settings.web_prefix) 
-    admin_router.include_router(subject.router,prefix=settings.admin_prefix) 
+    app.include_router(subject.router,prefix=settings.admin_prefix) 
     app.include_router(subject_public.router,prefix=settings.web_prefix) 
-    admin_router.include_router(datos_nuevos.router,prefix=settings.admin_prefix) 
+    app.include_router(datos_nuevos.router,prefix=settings.admin_prefix) 
     app.include_router(datos_nuevos_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(flashes.router,prefix=settings.admin_prefix) 
+    app.include_router(flashes.router,prefix=settings.admin_prefix) 
     app.include_router(flashes_public.router,prefix=settings.web_prefix) 
-    admin_router.include_router(mapa.router,prefix=settings.admin_prefix) 
+    app.include_router(mapa.router,prefix=settings.admin_prefix) 
     app.include_router(mapa_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(directorio.router,prefix=settings.admin_prefix) 
+    app.include_router(directorio.router,prefix=settings.admin_prefix) 
     app.include_router(directorio_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(organos.router,prefix=settings.admin_prefix) 
+    app.include_router(organos.router,prefix=settings.admin_prefix) 
     app.include_router(organos_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(archivos.router,prefix=settings.admin_prefix) 
+    app.include_router(archivos.router,prefix=settings.admin_prefix) 
     app.include_router(archivos_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(snieg.router,prefix=settings.admin_prefix) 
+    app.include_router(snieg.router,prefix=settings.admin_prefix) 
     app.include_router(snieg_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(preguntas.router,prefix=settings.admin_prefix) 
+    app.include_router(preguntas.router,prefix=settings.admin_prefix) 
     app.include_router(preguntas_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(sistemas.router,prefix=settings.admin_prefix) 
+    app.include_router(sistemas.router,prefix=settings.admin_prefix) 
     app.include_router(sistemas_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(reportes.router,prefix=settings.admin_prefix) 
+    app.include_router(reportes.router,prefix=settings.admin_prefix) 
     app.include_router(reportes_public.router,prefix=settings.web_prefix)   
-    admin_router.include_router(documentacion.router,prefix=settings.admin_prefix) 
+    app.include_router(documentacion.router,prefix=settings.admin_prefix) 
     app.include_router(documentacion_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(profesores.router,prefix=settings.admin_prefix) 
+    app.include_router(profesores.router,prefix=settings.admin_prefix) 
     app.include_router(profesores_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(instituciones.router,prefix=settings.admin_prefix) 
+    app.include_router(instituciones.router,prefix=settings.admin_prefix) 
     app.include_router(instituciones_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(modulos.router,prefix=settings.admin_prefix) 
+    app.include_router(modulos.router,prefix=settings.admin_prefix) 
     app.include_router(modulos_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(perfiles.router,prefix=settings.admin_prefix) 
+    app.include_router(perfiles.router,prefix=settings.admin_prefix) 
     app.include_router(perfiles_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(cursos.router,prefix=settings.admin_prefix) 
+    app.include_router(cursos.router,prefix=settings.admin_prefix) 
     app.include_router(cursos_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(docs_iieg.router,prefix=settings.admin_prefix) 
+    app.include_router(docs_iieg.router,prefix=settings.admin_prefix) 
     app.include_router(docs_iieg_public.router,prefix=settings.web_prefix)
-    admin_router.include_router(banner.router,prefix=settings.admin_prefix) 
+    app.include_router(banner.router,prefix=settings.admin_prefix) 
     app.include_router(banner_public.router,prefix=settings.web_prefix)
-    app.include_router(contacto.router,prefix=settings.admin_prefix) 
-    admin_router.include_router(cuadernillos.router,prefix=settings.admin_prefix) 
+    app.include_router(contacto.router,prefix=settings.web_prefix)
+    app.include_router(cuadernillos.router,prefix=settings.admin_prefix) 
     app.include_router(cuadernillos_public.router,prefix=settings.web_prefix)
     app.include_router(search_public.router,prefix=settings.web_prefix)
-    app.include_router(admin_router)
 
        
 
