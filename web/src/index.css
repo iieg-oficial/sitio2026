@@ -101,11 +101,11 @@ section[id] {
 }
 
 .button{
-  @apply  text-white py-4 px-7 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold;
+  @apply text-white py-4 px-7 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold font-garet-extra;
 }
 
 .button2{
-  @apply border-2 py-4 px-6 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold;
+  @apply border-2 py-4 px-6 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold font-garet-extra;
 }
 
 .rsicon{
