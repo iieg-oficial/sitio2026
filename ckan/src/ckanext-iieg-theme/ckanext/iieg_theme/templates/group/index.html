@@ -1,0 +1,11 @@
+{% ckan_extends %}
+
+{% block secondary %}{% endblock %}
+
+{% block primary %}
+  <div class="primary col-md-12 col-xs-12 pb-8" role="main">
+    {% block primary_content %}
+      {{ super() }}
+    {% endblock %}
+  </div>
+{% endblock %}

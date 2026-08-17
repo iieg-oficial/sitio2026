@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const DEFAULT_API_URL = '/api/sitio-admin';
-
 function toSameOriginApiPath(rawUrl) {
     if (!rawUrl) {
         return rawUrl;
@@ -14,7 +12,7 @@ function toSameOriginApiPath(rawUrl) {
             || parsed.hostname === 'api'
             || parsed.hostname === 'portal-api'
         ) {
-            return parsed.pathname || DEFAULT_API_URL;
+            return parsed.pathname || import.meta.env.VITE_ADMIN_API_URL;
         }
     } catch {
         return rawUrl;
@@ -26,7 +24,7 @@ function toSameOriginApiPath(rawUrl) {
 function resolveApiUrl() {
     const configuredUrl = import.meta.env.VITE_ADMIN_API_URL;
     if (!configuredUrl) {
-        return DEFAULT_API_URL;
+        return '';
     }
 
     try {

@@ -21,6 +21,12 @@ RUN pip install --no-cache-dir cookiecutter flask-debugtoolbar
 COPY --chown=ckan:ckan src/ckanext-iieg-theme /srv/app/src/ckanext-iieg-theme
 RUN pip install --no-cache-dir -e /srv/app/src/ckanext-iieg-theme
 
+# Parche sobre s3filestore: reemplaza el view de descarga para usar URLs
+# directas via proxy en lugar de presigned URLs con parámetros X-Amz-*.
+# Esto resuelve el problema de firma inválida cuando MinIO está detrás de Nginx.
+COPY --chown=root:root setup/patch_s3filestore.py /tmp/patch_s3filestore.py
+RUN python3 /tmp/patch_s3filestore.py && rm /tmp/patch_s3filestore.py
+
 # Configurar cron para CKAN tracking update
 # NOTA: Usamos el wrapper 'ckan-paster' o el binario del entorno virtual directo de la imagen base corporativa.
 # Habitualmente en ckan-base el path correcto del entorno virtual es /usr/lib/ckan/default/bin/ckan o simplemente 'ckan' si se cargan las variables.

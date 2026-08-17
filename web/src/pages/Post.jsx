@@ -122,9 +122,7 @@ const filteredPosts = useMemo(() => (
                 <div className="container mx-auto">                
                 <h1 className="text-titulos text-center">{page.title}</h1>
                 </div>
-                { page.description && (
-                    <div dangerouslySetInnerHTML={{__html: page.description}} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto' />
-                )}
+
                 </div>
 
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />            

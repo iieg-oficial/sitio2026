@@ -35,7 +35,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build deploy _up-prod down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
+.PHONY: help up build rebuild deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
 
 help:
 	@echo ''
@@ -100,12 +100,30 @@ build:
 	@echo "${GREEN}Reconstruyendo entorno: $(MSG_ENV)${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d --build
 
+rebuild:
+	@echo "${GREEN}Reconstruyendo SIN caché: $(MSG_ENV)${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) build --no-cache
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
+
 down:
 	@echo "${YELLOW}Deteniendo entorno: $(MSG_ENV)${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) down
 
+TAIL ?= 100
+SVC  ?=
+
 logs:
-	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) logs -f
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) logs -f --tail=$(TAIL) $(SVC)
+
+prune:
+	@echo "${YELLOW}Limpiando caché de Docker (build cache, imágenes colgantes)...${RESET}"
+	docker builder prune -f
+	@echo "${GREEN}Caché eliminada.${RESET}"
+
+prune-all:
+	@echo "${RED}Limpieza total: imágenes, volúmenes y caché de build...${RESET}"
+	docker system prune -af --volumes
+	@echo "${GREEN}Sistema Docker limpiado.${RESET}"
 
 restart: down up
 

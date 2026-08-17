@@ -115,6 +115,7 @@ class IiegThemePlugin(plugins.SingletonPlugin):
 
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigDeclaration)
+    plugins.implements(plugins.IConfigurable)  # Para parchear s3filestore al arrancar
     plugins.implements(plugins.ITranslation)
 
     # Declare that this plugin will implement ITemplateHelpers.
@@ -168,12 +169,73 @@ class IiegThemePlugin(plugins.SingletonPlugin):
         except Exception:
             return []
 
+    # IConfigurable ----------------------------------------------------------
+
+    def configure(self, config_):
+        """Parchea get_signed_url_to_key de s3filestore para construir URLs
+        directas (sin parámetros X-Amz-*) cuando hay download_proxy configurado.
+
+        PROBLEMA ORIGINAL:
+            s3filestore llama a boto3.generate_presigned_url() → genera URL con
+            X-Amz-Signature calculada con el host INTERNO (10.0.0.2:8333).
+            Luego reemplaza solo el host por el download_proxy, pero deja los
+            parámetros X-Amz-* intactos. MinIO rechaza la descarga porque la
+            firma no corresponde al host que recibio la petición.
+
+        SOLUCIÓN:
+            Cuando hay download_proxy configurado, construimos la URL directamente:
+                {download_proxy}/{bucket}/{key_path}
+            Sin firmar, sin parámetros X-Amz-*. Nginx lo proxea a MinIO
+            sin necesidad de autenticación por firma.
+        """
+        try:
+            from ckanext.s3filestore.uploader import BaseS3Uploader
+            import logging
+            import os
+            log = logging.getLogger(__name__)
+
+            _original_get_signed_url = BaseS3Uploader.get_signed_url_to_key
+
+            def _patched_get_signed_url(self_uploader, key, extra_params=None):
+                """URL directa via proxy si está configurado, presigned si no."""
+                if extra_params is None:
+                    extra_params = {}
+
+                if self_uploader.download_proxy:
+                    # Construir URL limpia sin pre-firma:
+                    # {download_proxy}/{bucket}/{key_path}
+                    proxy = self_uploader.download_proxy.rstrip('/')
+                    url = '{}/{}/{}'.format(
+                        proxy,
+                        self_uploader.bucket_name,
+                        key
+                    )
+                    log.debug(
+                        '[iieg_theme] URL de descarga directa (sin presign): %s',
+                        url
+                    )
+                    return url
+
+                # Sin proxy: comportamiento original (presigned URL)
+                return _original_get_signed_url(self_uploader, key, extra_params)
+
+            BaseS3Uploader.get_signed_url_to_key = _patched_get_signed_url
+            log.info(
+                '[iieg_theme] Parche aplicado a s3filestore: '
+                'get_signed_url_to_key usará URL directa cuando hay download_proxy'
+            )
+
+        except ImportError:
+            # s3filestore no está instalado — no hay nada que parchear
+            pass
+
+
     # IConfigDeclaration
 
     def declare_config_options(self, declaration: Declaration, key: Key):
         declaration.declare_bool(
             key.ckan.iieg_theme.show_most_popular_groups)
-        
+
     # ITranslation
     def i18n_directory(self):
         import os

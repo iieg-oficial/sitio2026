@@ -47,7 +47,7 @@ export default function Valores() {
         <div className="container-fluid py-15 px-2">
             <h2 className="text-center mb-15">Valores</h2>
             
-            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-x-10 xl:gap-x-20">
                 {valores.map(valor => (
                     <div key={valor?.id} className="bg-card rounded-3xl px-4 py-6 my-4 grid grid-cols-12 gap-4">
                         <div className="col-span-2">
