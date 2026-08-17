@@ -97,7 +97,7 @@
 
 
 /* Responsive Menu */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1279px) {
   body .menu-wrapper nav[role=navigation] {
     overflow: hidden;
     max-height: 0em;
