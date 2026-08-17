@@ -4,7 +4,7 @@
     <div class="row">
       <div class="col-md-8 footer-links">
         {% if c.user %}
-          <a href="{{ h.url_for('stats.index') }}">Ver estadísticas del sitio</a>
+          <a href="{{ h.url_for('stats.index') }}">{{ _('Ver estadísticas del sitio') }}</a>
         {% endif %}
       </div>
       <div class="col-md-4 attribution">

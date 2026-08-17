@@ -8,71 +8,270 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-iieg-theme 0.1.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-07-17 12:29-0600\n"
-"PO-Revision-Date: 2026-07-17 12:29-0600\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2026-08-17 21:21+0000\n"
+"PO-Revision-Date: 2026-08-17 21:21+0000\n"
+"Last-Translator: IIEG <admin@iieg.gob.mx>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.15.0\n"
 
-#: ckanext/iieg_theme/templates/title.html:9
+#: ckanext/iieg_theme/templates/footer.html:7
+msgid "Ver estadísticas del sitio"
+msgstr "View site statistics"
+
+#: ckanext/iieg_theme/templates/header.html:37
+#: ckanext/iieg_theme/templates/title.html:11
 msgid "Datasets"
-msgstr ""
+msgstr "Datasets"
 
-#: ckanext/iieg_theme/templates/title.html:10
-msgid "Explore el catálogo de datos abiertos disponibles."
-msgstr ""
-
-#: ckanext/iieg_theme/templates/title.html:14
+#: ckanext/iieg_theme/templates/header.html:46
+#: ckanext/iieg_theme/templates/organization/index.html:3
+#: ckanext/iieg_theme/templates/organization/index.html:7
+#: ckanext/iieg_theme/templates/organization/index.html:25
 msgid "Organizations"
-msgstr ""
+msgstr "Organizations"
 
-#: ckanext/iieg_theme/templates/title.html:15
+#: ckanext/iieg_theme/templates/header.html:9
+#: ckanext/iieg_theme/templates/header.html:13
+#: ckanext/iieg_theme/templates/header.html:17
+msgid "Navigate to Home - {site_title}"
+msgstr "Navigate to Home - {site_title}"
+
+#: ckanext/iieg_theme/templates/header.html:38
+#: ckanext/iieg_theme/templates/snippets/iieg_theme_all_groups.html:2
+msgid "Categories"
+msgstr "Categories"
+
+#: ckanext/iieg_theme/templates/header.html:45
+msgid "Configuración"
+msgstr "Settings"
+
+#: ckanext/iieg_theme/templates/page.html:30
+msgid "Breadcrumb"
+msgstr "Breadcrumb"
+
+#: ckanext/iieg_theme/templates/title.html:12
+msgid "Explore el catálogo de datos abiertos disponibles."
+msgstr "Explore the available open data catalog."
+
+#: ckanext/iieg_theme/templates/title.html:16
+msgid "Organizaciones"
+msgstr "Organizations"
+
+#: ckanext/iieg_theme/templates/title.html:17
 msgid "Busque y encuentre las dependencias públicas que generan datos."
-msgstr "Search for and locate the public agencies that generate data."
+msgstr "Search for and locate public agencies that generate data."
 
-#: ckanext/iieg_theme/templates/title.html:35
+#: ckanext/iieg_theme/templates/title.html:21
+msgid "Categorías"
+msgstr "Categories"
+
+#: ckanext/iieg_theme/templates/title.html:22
+msgid "Encuentre datos organizados por temas y categorías de interés."
+msgstr "Find data organized by topics and categories of interest."
+
+#: ckanext/iieg_theme/templates/title.html:33
+msgid "Organización"
+msgstr "Organization"
+
+#: ckanext/iieg_theme/templates/title.html:45
+msgid "Grupo"
+msgstr "Category"
+
+#: ckanext/iieg_theme/templates/title.html:57
+msgid "Dataset"
+msgstr "Dataset"
+
+#: ckanext/iieg_theme/templates/title.html:62
+msgid "Estadísticas del Sitio"
+msgstr "Site Statistics"
+
+#: ckanext/iieg_theme/templates/title.html:63
+msgid "Métricas e información general sobre el uso de los datos abiertos."
+msgstr "Metrics and general information on open data usage."
+
+#: ckanext/iieg_theme/templates/title.html:67
 msgid "Portal de Datos Abiertos"
 msgstr "Open Data Portal"
 
-#: ckanext/iieg_theme/templates/title.html:43
+#: ckanext/iieg_theme/templates/title.html:77
 msgid "Datos Abiertos"
 msgstr "Open Data"
 
+#: ckanext/iieg_theme/templates/group/snippets/group_item.html:34
+#: ckanext/iieg_theme/templates/snippets/iieg_theme_most_popular_groups.html:26
+msgid "{num} Dataset"
+msgstr "{num} Dataset"
+
+#: ckanext/iieg_theme/templates/group/snippets/group_item.html:41
 #: ckanext/iieg_theme/templates/organization/snippets/organization_item.html:24
 msgid "Open details page for {name}"
-msgstr ""
+msgstr "Open details page for {name}"
 
-#: ckanext/iieg_theme/templates/snippets/iieg_theme_all_groups.html:2
-msgid "Categories"
-msgstr ""
+#: ckanext/iieg_theme/templates/group/snippets/group_item.html:43
+msgid "View {name}"
+msgstr "View {name}"
+
+#: ckanext/iieg_theme/templates/group/snippets/group_item.html:47
+msgid "Unlink {name} from the dataset"
+msgstr "Unlink {name} from dataset"
+
+#: ckanext/iieg_theme/templates/group/snippets/group_item.html:48
+msgid "Remove"
+msgstr "Remove"
+
+#: ckanext/iieg_theme/templates/home/index.html:16
+msgid "Last edited datasets"
+msgstr "Last edited datasets"
+
+#: ckanext/iieg_theme/templates/home/index.html:26
+msgid "Date: "
+msgstr "Date: "
+
+#: ckanext/iieg_theme/templates/home/index.html:37
+msgid "Most popular datasets"
+msgstr "Most popular datasets"
+
+#: ckanext/iieg_theme/templates/home/index.html:45
+#: ckanext/iieg_theme/templates/home/title_1.html:37
+msgid "visitas"
+msgstr "views"
+
+#: ckanext/iieg_theme/templates/home/index.html:61
+msgid "Recent tags"
+msgstr "Recent tags"
+
+#: ckanext/iieg_theme/templates/home/index.html:97
+msgid "No hay etiquetas recientes en los últimos conjuntos de datos."
+msgstr "No recent tags in latest datasets."
+
+#: ckanext/iieg_theme/templates/home/index.html:101
+msgid "No hay etiquetas disponibles en este momento."
+msgstr "No tags available at this time."
+
+#: ckanext/iieg_theme/templates/home/title_1.html:22
+msgid "Datasets publicados"
+msgstr "Published datasets"
+
+#: ckanext/iieg_theme/templates/home/title_1.html:27
+msgid "Datasets más populares"
+msgstr "Most popular datasets"
+
+#: ckanext/iieg_theme/templates/home/snippets/search.html:4
+msgid "E.g. environment"
+msgstr "E.g. environment"
+
+#: ckanext/iieg_theme/templates/home/snippets/search.html:10
+msgid "Search datasets"
+msgstr "Search datasets"
+
+#: ckanext/iieg_theme/templates/home/snippets/search.html:17
+#: ckanext/iieg_theme/templates/snippets/search_form.html:3
+msgid "Search datasets..."
+msgstr "Search datasets..."
+
+#: ckanext/iieg_theme/templates/home/snippets/search.html:20
+msgid "Search"
+msgstr "Search"
+
+#: ckanext/iieg_theme/templates/organization/index.html:14
+msgid "Add Organization"
+msgstr "Add Organization"
+
+#: ckanext/iieg_theme/templates/organization/index.html:36
+msgid "There are currently no organizations for this site"
+msgstr "There are currently no organizations for this site"
+
+#: ckanext/iieg_theme/templates/organization/index.html:38
+msgid "How about creating one?"
+msgstr "How about creating one?"
+
+#: ckanext/iieg_theme/templates/snippets/facet_list.html:16
+msgid "Filter by: {title}"
+msgstr "Filter by: {title}"
+
+#: ckanext/iieg_theme/templates/snippets/facet_list.html:26
+msgid "Search datasets by {name}: {label}"
+msgstr "Search datasets by {name}: {label}"
 
 #: ckanext/iieg_theme/templates/snippets/iieg_theme_all_groups.html:47
 msgid "No se encontraron grupos disponibles."
 msgstr "No categories found."
 
+#: ckanext/iieg_theme/templates/snippets/iieg_theme_most_popular_groups.html:11
+msgid "Most popular groups"
+msgstr "Most popular categories"
+
 #: ckanext/iieg_theme/templates/snippets/iieg_theme_most_popular_groups.html:23
 msgid "This group has no description"
-msgstr ""
-
-#: ckanext/iieg_theme/templates/snippets/iieg_theme_most_popular_groups.html:26
-msgid "{num} Dataset"
-msgid_plural "{num} Datasets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr "This category has no description"
 
 #: ckanext/iieg_theme/templates/snippets/iieg_theme_most_popular_groups.html:28
 msgid "0 Datasets"
-msgstr ""
+msgstr "0 Datasets"
 
-#: ckanext/iieg_theme/templates/snippets/language_selector.html:7
+#: ckanext/iieg_theme/templates/snippets/language_selector.html:8
 msgid "Language"
-msgstr ""
+msgstr "Language"
 
-#: ckanext/iieg_theme/templates/snippets/language_selector.html:23
+#: ckanext/iieg_theme/templates/snippets/language_selector.html:19
+#: ckanext/iieg_theme/templates/snippets/search_form.html:46
 msgid "Go"
-msgstr ""
+msgstr "Go"
+
+#: ckanext/iieg_theme/templates/snippets/package_item.html:15
+msgid "Private"
+msgstr "Private"
+
+#: ckanext/iieg_theme/templates/snippets/package_item.html:21
+msgid "Navigate to dataset: {title}"
+msgstr "Navigate to dataset: {title}"
+
+#: ckanext/iieg_theme/templates/snippets/package_item.html:28
+msgid "Draft"
+msgstr "Draft"
+
+#: ckanext/iieg_theme/templates/snippets/package_item.html:30
+msgid "Deleted"
+msgstr "Deleted"
+
+#: ckanext/iieg_theme/templates/snippets/package_item.html:40
+msgid "There is no description for this dataset."
+msgstr "There is no description for this dataset."
+
+#: ckanext/iieg_theme/templates/snippets/package_item.html:62
+msgid "Logo del Grupo"
+msgstr "Category Logo"
+
+#: ckanext/iieg_theme/templates/snippets/search_form.html:4
+msgid "Name Ascending"
+msgstr "Name Ascending"
+
+#: ckanext/iieg_theme/templates/snippets/search_form.html:4
+msgid "Name Descending"
+msgstr "Name Descending"
+
+#: ckanext/iieg_theme/templates/snippets/search_form.html:27
+msgid "Submit"
+msgstr "Search"
+
+#: ckanext/iieg_theme/templates/snippets/search_form.html:37
+msgid "Order by"
+msgstr "Order by"
+
+#: ckanext/iieg_theme/views/resource_download.py:74
+msgid "Resource not found"
+msgstr "Resource not found"
+
+#: ckanext/iieg_theme/views/resource_download.py:76
+#, python-format
+msgid "Unauthorized to read resource %s"
+msgstr "Unauthorized to read resource %s"
+
+#: ckanext/iieg_theme/views/resource_download.py:131
+msgid "Error al generar la URL de descarga"
+msgstr "Error generating download URL"
