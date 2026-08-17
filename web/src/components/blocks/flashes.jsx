@@ -106,7 +106,7 @@ export default function Flashes() {
     const filteredFlashes = useMemo(() => {
         const normalizedSearch = searchTerm.toLowerCase().trim();
 
-        return flashesWithoutLast.filter(post => {
+        const filtered = flashesWithoutLast.filter(post => {
             const matchesSearch = !normalizedSearch || keys.some(key => {
                 const value = key.split('.').reduce((obj, part) => obj?.[part], post);
                 return value?.toString().toLowerCase().includes(normalizedSearch);
@@ -124,6 +124,12 @@ export default function Flashes() {
             const matchesMonth = !selectedMonth || publicationDate?.getMonth() + 1 === Number(selectedMonth);
 
             return matchesSearch && matchesTema && matchesSubtema && matchesYear && matchesMonth;
+        });
+
+        return filtered.sort((a, b) => {
+            const dateA = a.fecha_publicacion ? new Date(a.fecha_publicacion).getTime() : 0;
+            const dateB = b.fecha_publicacion ? new Date(b.fecha_publicacion).getTime() : 0;
+            return dateB - dateA;
         });
     }, [flashesWithoutLast, searchTerm, selectedTemaId, selectedSubtemaId, selectedYear, selectedMonth]);
 
@@ -273,7 +279,7 @@ export default function Flashes() {
                     
                     <ConditionalLink
                         key={flash.id}
-                        link={`/flashes/${flash.slug}`}
+                        link={`/datos-expres/${flash.slug}`}
                         rel="noopener noreferrer"
                     >
                         
@@ -316,7 +322,7 @@ export default function Flashes() {
                     marginPagesDisplayed={1}
                     pageRangeDisplayed={2}
                     onPageChange={handlePageClick}
-                    containerClassName='flex justify-center gap-2 mt-8 mb-10'
+                    containerClassName='flex justify-center gap-2 pt-8 p-10 !list-none !my-15'
                     pageClassName='rounded-full border border-primary px-3 py-2 text-sm'
                     activeClassName='bg-primary text-white'
                     previousClassName='rounded-full border border-primary px-3 py-2 text-sm'

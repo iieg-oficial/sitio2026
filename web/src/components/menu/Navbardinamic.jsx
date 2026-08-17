@@ -78,7 +78,7 @@ const Navbardinamic = () => {
 
   return (
     <div className="container-fluid bg-primary py-5">
-      <div className="menu-wrapper grid grid-cols-2 lg:grid-cols-12 container mx-auto">
+      <div className="menu-wrapper grid grid-cols-2 xl:grid-cols-12 container mx-auto">
         <Link to="/" className="lg:col-span-3 content-center">
           <img src="/ico_IIEG_header.svg" alt="IIEG" className="h-12 w-auto" />
         </Link>
@@ -91,7 +91,7 @@ const Navbardinamic = () => {
           <span className="material-symbols--menu-rounded"></span>
         </a>
 
-        <nav id="menu" className={`navbar col-span-2 lg:col-span-9 ${isOpen ? 'active' : ''}`} role="navigation">
+        <nav id="menu" className={`navbar col-span-2 md:col-span-12 xl:col-span-9 ${isOpen ? 'active' : ''}`} role="navigation">
           <div className="menu">
             <ul className="menu">
 
@@ -145,13 +145,7 @@ const Navbardinamic = () => {
           </div>
         </nav>    
 
-        <div className="col-span-2 mt-2 lg:col-span-12 lg:mt-1">
-          <HeaderSearch
-            initialValue=""
-            onSubmit={handleSearch}
-            placeholder="Buscar en todo el sitio..."
-          />
-        </div>  
+
       </div>
     </div>
   );

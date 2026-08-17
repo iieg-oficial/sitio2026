@@ -121,7 +121,7 @@ export default function Reportes() {
     }, [temaFilter, subtemas, subtemaFilter]);
 
     const filteredReportes = useMemo(() => {
-        return reportesWithMeta.filter(post => {
+        const filtered = reportesWithMeta.filter(post => {
             const searchTermLower = searchTerm.toLowerCase();
             const matchesSearch = !searchTerm || [
                 post.titulo,
@@ -137,6 +137,12 @@ export default function Reportes() {
             const matchesMonth = !monthFilter || post.month === monthFilter;
 
             return matchesSearch && matchesTema && matchesSubtema && matchesYear && matchesMonth;
+        });
+
+        return filtered.sort((a, b) => {
+            const dateA = a.fecha ? new Date(a.fecha).getTime() : 0;
+            const dateB = b.fecha ? new Date(b.fecha).getTime() : 0;
+            return dateB - dateA;
         });
     }, [reportesWithMeta, searchTerm, temaFilter, subtemaFilter, yearFilter, monthFilter]);
 
@@ -164,7 +170,9 @@ export default function Reportes() {
 
     return (
         <div>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
+            <div className='w-full md:w-11/12 mx-auto md:ml-auto md:mr-0'>
+                <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
+            </div>
 
             <div className='mx-auto px-2 container my-15'>
                 <div className='flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5'>
@@ -241,12 +249,12 @@ export default function Reportes() {
 
             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mx-auto container px-2'>
                 {currentReportes.map(reporte => (
-                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" download>
+                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" download>
                         <div className='border-2 border-card rounded-2xl p-8 hover:border-titulo hover:border' key={reporte.id}>
                             
                             <div className="flex items-center gap-2 mb-4 bg-white justify-between">
                                 <p className=' text-22 text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
-                                <div className='bg-[#FF83004D] h-[37px] w-[40px] rounded-full flex items-center justify-center'>
+                                <div className='bg-[#FF83004D] h-[31px] w-[30px] rounded-full flex items-center justify-center'>
                                     <span className="material-symbols--download text-tertiary"></span> 
                                 </div>
                             </div> 

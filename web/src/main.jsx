@@ -56,7 +56,8 @@ const router = createBrowserRouter([
             { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
             { path: '/mapas-historicos/:slug', element: <PaginaIndividual /> },
             { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> },
-            { path: '/aviso-de-privacidad', element: <AvisoDePrivacidad /> }
+            { path: '/aviso-de-privacidad', element: <AvisoDePrivacidad /> },
+            { path: '/aviso-de-privacidad-simplificado', element: <AvisoDePrivacidad slug='aviso-de-privacidad-simplificado' /> }
         ],
     },
 ]);
