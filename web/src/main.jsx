@@ -11,7 +11,6 @@ import Post from '@pages/Post';
 import BusquedaGlobal from '@pages/BusquedaGlobal';
 import PaginaIndividual from './components/pageComponents/PaginaIndividual'
 import ClasificadorCultivos from '@pages/ClasificadorCultivos'
-import AvisoDePrivacidad from '@pages/AvisoDePrivacidad'
 import PaginaDinamica from './components/pageComponents/PaginaDinamica';
 
 const env = import.meta.env;
@@ -55,9 +54,7 @@ const router = createBrowserRouter([
             { path: '/convocatoria/:slug', element: <PaginaIndividual /> },
             { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
             { path: '/mapas-historicos/:slug', element: <PaginaIndividual /> },
-            { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> },
-            { path: '/aviso-de-privacidad', element: <AvisoDePrivacidad /> },
-            { path: '/aviso-de-privacidad-simplificado', element: <AvisoDePrivacidad slug='aviso-de-privacidad-simplificado' /> }
+            { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> }
         ],
     },
 ]);

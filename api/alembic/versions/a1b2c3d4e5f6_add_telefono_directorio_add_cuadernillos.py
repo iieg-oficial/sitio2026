@@ -44,31 +44,6 @@ municipio_enum = sa.Enum(
 
 
 def upgrade() -> None:
-    # Crear tabla directorio (nunca se creó vía Alembic originalmente)
-    op.create_table(
-        'directorio',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('nombre', sa.String(255), nullable=False),
-        sa.Column('cargo', sa.String(255), nullable=False),
-        sa.Column('director', sa.Boolean(), nullable=True),
-        sa.Column('slug', sa.String(200), nullable=False),
-        sa.PrimaryKeyConstraint('id'),
-    )
-    op.create_index(op.f('ix_directorio_id'), 'directorio', ['id'], unique=False)
-
-    # Crear tabla cuadernillos (nunca se creó vía Alembic originalmente)
-    op.create_table(
-        'cuadernillos',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('titulo', sa.String(200), nullable=False),
-        sa.Column('archivo', sa.String(200), nullable=True),
-        sa.Column('municipio', municipio_enum, nullable=True),
-        sa.Column('anyo', sa.Integer(), nullable=True),
-        sa.Column('slug', sa.String(200), nullable=True),
-        sa.PrimaryKeyConstraint('id'),
-    )
-    op.create_index(op.f('ix_cuadernillos_id'), 'cuadernillos', ['id'], unique=False)
-
     # Solo agregar columnas faltantes en directorio
     # (cuadernillos y municipioenum ya existen en la BD)
     op.add_column('directorio', sa.Column('telefono', sa.String(50), nullable=True))
@@ -78,8 +53,3 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.drop_column('directorio', 'email')
     op.drop_column('directorio', 'telefono')
-    op.drop_index(op.f('ix_cuadernillos_id'), table_name='cuadernillos')
-    op.drop_table('cuadernillos')
-    op.drop_index(op.f('ix_directorio_id'), table_name='directorio')
-    op.drop_table('directorio')
-    municipio_enum.drop(op.get_bind(), checkfirst=True)

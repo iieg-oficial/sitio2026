@@ -4,7 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
-import UploadAcervo from '@components/UploadAcervo';
+import { UploadAcervo } from '@components/UploadAcervo';
 
 const { Title } = Typography;
 

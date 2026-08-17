@@ -31,13 +31,13 @@ export default function Snieg() {
                     target="_blank"
                     rel="noopener noreferrer"
                     >
-                    <div key={snieg.id} className={`bg-card rounded-3xl p-5 sm:p-10 xl:px-20 mb-5 grid lg:grid-cols-6 gap-5 ${ snieg.enlace ? "hover:border-1 hover:border-tertiary" : ""} `}>
-                        <div className='md:h-[200px] lg:h-auto lg:col-span-2'>
-                            <img src={snieg.imagen ? snieg.imagen : "/demo.jpg"} alt={snieg.titulo} className='mx-auto md:h-full lg:h-auto'/>
+                    <div key={snieg.id} className={`bg-card rounded-3xl p-6 mb-5 grid md:grid-cols-6 gap-4 ${ snieg.enlace ? "hover:border-1 hover:border-tertiary" : ""} `}>
+                        <div className='md:col-span-2'>
+                            <img src={snieg.imagen ? snieg.imagen : "/demo.jpg"} alt={snieg.titulo} />
                             {/*<img src={snieg.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/snieg/${thumb}?w=400` : "/demo.jpg"} alt={snieg.titulo} /> */}
                         </div>
-                        <div className='lg:col-span-4'>
-                            <h2 className='text-titulo font-extrabold'>{snieg.titulo}</h2>
+                        <div className='md:col-span-4'>
+                            <h2 className='text-primary'>{snieg.titulo}</h2>
                             <div dangerouslySetInnerHTML={{__html: snieg.descripcion}} className='diez mt-5' />
                             { snieg.enlace ?
                                                 <div className='mb-4 h-10'>

@@ -45,19 +45,19 @@ export default function ClasificadorCultivos() {
                 <div className='mt-5'>
                     <Backlink />
                 </div>
-                <section className="container mx-auto grid grid-cols-1 md:grid-cols-6 gap-10 px-5">
-                    <div className="md:col-span-2">
-                        <img src="/cultivos/ico_clasificador_cultivos.svg" alt={page?.title} className='image-mapa rounded-4xl mx-auto'/>
+                <section className="container mx-auto grid grid-cols-1 lg:grid-cols-6 gap-10 px-2">
+                    <div className="lg:col-span-2">
+                        <img src="/demo.jpg" alt={page?.title} className='image-mapa rounded-4xl'/>
                     </div>
-                    <div className="md:col-span-4">
+                    <div className="lg:col-span-4">
                         <h1>{page?.title || 'Clasificador de Cultivos'}</h1>
                         <p className="my-5 leading-10">Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.</p>
-                        <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-base text-primary rounded-4xl border border-primary px-6 py-3 font-extrabold hover:bg-primary hover:text-white transition-all duration-200 text-center">
+                        <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-base text-primary rounded-4xl border border-primary px-6 py-3 font-extrabold hover:bg-primary hover:text-white transition-all duration-200">
                             Ver la documetación del proyecto                                
                         </TrackedLink>
                     </div>
                 </section>
-                <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-25 xl:my-50 gap-12 text-center diez px-5">
+                <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-50 gap-12 text-center diez">
                     <div>
                         <img src="/cultivos/ico_cultivos_01.png" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
                         <p>Se detectaron y clasificaron, a gran escala, cultivos agrícolas, a través de la interpretación de imágenes satelitales por medio del entrenamiento de modelos de IA.</p>
@@ -71,7 +71,7 @@ export default function ClasificadorCultivos() {
                         <p>En el segundo macroproceso nuestros modelos trabajaron con series de tiempo de imágenes satelitales de Sentinel-1 y Sentinel-2, para la clasificación del tipo de cultivo dentro de cada parcela.</p>
                     </div>
                 </section>
-                <section className="px-5">
+                <section>
                     <h2 className="text-primary text-center font-extrabold">Clasificador de cultivos en cifras</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-15 mb-25 text-center">
                         <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
@@ -96,14 +96,14 @@ export default function ClasificadorCultivos() {
                         </div>
                     </div>
                 </section>
-                <section className="px-2 mt-25 xl:mt-50">
+                <section className="px-2 mt-50">
                     <h2 className="text-primary text-center font-extrabold">Imágenes de la plataforma</h2>
                     <div className="grid grid-cols-1 gap-4 mt-15 mb-25 text-center">
                         <div>
-                            <img src="/cultivos/g1.png" alt={page?.titulo} className=''/>
+                            <img src="/cultivos/g1.png" alt={page?.titulo} className='image-mapa rounded-4xl'/>
                         </div>
                         <div>
-                            <img src="/cultivos/g2.png" alt={page?.titulo} className=''/>
+                            <img src="/cultivos/g2.png" alt={page?.titulo} className='image-mapa rounded-4xl'/>
                         </div>
                     </div>
                 </section>

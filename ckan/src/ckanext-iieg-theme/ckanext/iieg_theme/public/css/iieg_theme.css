@@ -177,8 +177,6 @@ body, .main {
 .search-form{
   width: 100%;
   float: left;
-  margin-bottom: 0px;
-  border-bottom: 0px;
 }
 
 #dataset-search-form .input-group,
@@ -228,62 +226,4 @@ body, .main {
 }
 .masthead .main-navbar ul li a{
   font-size: 18px !important;
-}
-
-#content a{
-  color: var(--iieg-accent) !important;
-}
-
-#content a:hover{
-  color: var(--iieg-primary) !important;
-}
-
-.btn-primary{
-  background-color: var(--iieg-accent) !important;
-  border-color: var(--iieg-accent) !important;
-  color: white !important;
-}
-
-.btn-primary:hover{
-  background-color: var(--iieg-primary) !important;
-  border-color: var(--iieg-primary) !important;
-  color: white !important;
-}
-
-#content a.btn,
-#content a.dropdown-toggle{
-  color: white !important;
-}
-
-.btn-success:hover,
-.btn-success{
-  background-color: var(--iieg-secondary) !important;
-  border-color: var(--iieg-secondary) !important;
-}
-
-.wrapper{
-  box-shadow: 0px !important;
-  border: 0px !important;
-}
-
-.main .secondary{
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05) !important;
-  border: 1px solid #ccc !important;
-}
-
-#group-search-form{
-  width: 100% !important;
-  float: left !important;
-}
-.media-heading{
-  float: none !important;
-}
-
-.media-grid, .module-grid {  
-  background: none !important;
-  border: 0px !important;
-  border-width: 0px;
-  width: 100% !important;
-  float: left !important;
-  margin-bottom: 50px !important;
 }

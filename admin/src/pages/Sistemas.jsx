@@ -119,21 +119,15 @@ export default function Sistemas() {
             key: 'link',
         },
         {
-            title: 'Slug',
-            dataIndex: 'slug',
-            key: 'slug',
-            sorter: (a, b) => a.slug.localeCompare(b.slug),
+            title: 'Tipo',
+            dataIndex: 'tipo',
+            key: 'tipo',
+            sorter: (a, b) => a.tipo.localeCompare(b.tipo),
         },
         {
             title: 'Destacado',
             dataIndex: 'destacado',
             key: 'destacado',
-            render: (val) => val ? 'Sí' : 'No',            
-        },
-        {
-            title: 'Slider',
-            dataIndex: 'slider',
-            key: 'slider',
             render: (val) => val ? 'Sí' : 'No',            
         },
         {
@@ -213,40 +207,6 @@ export default function Sistemas() {
                         }))}
                     />
                 </Form.Item>
-                <Form.Item
-                        name="destacado"
-                        label="Destacada"
-                        valuePropName="checked"
-                        rules={[{ required: false, message: 'Por favor seleccione si es destacada' }]}
-                    >
-                        <Checkbox>Destacada</Checkbox>
-                </Form.Item>
-                <Form.Item
-                        name="slider"
-                        label="En Slider"
-                        valuePropName="checked"
-                        rules={[{ required: false, message: 'Por favor seleccione si es destacada' }]}
-                    >
-                        <Checkbox>En Slider</Checkbox>
-                </Form.Item>
-                <Form.Item name="imagen_slider" label="Imagen Slider" rules={[{ required: false }]}>
-                    <Space direction="vertical" style={{ width: '100%' }}>
-                        <UploadAcervo
-                            bucket="portal"
-                            folder="/sistemas"
-                            label="Subir imagen slider"
-                            onUploaded={(media) => {
-                                form.setFieldValue('imagen_slider', media.url);
-                            }}
-                        />
-                        <Form.Item name="imagen_slider" noStyle>
-                            <Input placeholder="URL de la imagen slider" />
-                        </Form.Item>
-                        {form.getFieldValue('imagen_slider') ? (
-                            <Image src={form.getFieldValue('imagen_slider')} alt="Imagen del sistema" style={{ maxWidth: 200, borderRadius: 6 }} />
-                        ) : null}
-                    </Space>
-                </Form.Item>
                 <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
                     <Space direction="vertical" style={{ width: '100%' }}>
                         <UploadAcervo
@@ -278,14 +238,21 @@ export default function Sistemas() {
                 >
                     <Input />
                 </Form.Item>
-
+                <Form.Item
+                        name="destacado"
+                        label="Destacada"
+                        valuePropName="checked"
+                        rules={[{ required: false, message: 'Por favor seleccione si es destacada' }]}
+                    >
+                        <Checkbox>Destacada</Checkbox>
+                    </Form.Item>
                     <Form.Item
                         name="orden"
                         label="Orden"
                         rules={[{ required: true, message: 'Por favor ingrese el orden' }]}
                     >
                         <Input type="number" />
-                </Form.Item>
+                    </Form.Item>
             </Form>
         </Modal>
        </div>

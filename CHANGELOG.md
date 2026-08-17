@@ -2,17 +2,6 @@
 
 Todos los cambios notables se documentan en este archivo. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
-## [1.9.1] - 2026-08-05
-
-### Corregido
-- El «Aviso de privacidad» del footer apuntaba a `/aviso-de-privacidad`, una ruta que no está
-  declarada en `main.jsx` y que solo resolvía si existía una página con ese slug en el CMS. Ahora
-  enlaza a `https://iieg.jalisco.gob.mx/aviso-de-privacidad`, el PDF vigente servido
-  desde acervo, y abre en pestaña nueva. La URL no contiene la versión ni la ruta del objeto, así
-  que publicar un aviso nuevo o moverlo dentro del bucket no obliga a tocar este repo.
-
----
-
 ## [1.9.0] - 2026-07-31
 
 Preparación para colgar el portal de la raíz del dominio, detrás de gateway-hub.

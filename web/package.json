@@ -3,13 +3,11 @@
     "description": "Portal web del Instituto de Información Estadística y Geográfica de Jalisco (IIEG)",
     "license": "MIT",
     "author": "Edgar Alejandro Villarreal Padilla <edgar.villarreal@iieg.gob.mx>",
-    "version": "1.9.1",
+    "version": "1.9.0",
     "type": "module",
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "build:csp": "node scripts/generate-csp-nginx.js",
-        "build:full": "vite build && node scripts/generate-csp-nginx.js",
         "preview": "vite preview",
         "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
     },
