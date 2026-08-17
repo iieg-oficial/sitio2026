@@ -84,12 +84,12 @@ function HomePage() {
                 <meta name="twitter:description" content={page?.description_meta || 'Conoce Jalisco, nuestro territorio y sus recursos naturales; las características de su población y las condiciones en las que vive; así como su situación económica y las oportunidades que ofrece nuestro estado, sus municipios y los diferentes ordenes de gobierno.'} />
                 <meta name="twitter:image" content={page?.postlink ? page?.postlink : "/demo.jpg"} />
             </Helmet>
-            <section className="h-auto md:h-[675px] lg:h-[580px] xl:h-[592px]  2xl:h-[925px] " role="banner">                
+            <section className="h-auto md:h-[565px] lg:h-[580px] xl:h-[592px]  2xl:h-[925px] " role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
             </section>            
             <section className="container-fluid relative grid">
                 <div className="relative z-0 order-2 xl:order-1 min-h-[475px] xl:min-h-[530px] 2xl:min-h-auto">                    
-                    <div className='bg-primary text-center z-10 mx-auto absolute top-[50%] xl:top-[60%] 2xl:top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-10 py-11 rounded-2xl w-11/12 lg:w-10/12 xl:w-auto'>
+                    <div className='bg-primary text-center z-10 mx-auto absolute top-[50%] xl:top-[60%] 2xl:top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-10 py-11 rounded-2xl w-11/12 lg:w-10/12 xl:w-7/12'>
                         <img src="/ico_mapalab.png" alt="MapaLab" className="inline-block mr-2" />
                         <p className='text-center text-white my-8 text-22'>Explora el territorio de Jalisco con datos geoespaciales</p>
                         <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-medio hover:bg-tertiary text-base block max-w-[395px] mx-auto">
