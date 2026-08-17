@@ -55,7 +55,7 @@ export default function Banners() {
                             <Link to={banner.link} className="button block font-base float-left bg-medio hover:bg-tertiary">{banner.boton}</Link>
                         </div>
                         <div>
-                            <img src={banner.imagen} alt={banner.titulo} className="w-full object-cover"/>
+                            <img src={banner.imagen} alt={banner.titulo} className="w-full h-auto object-cover xl:w-[460px] mx-auto"/>
                         </div>
                     </div>
                 )}
