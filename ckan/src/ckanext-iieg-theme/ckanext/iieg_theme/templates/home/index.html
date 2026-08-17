@@ -42,7 +42,7 @@
                         {{ dataset.title or dataset.name }}
                       </a>
                       <span class="badge">
-                        {{ dataset.tracking_summary.total if dataset.tracking_summary else 0 }} visitas
+                        {{ dataset.tracking_summary.total if dataset.tracking_summary else 0 }} {{ _('visitas') }}
                       </span>
                     </div>
                 {% endfor %}
@@ -94,11 +94,11 @@
               {% endfor %}
               
               {% if etiquetas_renderizadas|length == 0 %}
-                <p style="color: #777; font-style: italic;">No hay etiquetas recientes en los últimos conjuntos de datos.</p>
+                <p style="color: #777; font-style: italic;">{{ _('No hay etiquetas recientes en los últimos conjuntos de datos.') }}</p>
               {% endif %}
             </div>
           {% else %}
-            <p style="color: #777; font-style: italic;">No hay etiquetas disponibles en este momento.</p>
+            <p style="color: #777; font-style: italic;">{{ _('No hay etiquetas disponibles en este momento.') }}</p>
           {% endif %}
         </div>
 
