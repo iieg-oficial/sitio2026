@@ -25,8 +25,21 @@
   color: #ffffff;
   text-decoration: none;
   border-bottom: none;
-  font-size: 16px;
+  font-size: 16px; 
 }
+
+@media (width >= 80rem) {
+  .menu-wrapper a {
+    font-size: 14px; 
+  }
+}
+
+@media (width >= 96rem) {
+  .menu-wrapper a {
+    font-size: 16px; 
+  }
+}
+
 .menu-wrapper a:hover {  
   transition: all 0.5s;
   color: #ff8300;
