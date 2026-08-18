@@ -50,7 +50,7 @@ export default function Directorio() {
                             </div>
                             {/* Icono que gira si está abierto */}
                             <div className='col-span-1 bg-white group-hover:bg-primary shadow-lg h-[25px] w-[25px] rounded-full flex items-center justify-center transition-shadow duration-300 hover:shadow-xl'>
-                                <span className={`line-md--chevron-down text-primary group-hover:bg-white transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></span>
+                                <span className={`line-md--chevron-down text-primary group-hover:bg-white! transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></span>
                             </div>
                         </div>
 
@@ -91,7 +91,7 @@ export default function Directorio() {
                             </div>
                             {/* Icono que gira si está abierto */}
                             <div className='group-hover:bg-primary col-span-1 bg-white shadow-lg h-[25px] w-[25px] rounded-full flex items-center justify-center transition-shadow duration-300 hover:shadow-xl'>
-                                <span className={`line-md--chevron-down text-primary group-hover:bg-white transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></span>
+                                <span className={`line-md--chevron-down text-primary group-hover:bg-white! transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></span>
                             </div>
                         </div>
 
