@@ -75,7 +75,7 @@
   .swiper-pagination-horizontal.swiper-pagination-bullets {
     &.swiper-pagination-bullets-dynamic {
       width: 1520px !important;
-      bottom: 15% !important;
+      bottom: 20% !important;
     }
   }
 }
