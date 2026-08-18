@@ -44,8 +44,8 @@ export default function Preguntas() {
         <button
             type="button"
             {...props}
-            className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${active
-                ? 'bg-etiqueta-sec text-tertiary border-tertiary'
+            className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-bold text-22 transition-colors flex-shrink-0 snap-start min-w-[120px] ${active
+                ? 'bg-etiqueta-sec text-tertiary border-tertiary font-garet-extrabold'
                 : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
         >
             {children}
@@ -84,21 +84,21 @@ export default function Preguntas() {
                         const isOpen = openPreguntas[pregunta.id] ?? false;
 
                         return (
-                            <div key={pregunta.id} className='mb-5 w-full rounded-2xl bg-card pl-11 p-4 px-8 my-5'>
+                            <div key={pregunta.id} className='mb-5 w-full rounded-2xl bg-card pl-11 p-4 px-8 my-5 group hover:border-2 hover:border-primary'>
                                 <button
                                     type='button'
                                     onClick={() => togglePregunta(pregunta.id)}
                                     className='grid grid-cols-12 w-full'
                                 >
-                                    <h2 className='text-primary text-22 col-span-11 text-left'>{pregunta.pregunta}</h2>
+                                    <h2 className='text-primary text-22 font-garet-bold col-span-11 text-left'>{pregunta.pregunta}</h2>
                                     <div className='col-span-1'>
-                                        <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 hover:shadow-xl'>
-                                            <span className={`line-md--chevron-down text-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></span>
+                                        <div className='group-hover:bg-primary bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 hover:shadow-xl'>
+                                            <span className={`line-md--chevron-down group-hover:bg-white! text-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></span>
                                         </div>
                                     </div>
                                 </button>
                                 {isOpen && (
-                                    <div dangerouslySetInnerHTML={{ __html: pregunta.respuesta }} className='diez mt-5' />
+                                    <div dangerouslySetInnerHTML={{ __html: pregunta.respuesta }} className='diez mt-5 font-garet text-18' />
                                 )}
                             </div>
                         )
