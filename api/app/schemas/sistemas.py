@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, computed_field
 from enum import Enum
 from typing import List, Optional
 from app.schemas.subject import SubjectFlat
@@ -60,6 +60,11 @@ class SistemasResponse(BaseModel):
     imagen_slider: Optional[str] = None
     orden: int
     temas: Optional[List[SubjectFlat]] = []
+
+    @computed_field
+    @property
+    def tipo_label(self) -> str:
+        return self.tipo.label if self.tipo else self.tipo
 
     class Config:
         from_attributes = True

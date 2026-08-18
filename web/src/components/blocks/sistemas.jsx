@@ -87,9 +87,9 @@ export default function Sistemas() {
         <button
             type="button"
             {...props}
-            className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${active
-                ? 'bg-etiqueta-sec text-tertiary border-tertiary'
-                : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
+            className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-bold text-18 transition-colors flex-shrink-0 snap-start min-w-[120px] ${active
+                ? 'bg-etiqueta-sec text-tertiary border-tertiary font-garet-extrabold'
+                : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec font-garet-extrabold'}`}
         >
             {children}
         </button>
@@ -98,12 +98,12 @@ export default function Sistemas() {
 
     return (
         <div className='container mx-auto px-2'>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo buscas?" />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
 
             <div className="relative container mx-auto px-2 mt-15">
                     <span class="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
                     <div
-                        className="flex gap-5 mb-10 lg:ml-15 overflow-x-auto sm:overflow-visible snap-x snap-mandatory"
+                        className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto sm:overflow-visible snap-x snap-mandatory"
                         style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
                     >
                         {tabs.map((tab, index) => (
@@ -155,15 +155,15 @@ export default function Sistemas() {
                                                 />
                                             </div>
                                             <div className='lg:col-span-4'>
-                                                <h3 className="mb-3 text-primary">
+                                                <h3 className="mb-3 text-primary text-28 font-garet-extrabold">
                                                     {sistema.titulo}
                                                 </h3>
-                                                <div className="diez" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
+                                                <div className="diez text-18 font-garet" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
                                             </div>
                                             <div className='lg:col-span-6 mt-5'>
                                                 {sistema.tipo && (
-                                                    <span className={`e${sistema.tipo} text-titulo rounded-xl px-4 py-2 text-14`}>
-                                                        {sistema.tipo.replace('-', ' ')}
+                                                    <span className={`e${sistema.tipo} rounded-xl px-4 py-2 text-14`}>
+                                                        {sistema.tipo_label || sistema.tipo.replace('-', ' ')}
                                                     </span>
                                                 )}
                                                 
