@@ -56,7 +56,7 @@ help:
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
-	@echo '  ${YELLOW}make clean${RESET}            - Borra contenedores, redes y volúmenes (pide confirmación)'
+	@echo '  ${YELLOW}make clean${RESET}            - Borra contenedores, redes y volúmenes de BD (conserva buckets/acervo)'
 	@echo '  ${YELLOW}make up-prod-local${RESET}    - Inicia el entorno en modo producción local'
 	@echo '  ${YELLOW}make down-prod-local${RESET}  - Detiene el entorno en modo producción local'
 	@echo '  ${YELLOW}make restart-prod-local${RESET}- Reinicia el entorno en modo producción local'
@@ -163,16 +163,22 @@ restart-prod-local:
 	$(MAKE) restart ENV=prod-local
 
 clean:
-	@echo "${RED}⚠ Esto borra contenedores, redes y volúmenes de TODOS los modos (dev/prod/gcp).${RESET}"
-	@echo "${RED}  Se perderán datos de Postgres, CKAN-db, Redis, Solr, SeaweedFS y Media.${RESET}"
+	@echo "${RED}⚠ Esto borra contenedores, redes y volúmenes de BD de TODOS los modos (dev/prod/gcp).${RESET}"
+	@echo "${RED}  Se perderán datos de Postgres, CKAN-db, Redis y Solr.${RESET}"
+	@echo "${GREEN}  Se CONSERVAN: SeaweedFS (buckets/acervo), CKAN storage y node_modules.${RESET}"
 	@if [ "$(FORCE)" != "1" ]; then \
 		printf "Escribe ${YELLOW}yes${RESET} para confirmar: "; \
 		read confirm; \
 		[ "$$confirm" = "yes" ] || { echo "${YELLOW}Cancelado.${RESET}"; exit 1; }; \
 	fi
-	-docker compose --env-file .env.development -f docker-compose.dev.yml down -v --remove-orphans
-	-docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.gcp.yml down -v --remove-orphans
-	-docker compose --env-file .env.production -f docker-compose.yml down -v --remove-orphans
+	@echo "${YELLOW}Deteniendo contenedores (sin borrar volúmenes)...${RESET}"
+	-docker compose --env-file .env.development -f docker-compose.dev.yml down --remove-orphans
+	-docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.gcp.yml down --remove-orphans
+	-docker compose --env-file .env.production -f docker-compose.yml down --remove-orphans
+	@echo "${YELLOW}Eliminando volúmenes de base de datos...${RESET}"
+	-docker volume rm portal_postgres_data_dev portal_redis_data_dev portal_ckan_db_data_dev portal_ckan_solr_data_dev 2>/dev/null
+	-docker volume rm portal_postgres_data portal_redis_data portal_ckan_db_data portal_ckan_solr_data 2>/dev/null
+	@echo "${GREEN}Limpieza completada. Los buckets (SeaweedFS/acervo) y CKAN storage se conservaron.${RESET}"
 
 shell-api:
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec api /bin/bash
