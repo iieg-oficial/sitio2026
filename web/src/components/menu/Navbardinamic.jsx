@@ -76,6 +76,14 @@ const Navbardinamic = () => {
     navigate(`/busqueda?q=${encodeURIComponent(term)}`);
   };
 
+  // Helper para verificar si un slug corresponde a la ruta activa actual
+  const isPathActive = (slug) => {
+    if (!slug) return false;
+    const path = cleanSlug(slug);
+    if (path === '/') return location.pathname === '/';
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
   return (
     <div className="container-fluid bg-primary py-5">
       <div className="menu-wrapper grid grid-cols-2 xl:grid-cols-12 container mx-auto">
@@ -102,10 +110,17 @@ const Navbardinamic = () => {
                   const hasSubpages = Array.isArray(item.subpages) && item.subpages.length > 0;
                   const destination = cleanSlug(item.slug_custom);
 
+                  const isItemActive = isPathActive(item.slug_custom);
+                  const isChildActive = hasSubpages && item.subpages.some(
+                    (sub) => sub && sub.activar === true && isPathActive(sub.slug_custom)
+                  );
+                  const isCurrent = isItemActive || isChildActive;
+
                   return (
-                    <li key={item.id} className={`menu-link ${hasSubpages ? 'has-subnav' : ''}`}>
+                    <li key={item.id} className={`menu-link ${hasSubpages ? 'has-subnav' : ''} ${isCurrent ? 'current-menu-item active' : ''}`}>
                       <TrackedLink
                         to={destination}
+                        className={isCurrent ? 'active' : ''}
                         target={item.link_interno ? undefined : '_blank'}
                       >
                         {item.title}
@@ -125,17 +140,22 @@ const Navbardinamic = () => {
                           {item.subpages
                             .filter((subItem) => subItem && subItem.activar === true)
                             .sort(sortByOrder)
-                            .map((subItem) => (
-                              <li key={subItem.id}>
-                                <TrackedLink 
-                                  to={cleanSlug(subItem.slug_custom)}
-                                  className="nav-link" 
-                                  target={subItem.link_interno ? undefined : '_blank'}
-                                >
-                                  {subItem.title}
-                                </TrackedLink>
-                              </li>
-                            ))}
+                            .map((subItem) => {
+                              const subDestination = cleanSlug(subItem.slug_custom);
+                              const isSubActive = isPathActive(subItem.slug_custom);
+
+                              return (
+                                <li key={subItem.id} className={isSubActive ? 'active' : ''}>
+                                  <TrackedLink 
+                                    to={subDestination}
+                                    className={`nav-link ${isSubActive ? 'active' : ''}`} 
+                                    target={subItem.link_interno ? undefined : '_blank'}
+                                  >
+                                    {subItem.title}
+                                  </TrackedLink>
+                                </li>
+                              );
+                            })}
                         </ul>
                       )}
                     </li>
