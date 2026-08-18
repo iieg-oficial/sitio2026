@@ -101,6 +101,13 @@ def normalize_row(row: dict) -> dict:
     slug = (row.get("slug") or "").strip() or slugify(titulo)
     tema_ids = [int(item) for item in split_values(row.get("tema_ids"))]
     tema_slugs = split_values(row.get("tema_slugs"))
+    
+    subtema_ids = [int(item) for item in split_values(row.get("subtema_ids"))]
+    subtema_slugs = split_values(row.get("subtema_slugs"))
+
+    # En el modelo, tanto temas como subtemas se guardan en la misma relación "temas" (Subject)
+    all_tema_ids = list(set(tema_ids + subtema_ids))
+    all_tema_slugs = list(set(tema_slugs + subtema_slugs))
 
     return {
         "titulo": titulo,
@@ -109,8 +116,8 @@ def normalize_row(row: dict) -> dict:
         "periocidad": parse_periocidad(row.get("periocidad")),
         "archivo": (row.get("archivo") or "").strip() or None,
         "claves": (row.get("claves") or "").strip() or None,
-        "tema_ids": tema_ids,
-        "tema_slugs": tema_slugs,
+        "tema_ids": all_tema_ids,
+        "tema_slugs": all_tema_slugs,
     }
 
 
