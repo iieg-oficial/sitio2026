@@ -45,9 +45,9 @@ export default function PlanInstitucional() {
                             <img 
                                 src={item?.imagen ? item.imagen : "/default.png"} 
                                 alt={item?.nombre || "Plan Institucional"} 
-                                className="object-contain mx-auto mb-5"
+                                className="object-contain mx-auto mb-5 xl:w-[60%]"
                             />
-                            <h5 className="col-span-12 text-titulo">{item?.nombre || 'Sin título'}</h5>                    
+                            <h5 className="col-span-12 text-titulo font-garet-bold text-22">{item?.nombre || 'Sin título'}</h5>                    
                         </div>
                     ))}
                 </div>
