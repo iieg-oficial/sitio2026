@@ -43,7 +43,7 @@ export default function Mapas() {
     const mapasFiltrados = isMobile ? mapas.slice(0, 1) : mapas
     
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 extra:max-w-[1980px] mx-auto w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-15 extra:max-w-[1980px] mx-auto w-full">
             {mapasFiltrados.map((mapa) => {
                 if (!mapa) return null
                 
@@ -63,7 +63,7 @@ export default function Mapas() {
                             />
                         <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
                             
-                                {titulo && <h3 className='text-white text-22 font-800'>{titulo}</h3>}
+                                {titulo && <h3 className='text-white text-22 font-garet-bold font-800'>{titulo}</h3>}
                                 
                                 <div className='flex mb-5 mt-5 gap-2'>  
                                     {mapa.anyo ? <p className='text-14 font-bold rounded-xl py-2 px-5 bg-[#FFF2E5] text-tertiary border border-[#FF83004D]'>{mapa.anyo}</p> : null}                        
