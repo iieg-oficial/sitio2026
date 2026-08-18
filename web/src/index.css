@@ -441,3 +441,7 @@ ul.pagination li:hover{
   color: #172A55;
   opacity: 1; 
 }
+
+.page-organigrama .page-header{
+  padding-bottom: 0px !important;
+}
