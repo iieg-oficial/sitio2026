@@ -45,10 +45,12 @@
   color: #ff8300;
 }
 .menu-wrapper .menu > .current-menu-item > a,
-.menu-wrapper .menu > .current-menu-ancestor > a {
+.menu-wrapper .menu > .current-menu-ancestor > a,
+.menu-wrapper .menu > li.active > a,
+.menu-wrapper .menu a.active {
   position: relative;
   z-index: 12;
-  color: #ffffff;
+  color: #ff8300;
   border-bottom: none;
 }
 .menu-wrapper .menu > .current-menu-item > a:hover,
@@ -81,9 +83,12 @@
   color: #5c2472;
   padding: 5px 25px;
 }
-.menu-wrapper .sub-menu a:hover {
+.menu-wrapper .sub-menu a:hover,
+.menu-wrapper .sub-menu a.active,
+.menu-wrapper .sub-menu li.active > a {
   background: #f4d8ff;
   color: #ff8300;
+  font-weight: 600;
 }
 
 .menu-wrapper .sub-menu li:last-child a {
