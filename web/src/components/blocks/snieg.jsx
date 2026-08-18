@@ -31,19 +31,19 @@ export default function Snieg() {
                     target="_blank"
                     rel="noopener noreferrer"
                     >
-                    <div key={snieg.id} className={`bg-card rounded-3xl p-5 sm:p-10 xl:px-20 mb-5 grid lg:grid-cols-6 gap-5 ${ snieg.enlace ? "hover:border-1 hover:border-tertiary" : ""} `}>
+                    <div key={snieg.id} className={`bg-card group rounded-[45px] p-5 sm:p-10 xl:px-20 mb-5 grid lg:grid-cols-6 gap-5 ${ snieg.enlace ? "hover:border-2 hover:border-primary" : ""} `}>
                         <div className='md:h-[200px] lg:h-auto lg:col-span-2'>
                             <img src={snieg.imagen ? snieg.imagen : "/demo.jpg"} alt={snieg.titulo} className='mx-auto md:h-full lg:h-auto'/>
                             {/*<img src={snieg.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/snieg/${thumb}?w=400` : "/demo.jpg"} alt={snieg.titulo} /> */}
                         </div>
                         <div className='lg:col-span-4'>
-                            <h2 className='text-titulo font-extrabold'>{snieg.titulo}</h2>
+                            <h2 className='text-36 text-titulo font-garet-extra font-extrabold'>{snieg.titulo}</h2>
                             <div dangerouslySetInnerHTML={{__html: snieg.descripcion}} className='diez mt-5' />
                             { snieg.enlace ?
                                                 <div className='mb-4 h-10'>
                                                 <TrackedLink to={snieg.enlace} className="" target="_blank" rel="noopener noreferrer">
-                                                <div className='col-span-1 bg-white shadow-lg h-[40px] w-[40px] rounded-full flex items-center justify-center transition-shadow duration-300 hover:shadow-xl float-right'>
-                                                    <span className="quill--link-out text-tertiary"></span>
+                                                <div className='group-hover:bg-tertiary col-span-1 bg-white shadow-lg h-[40px] w-[40px] rounded-full flex items-center justify-center transition-shadow duration-300 hover:shadow-xl float-right'>
+                                                    <span className="quill--link-out text-tertiary group-hover:bg-white!"></span>
                                                 </div>
                                                 </TrackedLink>
                                                 </div>
