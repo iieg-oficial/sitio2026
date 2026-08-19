@@ -18,6 +18,13 @@ class SistemasCreate(BaseModel):
     imagen_slider: Optional[str] = None
     orden: Optional[int] = None
 
+    @field_validator('tipo', mode='before')
+    @classmethod
+    def clean_tipo(cls, v):
+        if isinstance(v, str) and v == 'datos_recientes':
+            return 'datos-recientes'
+        return v
+
     @field_validator('tema_ids', mode='before')
     @classmethod
     def clean_tema_ids(cls, v):

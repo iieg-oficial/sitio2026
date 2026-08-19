@@ -344,7 +344,8 @@ li::marker {
 }
 
 
-.edatos_recientes{
+.edatos_recientes,
+.edatos-recientes {
   background-color: #FFF2E5;
   color: var(--color-tertiary);
   border: 1px solid #FF83004D;
