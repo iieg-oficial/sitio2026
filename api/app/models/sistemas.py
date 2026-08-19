@@ -12,7 +12,7 @@ sistema_temas = Table(
 
 class TipoSistemaEnum(str, enum.Enum):
     plataforma = "plataforma"
-    datos_recientes = "datos_recientes"
+    datos_recientes = "datos-recientes"
     estadistica = "estadistica"
 
     @property
