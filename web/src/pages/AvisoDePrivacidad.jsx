@@ -70,7 +70,7 @@ export default function AvisoDePrivacidad({ slug = SLUG_INTEGRAL }) {
                     <div className='text-body text-16 leading-8 prose diez w-full mx-auto max-w-full' dangerouslySetInnerHTML={{ __html: page.description }}></div>
                     {slug === SLUG_INTEGRAL && (
                         <a
-                            href={PDF_INTEGRAL}
+                            href="https://iieg.jalisco.gob.mx/acervo/portal/aviso_de_privacidad_integral_iieg_06_2025.pdf"
                             target='_blank'
                             rel='noopener noreferrer'
                             className='inline-block mt-8 text-16 text-primary underline'
