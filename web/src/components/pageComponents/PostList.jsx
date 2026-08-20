@@ -18,7 +18,7 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
             </button>
         );
 
-      console.log('results', results);
+      
 
   return (
             <>

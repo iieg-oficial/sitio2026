@@ -37,13 +37,13 @@ function Post() {
     }
 
     const showData = async () => {
-        const response = await api.get('/posts');
-    console.log('RAW response.data:', response.data);
+    const response = await api.get('/posts');
+    
     const payload = response.data;
     const postsData = Array.isArray(payload)
         ? payload
         : payload?.posts ?? payload?.items ?? payload?.data ?? [];
-    console.log('postsData resultante:', postsData);
+    
 
     setPosts(postsData);
     }
