@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 
 function Post() {
     const defaultPage = {
-        title: 'Comunidad',
+        title: 'Comunidación institucional',
         description: '<p>Bienvenido a la comunidad. Aquí encontrarás las últimas publicaciones y novedades.</p><p>Usa el buscador para filtrar los posts según tus intereses y términos de búsqueda.</p>',
         description_meta: 'Encuentra publicaciones de la comunidad con el buscador y accede a las novedades del portal.',
         keywords_meta: 'comunidad,posts,búsqueda,noticias'
@@ -27,7 +27,7 @@ function Post() {
 
     const fetchPageHome = async () => {
         try {
-            const res = await api.get('/paginas/slug/comunidad');
+            const res = await api.get('/paginas/slug/comunicacion-institucional');
             setPage(res.data);
         } catch (err) {
             if (err.response?.status !== 404) {

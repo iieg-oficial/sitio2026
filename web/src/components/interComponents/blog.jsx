@@ -13,7 +13,7 @@ import ShareButtons from '../pageComponents/ShareButtons'
 
 export default function Blog() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
-    const postUrl = `http://localhost:13010/comunidad/${slug}`;
+    const postUrl = `http://localhost:13010/comunicacion-institucional/${slug}`;
     const [singlePost, setSinglePost] = useState(null);
 
     // Función Helper para obtener el ID de YouTube de casi cualquier URL
