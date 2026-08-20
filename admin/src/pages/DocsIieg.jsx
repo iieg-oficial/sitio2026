@@ -91,10 +91,10 @@ export default function DocsIieg() {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
-            render: (text) => <div style={{ maxHeight: '100px', overflow: 'hidden' }}>{parse(text)}</div>,
+            render: (text) => <div style={{ maxHeight: '100px', overflow: 'hidden' }}>{text ? parse(text) : ''}</div>,
             sorter: (a, b) => {
-                const cleanA = a.descripcion.replace(/<[^>]*>/g, '');
-                const cleanB = b.descripcion.replace(/<[^>]*>/g, '');
+                const cleanA = (a.descripcion || '').replace(/<[^>]*>/g, '');
+                const cleanB = (b.descripcion || '').replace(/<[^>]*>/g, '');
                 return cleanA.localeCompare(cleanB);
             }
         },
