@@ -34,7 +34,7 @@ class Documentacion(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
-    descripcion = Column(Text, nullable=False)
+    descripcion = Column(Text, nullable=True)
     anyo = Column(Integer, nullable=True)
     archivo = Column(String, nullable=True)
     tipo = Column(Enum(TipoEnum), nullable=True)
