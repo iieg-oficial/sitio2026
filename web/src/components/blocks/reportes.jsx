@@ -259,15 +259,15 @@ export default function Reportes() {
                                 </div>
                             </div> 
 
-                            <div className='flex flex-wrap gap-5 text-14'>
+                            <div className='flex flex-wrap gap-5 '>
                                 {reporte.year && (
-                                    <p className='text-tertiary text-14 capitalize border border-tertiary bg-etiqueta-sec py-3 px-5 rounded-xl'>{reporte.year}</p>
+                                    <p className='text-tertiary text-4 capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{reporte.year}</p>
                                 )}
                                 {reporte.periocidad && (
-                                    <p className='text-titulo text-14 capitalize border border-titulo bg-etiqueta-ter py-3 px-5 rounded-xl'>{reporte.periocidad}</p>
+                                    <p className='text-titulo text-4 capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{reporte.periocidad}</p>
                                 )}
                                 {reporte.fecha && (
-                                    <p className='text-primary text-14 capitalize border border-[#5C24724D] bg-[#F3EAFF] py-3 px-5 rounded-xl'>Publicada: {format(new Date(reporte.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                    <p className='text-primary text-4 capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>Publicada: {format(new Date(reporte.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                 )}
                             </div>
                             

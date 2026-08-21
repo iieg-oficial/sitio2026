@@ -268,6 +268,9 @@ li::marker {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
 }
+.material-symbols--chevron-left:hover {
+  background-color: #fff !important;
+}
 .material-symbols--chevron-right {
   display: inline-block;
   width: 24px;
@@ -397,7 +400,7 @@ ul.pagination li{
   border-radius: 100%;
 }
 ul.pagination li.active{
-  background-color: var(--color-etiqueta);
+  background-color: #FFF2E5;
   border: 1px solid var(--color-tertiary);
 }
 ul.pagination li.active a{
@@ -410,7 +413,7 @@ ul.pagination li a{
   font-weight: 800;
 }
 ul.pagination li:hover{
-  background-color: var(--color-etiqueta);
+  background-color: #FFF2E5;
   border: 1px solid var(--color-tertiary);
 }
 

@@ -6,7 +6,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
     return (
         <div className="w-full">
             {/* Contenedor principal que controla el ancho en móvil y escritorio */}
-            <div className="mx-auto w-full px-2 md:w-3/6">
+            <div className="mx-auto w-full px-2 md:w-3/6 max-w-[1000px]">
                 
                 {/* Contenedor/Simulador del Input:
                   Mantiene el fondo 'bg-card', los bordes redondeados 'rounded-3xl' y el centrado 'justify-center'.
@@ -44,7 +44,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
                             width="24" 
                             height="24" 
                             viewBox="0 0 24 24"
-                            className={`transition-colors duration-200 ${isSearching ? 'text-positivo' : 'text-primary'}`}
+                            className={`transition-colors duration-200 ${isSearching ? 'text-secondary' : 'text-primary'}`}
                         >
                             <path d="M0 0h24v24H0z" fill="none" />
                             <path 
