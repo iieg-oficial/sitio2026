@@ -267,7 +267,7 @@ export default function Reportes() {
                                     <p className='text-titulo text-14 capitalize border border-titulo bg-etiqueta-ter py-3 px-5 rounded-xl'>{reporte.periocidad}</p>
                                 )}
                                 {reporte.fecha && (
-                                    <p className='text-[#F3EAFF] text-14 capitalize border border-[#F3EAFF] bg-etiqueta py-3 px-5 rounded-xl'>Publicada: {format(new Date(reporte.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                    <p className='text-primary text-14 capitalize border border-[#5C24724D] bg-[#F3EAFF] py-3 px-5 rounded-xl'>Publicada: {format(new Date(reporte.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                 )}
                             </div>
                             
