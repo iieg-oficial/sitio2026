@@ -154,7 +154,7 @@ export default function Flashes() {
     return (
         <div className='px-2'>
             {lastFlash && !hasActiveFilters && (
-                <div className='rounded-2xl p-5 lg:py-8 mb-4 mx-auto container  bg-[#F9FBFF] mb-15'>
+                <div className='rounded-2xl p-5 lg:p-8 mb-4 mx-auto container  bg-[#F9FBFF] mb-15'>
                     <h3 className='text-36 text-tertiary font-garet-extra'>{lastFlash.titulo}</h3>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
                         <div className='bg-white rounded-2xl p-8'>
@@ -173,13 +173,13 @@ export default function Flashes() {
                         </div>
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                             {lastFlash.periocidad && (
-                                <p className='text-titulo text-4 capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{lastFlash.periocidad}</p>
+                                <p className='text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{lastFlash.periocidad}</p>
                             )}
                             {lastFlash.fecha_publicacion && (
-                                <p className='text-tertiary text-4 capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                <p className='text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                             )}
                             {lastFlash.fuente && (
-                                <p className='text-primary text-4 capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>{lastFlash.fuente}</p>                            
+                                <p className='text-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>{lastFlash.fuente}</p>                            
                             )}                            
                         </div>
                         {lastFlash.link && (
@@ -283,15 +283,15 @@ export default function Flashes() {
                         rel="noopener noreferrer"
                     >
                         
-                        <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mb-4 mx-auto container bg-white mt-8 hover:border hover:border-tertiary group'>
+                        <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mx-auto container bg-white mt-8 hover:border hover:border-tertiary group'>
                             <h3 className='text-18 text-titulos'>{flash.titulo}</h3>
                             <div className='grid grid-cols-1 grid-cols-6 gap-6 mt-2'>
                                 <div className='col-span-4 flex gap-4 flex-wrap mt-5'>
                                     {flash.periocidad && (
-                                        <p className='text-titulo text-4 capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{flash.periocidad}</p>
+                                        <p className='text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{flash.periocidad}</p>
                                     )}
                                     {flash.fecha_publicacion && (
-                                        <p className='text-tertiary text-4 capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                        <p className='text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                     )}
                                 </div>
                                 { flash.slug ?
