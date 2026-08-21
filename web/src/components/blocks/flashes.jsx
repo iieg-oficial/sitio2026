@@ -155,31 +155,31 @@ export default function Flashes() {
         <div className='px-2'>
             {lastFlash && !hasActiveFilters && (
                 <div className='rounded-2xl p-5 lg:p-14 mb-4 mx-auto container bg-[#F5F5F5] mt-5 mb-15'>
-                    <h3 className='text-28 text-tertiary'>{lastFlash.titulo}</h3>
+                    <h3 className='text-36 text-tertiary font-garet-extra'>{lastFlash.titulo}</h3>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
                         <div className='bg-white rounded-2xl p-8'>
                             <div className="flex gap-4 items-center">
                                 <img src="/ico_jalisco.svg" alt="Jalisco" className="w-16 h-16 object-contain" />
-                                <h4> Jalisco</h4>
+                                <h4 className="text-primary"> Jalisco</h4>
                             </div>
                             <div dangerouslySetInnerHTML={{__html: lastFlash.desc_jal}} className='mt-5 prose max-w-none' />
                         </div>
                         <div className='bg-white rounded-2xl p-6'>
                             <div className="flex gap-4 items-center">
                                 <img src="/ico_Nacional.svg" alt="Nacional" className="w-16 h-16 object-contain" /> 
-                                <h4>Nacional</h4>
+                                <h4 className="text-primary">Nacional</h4>
                             </div>
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_nac}} className='mt-5 prose max-w-none' />
+                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_nac}} className='mt-5 prose max-w-none text-14!' />
                         </div>
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                             {lastFlash.periocidad && (
-                                <p className='bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{lastFlash.periocidad}</p>
+                                <p className='text-titulo text-14 capitalize border border-titulo bg-etiqueta-ter py-3 px-5 rounded-xl'>{lastFlash.periocidad}</p>
                             )}
                             {lastFlash.fecha_publicacion && (
-                                <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                <p className='text-tertiary text-14 capitalize border border-tertiary bg-etiqueta-sec py-3 px-5 rounded-xl'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                             )}
                             {lastFlash.fuente && (
-                                <p className='bg-etiqueta border-[#5C24724D] text-primary rounded-2xl px-4 py-2 text-14'>{lastFlash.fuente}</p>                            
+                                <p className='text-[#F3EAFF] text-14 capitalize border border-[#F3EAFF] bg-etiqueta py-3 px-5 rounded-xl'>{lastFlash.fuente}</p>                            
                             )}                            
                         </div>
                         {lastFlash.link && (
@@ -195,7 +195,7 @@ export default function Flashes() {
                 </div>
             )}
 
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder='¿qué quieres buscas?' />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder='¿Qué quieres buscar?' />
 
             <div className='mx-auto container flex flex-col lg:flex-wrap lg:flex-row gap-5 mt-15'>
                 <div>
@@ -288,16 +288,16 @@ export default function Flashes() {
                             <div className='grid grid-cols-1 grid-cols-6 gap-6 mt-8'>
                                 <div className='col-span-4 flex gap-4 flex-wrap mt-5'>
                                     {flash.periocidad && (
-                                        <p className='bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
+                                        <p className='text-titulo text-14 capitalize border border-titulo bg-etiqueta-ter py-3 px-5 rounded-xl'>{flash.periocidad}</p>
                                     )}
                                     {flash.fecha_publicacion && (
-                                        <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                        <p className='text-tertiary text-14 capitalize border border-tertiary bg-etiqueta-sec py-3 px-5 rounded-xl'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                     )}
                                 </div>
                                 { flash.slug ?
                                     <div className='col-span-2 mt-6'>
                                         
-                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-tertiary'>
                                                 <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                             </div>
                                         
