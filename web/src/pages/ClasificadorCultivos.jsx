@@ -47,7 +47,7 @@ export default function ClasificadorCultivos() {
                 </div>
                 <section className="container mx-auto grid grid-cols-1 md:grid-cols-6 gap-10 px-5">
                     <div className="md:col-span-2">
-                        <img src="/cultivos/ico_clasificador_cultivos.svg" alt={page?.title} className='image-mapa rounded-4xl mx-auto'/>
+                        <img src="/cultivos/ico_clasificador_cultivos.svg" alt={page?.title} className='image-mapa rounded-4xl mx-auto w-[60%] md:w-full xl:w-[80%] 2xl:w-[70%]'/>
                     </div>
                     <div className="md:col-span-4">
                         <h1>{page?.title || 'Clasificador de Cultivos'}</h1>
@@ -59,15 +59,15 @@ export default function ClasificadorCultivos() {
                 </section>
                 <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-25 xl:my-15 gap-12 text-center diez px-5">
                     <div>
-                        <img src="/cultivos/ico_cultivos_01.png" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
+                        <img src="/cultivos/ico_cultivos_01.png" alt={page?.title} className='align-center text-center mx-auto mb-5 w-[60%]'/>
                         <p>Se detectaron y clasificaron, a gran escala, cultivos agrícolas, a través de la interpretación de imágenes satelitales por medio del entrenamiento de modelos de IA.</p>
                     </div>
                     <div>
-                        <img src="/cultivos/ico_cultivos_02.png" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
+                        <img src="/cultivos/ico_cultivos_02.png" alt={page?.title} className='align-center text-center mx-auto mb-5 w-[60%]'/>
                         <p>Se realizaron dos macroprocesos, uno fue la segmentación de las parcelas. Fueron identificados sus límites utilizando las imágenes satelitales del Programa NICFI.</p>
                     </div>
                     <div>
-                        <img src="/cultivos/ico_cultivos_03.png" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
+                        <img src="/cultivos/ico_cultivos_03.png" alt={page?.title} className='align-center text-center mx-auto mb-5 w-[60%]'/>
                         <p>En el segundo macroproceso nuestros modelos trabajaron con series de tiempo de imágenes satelitales de Sentinel-1 y Sentinel-2, para la clasificación del tipo de cultivo dentro de cada parcela.</p>
                     </div>
                 </section>
