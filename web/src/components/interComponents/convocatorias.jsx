@@ -85,23 +85,30 @@ export default function Convocatorias() {
                     </div>
                 </main>
                 <section className='lg:w-11/12 mx-auto flex flex-wrap gap-5 lg:justify-around mt-8'>
+                {singleConvocatoria.inicio && (
                     <div className='lg:mt-8 lg:pt-4'>
                         <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
                             Inicio: {dayjs(singleConvocatoria.inicio).format('D [de] MMMM [de] YYYY')}                             
                         </p>
                     </div>
+                )}
+                {singleConvocatoria.tipo_curso.formato && (
                     <div className='lg:mt-8 lg:pt-4'>
                         <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
                             Formato: {singleConvocatoria.tipo_curso.formato}
                         </p>
                     </div>
+                )}
+                {singleConvocatoria.Horario && (
                     <div className='lg:mt-8 lg:pt-4'>
                         <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
                             Horario: {singleConvocatoria.Horario}
                         </p>
                     </div>
+                )}
                 </section>
                 <section className='lg:w-10/12 mx-auto my-15'>
+                {singleConvocatoria.Objetivo && (
                     <div className='grid grid-cols-6 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
@@ -111,6 +118,8 @@ export default function Convocatorias() {
                             <div dangerouslySetInnerHTML={{__html: singleConvocatoria.Objetivo}} className='mt-5 prose max-w-none cursos' />
                         </div>
                     </div>
+                )}
+                {singleConvocatoria.p_ingreso && (
                     <div className='my-20 grid grid-cols-6 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
@@ -120,7 +129,9 @@ export default function Convocatorias() {
                         <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_ingreso}} className='mt-5 prose max-w-none cursos' />
                         </div>
                     </div>
-                     <div className='grid grid-cols-6 gap-5'>
+                )}
+                {singleConvocatoria.p_egreso && (
+                    <div className='grid grid-cols-6 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
@@ -129,19 +140,24 @@ export default function Convocatorias() {
                         <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_egreso}} className='mt-5 prose max-w-none cursos' />                        
                         </div>
                     </div>
+                )}
                 </section>
                 <ConvocatoriasList />
                 <section className='grid grid-cols-6 gap-4 lg:w-10/12 mx-auto mb-15'>
                     <div className='col-span-1'></div>
                     <div className='col-span-5 grid lg:grid-cols-2 gap-5'>
+                        {singleConvocatoria.vigencia && (
                         <div className='my-5'>
                             <strong className='text-primary font-extrabold text-36 mb-10'>Vigencia</strong> 
                             <p className='text-20 text-titulo pt-6'>{singleConvocatoria.vigencia}</p>
                         </div>
+                        )}
+                        {singleConvocatoria.contacto && (
                         <div className='my-5'>
                             <strong className='text-primary font-extrabold text-36'>Contacto</strong> 
                         <p className='text-20 text-titulo pt-6'>{singleConvocatoria.contacto}</p>
                         </div>
+                        )}
                     </div>                
                 </section>
                 <ConvocatoriasInst />

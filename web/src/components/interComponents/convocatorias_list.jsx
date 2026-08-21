@@ -35,6 +35,7 @@ export default function ConvocatoriasList() {
 
     return (
         <>
+        {Array.isArray(singleConvocatoria.perfiles) && singleConvocatoria.perfiles.length > 0 && (
         <section className='lg:w-10/12 mx-auto my-15'>
             <div className='grid grid-cols-6 gap-5'>
                         <div className='col-span-1'>
@@ -72,7 +73,7 @@ export default function ConvocatoriasList() {
                 })}
             </div>
         </section>
-
+        )}
         </>
     );
 }   
