@@ -36,34 +36,35 @@ export default function CapacitacionesList({ curso }) {
                         </div>
                         <div className='col-span-11'>
                             <h2 className='text-primary text-36 font-extrabold'>Módulos del programa</h2>
+                            <div className='flex justify-left mt-8 gap-4 mx-auto w-full overflow-x-auto pb-2'>
+                                {modulosReversed.map((modulo) => (
+                                    <button 
+                                    key={modulo.id}
+                                    onClick={() => setActiveTab(modulo.nombre)}
+                                    className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-lg font-extrabold text-28 transition-colors ${activeTab === modulo.nombre
+                                        ? 'bg-etiqueta-sec text-tertiary border-tertiary border-1'
+                                        : 'bg-white text-titulo hover:bg-etiqueta-sec hover:text-tertiary hover:border-1'}`
+                                    }
+                                    >
+                                        {modulo.nombre}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className='p-5 my-5 md:mx-auto'>
+                                {modulosReversed.map((modulo) => {
+                                    if (activeTab === modulo.nombre) {
+                                        return (
+                                            <div key={modulo.id}>
+                                                <div dangerouslySetInnerHTML={{__html: modulo.descripcion}} className='mt-5 prose max-w-none cursos' />                        
+                                            </div>
+                                        )}
+                                    } 
+                                )}
+                            </div>
                         </div>
                     </div>
                     
-                    <div className='flex justify-left mt-8 gap-4 mx-auto w-full lg:w-9/12 overflow-x-auto pb-2'>
-                        {modulosReversed.map((modulo) => (
-                            <button 
-                            key={modulo.id}
-                            onClick={() => setActiveTab(modulo.nombre)}
-                            className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-lg font-extrabold text-28 transition-colors ${activeTab === modulo.nombre
-                                ? 'bg-etiqueta-sec text-tertiary border-tertiary border-1'
-                                : 'bg-white text-titulo hover:bg-etiqueta-sec hover:text-tertiary hover:border-1'}`
-                            }
-                            >
-                                {modulo.nombre}
-                            </button>
-                        ))}
-                    </div>
-                    <div className='p-5 my-5 md:mx-auto md:px-10 xl:px-25'>
-                        {modulosReversed.map((modulo) => {
-                            if (activeTab === modulo.nombre) {
-                                return (
-                                    <div key={modulo.id}>
-                                        <div dangerouslySetInnerHTML={{__html: modulo.descripcion}} className='mt-5 prose max-w-none cursos' />                        
-                                    </div>
-                                )}
-                            } 
-                        )}
-                    </div>
+                    
                 </section>
             )}
             {Array.isArray(singleCapacitacion.profesores) && singleCapacitacion.profesores.length > 0 && (
@@ -78,9 +79,11 @@ export default function CapacitacionesList({ curso }) {
                     </div>
                     <div className='grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4'>
                         {profesoresReversed.map((profesor) => (
-                           <div key={profesor.id} className='bg-card p-5 my-5 grid lg:grid-cols-6 rounded-3xl gap-4'>
-                            <div className='col-span-2'></div>
-                            <div className='col-span-4'>
+                           <div key={profesor.id} className='bg-card p-5 my-5 grid sm:grid-cols-12 rounded-3xl gap-4'>
+                            <div className='sm:col-span-2 flex items-center'>
+                                <img src={profesor.foto} alt={profesor.nombre} className='object-cover' />
+                            </div>
+                            <div className='sm:col-span-10'>
                                 <p className='text-tertiary font-bold text-22 mb-5'>{profesor.nombre}</p>
                                 <p className='text-titulo font-bold text-18'>{profesor.puesto}</p>
                                 <div dangerouslySetInnerHTML={{__html: profesor.descripcion}} className='mt-5 prose max-w-none diez mt-5' />
