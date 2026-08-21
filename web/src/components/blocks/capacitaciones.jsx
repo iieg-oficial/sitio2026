@@ -69,7 +69,7 @@ export default function Capacitaciones() {
         <div>
             <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover border-tertiary px-5 xl:px-5 2xl:px-0'>
                 {capacitacionesDestacadas.map(capacitacion => (
-                    <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" rel="noopener noreferrer">
+                    <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
                     <div className='grid md:grid-cols-6' key={capacitacion.id}>                                               
                         <div className='md:col-span-2'></div>
                         <div className='md:col-span-4'>
@@ -94,7 +94,7 @@ export default function Capacitaciones() {
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-15 container mx-auto px-5 xl:px-5 2xl:px-0'>
                 {currentItems.map(capacitacion => (
-                    <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" rel="noopener noreferrer">
+                    <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
                     <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl' key={capacitacion.id}>                        
                         <div className='md:col-span-2'></div>                        
                         <div className='md:col-span-4 p-6'>
