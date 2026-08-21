@@ -51,13 +51,13 @@ export default function ClasificadorCultivos() {
                     </div>
                     <div className="md:col-span-4">
                         <h1>{page?.title || 'Clasificador de Cultivos'}</h1>
-                        <p className="my-5 leading-10">Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.</p>
+                        <p className="my-5 leading-10 text-22">Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.</p>
                         <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-base text-primary rounded-4xl border border-primary px-6 py-3 font-extrabold hover:bg-primary hover:text-white transition-all duration-200 text-center">
                             Ver la documetación del proyecto                                
                         </TrackedLink>
                     </div>
                 </section>
-                <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-25 xl:my-50 gap-12 text-center diez px-5">
+                <section className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-25 xl:my-15 gap-12 text-center diez px-5">
                     <div>
                         <img src="/cultivos/ico_cultivos_01.png" alt={page?.title} className='align-center text-center mx-auto mb-5'/>
                         <p>Se detectaron y clasificaron, a gran escala, cultivos agrícolas, a través de la interpretación de imágenes satelitales por medio del entrenamiento de modelos de IA.</p>
@@ -75,24 +75,24 @@ export default function ClasificadorCultivos() {
                     <h2 className="text-primary text-center font-extrabold">Clasificador de cultivos en cifras</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-15 mb-25 text-center">
                         <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
-                            <b className='text-44 text-tertiary'>80,000 km²</b><br></br>
-                            <p className='text-18 text-titulo'>Área de estudio</p>
+                            <b className='text-44 text-tertiary font-garet-extra'>80,000 km²</b><br></br>
+                            <p className='text-18 text-titulo font-garet-bold'>Área de estudio</p>
                         </div>
                         <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
-                            <b className='text-44 text-tertiary'>81%</b><br></br>
-                            <p className='text-18 text-titulo'>Precisión general</p>
+                            <b className='text-44 text-tertiary font-garet-extra'>81%</b><br></br>
+                            <p className='text-18 text-titulo font-garet-bold'>Precisión general</p>
                         </div>
                         <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
-                            <b className='text-44 text-tertiary'>F1-score ≥ 90 %</b><br></br>
-                            <p className='text-18 text-titulo'>Rendimiento de los modelos de IA en la detección de cultivos</p>
+                            <b className='text-44 text-tertiary font-garet-extra'>F1-score ≥ 90 %</b><br></br>
+                            <p className='text-18 text-titulo font-garet-bold'>Rendimiento de los modelos de IA en la detección de cultivos</p>
                         </div>
                         <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
-                            <b className='text-44 text-tertiary'>+9.9%</b><br></br>
-                            <p className='text-18 text-titulo'>Mejora en IoU (de 0.668 a 0.734) <br /> mejora en IoU (5-ch vs. 3-ch ConvNet)</p>
+                            <b className='text-44 text-tertiary font-garet-extra'>+9.9%</b><br></br>
+                            <p className='text-18 text-titulo font-garet-bold'>Mejora en IoU (de 0.668 a 0.734) <br /> mejora en IoU (5-ch vs. 3-ch ConvNet)</p>
                         </div>
                         <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
-                            <b className='text-44 text-tertiary'>+5.8%</b><br></br>
-                            <p className='text-18 text-titulo'>Mejora en Average Precision (AP) <br /> Mejora en AP (5-ch vs. 3-ch ConvNet)</p>
+                            <b className='text-44 text-tertiary font-garet-extra'>+5.8%</b><br></br>
+                            <p className='text-18 text-titulo font-garet-bold'>Mejora en Average Precision (AP) <br /> Mejora en AP (5-ch vs. 3-ch ConvNet)</p>
                         </div>
                     </div>
                 </section>
