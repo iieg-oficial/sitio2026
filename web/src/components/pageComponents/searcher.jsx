@@ -44,7 +44,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
                             width="24" 
                             height="24" 
                             viewBox="0 0 24 24"
-                            className={`transition-colors duration-200 ${isSearching ? 'text-positivo' : 'text-gray-400'}`}
+                            className={`transition-colors duration-200 ${isSearching ? 'text-positivo' : 'text-primary'}`}
                         >
                             <path d="M0 0h24v24H0z" fill="none" />
                             <path 
