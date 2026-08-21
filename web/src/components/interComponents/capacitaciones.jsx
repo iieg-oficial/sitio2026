@@ -61,80 +61,88 @@ export default function Capacitaciones() {
                 <meta name="twitter:image" content={singleCapacitacion.postlink ? singleCapacitacion.postlink : "/demo.jpg"} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
-                <BackLink />
-                <main className='grid lg:grid-cols-6 mx-auto'>
-                    <div className='lg:col-span-2'></div>
-                    <div className='lg:col-span-4'>
-                        <h1 className='text-44 font-extrabold mb-4'>{singleCapacitacion.titulo}</h1>
-                        <div dangerouslySetInnerHTML={{__html: singleCapacitacion.descripcion}} className='mt-5 prose max-w-none diez' />
-                        <div className='mt-5 flex flex-wrap gap-5'>
-                        {singleCapacitacion.archivo && (
-                            <TrackedLink key={singleCapacitacion.id} to={singleCapacitacion.archivo} target="_blank" download>
-                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Descarga el archivo informativo</span>
-                            </TrackedLink>
-                        )}                        
-                        {singleCapacitacion.formulario && !esFechaPasada(singleCapacitacion.fin) ? (
-                            <TrackedLink key={singleCapacitacion.id} to={singleCapacitacion.formulario} target="_blank">
-                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
-                            </TrackedLink>
-                        ): 
-                            <span className='rounded-2xl bg-etiqueta-ter text-titulo text-14 px-5 py-2'>Convocatoria cerrada</span>
-                        }
+                <section className="page-header text-center pb-12">
+                    <div className="container mx-auto grid md:grid-cols-12 gap-1">  
+                        <div className='md:col-span-1 text-left'><BackLink /></div>
+                        <div className='md:col-span-11 w-full px-2 md:px-0 md:ml-auto md:mr-0 grid lg:grid-cols-12 mx-auto'>
+                            <div className='lg:col-span-3 px-5'>
+                                <img src={singleCapacitacion.image} alt={singleCapacitacion.titulo} />
+                            </div>
+                            <div className='lg:col-span-9 text-left'>
+                                <h1 className='text-44 font-extrabold mb-4'>{singleCapacitacion.titulo}</h1>
+                                <div dangerouslySetInnerHTML={{__html: singleCapacitacion.descripcion}} className='mt-5 prose max-w-none diez' />
+                                <div className='mt-5 flex flex-wrap gap-5'>
+                                    {singleCapacitacion.archivo && (
+                                        <TrackedLink key={singleCapacitacion.id} to={singleCapacitacion.archivo} target="_blank" download>
+                                            <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Descarga el archivo informativo</span>
+                                        </TrackedLink>
+                                    )}                        
+                                    {singleCapacitacion.formulario && !esFechaPasada(singleCapacitacion.fin) ? (
+                                        <TrackedLink key={singleCapacitacion.id} to={singleCapacitacion.formulario} target="_blank">
+                                            <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
+                                        </TrackedLink>
+                                    ): 
+                                        <span className='rounded-2xl bg-etiqueta-ter text-titulo text-14 px-5 py-2'>Convocatoria cerrada</span>
+                                    }
+                                </div>
+                            </div>                            
                         </div>
                     </div>
-                </main>
-                <section className='lg:w-11/12 mx-auto flex flex-wrap gap-5 lg:justify-around mt-8'>
-                    {singleCapacitacion.inicio && (
-                    <div className='lg:mt-8 lg:pt-4'>
-                        <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
-                            Inicio de clases: {dayjs(singleCapacitacion.inicio).format('D [de] MMMM [de] YYYY')}                             
-                        </p>
-                    </div>
-                    )}
-                    {singleCapacitacion.formato && (
-                    <div className='lg:mt-8 lg:pt-4'>
-                        <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
-                            Formato: {singleCapacitacion.formato}
-                        </p>
-                    </div>
-                    )}
-                    {singleCapacitacion.Horario && (
-                    <div className='lg:mt-8 lg:pt-4'>
-                        <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
-                            Horario: {singleCapacitacion.Horario}
-                        </p>
-                    </div>
-                    )}
                 </section>
-                <section className='lg:w-10/12 mx-auto my-15'>
+
+
+                <section className='lg:w-8/12 mx-auto mb-15'>
                     {singleCapacitacion.Objetivo && (
-                    <div className='grid grid-cols-6 gap-5'>
+                    <div className='grid grid-cols-12 sm:gap-1'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
-                        <div className='col-span-5'>
+                        <div className='col-span-11'>
+                                <div className='flex flex-wrap mb-12.5 gap-1'>
+                                {singleCapacitacion.inicio && (
+                                <div className='mb-3 lg:pt-4'>
+                                    <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
+                                        Inicio de clases: {dayjs(singleCapacitacion.inicio).format('D [de] MMMM [de] YYYY')}                             
+                                    </p>
+                                </div>
+                                )}
+                                {singleCapacitacion.formato && (
+                                <div className='mb-3 lg:pt-4'>
+                                    <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
+                                        Formato: {singleCapacitacion.formato}
+                                    </p>
+                                </div>
+                                )}
+                                {singleCapacitacion.Horario && (
+                                <div className='mb-3 lg:pt-4'>
+                                    <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
+                                        Horario: {singleCapacitacion.Horario}
+                                    </p>
+                                </div>
+                                )}
+                            </div>
                             <h2 className='text-primary text-36 font-extrabold'>Objetivo</h2>
                             <div dangerouslySetInnerHTML={{__html: singleCapacitacion.Objetivo}} className='mt-5 prose max-w-none cursos' />
                         </div>
                     </div>
                     )}
                     {singleCapacitacion.p_ingreso && (
-                    <div className='my-20 grid grid-cols-6 gap-5'>
+                    <div className='my-20 grid grid-cols-12 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
-                        <div className='col-span-5'>
+                        <div className='col-span-11'>
                             <h2 className='text-primary text-36 font-extrabold'>Perfil de Ingreso</h2>
                             <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_ingreso}} className='mt-5 prose max-w-none cursos' />
                         </div>
                     </div>
                     )}
                     {singleCapacitacion.p_egreso && (
-                     <div className='grid grid-cols-6 gap-5'>
+                     <div className='grid grid-cols-12 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
-                        <div className='col-span-5'>
+                        <div className='col-span-11'>
                             <h2 className='text-primary text-36 font-extrabold'>Perfil de Egreso</h2>
                             <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_egreso}} className='mt-5 prose max-w-none cursos' />                        
                         </div>
@@ -144,9 +152,9 @@ export default function Capacitaciones() {
                     
                 <CapacitacionesList curso={singleCapacitacion} />
 
-                <section className='grid grid-cols-6 gap-4 lg:w-10/12 mx-auto mb-15'>
+                <section className='grid grid-cols-12 gap-4 lg:w-8/12 mx-auto mb-15'>
                     <div className='col-span-1'></div>
-                    <div className='col-span-5 grid lg:grid-cols-2 gap-5'>
+                    <div className='col-span-11 grid lg:grid-cols-2 gap-5'>
                         {singleCapacitacion.inscripcion && (
                         <div className='my-5'>
                             <strong className='text-primary font-extrabold text-36 mb-10'>Inscripción</strong> 
