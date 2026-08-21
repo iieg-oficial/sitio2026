@@ -19,7 +19,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
                     border-primary
                     
                     /* Tus efectos de FOCUS aplicados al borde cuando el usuario da click */
-                    focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo
+                    focus-within:border-primary focus-within:ring-1 focus-within:ring-primary focus-within:ring-primary focus-within:bg-[#F3EAFF]
                     
                     /* Tu cambio de estado dinámico (opcional, por si quieres cambiar el borde al escribir) */
                     ${isSearching ? 'border-primary' : ''}
@@ -31,7 +31,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
                         placeholder={placeholder}
                         value={searchTerm} 
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-transparent text-center outline-none placeholder-primary"
+                        className="w-full bg-transparent text-center outline-none placeholder-primary font-garet-bold text-22"
                     />
 
                     {/* El Ícono SVG: 

@@ -52,7 +52,7 @@ export default function ClasificadorCultivos() {
                     <div className="md:col-span-4">
                         <h1>{page?.title || 'Clasificador de Cultivos'}</h1>
                         <p className="my-5 leading-10 text-22">Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.</p>
-                        <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-base text-primary rounded-4xl border border-primary px-6 py-3 font-extrabold hover:bg-primary hover:text-white transition-all duration-200 text-center">
+                        <TrackedLink to={`/clasificador-cultivos/documentacion`} className="mt-2 inline-block text-base text-white rounded-4xl border border-secondary bg-secondary px-6 py-3 font-extrabold hover:bg-white hover:text-secondary transition-all duration-200 text-center">
                             Ver la documetación del proyecto                                
                         </TrackedLink>
                     </div>

@@ -179,7 +179,7 @@ export default function Flashes() {
                                 <p className='text-tertiary text-14 capitalize border border-tertiary bg-etiqueta-sec py-3 px-5 rounded-xl'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                             )}
                             {lastFlash.fuente && (
-                                <p className='text-[#F3EAFF] text-14 capitalize border border-[#F3EAFF] bg-etiqueta py-3 px-5 rounded-xl'>{lastFlash.fuente}</p>                            
+                                <p className='text-primary text-14 capitalize border border-[#5C24724D] bg-[#F3EAFF] py-3 px-5 rounded-xl'>{lastFlash.fuente}</p>                            
                             )}                            
                         </div>
                         {lastFlash.link && (
@@ -315,21 +315,18 @@ export default function Flashes() {
 
             {pageCount > 1 && (
                 <ReactPaginate
-                    previousLabel={'Ant'}
-                    nextLabel={'Sig'}
-                    breakLabel={'...'}
-                    pageCount={pageCount}
-                    marginPagesDisplayed={1}
-                    pageRangeDisplayed={2}
-                    onPageChange={handlePageClick}
-                    containerClassName='flex justify-center gap-2 pt-8 p-10 !list-none !my-15'
-                    pageClassName='rounded-full border border-primary px-3 py-2 text-sm'
-                    activeClassName='bg-primary text-white'
-                    previousClassName='rounded-full border border-primary px-3 py-2 text-sm'
-                    nextClassName='rounded-full border border-primary px-3 py-2 text-sm'
-                    breakClassName='px-3 py-2 text-sm'
-                    forcePage={Math.floor(itemOffset / itemsPerPage)}
-                />
+                previousLabel={"<"}
+                nextLabel={">"}
+                breakLabel={"..."}
+                breakClassName={"break-me"}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination"}
+                activeClassName={"active"}
+                forcePage={Math.floor(itemOffset / itemsPerPage)}
+            />
             )}
         </div>
     )
