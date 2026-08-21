@@ -28,6 +28,7 @@ export default function CapacitacionesList({ curso }) {
     return (
         <>
         <section className='lg:w-10/12 mx-auto'>
+            {Array.isArray(singleCapacitacion.modulos) && singleCapacitacion.modulos.length > 0 && (
             <section className='my-15'>
                     <div className='grid grid-cols-6 gap-5'>
                         <div className='col-span-1'>
@@ -64,8 +65,9 @@ export default function CapacitacionesList({ curso }) {
                         )}
                     </div>
                 </section>
-
-                <section className=''>
+            )}
+            {Array.isArray(singleCapacitacion.profesores) && singleCapacitacion.profesores.length > 0 && (
+            <section className=''>
                     <div className='grid grid-cols-6 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
@@ -87,6 +89,7 @@ export default function CapacitacionesList({ curso }) {
                         ))}
                     </div>                    
                 </section>
+            )}
         </section>
         </>
     )
