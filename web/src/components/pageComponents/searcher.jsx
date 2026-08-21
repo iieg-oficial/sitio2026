@@ -31,7 +31,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
                         placeholder={placeholder}
                         value={searchTerm} 
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-transparent text-center outline-none placeholder-primary font-garet-bold text-22"
+                        className="w-full bg-transparent text-primary text-center outline-none placeholder-primary font-garet-bold text-22"
                     />
 
                     {/* El Ícono SVG: 

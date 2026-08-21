@@ -260,8 +260,8 @@ export default function Reportes() {
                             </div> 
 
                             <div className='flex flex-wrap gap-5 text-14'>
-                                {reporte.anyo && (
-                                    <p className='text-tertiary text-14 capitalize border border-tertiary bg-etiqueta-sec py-3 px-5 rounded-xl'>{reporte.anyo}</p>
+                                {reporte.year && (
+                                    <p className='text-tertiary text-14 capitalize border border-tertiary bg-etiqueta-sec py-3 px-5 rounded-xl'>{reporte.year}</p>
                                 )}
                                 {reporte.periocidad && (
                                     <p className='text-titulo text-14 capitalize border border-titulo bg-etiqueta-ter py-3 px-5 rounded-xl'>{reporte.periocidad}</p>

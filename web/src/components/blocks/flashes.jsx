@@ -154,7 +154,7 @@ export default function Flashes() {
     return (
         <div className='px-2'>
             {lastFlash && !hasActiveFilters && (
-                <div className='rounded-2xl p-5 lg:p-14 mb-4 mx-auto container bg-[#F5F5F5] mt-5 mb-15'>
+                <div className='rounded-2xl p-5 lg:py-8 mb-4 mx-auto container  bg-[#F9FBFF] mb-15'>
                     <h3 className='text-36 text-tertiary font-garet-extra'>{lastFlash.titulo}</h3>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
                         <div className='bg-white rounded-2xl p-8'>
