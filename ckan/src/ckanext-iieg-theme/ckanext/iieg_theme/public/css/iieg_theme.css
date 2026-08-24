@@ -41,26 +41,26 @@
 }
 
 body{
-  font-family: 'Garet';
-  font-size: 16px;
+  font-family: 'Garet' !important;
+  font-size: 16px !important;
   color: #465055;
 }
 
 h1{
-  font-family: 'Garet-Extra';
-  font-size: 36px;
+  font-family: 'Garet-Extra' !important;
+  font-size: 36px !important;
   color: #5c2472;
 }
 
 h2{
-  font-family: 'Garet-Extra';
-  font-size: 30px;
+  font-family: 'Garet-Extra' !important;
+  font-size: 30px !important;
   color: #172a55;
 }
 
 h3{
-  font-family: 'Garet-Bold';
-  font-size: 24px;
+  font-family: 'Garet-Bold' !important;
+  font-size: 24px !important;
   color: #172a55;
 }
 

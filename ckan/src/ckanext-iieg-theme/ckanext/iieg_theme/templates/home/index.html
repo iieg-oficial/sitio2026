@@ -11,11 +11,11 @@
           <div class="row">
             <div id="stats" class="col-xs-12">
                 <div class="estatisticas-box">
-                    <span class="numero">{{ h.total_datasets() }} {{ _('Datasets publicados') }}</span>
+                    <h3 class="numero">{{ h.total_datasets() }} {{ _('Datasets publicados') }}</h3>
                 </div>
 
                 <div class="datasets">
-                    <span class="title">{{ _('Recientes') }}</span>
+                    <h3 class="title">{{ _('Recientes') }}</h3>
                     {% set recent_datasets = h.recently_changed_packages(15) %}
                     {% if recent_datasets %}
                         <ul class="recent-datasets-list" style="list-style: none; padding-left: 0; margin-top: 15px;">
