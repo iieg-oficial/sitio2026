@@ -1,4 +1,4 @@
-import { Form, Input, Select, Checkbox } from 'antd';
+import { Form, Input, Select, Checkbox, Space, Image } from 'antd';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
 
@@ -150,6 +150,25 @@ export const CamposComunes = ({ form }) => (
             rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
         >
             <RichTextEditor />
+        </Form.Item>
+        <Form.Item name="img_portada" label="Imagen" rules={[{ required: false, message: 'Por favor ingrese la imagen' }]}>
+            <Space direction="vertical" style={{ width: '100%' }}>
+                <UploadAcervo
+                    bucket="portal"
+                    folder="/cursos"
+                    label="Subir archivo"
+                    onUploaded={(media) => {
+                        form.setFieldValue('img_portada', media.url);
+                    }}
+                />
+                {form.getFieldValue('img_portada') ? (
+                    <Image
+                        src={form.getFieldValue('img_portada')}
+                        alt="Vista previa archivo"
+                        style={{ maxWidth: 260, borderRadius: 6 }}
+                    />
+                ) : null}
+            </Space>
         </Form.Item>
         <Form.Item
             name="inicio"

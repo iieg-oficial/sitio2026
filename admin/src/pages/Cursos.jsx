@@ -6,6 +6,7 @@ import { CamposCapacitaciones, CamposConvocatorias, CamposComunes } from '@compo
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 
 
+
 const { Title } = Typography;
 const { Option } = Select;
 

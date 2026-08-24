@@ -71,7 +71,9 @@ export default function Capacitaciones() {
                 {capacitacionesDestacadas.map(capacitacion => (
                     <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
                     <div className='grid md:grid-cols-6' key={capacitacion.id}>                                               
-                        <div className='md:col-span-2'></div>
+                        <div className='md:col-span-2'>
+                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-full object-cover' />
+                        </div>
                         <div className='md:col-span-4'>
                             <h3 className='text-44 text-primary'>{capacitacion.titulo}</h3>       
                             <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez my-5' />
@@ -96,7 +98,9 @@ export default function Capacitaciones() {
                 {currentItems.map(capacitacion => (
                     <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
                     <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl' key={capacitacion.id}>                        
-                        <div className='md:col-span-2'></div>                        
+                        <div className='md:col-span-2'>
+                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-full object-cover' />
+                        </div>                        
                         <div className='md:col-span-4 p-6'>
                             <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>                              
                             <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez my-5' />                        

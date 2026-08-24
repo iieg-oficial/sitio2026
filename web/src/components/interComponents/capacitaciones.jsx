@@ -44,13 +44,15 @@ export default function Capacitaciones() {
         return ahora > fecha;
     };
 
+    const portada = singleCapacitacion.img_portada || '/demo.jpg';
+
     return (
         <>
             <Helmet>
                 <title>{singleCapacitacion.titulo}</title>
                 <meta property="og:title" content={singleCapacitacion.titulo} />
                 <meta property="og:description" content={singleCapacitacion.descripcion} />
-                <meta property="og:image" content={singleCapacitacion.postlink ? singleCapacitacion.postlink : "/demo.jpg"} />
+                <meta property="og:image" content={portada} />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 <meta name="keywords" content={singleCapacitacion.clave} />
@@ -58,7 +60,7 @@ export default function Capacitaciones() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={singleCapacitacion.titulo} />
                 <meta name="twitter:description" content={singleCapacitacion.descripcion} />
-                <meta name="twitter:image" content={singleCapacitacion.postlink ? singleCapacitacion.postlink : "/demo.jpg"} />
+                <meta name="twitter:image" content={portada} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <section className="page-header text-center pb-12">
@@ -66,7 +68,7 @@ export default function Capacitaciones() {
                         <div className='md:col-span-1 text-left'><BackLink /></div>
                         <div className='md:col-span-11 w-full px-2 md:px-0 md:ml-auto md:mr-0 grid lg:grid-cols-12 mx-auto'>
                             <div className='lg:col-span-3 px-5'>
-                                <img src={singleCapacitacion.image} alt={singleCapacitacion.titulo} />
+                                <img src={portada} alt={singleCapacitacion.titulo} />
                             </div>
                             <div className='lg:col-span-9 text-left'>
                                 <h1 className='text-44 font-extrabold mb-4'>{singleCapacitacion.titulo}</h1>
