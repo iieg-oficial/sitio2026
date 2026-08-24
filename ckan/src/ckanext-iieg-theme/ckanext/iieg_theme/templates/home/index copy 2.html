@@ -15,44 +15,76 @@
                     <span class="numero">{{ h.total_datasets() }} {{ _('Datasets publicados') }}</span>
                 </div>
 
-                <div class="datasets">
-                    <span class="title">{{ _('Recientes') }}</span>
-                    {% set recent_search = h.get_action('package_search')({}, {'sort': 'metadata_created desc', 'rows': 15}) %}
-                    {% if recent_search.results %}
-                        <ul class="recent-datasets-list" style="list-style: none; padding-left: 0; margin-top: 15px;">
-                        {% for dataset in recent_search.results %}
-                            <li style="margin-bottom: 10px;">
-                                <i class="fa fa-database" style="color: #555; margin-right: 5px;"></i>
-                                <a href="{{ h.url_for('dataset.read', id=dataset.name) }}" style="text-decoration: none; font-weight: bold;">
-                                    {{ dataset.title or dataset.name }}
-                                </a>
-                                {% if dataset.notes %}
-                                    <p style="font-size: 0.9em; color: #666; margin: 5px 0 0 20px;">
-                                        {{ h.markdown_extract(dataset.notes, extract_length=80) }}
-                                    </p>
-                                {% endif %}
-                            </li>
+                {# 2. Bloque para listar los más populares #}
+                <div class="datasets-populares">
+                    <span class="numero">{{ _('Datasets más populares') }}</span>
+                    <ul>
+                        {# Invocamos el helper del plugin pasando el límite que queramos #}
+                        {% for dataset in h.iieg_datasets_populares(5) %}
+                        <li>
+                            {# Enlace compatible con las rutas Flask de CKAN 2.11 #}
+                            <a href="{{ h.url_for('dataset.read', id=dataset.name) }}">
+                            {{ dataset.title or dataset.name }}
+                            </a>
+                            <span class="badge">
+                            {{ dataset.tracking_summary.total if dataset.tracking_summary else 0 }} {{ _('visitas') }}
+                            </span>
+                        </li>
                         {% endfor %}
-                        </ul>
-                        {% if recent_search.count > 15 %}
-                            <div style="margin-top: 20px;">
-                                <a href="{{ h.url_for('dataset.search') }}" class="btn btn-primary">
-                                    {{ _('Ver todos los datasets') }}
-                                </a>
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        <p style="color: #777; font-style: italic; margin-top: 15px;">{{ _('No se encontraron datasets recientes.') }}</p>
+                    </ul>
+                    </div>
+
+
+            </div>
+            <div class="col-xs-12 col-md-6">
+              
+              <div class="ultimos-editados">
+                <div class="custom-activity-stream">
+                  <h2>{{ _('Last edited datasets') }}</h2>
+                  {% for activity in h.recently_changed_packages_activity_stream(limit=4) %}
+                    {# Creamos una variable corta para acceder fácilmente al dataset #}
+                    {% set pkg = activity.data.package %}
+                    {% if pkg %}
+                      <h4 style="margin: 0;">
+                        <a href="{{ h.url_for('dataset.read', id=pkg.name) }}">
+                          {{ pkg.title or pkg.name }} | 
+                        <!-- 4. FECHA MODIFICACIÓN -->
+                        <span>
+                          {{ _('Date: ')}}{{ h.render_datetime(activity.timestamp, with_hours=True) }}
+                        </span>
+                        </a>
+                      </h4>
                     {% endif %}
+                  {% endfor %}
                 </div>
-
               </div>
+            </div>
 
+            <div class="col-xs-12 col-md-6">
+              <h2>{{ _('Most popular datasets') }}</h2>
+                {% for dataset in h.iieg_datasets_populares(5) %}
+                  <div>
+                    {# Enlace compatible con las rutas Flask de CKAN 2.11 #}
+                      <a href="{{ h.url_for('dataset.read', id=dataset.name) }}">
+                        {{ dataset.title or dataset.name }}
+                      </a>
+                      <span class="badge">
+                        {{ dataset.tracking_summary.total if dataset.tracking_summary else 0 }} {{ _('visitas') }}
+                      </span>
+                    </div>
+                {% endfor %}
+            </div>
 
           </div>
         </div>          
 
-        <div class="custom-tags-section container my-14">
+      
+
+        <div class="container grupos">
+          {% snippet 'snippets/iieg_theme_all_groups.html' %}
+        </div>
+
+        <div class="custom-tags-section container" style="margin-top: 30px;">
           <h3>{{ _('Recent tags') }}</h3>
           
           {# Usamos el stream de actividad que sabemos que sí funciona en tu CKAN #}

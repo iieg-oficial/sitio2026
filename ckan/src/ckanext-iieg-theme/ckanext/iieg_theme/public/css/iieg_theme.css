@@ -14,6 +14,56 @@
   --iieg-white:       #ffffff;
 }
 
+
+@font-face {
+    font-family: 'Garet-Bold';
+    src: url('Garet-Bold.woff2') format('woff2'),
+        url('Garet-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Garet';
+    src: url('Garet-Regular.woff2') format('woff2'),
+        url('Garet-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Garet-Extra';
+    src: url('Garet-ExtraBold.woff2') format('woff2'),
+        url('Garet-ExtraBold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+body{
+  font-family: 'Garet';
+  font-size: 16px;
+  color: #465055;
+}
+
+h1{
+  font-family: 'Garet-Extra';
+  font-size: 36px;
+  color: #5c2472;
+}
+
+h2{
+  font-family: 'Garet-Extra';
+  font-size: 30px;
+  color: #172a55;
+}
+
+h3{
+  font-family: 'Garet-Bold';
+  font-size: 24px;
+  color: #172a55;
+}
+
 /* =====================================================
    The "account masthead" bar across the top of the site
    ===================================================== */
@@ -96,6 +146,12 @@
 .module-content:last-child {
   padding-bottom: 0px;
 }
+.js .image-upload #field-image-upload{
+  opacity: 1 !important;
+}
+.primary .module-content:last-child{
+  padding-bottom: 30px !important;
+}
 .homepage .module-search {
   padding: 0px;
 }
@@ -175,10 +231,15 @@ body, .main {
   display: block;
 }
 .search-form{
-  width: 100%;
+  width: 80%;
   float: left;
   margin-bottom: 0px;
   border-bottom: 0px;
+}
+
+#dataset-search-form{
+  width: 100%;
+  float: left;
 }
 
 #dataset-search-form .input-group,
@@ -238,13 +299,13 @@ body, .main {
   color: var(--iieg-primary) !important;
 }
 
-.btn-primary{
+.btn-primary, .btn-light, .btn-default{
   background-color: var(--iieg-accent) !important;
   border-color: var(--iieg-accent) !important;
   color: white !important;
 }
 
-.btn-primary:hover{
+.btn-primary:hover, .btn-light:hover, .btn-default:hover{
   background-color: var(--iieg-primary) !important;
   border-color: var(--iieg-primary) !important;
   color: white !important;
