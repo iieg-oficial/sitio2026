@@ -12,6 +12,7 @@ class CursosCreate(BaseModel):
     
     titulo: str
     descripcion: Optional[str] = None
+    img_portada: Optional[str] = None
     inicio: Optional[datetime] = None
     fin: Optional[datetime] = None
     formato: Optional[str] = None
@@ -48,6 +49,7 @@ class CursosOut(BaseModel):
     id: int
     titulo: str | None = None
     descripcion: str | None = None
+    img_portada: Optional[str] = None
     inicio: datetime | None = None
     fin: datetime | None = None
     formato: str | None = None

@@ -45,13 +45,15 @@ export default function Convocatorias() {
         return ahora > fecha;
     };
 
+    const portada = singleConvocatoria.img_portada || '/demo.jpg';
+
     return (
         <>
             <Helmet>
-                <title>{singleConvocatoria.nombre}</title>                
-                <meta property="og:title" content={singleConvocatoria.nombre} />
-                <meta name="description" content={singleConvocatoria.resumen} />
-                <meta property="og:image" content={singleConvocatoria.postlink ? singleConvocatoria.postlink : "/demo.jpg"} />
+                <title>{singleConvocatoria.titulo}</title>
+                <meta property="og:title" content={singleConvocatoria.titulo} />
+                <meta name="description" content={singleConvocatoria.descripcion} />
+                <meta property="og:image" content={portada} />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 <meta name="keywords" content={singleConvocatoria.clave} />
@@ -59,7 +61,7 @@ export default function Convocatorias() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={singleConvocatoria.titulo} />
                 <meta name="twitter:description" content={singleConvocatoria.descripcion} />
-                <meta name="twitter:image" content={singleConvocatoria.postlink ? singleConvocatoria.postlink : "/demo.jpg"} />
+                <meta name="twitter:image" content={portada} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <section className="page-header text-center pb-12">
@@ -68,7 +70,7 @@ export default function Convocatorias() {
                     </div>
                     <div className='md:col-span-11 w-full px-2 md:px-0 md:ml-auto md:mr-0 grid lg:grid-cols-12 mx-auto'>
                         <div className='lg:col-span-3 px-5'>
-                            <img src={singleConvocatoria.image} alt={singleConvocatoria.nombre} />
+                            <img src={portada} alt={singleConvocatoria.titulo} />
                         </div>
                         <div className='lg:col-span-9 text-left'> 
                             <h1 className='text-44 font-bold mb-4'>{singleConvocatoria.titulo}</h1>
