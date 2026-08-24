@@ -2,36 +2,24 @@
 
 {% block footer_content %}
     <div class="row">
-      <div class="col-md-8 footer-links">
+      <div class="col-md-6 footer-links">
         {% if c.user %}
           <a href="{{ h.url_for('stats.index') }}">{{ _('Ver estadísticas del sitio') }}</a>
         {% endif %}
-        <div class="row">
-          <div class="col-md-6">
+        <div class="d-flex justify-content-md-start justify-content-center gap-4 align-content-end gap-4">
+          <div class="">
             <a href="https://iieg.jalisco.gob.mx" target="_blank">
-              {% if g.site_logo.startswith('http://') or g.site_logo.startswith('https://') %}
-                {# Caso 1: URL remota externa #}
-                <img src="{{ h.url_for_static('/images/ico_IIEG_header.svg') }}" alt="{{ g.site_title }}"
-                  aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
-              {% elif g.site_logo.startswith('/datos-abiertos') %}
-                {# Caso 2: La ruta almacenada ya trae la ruta base del portal #}
-                <img src="{{ g.site_logo.replace('/datos-abiertos', '', 1) if g.site_logo.startswith('/datos-abiertos/datos-abiertos') else g.site_logo }}" alt="{{ g.site_title }}"
-                  aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
-              {% else %}
-                {# Caso 3: Archivo relativo estático estándar #}
-                <img src="{{ h.url_for_static('/images/ico_IIEG_header.svg') }}" alt="{{ g.site_title }}"
-                  aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
-              {% endif %}
+              <img alt="Link al sitio del IIEG" class="logos" src="https://iieg.jalisco.gob.mx/acervo/portal/ico_iieg_header.svg">
             </a>
           </div>
-          <div class="col-md-6">
+          <div class="">
             <a href="https://jalisco.gob.mx/inicio" target="_blank">
-              <img alt="Link al sitio del gobierno de jalisco" class="mx-auto mb-12 md:mx-auto" src="https://iieg.jalisco.gob.mx/ico_gobjal_logo.svg">
+              <img alt="Link al sitio del gobierno de jalisco" class="logos" src="https://iieg.jalisco.gob.mx/acervo/portal/ico_gobjal_logo.svg">
             </a>
           </div>
         </div>
         <div>
-          <div class="flex md:justify-start justify-center gap-4 content-end">
+          <div class="d-flex justify-content-md-start justify-content-center gap-4 align-content-end gap-4">
             <a href="https://www.instagram.com/iiegjalisco/" target="_blank" class="rounded-full bg-tertiary hover:bg-medio rsicon">
               <span class="line-md--instagram"></span>
             </a>
@@ -50,17 +38,18 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4 attribution">
+      <div class="col-md-3 attribution">
+        
+      </div>
+      <div class="col-md-3 text-center text-md-end">
         {% block footer_lang %}
           {% snippet "snippets/language_selector.html" %}
         {% endblock %}
-      </div>
-      <div class="col-md-12 text-center">
-        <a href="https://iieg.jalisco.gob.mx/aviso-de-privacidad" target="_blank" class="">
+        <a href="https://iieg.jalisco.gob.mx/aviso-de-privacidad" target="_blank" class="text-white">
           Aviso de privacidad
         <a>
-          |
-        <a href="https://info.jalisco.gob.mx/politicas/?remote=true" target="_blank" class="">
+        <br>
+        <a href="https://info.jalisco.gob.mx/politicas/?remote=true" target="_blank" class="text-white">
           Políticas de privacidad
         <a>
       </div>
