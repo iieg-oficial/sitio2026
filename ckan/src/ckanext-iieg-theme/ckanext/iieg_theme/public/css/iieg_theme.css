@@ -17,24 +17,24 @@
 
 @font-face {
     font-family: 'Garet-Bold';
-    src: url('Garet-Bold.woff2') format('woff2'),
-        url('Garet-Bold.woff') format('woff');
+    src: url('../fonts/Garet-Bold.woff2') format('woff2'),
+        url('../fonts/Garet-Bold.woff') format('woff');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
 }
 @font-face {
     font-family: 'Garet';
-    src: url('Garet-Regular.woff2') format('woff2'),
-        url('Garet-Regular.woff') format('woff');
+    src: url('../fonts/Garet-Regular.woff2') format('woff2'),
+        url('../fonts/Garet-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 @font-face {
     font-family: 'Garet-Extra';
-    src: url('Garet-ExtraBold.woff2') format('woff2'),
-        url('Garet-ExtraBold.woff') format('woff');
+    src: url('../fonts/Garet-ExtraBold.woff2') format('woff2'),
+        url('../fonts/Garet-ExtraBold.woff') format('woff');
     font-weight: bold;
     font-style: normal;
     font-display: swap;

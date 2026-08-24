@@ -10,17 +10,16 @@
         <div class="container">
           <div class="row">
             <div id="stats" class="col-xs-12">
-
                 <div class="estatisticas-box">
                     <span class="numero">{{ h.total_datasets() }} {{ _('Datasets publicados') }}</span>
                 </div>
 
                 <div class="datasets">
                     <span class="title">{{ _('Recientes') }}</span>
-                    {% set recent_search = h.get_action('package_search')({}, {'sort': 'metadata_created desc', 'rows': 15}) %}
-                    {% if recent_search.results %}
+                    {% set recent_datasets = h.recently_changed_packages(15) %}
+                    {% if recent_datasets %}
                         <ul class="recent-datasets-list" style="list-style: none; padding-left: 0; margin-top: 15px;">
-                        {% for dataset in recent_search.results %}
+                        {% for dataset in recent_datasets %}
                             <li style="margin-bottom: 10px;">
                                 <i class="fa fa-database" style="color: #555; margin-right: 5px;"></i>
                                 <a href="{{ h.url_for('dataset.read', id=dataset.name) }}" style="text-decoration: none; font-weight: bold;">
@@ -34,7 +33,7 @@
                             </li>
                         {% endfor %}
                         </ul>
-                        {% if recent_search.count > 15 %}
+                        {% if recent_datasets|length >= 15 %}
                             <div style="margin-top: 20px;">
                                 <a href="{{ h.url_for('dataset.search') }}" class="btn btn-primary">
                                     {{ _('Ver todos los datasets') }}
@@ -47,8 +46,6 @@
                 </div>
 
               </div>
-
-
           </div>
         </div>          
 
@@ -89,11 +86,11 @@
               {% endfor %}
               
               {% if etiquetas_renderizadas|length == 0 %}
-                <p style="color: #777; font-style: italic;">{{ _('No hay etiquetas recientes en los últimos conjuntos de datos.') }}</p>
+                <p>{{ _('No hay etiquetas recientes en los últimos conjuntos de datos.') }}</p>
               {% endif %}
             </div>
           {% else %}
-            <p style="color: #777; font-style: italic;">{{ _('No hay etiquetas disponibles en este momento.') }}</p>
+            <p>{{ _('No hay etiquetas disponibles en este momento.') }}</p>
           {% endif %}
         </div>
 
