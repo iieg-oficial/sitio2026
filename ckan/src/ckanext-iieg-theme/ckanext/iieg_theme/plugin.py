@@ -145,6 +145,8 @@ class IiegThemePlugin(plugins.SingletonPlugin):
                 'iieg_theme_all_groups': get_all_groups_list,
                 'iieg_theme_get_localized_url': get_localized_current_url,
                 'total_datasets': self._obtener_total_datasets,
+                'recently_changed_packages': self._obtener_datasets_recientes,
+                'recently_changed_packages_activity_stream': self._obtener_activity_reciente,
                 'iieg_datasets_populares': self._obtener_datasets_populares
                 }
     
@@ -155,6 +157,42 @@ class IiegThemePlugin(plugins.SingletonPlugin):
             return result['count']
         except Exception:
             return 0
+
+    def _obtener_datasets_recientes(self, limite=15):
+        """Devuelve paquetes ordenados por metadata_modified desc.
+
+        Esta versión no depende de ckanext-activity para la home del sitio.
+        """
+        try:
+            limit = max(1, int(limite))
+            result = toolkit.get_action('package_search')(
+                {'ignore_auth': True},
+                {'q': '*:*', 'sort': 'metadata_modified desc', 'rows': limit, 'include_private': False}
+            )
+            return result.get('results', [])
+        except Exception:
+            return []
+
+    def _obtener_activity_reciente(self, limit=10):
+        """Emula el formato básico del stream de actividad para Jinja.
+
+        El tema espera objetos con .data.package y .timestamp; aquí los
+        construimos a partir de los paquetes recientes para no depender de
+        ckanext-activity.
+        """
+        try:
+            limit = max(1, int(limit))
+            packages = self._obtener_datasets_recientes(limit)
+            activities = []
+            for pkg in packages:
+                timestamp = pkg.get('metadata_modified') or pkg.get('metadata_created')
+                activities.append({
+                    'timestamp': timestamp,
+                    'data': {'package': pkg},
+                })
+            return activities
+        except Exception:
+            return []
 
     def _obtener_datasets_populares(self, limite=5):
         try:
