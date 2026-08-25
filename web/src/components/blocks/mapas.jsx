@@ -208,21 +208,25 @@ export default function Mapas() {
                         const thumb = original.substring(original.lastIndexOf('/') + 1);
                         return (
                             <a href={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
-                                                <div key={mapa.id} className="p-4 overflow-hidden mapa h-96 relative rounded-4xl">                    
+                                                <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl">                    
                                                     
 
                                                     {mapa.imagen && (
-                                                        <img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280`} alt={mapa.titulo} className='w-full h-full object-cover' />
+                                                        <img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280`} alt={mapa.titulo} className='w-full h-full object-cover' onError={(e) => {
+                                                            e.target.onerror = null; 
+                                                            e.target.src = `https://iieg.jalisco.gob.mx/acervo/portal/mapas/${thumb}`;
+                                                        }}
+                                                        />
                                                     )}
-                                                    <div className='info'>
+                                                    <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
                                                         <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
-                                                            <h3 className='text-white'>{mapa.titulo}</h3>
-                                                            <div className='flex mb-4 gap-2'> 
+                                                            <h3 className='text-white text-22 font-garet-bold font-800'>{mapa.titulo}</h3>
+                                                            <div className='flex mb-5 mt-5 gap-2'> 
                                                                 {mapa.anyo ? (
-                                                                    <p className='bg-card text-titulo rounded-2xl px-4 py-2 text-14'>{mapa.anyo}</p>
+                                                                    <p className='text-14 font-bold rounded-xl py-2 px-5 bg-[#FFF2E5] text-tertiary border border-[#FF83004D]'>{mapa.anyo}</p>
                                                                 ) : null}
                                                                 {mapa.tipo ? (
-                                                                    <p className='bg-etiqueta-sec text-primary rounded-2xl px-4 py-2 text-14'>{mapa.tipo}</p>
+                                                                    <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>{mapa.tipo}</p>
                                                                 ) : null}
                                                             </div>
                                                             

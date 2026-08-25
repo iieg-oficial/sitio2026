@@ -60,6 +60,10 @@ export default function Mapas() {
                             src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=560` : "/demo.jpg"} 
                             alt={mapa.titulo} 
                             className='w-full h-full object-cover'
+                            onError={(e) => {
+                                    e.target.onerror = null; 
+                                    e.target.src = `https://iieg.jalisco.gob.mx/acervo/portal/mapas/${thumb}`;
+                                }}
                             />
                         <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
                             
