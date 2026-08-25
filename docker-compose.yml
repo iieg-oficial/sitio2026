@@ -224,6 +224,9 @@ services:
       ACERVO_API_KEY: ${ACERVO_API_KEY}
       ACERVO_API_KEY_HEADER: ${ACERVO_API_KEY_HEADER:-x-api-key}
       SEED_EXAMPLES: ${SEED_EXAMPLES:-false}
+      SMTP_USER: ${SMTP_USER:?SMTP_USER is required}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?SMTP_PASSWORD is required}
+      CONTACT_DEST_EMAIL: ${CONTACT_DEST_EMAIL:?CONTACT_DEST_EMAIL is required}
     networks:
       portal_network:
         aliases:
