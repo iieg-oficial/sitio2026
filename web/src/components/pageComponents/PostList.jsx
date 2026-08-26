@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { format, isValid} from 'date-fns';
 import { es } from 'date-fns/locale';
 import TrackedLink from '@components/blocks/boton'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
     if (!results || results.length === 0) return <p>No se encontraron resultados.</p>;
