@@ -5,7 +5,7 @@ import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import { Helmet } from 'react-helmet-async'
 import { format } from 'date-fns';
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 function Post() {
     const defaultPage = {
