@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import TrackedLink from '@components/blocks/boton'
 import ConditionalLink from '../pageComponents/ConditionalLink'
+import { SafeHtml } from '@components/safeHtml';
 
 export default function Flashes() {
     const [flashes, setFlashes] = useState([])
@@ -156,14 +157,15 @@ export default function Flashes() {
                                 <img src="/ico_jalisco.svg" alt="Jalisco" className="w-16 h-16 object-contain" />
                                 <h4 className="text-primary"> Jalisco</h4>
                             </div>
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_jal}} className='mt-5 prose max-w-none' />
+                            
+                            <SafeHtml htmlContent={lastFlash.desc_jal} className='mt-5 prose max-w-none'/>
                         </div>
                         <div className='bg-white rounded-2xl p-6'>
                             <div className="flex gap-4 items-center">
                                 <img src="/ico_Nacional.svg" alt="Nacional" className="w-16 h-16 object-contain" /> 
                                 <h4 className="text-primary">Nacional</h4>
                             </div>
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_nac}} className='mt-5 prose max-w-none text-14!' />
+                            <SafeHtml htmlContent={lastFlash.desc_nac} className='mt-5 prose max-w-none text-14!' />                            
                         </div>
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                             {lastFlash.periocidad && (

@@ -5,6 +5,7 @@ import '../../blocks/styles/flash.css'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import TrackedLink from '@components/blocks/boton'
+import { SafeHtml } from '@components/safeHtml';
 
 dayjs.locale('es')
 
@@ -30,7 +31,7 @@ export default function Flashes() {
                         <h3 className='text-22 text-tertiary font-extrabold font-900'>{flash.titulo}</h3>
                     </div>
                     <div>                        
-                        <div dangerouslySetInnerHTML={{ __html: flash.desc_jal }}  className='flash_desc'/>
+                        <SafeHtml htmlContent={flash.desc_jal} className='flash_desc'/>
                     </div>
                     <div className='flex flex-wrap gap-4 mt-10'>
                         <p className='text-[12px] font-bold rounded-xl py-3 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>

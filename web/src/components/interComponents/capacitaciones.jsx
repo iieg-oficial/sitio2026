@@ -7,6 +7,7 @@ import BackLink from './../pageComponents/Backlink'
 import TrackedLink from '@components/blocks/boton'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
+import { SafeHtml } from '@components/safeHtml';
 
 dayjs.locale('es')
 
@@ -72,7 +73,8 @@ export default function Capacitaciones() {
                             </div>
                             <div className='lg:col-span-9 text-left'>
                                 <h1 className='text-44 font-extrabold mb-4'>{singleCapacitacion.titulo}</h1>
-                                <div dangerouslySetInnerHTML={{__html: singleCapacitacion.descripcion}} className='mt-5 prose max-w-none diez' />
+                                
+                                <SafeHtml htmlContent={singleCapacitacion.descripcion} className='mt-5 prose max-w-none diez'/>
                                 <div className='mt-5 flex flex-wrap gap-5'>
                                     {singleCapacitacion.archivo && (
                                         <TrackedLink key={singleCapacitacion.id} to={singleCapacitacion.archivo} target="_blank" download>
@@ -124,7 +126,7 @@ export default function Capacitaciones() {
                                 )}
                             </div>
                             <h2 className='text-primary text-36 font-extrabold'>Objetivo</h2>
-                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.Objetivo}} className='mt-5 prose max-w-none cursos' />
+                            <SafeHtml htmlContent={singleCapacitacion.Objetivo} className='mt-5 prose max-w-none cursos'/>
                         </div>
                     </div>
                     )}
@@ -135,7 +137,7 @@ export default function Capacitaciones() {
                         </div>
                         <div className='col-span-11'>
                             <h2 className='text-primary text-36 font-extrabold'>Perfil de Ingreso</h2>
-                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_ingreso}} className='mt-5 prose max-w-none cursos' />
+                            <SafeHtml htmlContent={singleCapacitacion.p_ingreso} className='mt-5 prose max-w-none cursos'/>
                         </div>
                     </div>
                     )}
@@ -146,7 +148,7 @@ export default function Capacitaciones() {
                         </div>
                         <div className='col-span-11'>
                             <h2 className='text-primary text-36 font-extrabold'>Perfil de Egreso</h2>
-                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.p_egreso}} className='mt-5 prose max-w-none cursos' />                        
+                            <SafeHtml htmlContent={singleCapacitacion.p_egreso} className='mt-5 prose max-w-none cursos'/>
                         </div>
                     </div>
                     )}
@@ -160,13 +162,14 @@ export default function Capacitaciones() {
                         {singleCapacitacion.inscripcion && (
                         <div className='my-5'>
                             <strong className='text-primary font-extrabold text-36 mb-10'>Inscripción</strong> 
-                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.inscripcion}} className='mt-5 prose max-w-none cursos' />                        
+                            <SafeHtml htmlContent={singleCapacitacion.inscripcion} className='mt-5 prose max-w-none cursos'/>  
+                                                  
                         </div>
                         )}
                         {singleCapacitacion.acreditacion && (
                         <div className='my-5'>
                             <strong className='text-primary font-extrabold text-36 mb-10'>Acreditación</strong> 
-                            <div dangerouslySetInnerHTML={{__html: singleCapacitacion.acreditacion}} className='mt-5 prose max-w-none cursos' />                        
+                            <SafeHtml htmlContent={singleCapacitacion.acreditacion} className='mt-5 prose max-w-none cursos'/>                        
                         </div>
                         )}
                         {singleCapacitacion.vigencia && (

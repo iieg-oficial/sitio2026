@@ -3,6 +3,7 @@ import api from '@services/apiService'
 import ReactPaginate from 'react-paginate'
 import { useLocation } from 'react-router'
 import Searcher from '../pageComponents/searcher';
+import { SafeHtml } from '@components/safeHtml';
 
 const ITEMS_PER_PAGE = 12
 
@@ -154,7 +155,8 @@ export default function Sistemas() {
                                                 <h3 className="mb-3 text-primary text-28 font-garet-extrabold">
                                                     {sistema.titulo}
                                                 </h3>
-                                                <div className="diez text-18 font-garet" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
+                                                <SafeHtml htmlContent={sistema.descripcion} className='diez text-18 font-garet' />
+                                                
                                             </div>
                                             <div className='lg:col-span-6 mt-5'>
                                                 {sistema.tipo && (

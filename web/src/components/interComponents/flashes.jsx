@@ -6,6 +6,7 @@ import BackLink from './../pageComponents/Backlink'
 import TrackedLink from '@components/blocks/boton'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { SafeHtml } from '@components/safeHtml';
 
 
 export default function Flashes() {
@@ -67,12 +68,12 @@ export default function Flashes() {
                     <h3 className='text-28 text-tertiary'>{flash.titulo}</h3>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
                             <div className='bg-white rounded-2xl p-8'>
-                                <h4>Jalisco</h4>
-                                <div dangerouslySetInnerHTML={{__html: flash.desc_jal}} className='mt-5 prose max-w-none' />
+                                <h4>Jalisco</h4>                                
+                                <SafeHtml htmlContent={flash.desc_jal} className='mt-5 prose max-w-none'/>
                             </div>
                             <div className='bg-white rounded-2xl p-6'>
-                                <h4>Nacional</h4>
-                                <div dangerouslySetInnerHTML={{__html: flash.desc_nac}} className='mt-5 prose max-w-none' />
+                                <h4>Nacional</h4>                                
+                                <SafeHtml htmlContent={flash.desc_nac} className='mt-5 prose max-w-none'/>
                             </div>
                             <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                                 {flash.periocidad && (

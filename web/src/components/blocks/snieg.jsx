@@ -3,6 +3,7 @@ import { useLocation } from 'react-router'
 import api from '@services/apiService'
 import TrackedLink from '@components/blocks/boton'
 import ConditionalLink from '../pageComponents/ConditionalLink'
+import { SafeHtml } from '@components/safeHtml';
 
 export default function Snieg() {
     const [snieg, setSnieg] = useState([])
@@ -38,7 +39,8 @@ export default function Snieg() {
                         </div>
                         <div className='lg:col-span-4'>
                             <h2 className='text-36 text-titulo font-garet-extra font-extrabold'>{snieg.titulo}</h2>
-                            <div dangerouslySetInnerHTML={{__html: snieg.descripcion}} className='diez mt-5' />
+                            
+                            <SafeHtml htmlContent={snieg.descripcion} className='mt-5 diez'/>
                             { snieg.enlace ?
                                                 <div className='mb-4 h-10'>
                                                 <TrackedLink to={snieg.enlace} className="" target="_blank" rel="noopener noreferrer">

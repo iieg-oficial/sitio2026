@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SafeHtml } from '@components/safeHtml';
 
 export default function CapacitacionesList({ curso }) {
     const [singleCapacitacion, setSingleCapacitacion] = useState(curso ?? null);
@@ -55,7 +56,8 @@ export default function CapacitacionesList({ curso }) {
                                     if (activeTab === modulo.nombre) {
                                         return (
                                             <div key={modulo.id}>
-                                                <div dangerouslySetInnerHTML={{__html: modulo.descripcion}} className='mt-5 prose max-w-none cursos' />                        
+                                                <SafeHtml htmlContent={modulo.descripcion} className='mt-5 prose max-w-none cursos'/>                        
+                                                
                                             </div>
                                         )}
                                     } 
@@ -86,7 +88,8 @@ export default function CapacitacionesList({ curso }) {
                             <div className='sm:col-span-10'>
                                 <p className='text-tertiary font-bold text-22 mb-5'>{profesor.nombre}</p>
                                 <p className='text-titulo font-bold text-18'>{profesor.puesto}</p>
-                                <div dangerouslySetInnerHTML={{__html: profesor.descripcion}} className='mt-5 prose max-w-none diez mt-5' />
+                                <SafeHtml htmlContent={profesor.descripcion} className='mt-5 prose max-w-none diez mt-5' />
+                                
                             </div>
                            </div>
                         ))}
