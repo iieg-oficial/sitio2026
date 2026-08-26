@@ -88,11 +88,11 @@ function HomePage() {
                 <BlockRenderer block={{ type: 'banners' }} />
             </section>            
             <section className="container-fluid relative grid">
-                <div className="relative z-0 order-2 xl:order-1 min-h-[370px] xl:min-h-auto">                    
-                    <div className='bg-primary text-center z-10 mx-auto absolute top-6/12 xl:top-8/12 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-10 py-11 rounded-2xl w-11/12 xl:w-9/12 xl:w-auto'>
+                <div className="relative z-0 order-2 xl:order-1 min-h-[475px] lg:min-h-[555px] xl:min-h-[530px] 2xl:min-h-auto">                    
+                    <div className='bg-primary text-center z-10 mx-auto absolute top-[50%] lg:top-[60%] 2xl:top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-10 py-11 rounded-2xl w-11/12 lg:w-10/12 xl:w-7/12 extra:max-w-[1220px]'>
                         <img src="/ico_mapalab.png" alt="MapaLab" className="inline-block mr-2" />
                         <p className='text-center text-white my-8 text-22'>Explora el territorio de Jalisco con datos geoespaciales</p>
-                        <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-medio hover:bg-tertiary text-base">
+                        <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-medio hover:bg-tertiary text-base block max-w-[395px] mx-auto">
                             Quiero explorar MapaLab
                         </TrackedLink>
                     </div>
@@ -123,52 +123,7 @@ function HomePage() {
                 <TrackedLink to="/nuestros-productos" className="button2 sm:w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
                     Conoce todos nuestros productos
                 </TrackedLink>
-                <div className="flex flex-wrap bg-amber-700 pt-20 gap-5 px-20">
-                    <div key="mapa_1" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
-                
-                        <img 
-                            src={"/ico_cuadernillos_municipales_274.png"} 
-                            alt={"Cuadernillos Municipales"} 
-                            className='rounded-4xl bg-white px-16 h-[130px]'
-                            />
-                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                            <h3>Cuadernillos Municipales</h3>
-                        </div>
-                    </div>
-                <div key="mapa_2" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
-                
-                        <img 
-                            src={"/ico_reportes_220x144.png"} 
-                            alt={"Reportes"} 
-                            className='rounded-4xl bg-white px-16 py-2'
-                            />
-                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                            <h3>Reportes</h3>
-                        </div>
-                    </div>
-                    <div key="mapa_3" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
-                
-                        <img 
-                            src={"/ico_cuadernillos_municipales_274.png"} 
-                            alt={"Cuadernillos Municipales"} 
-                            className=''
-                            />
-                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                            <h3>Cuadernillos Municipales</h3>
-                        </div>
-                    </div>
-                    <div key="mapa_4" className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
-                
-                        <img 
-                            src={"/ico_cuadernillos_municipales_274.png"} 
-                            alt={"Cuadernillos Municipales"} 
-                            className='rounded-full'
-                            />
-                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                            <h3>Cuadernillos Municipales</h3>
-                        </div>
-                    </div>
-                </div>
+
             </section>
 
             <section className="w-11/12 mx-auto relative my-15">
@@ -177,15 +132,15 @@ function HomePage() {
                 <TrackedLink 
                 to="/mapas-historicos" 
                 target="_self"
-                className="button2 block w-[350px] text-center mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
+                className="button2 block w-[350px] text-center mx-auto mt-14 text-primary hover:text-white border-primary hover:bg-primary">
                     Quiero ver todos los mapas
                 </TrackedLink>
             </section>
             <section className="container-fluid relative bg-card py-20">
-                <div className="container mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 gap-4 ">
+                <div className="container mx-auto grid grid-cols-2 md:grid-cols-6 xl:grid-cols-5 gap-10 px-5">
                 
                 <TrackedLink 
-                to="/transparencia" 
+                to="https://transparencia.jalisco.gob.mx/informacion_fundamental/214" 
                 target="_blank"
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
@@ -196,7 +151,7 @@ function HomePage() {
                 </TrackedLink>
 
                  <TrackedLink 
-                to="/licitaciones" 
+                to="https://analisis.jalisco.gob.mx/adquis" 
                 target="_blank"
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
