@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => {
         base: '/portal-admin/',
         build: {
             outDir: 'dist',
-            sourcemap: true
+            sourcemap: process.env.NODE_ENV === 'development',
         },
         resolve: {
             alias: {
