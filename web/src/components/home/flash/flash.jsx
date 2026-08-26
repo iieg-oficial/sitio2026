@@ -27,16 +27,16 @@ export default function Flashes() {
             {flashes.map(flash => (
                 <div className='' key={flash.id}>
                     <div className='mb-5'>
-                        <h3 className='text-22'>{flash.titulo}</h3>
+                        <h3 className='text-22 text-tertiary font-extrabold font-900'>{flash.titulo}</h3>
                     </div>
                     <div>                        
                         <div dangerouslySetInnerHTML={{ __html: flash.desc_jal }}  className='flash_desc'/>
                     </div>
                     <div className='flex flex-wrap gap-4 mt-10'>
-                        <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>
+                        <p className='text-[12px] font-bold rounded-xl py-3 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>
                             {flash.periocidad}
                             </p>                        
-                        <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta text-tertiary border border-[#FF83004D]'>
+                        <p className='text-[12px] font-bold rounded-xl py-3 px-5 bg-[#FFF2E5] text-tertiary border border-[#FF83004D]'>
                             {dayjs(flash.fecha_publicacion).format('D [de] MMMM [de] YYYY')}
                         </p>
                     </div>

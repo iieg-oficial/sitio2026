@@ -143,8 +143,8 @@ export default function Cuadernillos() {
                                 <span className="material-symbols--download text-tertiary"></span>
                             </div>
                             <div className='flex flex-wrap gap-4 mt-10'>
-                                <p className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Año: {cuadernillo.anyo}</p>
-                                <p className='rounded-2xl bg-etiqueta-sec text-tertiary text-14 px-5 py-2'>Municipio: {cuadernillo.municipio || 'N/A'}</p>
+                                <p className='rounded-2xl bg-etiqueta-ter text-primary text-[12px] p-2'>Año: {cuadernillo.anyo}</p>
+                                <p className='rounded-2xl bg-etiqueta-sec text-tertiary text-[12px] p-2'>Municipio: {cuadernillo.municipio || 'N/A'}</p>
                             </div>
                         </div>
                     </TrackedLink>

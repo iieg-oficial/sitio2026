@@ -11,39 +11,11 @@
                     </p>
                     {% endif %}
                 </div>
-                <div id="searcher" class="col-xs-8 col-xs-offset-2 col-md-5 col-md-offset-0 no-padding position-bottom">
+                <div id="searcher" class="no-padding position-bottom mt-14">
                     {% block search %}
                         {% snippet 'home/snippets/search.html', search_facets=search_facets %}
                     {% endblock %}
-                </div>
-                <div id="stats" class="hidden-xs col-sm-12 col-md-4 col-md-offset-1">
-
-                    <div class="estatisticas-box">
-                    <span class="numero">{{ h.total_datasets() }}</span>
-                    <p>Datasets publicados</p>
-                    </div>
-                    <p>-----------------------------</p>
-                    {# 2. Bloque para listar los más populares #}
-                    <div class="datasets-populares">
-                    <h3>Datasets más populares</h3>
-                    <ul>
-                        {# Invocamos el helper del plugin pasando el límite que queramos #}
-                        {% for dataset in h.iieg_datasets_populares(5) %}
-                        <li>
-                            {# Enlace compatible con las rutas Flask de CKAN 2.11 #}
-                            <a href="{{ h.url_for('dataset.read', id=dataset.name) }}">
-                            {{ dataset.title or dataset.name }}
-                            </a>
-                            <span class="badge">
-                            {{ dataset.tracking_summary.total if dataset.tracking_summary else 0 }} visitas
-                            </span>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    </div>
-
-
-                </div>
+                </div>                
             </div>
         </div>
     </div>

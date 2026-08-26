@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, computed_field
 from enum import Enum
 from typing import List, Optional
 from app.schemas.subject import SubjectFlat
@@ -15,6 +15,13 @@ class SistemasCreate(BaseModel):
     tema_ids: Optional[List[int]] = None
     destacado: Optional[bool] = False
     orden: Optional[int] = None
+
+    @field_validator('tipo', mode='before')
+    @classmethod
+    def clean_tipo(cls, v):
+        if isinstance(v, str) and v == 'datos_recientes':
+            return 'datos-recientes'
+        return v
 
     @field_validator('tema_ids', mode='before')
     @classmethod
@@ -54,6 +61,11 @@ class SistemasResponse(BaseModel):
     destacado: bool = False
     orden: int
     temas: Optional[List[SubjectFlat]] = []
+
+    @computed_field
+    @property
+    def tipo_label(self) -> str:
+        return self.tipo.label if self.tipo else self.tipo
 
     class Config:
         from_attributes = True

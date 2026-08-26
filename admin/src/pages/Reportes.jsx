@@ -75,11 +75,29 @@ export default function Reportes() {
         setEditingReporte(record);
         const ids = (record.temas ?? []).map((t) => t.id);
         setSelectedSubjects(ids);
+
+        let preMes = record.mes;
+        let preAnyo = record.anyo;
+
+        if (record.fecha && (!preMes || !preAnyo)) {
+            const parts = record.fecha.split('T')[0].split('-');
+            if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10);
+                if (!preAnyo) preAnyo = year;
+                if (!preMes && month >= 1 && month <= 12) {
+                    const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+                    preMes = monthNames[month - 1];
+                }
+            }
+        }
+
         form.setFieldsValue({
             ...record,
             fecha: record.fecha ? record.fecha.slice(0, 10) : undefined,
             periocidad: record.periocidad,
-            mes: record.mes,
+            mes: preMes,
+            anyo: preAnyo,
         });
         setModalVisible(true);
     };

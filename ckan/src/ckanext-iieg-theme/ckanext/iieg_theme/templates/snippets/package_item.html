@@ -59,7 +59,7 @@
                                     {% if group_img_url %}
                                             <a href="{{ h.url_for('group.read', id=group_identifier) }}">
                                                 <img src="{{ group_img_url }}" 
-                                                     alt="Logo del Grupo" 
+                                                     alt="{{ _('Logo del Grupo') }}" 
                                                      class="img-fluid rounded" 
                                                      style="max-height: 50px; max-width: 100px; object-fit: contain;" />
                                             </a>

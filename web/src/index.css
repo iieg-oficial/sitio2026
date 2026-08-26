@@ -181,10 +181,42 @@ li::marker {
   color: var(--color-titulo);
 }
 
+.ProseMirror table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.ProseMirror td,
+.ProseMirror th {
+  min-width: 1em;
+  border: 1px solid #d9d9d9;
+  padding: 8px 10px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.ProseMirror th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  text-align: left;
+}
+
+.ProseMirror .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(22, 119, 255, 0.1);
+  pointer-events: none;
+}
+
 .material-symbols--download {
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='m12 16l-5-5l1.4-1.45l2.6 2.6V4h2v8.15l2.6-2.6L17 11zm-6 4q-.825 0-1.412-.587T4 18v-3h2v3h12v-3h2v3q0 .825-.587 1.413T18 20z'/%3E%3C/svg%3E");
   background-color: var(--color-tertiary);
   -webkit-mask-image: var(--svg);
@@ -201,13 +233,16 @@ li::marker {
   width: 24px;
   height: 24px;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z'/%3E%3C/svg%3E");
-  background-color: var(--color-titulo);
+  background-color: var(--color-secondary);
   -webkit-mask-image: var(--svg);
   mask-image: var(--svg);
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
+}
+.material-symbols--chevron-left:hover {
+  background-color: #fff !important;
 }
 .material-symbols--chevron-right {
   display: inline-block;
@@ -251,7 +286,7 @@ li::marker {
 }
 .line-md--email {
   display: inline-block;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath stroke-dasharray='66' d='M4 5h16c0.55 0 1 0.45 1 1v12c0 0.55 -0.45 1 -1 1h-16c-0.55 0 -1 -0.45 -1 -1v-12c0 -0.55 0.45 -1 1 -1Z'%3E%3Canimate fill='freeze' attributeName='stroke-dashoffset' dur='0.6s' values='66;0'/%3E%3C/path%3E%3Cpath stroke-dasharray='24' stroke-dashoffset='24' d='M3 6.5l9 5.5l9 -5.5'%3E%3Canimate fill='freeze' attributeName='stroke-dashoffset' begin='0.6s' dur='0.3s' to='0'/%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M4.616 19q-.691 0-1.153-.462T3 17.384V6.616q0-.691.463-1.153T4.615 5h14.77q.69 0 1.152.463T21 6.616v10.769q0 .69-.463 1.153T19.385 19zM12 12.116L4 6.885v10.5q0 .269.173.442t.443.173h14.769q.269 0 .442-.173t.173-.443v-10.5zM12 11l7.692-5H4.308zM4 6.885V6v11.385q0 .269.173.442t.443.173H4z'/%3E%3C/svg%3E");
   background-color: currentColor;
   -webkit-mask-image: var(--svg);
   mask-image: var(--svg);
@@ -285,21 +320,23 @@ li::marker {
 }
 
 
-.edatos-recientes{
-  background-color: var(--color-etiqueta-sec);
+.edatos_recientes,
+.edatos-recientes {
+  background-color: #FFF2E5;
   color: var(--color-tertiary);
-  border: 1px solid var(--color-tertiary);
+  border: 1px solid #FF83004D;
 }
 .eestadistica{
-  background-color: var(--color-etiqueta-ter);
+  background-color: #DDE7FF;
   color: var(--color-titulo);
-  border: 1px solid var(--color-titulo);
+  border: 1px solid #162A554D;
 }
 .eplataforma{
-  background-color: var(--color-etiqueta);
+  background-color: #F3EAFF;
   color: var(--color-primary);
-  border: 1px solid var(--color-primary);
+  border: 1px solid #5C24724D;
 }
+
 ul.pagination{
   display: flex;
   justify-content: center;
@@ -336,7 +373,7 @@ ul.pagination li{
   border-radius: 100%;
 }
 ul.pagination li.active{
-  background-color: var(--color-etiqueta);
+  background-color: #FFF2E5;
   border: 1px solid var(--color-tertiary);
 }
 ul.pagination li.active a{
@@ -349,7 +386,7 @@ ul.pagination li a{
   font-weight: 800;
 }
 ul.pagination li:hover{
-  background-color: var(--color-etiqueta);
+  background-color: #FFF2E5;
   border: 1px solid var(--color-tertiary);
 }
 
@@ -375,4 +412,10 @@ ul.pagination li:hover{
 .share-icon:hover {
   background: var(--color-primary);
   transform: translateY(-2px);
+}
+
+#contacto-form input::placeholder,
+#contacto-form textarea::placeholder  {
+  color: #172A55;
+  opacity: 1; 
 }

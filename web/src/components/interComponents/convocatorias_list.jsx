@@ -35,22 +35,23 @@ export default function ConvocatoriasList() {
 
     return (
         <>
-        <section className='lg:w-10/12 mx-auto my-15'>
-            <div className='grid grid-cols-6 gap-5'>
+        {Array.isArray(singleConvocatoria.perfiles) && singleConvocatoria.perfiles.length > 0 && (
+        <section className='lg:w-8/12 mx-auto my-15'>
+            <div className='grid grid-cols-12 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
-                        <div className='col-span-5'>
+                        <div className='col-span-11'>
                             <h2 className='text-primary text-36 font-extrabold'>Perfiles</h2>
                         </div>
                     </div>
 
-            <div className='flex justify-left mt-8 gap-4 mx-auto w-8/12'>
+            <div className='flex justify-left mt-8 gap-4 mx-auto w-full lg:w-8/12 overflow-x-auto pb-2'>
                 {singleConvocatoria.perfiles.map((perfil) => (
                     <button 
                     key={perfil.id}
                     onClick={() => setActiveTab(perfil.area)}
-                    className={`px-4 py-2 rounded-lg font-extrabold text-28 transition-colors ${activeTab === perfil.area
+                    className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-lg font-extrabold text-28 transition-colors ${activeTab === perfil.area
                                 ? 'bg-etiqueta-sec text-tertiary border-tertiary border-1'
                                 : 'bg-white text-titulo hover:bg-etiqueta-sec hover:text-tertiary hover:border-1'}`
                             }
@@ -72,7 +73,7 @@ export default function ConvocatoriasList() {
                 })}
             </div>
         </section>
-
+        )}
         </>
     );
 }   
