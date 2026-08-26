@@ -153,7 +153,7 @@ export default function Flashes() {
                     <h3 className='text-36 text-tertiary font-garet-extra'>{lastFlash.titulo}</h3>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
                         <div className='bg-white rounded-2xl p-8'>
-<<<<<<< HEAD
+
                             <div className="flex gap-4 items-center">
                                 <img src="/ico_jalisco.svg" alt="Jalisco" className="w-16 h-16 object-contain" />
                                 <h4 className="text-primary"> Jalisco</h4>
@@ -165,20 +165,10 @@ export default function Flashes() {
                                 <img src="/ico_Nacional.svg" alt="Nacional" className="w-16 h-16 object-contain" /> 
                                 <h4 className="text-primary">Nacional</h4>
                             </div>
-<<<<<<< HEAD
                             <SafeHtml htmlContent={lastFlash.desc_nac} className='mt-5 prose max-w-none text-14!' />                            
-=======
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_nac}} className='mt-5 prose max-w-none text-14!' />
-=======
-                            <h4>Jalisco</h4>
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_jal}} className='mt-5 prose max-w-none' />
+
                         </div>
-                        <div className='bg-white rounded-2xl p-6'>
-                            <h4>Nacional</h4>
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_nac}} className='mt-5 prose max-w-none' />
->>>>>>> 41cf78ba1 (fix: filter-repo #39)
->>>>>>> e408c36ee (fix: filter-repo #39)
-                        </div>
+
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                             {lastFlash.periocidad && (
                                 <p className='text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{lastFlash.periocidad}</p>
