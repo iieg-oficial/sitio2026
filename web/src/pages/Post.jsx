@@ -141,10 +141,8 @@ const filteredPosts = useMemo(() => (
                 <div className="container mx-auto">                
                 <h1 className="text-titulos text-center">{page?.title || defaultPage.title}</h1>
                 </div>
-                {page?.description ? (
-                    <SafeHtml htmlContent={page.description || defaultPage.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
-                ) : (
-                    <SafeHtml htmlContent={defaultPage.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
+                { page.description && (
+                    <SafeHtml htmlContent={page.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
                 )}
                 </div>
 
