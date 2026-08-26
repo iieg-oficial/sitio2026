@@ -60,7 +60,7 @@ export default function PlanInstitucional() {
             <div className="container mx-auto mt-6">
                 <TrackedLink 
                     to="/plan-institucional" 
-                    className="button2 block mx-auto w-[350px] text-center text-primary hover:text-white border-primary hover:bg-primary py-3 rounded-lg"
+                    className="button2 block mx-auto w-[315px] sm:w-[390px] text-center text-primary hover:text-white border-primary hover:bg-primary py-3 rounded-lg"
                 >
                     Quiero descargar el plan institucional
                 </TrackedLink>
