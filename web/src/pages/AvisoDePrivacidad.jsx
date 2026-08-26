@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import api from '@services/apiService'
 import Backlink from '../components/pageComponents/Backlink'
 import NotFound from '@components/blocks/NotFound'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 const SLUG_INTEGRAL = 'aviso-de-privacidad'
 const PDF_INTEGRAL = '/aviso-de-privacidad.pdf'
