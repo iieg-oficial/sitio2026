@@ -12,8 +12,11 @@
 .swiper-horizontal > .swiper-pagination-bullets, 
 .swiper-pagination-horizontal.swiper-pagination-bullets {
   &.swiper-pagination-bullets-dynamic {
-    left: 5%;
-    }
+    width: 100% !important;
+    bottom: 2% !important;
+    text-align: left;
+    padding-left: 15px;
+  }
 }
 
 .swiper-pagination-fraction, .swiper-pagination-custom, 

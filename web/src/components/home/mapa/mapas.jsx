@@ -54,10 +54,10 @@ export default function Mapas() {
 
                 return (
                 <TrackedLink to={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
-                    <div key={mapa.id} className="overflow-hidden mapa h-60 xl:h-96 relative rounded-4xl">  
+                    <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl">  
                 
                         <img 
-                            src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=400` : "/demo.jpg"} 
+                            src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=560` : "/demo.jpg"} 
                             alt={mapa.titulo} 
 <<<<<<< HEAD
                             className='w-full h-full object-cover'
@@ -77,8 +77,8 @@ export default function Mapas() {
                                 {titulo && <h3 className='text-white'>{titulo}</h3>}
 >>>>>>> 41cf78ba1 (fix: filter-repo #39)
                                 
-                                <div className='flex mb-5 mt-8 gap-2'>  
-                                    {mapa.anyo ? <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta text-tertiary border border-[#FF83004D]'>{mapa.anyo}</p> : null}                        
+                                <div className='flex mb-5 mt-5 gap-2'>  
+                                    {mapa.anyo ? <p className='text-14 font-bold rounded-xl py-2 px-5 bg-[#FFF2E5] text-tertiary border border-[#FF83004D]'>{mapa.anyo}</p> : null}                        
                                     {mapa.tipo ? <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>{mapa.tipo}</p> : null}                                    
                                 </div>
                                 
