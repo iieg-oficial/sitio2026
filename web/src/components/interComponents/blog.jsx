@@ -8,6 +8,7 @@ import TrackedLink from '@components/blocks/boton'
 import Backlink from '../pageComponents/Backlink'
 import Galeria from '../interComponents/galeria'
 import ShareButtons from '../pageComponents/ShareButtons'
+import { SafeHtml } from '@components/safeHtml';
 
 
 
@@ -78,8 +79,8 @@ export default function Blog() {
                     {singlePost.subject ?
                         <p className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>{singlePost.subject?.titulo}</p>
                     : null}
-                </div>
-                <div dangerouslySetInnerHTML={{__html: singlePost.contenido}} className='mt-5 prose max-w-none mb-15' />
+                </div>                
+                <SafeHtml htmlContent={singlePost.contenido} className='mt-5 prose max-w-none mb-15'/>
                 {singlePost.video && (
                     <iframe className="aspect-video w-full" 
                     src={embedUrl} 
