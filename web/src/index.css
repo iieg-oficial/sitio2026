@@ -2,12 +2,36 @@
 @plugin "@tailwindcss/typography";
 
 @font-face {
-  font-family: 'Garet-Medium';
-  src: url(../public/Garet-Medium.woff) format('woff');  
+    font-family: 'Garet-Medium';
+    src: url('../public/fonts/Garet-Medium.woff2') format('woff2'),
+        url('../public/fonts/Garet-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garet-bold';
+    src: url('../public/fonts/Garet-Bold.woff2') format('woff2'),
+        url('../public/fonts/Garet-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garet-Extra';
+    src: url('../public/fonts/Garet-ExtraBold.woff2') format('woff2'),
+        url('../public/fonts/Garet-ExtraBold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
 }
 
 @theme {
     --font-garet: 'Garet-Medium', 'sans-serif';
+    --font-garet-bold: 'Garet-Bold', 'sans-serif';
+    --font-garet-extra: 'Garet-Extra', 'sans-serif';
     --color-primary: #5c2472;
     --color-secondary: #8936ab;
     --color-tertiary: #ff8300;
@@ -37,27 +61,27 @@
     }
     h1 {
       font-size: var(--text-44);
-      font-weight: 900;
+      font-family: var(--font-garet-extra);
       color: var(--color-titulo);
     }
     h2 {
       font-size: var(--text-44);
-      font-weight: 800;
+      font-family: var(--font-garet-extra);
       color: var(--color-titulo);
     }
     h3{
       font-size: var(--text-36);
-      font-weight: 800;
+      font-family: var(--font-garet-bold);
       color: var(--color-titulo);
     }
     h4 {
       font-size: var(--text-28);
-      font-weight: 800;
+      font-family: var(--font-garet-extra);
       color: var(--color-secondary);
     }
     h5 {
       font-size: var(--text-22);
-      font-weight: 700;
+      font-family: var(--font-garet-bold);
       color: var(--color-tertiary);
     }
 }
@@ -77,11 +101,11 @@ section[id] {
 }
 
 .button{
-  @apply  text-white py-2 px-4 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold;
+  @apply text-white py-4 px-7 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold font-garet-extra;
 }
 
 .button2{
-  @apply border-2 py-2 px-4 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold;
+  @apply border-2 py-4 px-6 rounded-4xl text-base transition-colors duration-300 cursor-pointer font-extrabold font-garet-extra;
 }
 
 .rsicon{
@@ -150,7 +174,7 @@ li::marker {
 
 .et--phone {
   display: inline-block;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 19 32'%3E%3Cg fill='black'%3E%3Cpath d='M1.5 32h16c.827 0 1.5-.673 1.5-1.5v-29c0-.827-.673-1.5-1.5-1.5h-16C.673 0 0 .673 0 1.5v29c0 .827.673 1.5 1.5 1.5M1 1.5a.5.5 0 0 1 .5-.5h16a.5.5 0 0 1 .5.5v29a.5.5 0 0 1-.5.5h-16a.5.5 0 0 1-.5-.5z'/%3E%3Cpath d='M2.5 27h14a.5.5 0 0 0 .5-.5v-21a.5.5 0 0 0-.5-.5h-14a.5.5 0 0 0-.5.5v21a.5.5 0 0 0 .5.5M3 6h13v20H3z'/%3E%3Ccircle cx='10' cy='29' r='1'/%3E%3Cpath d='M7.5 4h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0 0 1'/%3E%3C/g%3E%3C/svg%3E");
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M11 17.5a.75.75 0 0 0 0 1.5h2a.75.75 0 0 0 0-1.5z'/%3E%3Cpath fill='black' fill-rule='evenodd' d='M8 2a2.25 2.25 0 0 0-2.25 2.25v15.5A2.25 2.25 0 0 0 8 22h8a2.25 2.25 0 0 0 2.25-2.25V4.25A2.25 2.25 0 0 0 16 2zm-.75 2.25A.75.75 0 0 1 8 3.5h8a.75.75 0 0 1 .75.75v15.5a.75.75 0 0 1-.75.75H8a.75.75 0 0 1-.75-.75z' clip-rule='evenodd'/%3E%3C/svg%3E");
   background-color: var(--color-primary);
   -webkit-mask-image: var(--svg);
   mask-image: var(--svg);
@@ -172,10 +196,13 @@ li::marker {
   mask-size: 100% 100%;
 }
 
-.diez p{
+.diez p, .diez{
   line-height: 40px;
 }
-
+.prose .text-white p,
+.prose .text-white {
+  color: var(--color-white) !important;
+}
 .cursos p{
   line-height: 40px;
   color: var(--color-titulo);
@@ -225,7 +252,7 @@ li::marker {
   mask-repeat: no-repeat;
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
-  margin-top: 5px;
+  margin-top: 0px;
 }
 
 .material-symbols--chevron-left {
@@ -418,4 +445,8 @@ ul.pagination li:hover{
 #contacto-form textarea::placeholder  {
   color: #172A55;
   opacity: 1; 
+}
+
+.page-organigrama .page-header{
+  padding-bottom: 0px !important;
 }
