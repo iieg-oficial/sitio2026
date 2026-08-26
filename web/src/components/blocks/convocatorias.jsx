@@ -63,8 +63,10 @@ export default function Convocatorias() {
             <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto'>
                 {currentItems.map(convocatoria => (
                     <TrackedLink to={`/convocatorias/${convocatoria.slug}`} className="" rel="noopener noreferrer">
-                        <div className='grid md:grid-cols-6 hover:border hover:border-tertiary group rounded-3xl' key={convocatoria.id}>                        
-                            <div className='md:col-span-2'></div>
+                        <div className='grid md:grid-cols-6' key={convocatoria.id}>                        
+                            <div className='md:col-span-2'>
+                                <img src={convocatoria.img_portada} alt={convocatoria.titulo} className='rounded-3xl w-full h-full object-cover' />
+                            </div>
                                 <div className='md:col-span-4 p-6'>
                                     <h3 className='text-28 text-primary'>{convocatoria.titulo}</h3>                            
                                     {esFechaPasada(convocatoria.fin) && (
@@ -97,9 +99,11 @@ export default function Convocatorias() {
             />
             */}
 
-            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto'>
-                <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl group'>                        
-                    <div className='md:col-span-2'></div>
+            <div className='grid grid-cols-1 gap-4 p-4 container mx-auto bg-card rounded-3xl mt-16'>
+                <div className='grid md:grid-cols-6'>                        
+                    <div className='md:col-span-2'>
+                        <img src='https://iieg.jalisco.gob.mx/acervo/portal/cursos/sesiones-informativas.png' alt='Sesiones informativas' className='rounded-3xl w-full h-full object-cover' />
+                    </div>
                         <div className='md:col-span-4 p-6'>
                             <h3 className='text-28 text-primary'>Sesiones informativas</h3>                            
                                 <div className='diez mt-5'>                        

@@ -10,6 +10,51 @@ from ckan.config.declaration import Declaration, Key
 # === ESTOS DOS IMPORTS SON CRUCIALES PARA TU FUNCIÓN DE IMAGEN ===
 import ckan.model as model
 import ckan.lib.helpers as h
+import json
+from urllib.parse import urlparse
+
+def _apply_custom_license_register():
+    '''Carga el registro de licencias desde licenses_group_url para CKAN 2.11.
+
+    Esto se ejecuta cuando el plugin se inicializa para evitar que CKAN se quede
+    con la lista por defecto de licencias aunque el archivo JSON esté bien.
+    '''
+    license_url = config.get('licenses_group_url') or config.get('CKAN_LICENSES_GROUP_URL')
+    if not license_url or not license_url.startswith('file://'):
+        return False
+
+    try:
+        parsed = urlparse(license_url)
+        path = parsed.path
+        with open(path, 'r', encoding='utf-8') as stream:
+            licenses = json.load(stream)
+    except Exception:
+        return False
+
+    custom = {}
+    for item in licenses:
+        custom[item['id']] = {
+            'id': item['id'],
+            'title': item.get('title', item['id']),
+            'url': item.get('url', ''),
+            'osd_conformance': item.get('osd_conformance', 'not reviewed'),
+            'od_conformance': item.get('od_conformance', 'not reviewed'),
+            'domain_data': item.get('domain_data', False),
+            'domain_content': item.get('domain_content', False),
+            'domain_software': item.get('domain_software', False),
+        }
+
+    model.Package._license_register = custom
+    model.Package.license_register = custom
+
+    try:
+        import ckan.model.license as license_module
+        license_module._license_register = custom
+        license_module.license_register = custom
+    except Exception:
+        pass
+
+    return True
 
 def show_most_popular_groups():
     '''Return the value of the most_popular_groups config setting.
@@ -144,6 +189,8 @@ class IiegThemePlugin(plugins.SingletonPlugin):
                 'iieg_theme_all_groups': get_all_groups_list,
                 'iieg_theme_get_localized_url': get_localized_current_url,
                 'total_datasets': self._obtener_total_datasets,
+                'recently_changed_packages': self._obtener_datasets_recientes,
+                'recently_changed_packages_activity_stream': self._obtener_activity_reciente,
                 'iieg_datasets_populares': self._obtener_datasets_populares
                 }
     
@@ -154,6 +201,42 @@ class IiegThemePlugin(plugins.SingletonPlugin):
             return result['count']
         except Exception:
             return 0
+
+    def _obtener_datasets_recientes(self, limite=15):
+        """Devuelve paquetes ordenados por metadata_modified desc.
+
+        Esta versión no depende de ckanext-activity para la home del sitio.
+        """
+        try:
+            limit = max(1, int(limite))
+            result = toolkit.get_action('package_search')(
+                {'ignore_auth': True},
+                {'q': '*:*', 'sort': 'metadata_modified desc', 'rows': limit, 'include_private': False}
+            )
+            return result.get('results', [])
+        except Exception:
+            return []
+
+    def _obtener_activity_reciente(self, limit=10):
+        """Emula el formato básico del stream de actividad para Jinja.
+
+        El tema espera objetos con .data.package y .timestamp; aquí los
+        construimos a partir de los paquetes recientes para no depender de
+        ckanext-activity.
+        """
+        try:
+            limit = max(1, int(limit))
+            packages = self._obtener_datasets_recientes(limit)
+            activities = []
+            for pkg in packages:
+                timestamp = pkg.get('metadata_modified') or pkg.get('metadata_created')
+                activities.append({
+                    'timestamp': timestamp,
+                    'data': {'package': pkg},
+                })
+            return activities
+        except Exception:
+            return []
 
     def _obtener_datasets_populares(self, limite=5):
         try:

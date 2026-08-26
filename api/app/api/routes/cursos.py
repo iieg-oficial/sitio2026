@@ -101,6 +101,7 @@ def create_cursos(
     db_cursos = Cursos(
         titulo=cursos.titulo,
         descripcion=cursos.descripcion,
+        img_portada=cursos.img_portada,
         inicio=cursos.inicio,
         fin=cursos.fin,
         formato=cursos.formato,
@@ -268,7 +269,7 @@ def update_cursos(
 
     # Actualizar solo campos escalares (NO incluir las relaciones many-to-many)
     campos_escalares = [
-        "titulo", "descripcion", "inicio", "fin", "formato", "Horario", "Objetivo",
+        "titulo", "descripcion", "img_portada", "inicio", "fin", "formato", "Horario", "Objetivo",
         "p_ingreso", "p_egreso", "tipo_curso", "inscripcion", "acreditacion",
         "vigencia", "contacto", "destacado", "clave", "archivo", "formulario"
     ]

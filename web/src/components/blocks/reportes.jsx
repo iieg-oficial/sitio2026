@@ -164,10 +164,12 @@ export default function Reportes() {
 
     return (
         <div>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
+            <div className='w-full md:w-11/12 mx-auto md:ml-auto md:mr-0'>
+                <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
+            </div>
 
             <div className='mx-auto px-2 container my-15'>
-                <div className='flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5'>
+                <div className='flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5'>
                     <div>
                         <label className='block text-14 text-primary'>Selecciona un Tema</label>
                         <select
@@ -241,25 +243,25 @@ export default function Reportes() {
 
             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mx-auto container px-2'>
                 {currentReportes.map(reporte => (
-                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" download>
-                        <div className='border-2 border-card rounded-2xl p-8 hover:border-titulo hover:border' key={reporte.id}>
+                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" download>
+                        <div className='border-2 border-card rounded-2xl p-8 hover:border-tertiary hover:border' key={reporte.id}>
                             
                             <div className="flex items-center gap-2 mb-4 bg-white justify-between">
-                                <p className=' text-22 text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
-                                <div className='bg-[#FF83004D] h-[37px] w-[40px] rounded-full flex items-center justify-center'>
+                                <p className=' text-18 font-garet-bold text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
+                                <div className='bg-[#FF83004D] h-[31px] w-[30px] rounded-full flex items-center justify-center p-1'>
                                     <span className="material-symbols--download text-tertiary"></span> 
                                 </div>
                             </div> 
 
-                            <div className='flex flex-wrap gap-5 text-14'>
-                                {reporte.anyo && (
-                                    <p className='text-tertiary border border-tertiary bg-etiqueta-sec py-3 px-5 rounded-xl'>{reporte.anyo}</p>
+                            <div className='flex flex-wrap gap-5 '>
+                                {reporte.year && (
+                                    <p className='text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{reporte.year}</p>
                                 )}
                                 {reporte.periocidad && (
-                                    <p className='text-titulo border border-titulo bg-etiqueta-ter py-3 px-5 rounded-xl'>{reporte.periocidad}</p>
+                                    <p className='text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{reporte.periocidad}</p>
                                 )}
                                 {reporte.fecha && (
-                                    <p className='text-primary border border-primary bg-etiqueta py-3 px-5 rounded-xl'>Publicada: {format(new Date(reporte.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                    <p className='text-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>Publicada: {format(new Date(reporte.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                 )}
                             </div>
                             

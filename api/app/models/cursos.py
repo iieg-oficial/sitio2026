@@ -50,6 +50,7 @@ class Cursos(Base):
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
     descripcion = Column(Text, nullable=True)
+    img_portada = Column(String, nullable=True)
     inicio = Column(DateTime, default=datetime.utcnow, nullable=True)
     fin = Column(DateTime, default=datetime.utcnow, nullable=True)
     formato = Column(String(100), nullable=True)

@@ -238,10 +238,10 @@ export default function Documentacion() {
                             </div>                                                        
                             <div className='flex flex-wrap gap-4 mt-10'>
                                 {documentacion.tipo && (
-                                    <span className='rounded-2xl bg-etiqueta-ter border-[#162A554D] border-1 text-primary text-14 px-5 py-2'>{documentacion.tipo}</span>
+                                    <span className='rounded-2xl bg-etiqueta-ter border-[#162A554D] border-1 text-primary text-[12px] p-2'>{documentacion.tipo}</span>
                                 )}
                                 {documentacion.anyo && (
-                                    <span className='rounded-2xl bg-etiqueta-ter text-tertiary border-[#FF83004D] border-1 text-14 px-5 py-2'>{documentacion.anyo}</span>
+                                    <span className='rounded-2xl bg-etiqueta-ter text-tertiary border-[#FF83004D] border-1 text-[12px] p-2'>{documentacion.anyo}</span>
                                 )}
                             </div>
                         </div>

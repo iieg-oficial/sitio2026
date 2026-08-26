@@ -15,6 +15,15 @@ class TipoSistemaEnum(str, enum.Enum):
     datos_recientes = "datos-recientes"
     estadistica = "estadistica"
 
+    @property
+    def label(self) -> str:
+        labels = {
+            TipoSistemaEnum.plataforma: "Plataforma interactiva",
+            TipoSistemaEnum.datos_recientes: "Los datos más nuevos",
+            TipoSistemaEnum.estadistica: "Estadística experimental",
+        }
+        return labels.get(self, self.value)
+
 class Sistemas(Base):
     __tablename__ = "sistemas"
 
@@ -25,7 +34,7 @@ class Sistemas(Base):
     tipo = Column(
         Enum(
             TipoSistemaEnum,
-            values_callable=lambda enum: [e.value for e in enum],
+            values_callable=lambda obj: [e.value for e in obj],
             name="tiposistemaenum",
         ),
         nullable=False,

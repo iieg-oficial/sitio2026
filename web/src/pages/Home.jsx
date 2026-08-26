@@ -84,7 +84,7 @@ function HomePage() {
                 <meta name="twitter:description" content={page?.description_meta || 'Conoce Jalisco, nuestro territorio y sus recursos naturales; las características de su población y las condiciones en las que vive; así como su situación económica y las oportunidades que ofrece nuestro estado, sus municipios y los diferentes ordenes de gobierno.'} />
                 <meta name="twitter:image" content={page?.postlink ? page?.postlink : "/demo.jpg"} />
             </Helmet>
-            <section className="h-auto md:h-[550px] lg:h-[800px]" role="banner">                
+            <section className="h-auto md:h-[565px] lg:h-[580px] xl:h-[592px]  2xl:h-[600px] " role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
             </section>            
             <section className="container-fluid relative grid">
@@ -190,7 +190,7 @@ function HomePage() {
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
                     <img src="/ico_transparencia_normal.png" alt="Transparencia" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2 text-22">Transparencia</span>
+                    <span className="block mt-2 text-22 font-garet-bold font-800">Transparencia</span>
                     </div>                    
                     <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
@@ -201,7 +201,7 @@ function HomePage() {
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
                     <img src="/ico_licitaciones_normal.png" alt="Licitaciones" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2 text-22">Licitaciones</span>
+                    <span className="block mt-2 text-22 font-garet-bold font-800">Licitaciones</span>
                     </div>                    
                     <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
@@ -212,7 +212,7 @@ function HomePage() {
                 className="text-primary hover:text-tertiary text-center md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
                     <img src="/ico_contabilidad_normal.png" alt="Contabilidad Gubernamental" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2 text-22">Contabilidad gubernamental</span>
+                    <span className="block mt-2 text-22 font-garet-bold font-800">Contabilidad gubernamental</span>
                     </div>                    
                     <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
@@ -223,7 +223,7 @@ function HomePage() {
                 className="text-primary hover:text-tertiary text-center col-span-1 md:col-span-2 md:col-start-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
                     <img src="/ico_capacitaciones_normal.png" alt="Educación continua" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2 text-22">Educación continua</span>
+                    <span className="block mt-2 text-22 font-garet-bold font-800">Educación continua</span>
                     </div>                    
                     <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>
@@ -233,8 +233,8 @@ function HomePage() {
                 target="_self"
                 className="text-primary hover:text-tertiary text-center col-span-2 md:col-span-2 xl:col-span-1 group relative">
                     <div className='relative z-2'>                        
-                    <img src="/ico_noticias_normal.png" alt="Noticias" className="w-25 h-25 object-cover mx-auto mb-5" />
-                    <span className="block mt-2">Noticias</span>                    
+                    <img src="/ico_noticias_normal.png" alt="Comunicación Institucional" className="w-25 h-25 object-cover mx-auto mb-5" />
+                    <span className="block mt-2 text-22 font-garet-bold font-800">Comunicación Institucional</span>                    
                     </div>                    
                     <div className='bg-etiqueta-sec w-25 h-25 rounded-full z-0 absolute group-hover:scale-110 left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-12'></div>
                 </TrackedLink>

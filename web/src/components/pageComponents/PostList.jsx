@@ -18,7 +18,7 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
             </button>
         );
 
-      console.log('results', results);
+      
 
   return (
             <>
@@ -55,7 +55,7 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
                                         : "/demo.jpg";
 
                         return(
-                            <TrackedLink to={`/comunidad/${post.slug}`} className="" rel="noopener noreferrer" key={post.id}>
+                            <TrackedLink to={`/comunicacion-institucional/${post.slug}`} className="" rel="noopener noreferrer" key={post.id}>
                                 <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid md:grid-cols-2 gap-4 px-5 group">
                                     <div>
                                         <img src={post.gallery_images?.[0]?.url ?? "/demo.jpg"} alt={post.titulo} className='rounded-3xl'/>
