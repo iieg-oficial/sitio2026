@@ -219,7 +219,7 @@ export default function Mapas() {
                         </div>
                         <div className='col-span-6 mb-4'>
                             <SafeHtml htmlContent={singleMapa.informacion} className='mt-5 prose max-w-none'/>
-                        </div>
+                       </div>
                         </>
                             
                         )}
