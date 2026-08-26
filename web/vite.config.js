@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             outDir: 'dist',
-            sourcemap: true
+            sourcemap: process.env.NODE_ENV === 'development',
         },
         resolve: {
             alias: {

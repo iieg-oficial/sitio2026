@@ -27,6 +27,10 @@ server {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
+    
+    location ~* \.(js|css)\.map$ {
+        return 404;
+    }
 
     location ^~ /api/ {
         proxy_pass http://portal_api;
