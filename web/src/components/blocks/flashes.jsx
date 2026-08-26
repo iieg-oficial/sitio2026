@@ -157,7 +157,6 @@ export default function Flashes() {
                                 <img src="/ico_jalisco.svg" alt="Jalisco" className="w-16 h-16 object-contain" />
                                 <h4 className="text-primary"> Jalisco</h4>
                             </div>
-                            
                             <SafeHtml htmlContent={lastFlash.desc_jal} className='mt-5 prose max-w-none'/>
                         </div>
                         <div className='bg-white rounded-2xl p-6'>
@@ -269,13 +268,12 @@ export default function Flashes() {
             </div>
 
             
-
-            <div className='grid lg:grid-cols-3 container mx-auto gap-4'>
+<div className='grid lg:grid-cols-3 container mx-auto gap-4'>
                 {currentFlashes.length > 0 ? currentFlashes.map(flash => (
                     
                     <ConditionalLink
                         key={flash.id}
-                        link={`/flashes/${flash.slug}`}
+                        link={`/datos-expres/${flash.slug}`}
                         rel="noopener noreferrer"
                     >
                         
