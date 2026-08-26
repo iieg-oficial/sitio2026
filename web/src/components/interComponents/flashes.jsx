@@ -6,7 +6,7 @@ import BackLink from './../pageComponents/Backlink'
 import TrackedLink from '@components/blocks/boton'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 
 export default function Flashes() {

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router'
 import api from '@services/apiService'
 import TrackedLink from '@components/blocks/boton'
 import ConditionalLink from '../pageComponents/ConditionalLink'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Organos() {
     const [organos, setOrganos] = useState([])

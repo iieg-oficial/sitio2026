@@ -8,7 +8,7 @@ import TrackedLink from '@components/blocks/boton'
 import Backlink from '../pageComponents/Backlink'
 import Galeria from '../interComponents/galeria'
 import ShareButtons from '../pageComponents/ShareButtons'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 
 

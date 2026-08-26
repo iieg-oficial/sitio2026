@@ -5,7 +5,7 @@ import api from '@services/apiService'
 import Backlink from '../pageComponents/Backlink'
 import { Download, X } from "lucide-react";
 import TrackedLink from '@components/blocks/boton'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Mapas() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable

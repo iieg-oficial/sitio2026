@@ -5,7 +5,7 @@ import '../../blocks/styles/flash.css'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import TrackedLink from '@components/blocks/boton'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 dayjs.locale('es')
 

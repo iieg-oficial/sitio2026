@@ -3,7 +3,7 @@ import api from '@services/apiService'
 import ReactPaginate from 'react-paginate'
 import { useLocation } from 'react-router'
 import Searcher from '../pageComponents/searcher';
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 const ITEMS_PER_PAGE = 12
 
