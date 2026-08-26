@@ -5,6 +5,7 @@ import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import { Helmet } from 'react-helmet-async'
 import { format } from 'date-fns';
+import { SafeHtml } from '@components/safeHtml';
 
 function Post() {
     const defaultPage = {
@@ -123,7 +124,7 @@ const filteredPosts = useMemo(() => (
                 <h1 className="text-titulos text-center">{page.title}</h1>
                 </div>
                 { page.description && (
-                    <div dangerouslySetInnerHTML={{__html: page.description}} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto' />
+                    <SafeHtml htmlContent={page.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
                 )}
                 </div>
 
