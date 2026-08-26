@@ -166,7 +166,6 @@ export default function Flashes() {
                                 <h4 className="text-primary">Nacional</h4>
                             </div>
                             <SafeHtml htmlContent={lastFlash.desc_nac} className='mt-5 prose max-w-none text-14!' />                            
-
                         </div>
 
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
