@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
+import { SafeHtml } from '@components/safeHtml';
 
 export default function Convocatorias() {
     const [convocatorias, setConvocatorias] = useState([])
@@ -72,7 +73,7 @@ export default function Convocatorias() {
                                     {esFechaPasada(convocatoria.fin) && (
                                         <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
                                     )} 
-                                    <div dangerouslySetInnerHTML={{__html: convocatoria.descripcion}} className='diez mt-5' />                        
+                                    <SafeHtml htmlContent={convocatoria.descripcion} className='diez mt-5' />
                                     <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
                                         <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                     </div>

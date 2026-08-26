@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
+import { SafeHtml } from '@components/safeHtml';
 
 export default function Capacitaciones() {
     const [capacitaciones, setCapacitaciones] = useState([])
@@ -79,7 +80,8 @@ export default function Capacitaciones() {
                             {esFechaPasada(capacitacion.fin) && (
                                 <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
                             )} 
-                            <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez mt-5' />
+                            
+                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>
                             <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
                                 <span className="material-symbols--chevron-right"></span>
                             </div>
@@ -100,7 +102,8 @@ export default function Capacitaciones() {
                             {esFechaPasada(capacitacion.fin) && (
                                 <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
                             )}     
-                            <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez mt-5' />                        
+                            
+                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>                      
                             <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
                                 <span className="material-symbols--chevron-right"></span>
                             </div>

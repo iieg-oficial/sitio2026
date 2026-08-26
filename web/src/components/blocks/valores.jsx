@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '@services/apiService';
+import { SafeHtml } from '@components/safeHtml';
 
 export default function Valores() {
     const [valores, setValores] = useState([]);
@@ -59,10 +60,7 @@ export default function Valores() {
                         </div>
                         <div className="col-span-10">
                             <h5 className="col-span-12 text-primary">{valor?.nombre}</h5>
-                            <div 
-                                className="col-span-12 mt-5 diez" 
-                                dangerouslySetInnerHTML={{ __html: String(valor?.descripcion || '') }}
-                            />
+                            <SafeHtml htmlContent={String(valor?.descripcion || '')} className='col-span-12 mt-5 diez'/>
                         </div>
                     </div>
                 ))}

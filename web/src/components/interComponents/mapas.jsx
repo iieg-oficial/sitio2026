@@ -5,6 +5,7 @@ import api from '@services/apiService'
 import Backlink from '../pageComponents/Backlink'
 import { Download, X } from "lucide-react";
 import TrackedLink from '@components/blocks/boton'
+import { SafeHtml } from '@components/safeHtml';
 
 export default function Mapas() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
@@ -217,7 +218,7 @@ export default function Mapas() {
                             <b>Información de la publicación:</b>
                         </div>
                         <div className='col-span-6 mb-4'>
-                            <div dangerouslySetInnerHTML={{__html: singleMapa.informacion}} className='mt-5 prose max-w-none' />
+                            <SafeHtml htmlContent={singleMapa.informacion} className='mt-5 prose max-w-none'/>
                         </div>
                         </>
                             
