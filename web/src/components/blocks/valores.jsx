@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '@services/apiService';
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Valores() {
     const [valores, setValores] = useState([]);

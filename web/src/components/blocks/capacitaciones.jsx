@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Capacitaciones() {
     const [capacitaciones, setCapacitaciones] = useState([])

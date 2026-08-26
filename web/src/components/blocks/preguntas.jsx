@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Preguntas() {
     const [preguntas, setPreguntas] = useState([]);

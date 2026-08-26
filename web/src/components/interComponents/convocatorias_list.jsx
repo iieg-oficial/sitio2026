@@ -1,7 +1,7 @@
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import api from '@services/apiService'
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function ConvocatoriasList() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable

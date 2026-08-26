@@ -8,7 +8,7 @@ import TrackedLink from '@components/blocks/boton'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import ConvocatoriasInst from './convocatorias_inst';
-import { SafeHtml } from '@components/safeHtml';
+import { SafeHtml } from '@components/SafeHtml';
 
 dayjs.locale('es')
 
