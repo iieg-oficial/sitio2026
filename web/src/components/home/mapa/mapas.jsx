@@ -59,7 +59,6 @@ export default function Mapas() {
                         <img 
                             src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=560` : "/demo.jpg"} 
                             alt={mapa.titulo} 
-<<<<<<< HEAD
                             className='w-full h-full object-cover'
                             onError={(e) => {
                                     e.target.onerror = null; 
@@ -69,13 +68,6 @@ export default function Mapas() {
                         <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
                             
                                 {titulo && <h3 className='text-white text-22 font-garet-bold font-800'>{titulo}</h3>}
-=======
-                            className='rounded-full'
-                            />
-                        <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                            
-                                {titulo && <h3 className='text-white'>{titulo}</h3>}
->>>>>>> 41cf78ba1 (fix: filter-repo #39)
                                 
                                 <div className='flex mb-5 mt-5 gap-2'>  
                                     {mapa.anyo ? <p className='text-14 font-bold rounded-xl py-2 px-5 bg-[#FFF2E5] text-tertiary border border-[#FF83004D]'>{mapa.anyo}</p> : null}                        
