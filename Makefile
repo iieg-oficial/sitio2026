@@ -35,7 +35,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build deploy _up-prod down logs restart clean shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
+.PHONY: help up build rebuild deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
 
 help:
 	@echo ''
@@ -56,7 +56,7 @@ help:
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
-	@echo '  ${YELLOW}make clean${RESET}            - Borra contenedores, redes y volúmenes (pide confirmación)'
+	@echo '  ${YELLOW}make clean${RESET}            - Borra contenedores, redes y volúmenes de BD (conserva buckets/acervo)'
 	@echo '  ${YELLOW}make up-prod-local${RESET}    - Inicia el entorno en modo producción local'
 	@echo '  ${YELLOW}make down-prod-local${RESET}  - Detiene el entorno en modo producción local'
 	@echo '  ${YELLOW}make restart-prod-local${RESET}- Reinicia el entorno en modo producción local'
@@ -100,12 +100,30 @@ build:
 	@echo "${GREEN}Reconstruyendo entorno: $(MSG_ENV)${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d --build
 
+rebuild:
+	@echo "${GREEN}Reconstruyendo SIN caché: $(MSG_ENV)${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) build --no-cache
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
+
 down:
 	@echo "${YELLOW}Deteniendo entorno: $(MSG_ENV)${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) down
 
+TAIL ?= 100
+SVC  ?=
+
 logs:
-	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) logs -f
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) logs -f --tail=$(TAIL) $(SVC)
+
+prune:
+	@echo "${YELLOW}Limpiando caché de Docker (build cache, imágenes colgantes)...${RESET}"
+	docker builder prune -f
+	@echo "${GREEN}Caché eliminada.${RESET}"
+
+prune-all:
+	@echo "${RED}Limpieza total: imágenes, volúmenes y caché de build...${RESET}"
+	docker system prune -af --volumes
+	@echo "${GREEN}Sistema Docker limpiado.${RESET}"
 
 restart: down up
 
@@ -145,16 +163,22 @@ restart-prod-local:
 	$(MAKE) restart ENV=prod-local
 
 clean:
-	@echo "${RED}⚠ Esto borra contenedores, redes y volúmenes de TODOS los modos (dev/prod/gcp).${RESET}"
-	@echo "${RED}  Se perderán datos de Postgres, CKAN-db, Redis, Solr, SeaweedFS y Media.${RESET}"
+	@echo "${RED}⚠ Esto borra contenedores, redes y volúmenes de BD de TODOS los modos (dev/prod/gcp).${RESET}"
+	@echo "${RED}  Se perderán datos de Postgres, CKAN-db, Redis y Solr.${RESET}"
+	@echo "${GREEN}  Se CONSERVAN: SeaweedFS (buckets/acervo), CKAN storage y node_modules.${RESET}"
 	@if [ "$(FORCE)" != "1" ]; then \
 		printf "Escribe ${YELLOW}yes${RESET} para confirmar: "; \
 		read confirm; \
 		[ "$$confirm" = "yes" ] || { echo "${YELLOW}Cancelado.${RESET}"; exit 1; }; \
 	fi
-	-docker compose --env-file .env.development -f docker-compose.dev.yml down -v --remove-orphans
-	-docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.gcp.yml down -v --remove-orphans
-	-docker compose --env-file .env.production -f docker-compose.yml down -v --remove-orphans
+	@echo "${YELLOW}Deteniendo contenedores (sin borrar volúmenes)...${RESET}"
+	-docker compose --env-file .env.development -f docker-compose.dev.yml down --remove-orphans
+	-docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.gcp.yml down --remove-orphans
+	-docker compose --env-file .env.production -f docker-compose.yml down --remove-orphans
+	@echo "${YELLOW}Eliminando volúmenes de base de datos...${RESET}"
+	-docker volume rm portal_postgres_data_dev portal_redis_data_dev portal_ckan_db_data_dev portal_ckan_solr_data_dev 2>/dev/null
+	-docker volume rm portal_postgres_data portal_redis_data portal_ckan_db_data portal_ckan_solr_data 2>/dev/null
+	@echo "${GREEN}Limpieza completada. Los buckets (SeaweedFS/acervo) y CKAN storage se conservaron.${RESET}"
 
 shell-api:
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec api /bin/bash
