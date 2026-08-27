@@ -14,6 +14,8 @@ class SistemasCreate(BaseModel):
     slug: Optional[str] = None
     tema_ids: Optional[List[int]] = None
     destacado: Optional[bool] = False
+    slider: Optional[bool] = False
+    imagen_slider: Optional[str] = None
     orden: Optional[int] = None
 
     @field_validator('tipo', mode='before')
@@ -44,6 +46,8 @@ class SistemasOut(BaseModel):
     slug: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
     destacado: Optional[bool] = False
+    slider: bool = False
+    imagen_slider: Optional[str] = None
     orden: Optional[int] = None
 
     class Config:
@@ -59,6 +63,8 @@ class SistemasResponse(BaseModel):
     claves: Optional[str] = None    
     slug: Optional[str] = None
     destacado: bool = False
+    slider: bool = False
+    imagen_slider: Optional[str] = None
     orden: int
     temas: Optional[List[SubjectFlat]] = []
 
