@@ -26,10 +26,10 @@ def aplicar_migraciones():
         )
         print("✅ Migraciones aplicadas.")
     except subprocess.CalledProcessError as e:
-        print(f"⚠️  Alembic falló ({e}); intentando stamp a base 3c59a2cbf559 y reintentando...")
+        print(f"⚠️  Alembic falló ({e}); intentando stamp a base 001 y reintentando...")
         try:
             subprocess.run(
-                [sys.executable, "-m", "alembic", "-c", str(alembic_ini), "stamp", "3c59a2cbf559"],
+                [sys.executable, "-m", "alembic", "-c", str(alembic_ini), "stamp", "001"],
                 check=True,
                 cwd=root,
             )

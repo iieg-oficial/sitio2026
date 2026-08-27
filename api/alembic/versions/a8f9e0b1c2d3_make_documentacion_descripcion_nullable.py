@@ -1,7 +1,7 @@
 """make documentacion descripcion nullable
 
 Revision ID: a8f9e0b1c2d3
-Revises: 3c59a2cbf559
+Revises: 001
 Create Date: 2026-08-20
 
 """
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 revision = 'a8f9e0b1c2d3'
-down_revision = '3c59a2cbf559'
+down_revision = '001'
 branch_labels = None
 depends_on = None
 
