@@ -10,51 +10,6 @@ from ckan.config.declaration import Declaration, Key
 # === ESTOS DOS IMPORTS SON CRUCIALES PARA TU FUNCIÓN DE IMAGEN ===
 import ckan.model as model
 import ckan.lib.helpers as h
-import json
-from urllib.parse import urlparse
-
-def _apply_custom_license_register():
-    '''Carga el registro de licencias desde licenses_group_url para CKAN 2.11.
-
-    Esto se ejecuta cuando el plugin se inicializa para evitar que CKAN se quede
-    con la lista por defecto de licencias aunque el archivo JSON esté bien.
-    '''
-    license_url = config.get('licenses_group_url') or config.get('CKAN_LICENSES_GROUP_URL')
-    if not license_url or not license_url.startswith('file://'):
-        return False
-
-    try:
-        parsed = urlparse(license_url)
-        path = parsed.path
-        with open(path, 'r', encoding='utf-8') as stream:
-            licenses = json.load(stream)
-    except Exception:
-        return False
-
-    custom = {}
-    for item in licenses:
-        custom[item['id']] = {
-            'id': item['id'],
-            'title': item.get('title', item['id']),
-            'url': item.get('url', ''),
-            'osd_conformance': item.get('osd_conformance', 'not reviewed'),
-            'od_conformance': item.get('od_conformance', 'not reviewed'),
-            'domain_data': item.get('domain_data', False),
-            'domain_content': item.get('domain_content', False),
-            'domain_software': item.get('domain_software', False),
-        }
-
-    model.Package._license_register = custom
-    model.Package.license_register = custom
-
-    try:
-        import ckan.model.license as license_module
-        license_module._license_register = custom
-        license_module.license_register = custom
-    except Exception:
-        pass
-
-    return True
 
 def show_most_popular_groups():
     '''Return the value of the most_popular_groups config setting.
@@ -160,6 +115,7 @@ class IiegThemePlugin(plugins.SingletonPlugin):
 
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigDeclaration)
+    plugins.implements(plugins.IConfigurable)  # Para parchear s3filestore al arrancar
     plugins.implements(plugins.ITranslation)
 
     # Declare that this plugin will implement ITemplateHelpers.
@@ -251,12 +207,73 @@ class IiegThemePlugin(plugins.SingletonPlugin):
         except Exception:
             return []
 
+    # IConfigurable ----------------------------------------------------------
+
+    def configure(self, config_):
+        """Parchea get_signed_url_to_key de s3filestore para construir URLs
+        directas (sin parámetros X-Amz-*) cuando hay download_proxy configurado.
+
+        PROBLEMA ORIGINAL:
+            s3filestore llama a boto3.generate_presigned_url() → genera URL con
+            X-Amz-Signature calculada con el host INTERNO (10.0.0.2:8333).
+            Luego reemplaza solo el host por el download_proxy, pero deja los
+            parámetros X-Amz-* intactos. MinIO rechaza la descarga porque la
+            firma no corresponde al host que recibio la petición.
+
+        SOLUCIÓN:
+            Cuando hay download_proxy configurado, construimos la URL directamente:
+                {download_proxy}/{bucket}/{key_path}
+            Sin firmar, sin parámetros X-Amz-*. Nginx lo proxea a MinIO
+            sin necesidad de autenticación por firma.
+        """
+        try:
+            from ckanext.s3filestore.uploader import BaseS3Uploader
+            import logging
+            import os
+            log = logging.getLogger(__name__)
+
+            _original_get_signed_url = BaseS3Uploader.get_signed_url_to_key
+
+            def _patched_get_signed_url(self_uploader, key, extra_params=None):
+                """URL directa via proxy si está configurado, presigned si no."""
+                if extra_params is None:
+                    extra_params = {}
+
+                if self_uploader.download_proxy:
+                    # Construir URL limpia sin pre-firma:
+                    # {download_proxy}/{bucket}/{key_path}
+                    proxy = self_uploader.download_proxy.rstrip('/')
+                    url = '{}/{}/{}'.format(
+                        proxy,
+                        self_uploader.bucket_name,
+                        key
+                    )
+                    log.debug(
+                        '[iieg_theme] URL de descarga directa (sin presign): %s',
+                        url
+                    )
+                    return url
+
+                # Sin proxy: comportamiento original (presigned URL)
+                return _original_get_signed_url(self_uploader, key, extra_params)
+
+            BaseS3Uploader.get_signed_url_to_key = _patched_get_signed_url
+            log.info(
+                '[iieg_theme] Parche aplicado a s3filestore: '
+                'get_signed_url_to_key usará URL directa cuando hay download_proxy'
+            )
+
+        except ImportError:
+            # s3filestore no está instalado — no hay nada que parchear
+            pass
+
+
     # IConfigDeclaration
 
     def declare_config_options(self, declaration: Declaration, key: Key):
         declaration.declare_bool(
             key.ckan.iieg_theme.show_most_popular_groups)
-        
+
     # ITranslation
     def i18n_directory(self):
         import os
