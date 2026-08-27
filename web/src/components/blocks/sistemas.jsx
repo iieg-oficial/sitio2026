@@ -124,12 +124,16 @@ export default function Sistemas() {
                     {filteredByTab.length === 0 && <p>No hay sistemas</p>}
 
                     {filteredByTab.length > 0 && (
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                             {currentSystems.map((sistema) => {
-
-                                const original = sistema.imagen
+                                const original = sistema.imagen;
                                 const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
                                 
+                                const hasLink = Boolean(sistema.link);
+                                const CardTag = hasLink ? 'a' : 'div';
+
+                                // 1. Validamos si el enlace es externo (inicia con http/https)
+                                const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);
 
                                 return (
                                     <CardTag 
