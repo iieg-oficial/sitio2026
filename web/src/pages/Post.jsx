@@ -12,7 +12,8 @@ function Post() {
         title: 'Comunidación institucional',
         description: '<p>Bienvenido a la comunidad. Aquí encontrarás las últimas publicaciones y novedades.</p><p>Usa el buscador para filtrar los posts según tus intereses y términos de búsqueda.</p>',
         description_meta: 'Encuentra publicaciones de la comunidad con el buscador y accede a las novedades del portal.',
-        keywords_meta: 'comunidad,posts,búsqueda,noticias'
+        keywords_meta: 'comunidad,posts,búsqueda,noticias',
+        postlink: '/demo.jpg'
     };
 
     const [posts, setPosts] = useState([]);
@@ -29,11 +30,28 @@ function Post() {
     const fetchPageHome = async () => {
         try {
             const res = await api.get('/paginas/slug/comunicacion-institucional');
-            setPage(res.data);
+            const responseData = res?.data;
+            if (!responseData || typeof responseData !== 'object') {
+                setPage(defaultPage);
+                return;
+            }
+
+            const safePage = {
+                ...defaultPage,
+                ...responseData,
+                title: responseData.title || defaultPage.title,
+                description: responseData.description || defaultPage.description,
+                description_meta: responseData.description_meta || defaultPage.description_meta,
+                keywords_meta: responseData.keywords_meta || defaultPage.keywords_meta,
+                postlink: responseData.postlink || defaultPage.postlink,
+            };
+
+            setPage(safePage);
         } catch (err) {
             if (err.response?.status !== 404) {
                 console.error("Error fetching page community:", err);
             }
+            setPage(defaultPage);
         }
     }
 
@@ -115,7 +133,7 @@ const filteredPosts = useMemo(() => (
         {/* Twitter Cards (Específico para X / Twitter) */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={page?.title || defaultPage.title} />
-        <meta name="twitter:description" content={page?.description_meta || 'Comunicación institucional'} />
+        <meta name="twitter:description" content={page?.description_meta || defaultPage.description_meta || 'Comunicación institucional'} />
         <meta name="twitter:image" content={page?.postlink ? page.postlink : "/demo.jpg"} />
     </Helmet>
         <article className="px-5 xl:px-5 2xl:px-0 ">
@@ -123,8 +141,10 @@ const filteredPosts = useMemo(() => (
                 <div className="container mx-auto">                
                 <h1 className="text-titulos text-center">{page?.title || defaultPage.title}</h1>
                 </div>
-                { page?.description && (
-                    <SafeHtml htmlContent={page.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
+                {page?.description ? (
+                    <SafeHtml htmlContent={page.description || defaultPage.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
+                ) : (
+                    <SafeHtml htmlContent={defaultPage.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
                 )}
                 </div>
 
