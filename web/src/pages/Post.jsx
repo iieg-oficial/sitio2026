@@ -106,24 +106,24 @@ const filteredPosts = useMemo(() => (
     return (
         <>
     <Helmet>
-        <title>{page?.title }</title>
+        <title>{page?.title || defaultPage.title}</title>
         {page?.description_meta && <meta name="description" content={page.description_meta} />}
         {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
-        <meta property="og:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
+        <meta property="og:image" content={page?.postlink ? page.postlink : "/demo.jpg"} />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:type" content="article" />
         {/* Twitter Cards (Específico para X / Twitter) */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={page?.title } />
+        <meta name="twitter:title" content={page?.title || defaultPage.title} />
         <meta name="twitter:description" content={page?.description_meta || 'Comunicación institucional'} />
-        <meta name="twitter:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
+        <meta name="twitter:image" content={page?.postlink ? page.postlink : "/demo.jpg"} />
     </Helmet>
         <article className="px-5 xl:px-5 2xl:px-0 ">
             <div className='page-header text-center py-12'>
                 <div className="container mx-auto">                
-                <h1 className="text-titulos text-center">{page.title}</h1>
+                <h1 className="text-titulos text-center">{page?.title || defaultPage.title}</h1>
                 </div>
-                { page.description && (
+                { page?.description && (
                     <SafeHtml htmlContent={page.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
                 )}
                 </div>

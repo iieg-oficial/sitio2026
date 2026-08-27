@@ -35,7 +35,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build rebuild deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
+.PHONY: help up build rebuild build-clean-cache deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
 
 help:
 	@echo ''
@@ -52,6 +52,7 @@ help:
 	@echo '${GREEN}Comandos:${RESET}'
 	@echo '  ${YELLOW}make up${RESET}               - Inicia el entorno (en segundo plano)'
 	@echo '  ${YELLOW}make build${RESET}            - Reconstruye e inicia el entorno'
+	@echo '  ${YELLOW}make build-clean-cache${RESET} - Hace build sin caché y borra caché local de Docker para el ENV activo'
 	@echo '  ${YELLOW}make deploy [DEPLOY_ENV=gcp|prod]${RESET} - git pull + rebuild. gcp en monolito, prod en nodo propio'
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
@@ -99,6 +100,12 @@ up:
 build:
 	@echo "${GREEN}Reconstruyendo entorno: $(MSG_ENV)${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d --build
+
+build-clean-cache:
+	@echo "${GREEN}Reconstruyendo SIN caché y borrando caché Docker: $(MSG_ENV)${RESET}"
+	docker builder prune -af
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) build --no-cache
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
 
 rebuild:
 	@echo "${GREEN}Reconstruyendo SIN caché: $(MSG_ENV)${RESET}"
