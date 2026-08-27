@@ -8,6 +8,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
+        "build:csp": "node scripts/generate-csp-nginx.js",
+        "build:full": "vite build && node scripts/generate-csp-nginx.js",
         "preview": "vite preview",
         "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
     },
