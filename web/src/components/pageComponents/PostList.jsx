@@ -76,7 +76,7 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
                                                 </p>
                                             ))}
                                         </div>                                        
-                                        <SafeHtml htmlContent={page.description} className='mt-5 prose max-w-none'/>
+                                        <SafeHtml htmlContent={post.description} className='mt-5 prose max-w-none'/>
                                         <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
                                             <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                         </div>
