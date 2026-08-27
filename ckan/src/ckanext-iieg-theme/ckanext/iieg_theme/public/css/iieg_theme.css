@@ -299,6 +299,8 @@ body, .main {
 .search-form{
   width: 80%;
   float: left;
+  margin-bottom: 0px;
+  border-bottom: 0px;
 }
 
 #dataset-search-form{
