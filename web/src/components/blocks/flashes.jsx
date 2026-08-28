@@ -195,7 +195,7 @@ export default function Flashes() {
                 </div>
             )}
 
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder='¿Qué quieres buscar?' />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
 
             <div className='mx-auto container flex flex-col lg:flex-wrap lg:flex-row gap-5 mt-15'>
                 <div>
