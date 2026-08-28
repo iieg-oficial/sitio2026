@@ -9,7 +9,7 @@ class AreaEnum(str, Enum):
     grafico = "grafico"
     juridico = "juridico"
     administracion = "administracion"
-    
+    soporte = "soporte"    
 
 class PerfilesCreate(BaseModel):
     nombre: str
