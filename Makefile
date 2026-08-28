@@ -9,14 +9,14 @@ RESET  := $(shell tput -Txterm sgr0)
 # Entorno por defecto: dev
 ENV ?= dev
 
-# Entorno que usa `make deploy`. gcp en monolito (el portal comparte VM con el gateway y el
-# acervo); prod en un nodo propio, donde iieg-network no existe porque no cruza de maquina.
-DEPLOY_ENV ?= gcp
+# Entorno que usa `make deploy`. monolito cuando el portal comparte VM con el gateway y el
+# acervo; prod en un nodo propio, donde iieg-network no existe porque no cruza de maquina.
+DEPLOY_ENV ?= monolito
 
 # Configuración según entorno
-# - dev:  desarrollo local (acervo y todo en la misma máquina via iieg-network)
-# - prod: producción "administración" (servidor aislado, acervo accedido por URL pública)
-# - gcp:  producción "GCP" (todo en la misma VM, base + overlay iieg-network)
+# - dev:      desarrollo local (acervo y todo en la misma máquina via iieg-network)
+# - prod:     producción en nodo propio (servidor aislado, acervo accedido por URL pública)
+# - monolito: producción con todo en una sola VM (base + overlay iieg-network)
 ifeq ($(ENV),prod)
 	COMPOSE_FILES := -f docker-compose.yml
 	ENV_FILE      := .env.production
@@ -25,34 +25,36 @@ else ifeq ($(ENV),prod-local)
 	COMPOSE_FILES := -f docker-compose.yml
 	ENV_FILE      := .env.production.local
 	MSG_ENV       := Producción (prueba local)
-else ifeq ($(ENV),gcp)
-	COMPOSE_FILES := -f docker-compose.yml -f docker-compose.gcp.yml
+else ifeq ($(ENV),monolito)
+	COMPOSE_FILES := -f docker-compose.yml -f docker-compose.monolito.yml
 	ENV_FILE      := .env.production
-	MSG_ENV       := Producción (GCP)
-else
+	MSG_ENV       := Producción (monolito)
+else ifeq ($(ENV),dev)
 	COMPOSE_FILES := -f docker-compose.dev.yml
 	ENV_FILE      := .env.development
 	MSG_ENV       := Desarrollo
+else
+$(error ENV=$(ENV) no existe. Usa dev, prod, prod-local o monolito)
 endif
 
-.PHONY: help up build rebuild deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
+.PHONY: help up build rebuild deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-monolito build-seed-monolito
 
 help:
 	@echo ''
 	@echo '${YELLOW}IIEG Portal - Comandos disponibles${RESET}'
 	@echo ''
-	@echo 'Uso: ${YELLOW}make <comando> [ENV=dev|prod|prod-local|gcp]${RESET} (por defecto ENV=dev)'
+	@echo 'Uso: ${YELLOW}make <comando> [ENV=dev|prod|prod-local|monolito]${RESET} (por defecto ENV=dev)'
 	@echo ''
 	@echo '${GREEN}Entornos:${RESET}'
 	@echo '  ${YELLOW}dev${RESET}        - Desarrollo local (acervo en misma máquina via iieg-network)'
 	@echo '  ${YELLOW}prod${RESET}       - Producción administración (servidor aislado, acervo por URL pública)'
 	@echo '  ${YELLOW}prod-local${RESET} - Producción prueba local (usa .env.production.local y oculta puertos)'
-	@echo '  ${YELLOW}gcp${RESET}        - Producción GCP (todo en una VM, conecta a iieg-network)'
+	@echo '  ${YELLOW}monolito${RESET}   - Producción monolito (todo en una VM, conecta a iieg-network)'
 	@echo ''
 	@echo '${GREEN}Comandos:${RESET}'
 	@echo '  ${YELLOW}make up${RESET}               - Inicia el entorno (en segundo plano)'
 	@echo '  ${YELLOW}make build${RESET}            - Reconstruye e inicia el entorno'
-	@echo '  ${YELLOW}make deploy [DEPLOY_ENV=gcp|prod]${RESET} - git pull + rebuild. gcp en monolito, prod en nodo propio'
+	@echo '  ${YELLOW}make deploy [DEPLOY_ENV=monolito|prod]${RESET} - git pull + rebuild. monolito en una VM, prod en nodo propio'
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
@@ -87,8 +89,8 @@ help:
 	@echo '  ${YELLOW}make build-seed-prod${RESET}      - Igual que build-seed con ENV=prod'
 	@echo '  ${YELLOW}make up-seed-prod-local${RESET}   - Igual que up-seed con ENV=prod-local'
 	@echo '  ${YELLOW}make build-seed-prod-local${RESET} - Igual que build-seed con ENV=prod-local'
-	@echo '  ${YELLOW}make up-seed-gcp${RESET}          - Igual que up-seed con ENV=gcp'
-	@echo '  ${YELLOW}make build-seed-gcp${RESET}       - Igual que build-seed con ENV=gcp'
+	@echo '  ${YELLOW}make up-seed-monolito${RESET}     - Igual que up-seed con ENV=monolito'
+	@echo '  ${YELLOW}make build-seed-monolito${RESET}  - Igual que build-seed con ENV=monolito'
 	@echo '  Opciones opcionales: ${YELLOW}MODE=upsert|insert  DRY_RUN=1  ONLY=page,menu_item  SKIP=mapa${RESET}'
 	@echo ''
 
@@ -163,7 +165,7 @@ restart-prod-local:
 	$(MAKE) restart ENV=prod-local
 
 clean:
-	@echo "${RED}⚠ Esto borra contenedores, redes y volúmenes de BD de TODOS los modos (dev/prod/gcp).${RESET}"
+	@echo "${RED}⚠ Esto borra contenedores, redes y volúmenes de BD de TODOS los modos (dev/prod/monolito).${RESET}"
 	@echo "${RED}  Se perderán datos de Postgres, CKAN-db, Redis y Solr.${RESET}"
 	@echo "${GREEN}  Se CONSERVAN: SeaweedFS (buckets/acervo), CKAN storage y node_modules.${RESET}"
 	@if [ "$(FORCE)" != "1" ]; then \
@@ -173,7 +175,7 @@ clean:
 	fi
 	@echo "${YELLOW}Deteniendo contenedores (sin borrar volúmenes)...${RESET}"
 	-docker compose --env-file .env.development -f docker-compose.dev.yml down --remove-orphans
-	-docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.gcp.yml down --remove-orphans
+	-docker compose --env-file .env.production -f docker-compose.yml -f docker-compose.monolito.yml down --remove-orphans
 	-docker compose --env-file .env.production -f docker-compose.yml down --remove-orphans
 	@echo "${YELLOW}Eliminando volúmenes de base de datos...${RESET}"
 	-docker volume rm portal_postgres_data_dev portal_redis_data_dev portal_ckan_db_data_dev portal_ckan_solr_data_dev 2>/dev/null
@@ -202,26 +204,26 @@ bucket-ls:
 		PREFIX="$(PREFIX)"
 
 import-data:
-	@test -n "$(SCRIPT)" || { echo "${RED}Uso: make import-data SCRIPT=api/scripts/importador.py SOURCE=api/scripts/examples/datos.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
-	@test -n "$(SOURCE)" || { echo "${RED}Uso: make import-data SCRIPT=api/scripts/importador.py SOURCE=api/scripts/examples/datos.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@test -n "$(SCRIPT)" || { echo "${RED}Uso: make import-data SCRIPT=api/scripts/importador.py SOURCE=api/scripts/examples/datos.csv [ENV=dev|prod|monolito] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@test -n "$(SOURCE)" || { echo "${RED}Uso: make import-data SCRIPT=api/scripts/importador.py SOURCE=api/scripts/examples/datos.csv [ENV=dev|prod|monolito] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
 	@echo "${GREEN}Ejecutando importador $(SCRIPT) en $(MSG_ENV) con fuente $(SOURCE)...${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python $(patsubst api/%,%,$(SCRIPT)) $(patsubst api/%,%,$(SOURCE)) $(if $(MODE),--mode $(MODE),) $(if $(LIMIT),--limit $(LIMIT),) $(if $(DRY_RUN),--dry-run,) $(ARGS)
 
 import-one:
-	@test -n "$(MODEL)" || { echo "${RED}Uso: make import-one MODEL=mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
-	@test -n "$(FILE)" || { echo "${RED}Uso: make import-one MODEL=mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@test -n "$(MODEL)" || { echo "${RED}Uso: make import-one MODEL=mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|monolito] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
+	@test -n "$(FILE)" || { echo "${RED}Uso: make import-one MODEL=mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|monolito] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--flag valor']${RESET}"; exit 1; }
 	@test -f "api/scripts/import_$(MODEL).py" || { echo "${RED}No existe api/scripts/import_$(MODEL).py${RESET}"; exit 1; }
 	@test -f "$(FILE)" || { echo "${RED}No existe el archivo de entrada: $(FILE)${RESET}"; exit 1; }
 	@echo "${GREEN}Importando archivo individual ($(FILE)) con import_$(MODEL).py en $(MSG_ENV)...${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python scripts/import_$(MODEL).py $(patsubst api/%,%,$(FILE)) $(if $(MODE),--mode $(MODE),) $(if $(LIMIT),--limit $(LIMIT),) $(if $(DRY_RUN),--dry-run,) $(ARGS)
 
 import-mapa:
-	@test -n "$(FILE)" || { echo "${RED}Uso: make import-mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--key-field slug']${RESET}"; exit 1; }
+	@test -n "$(FILE)" || { echo "${RED}Uso: make import-mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|monolito] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--key-field slug']${RESET}"; exit 1; }
 	@$(MAKE) import-one ENV=$(ENV) MODEL=mapa FILE=$(FILE) MODE=$(MODE) LIMIT=$(LIMIT) DRY_RUN=$(DRY_RUN) ARGS="$(if $(ARGS),$(ARGS),--key-field slug)"
 
 
 install-api-dep:
-	@test -n "$(DEP)" || { echo "${RED}Uso: make install-api-dep DEP=python-slugify [ENV=dev|prod|gcp]${RESET}"; exit 1; }
+	@test -n "$(DEP)" || { echo "${RED}Uso: make install-api-dep DEP=python-slugify [ENV=dev|prod|monolito]${RESET}"; exit 1; }
 	@echo "${GREEN}Instalando dependencia Python $(DEP) en api ($(MSG_ENV))...${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api pip install "$(DEP)"
 
@@ -282,8 +284,8 @@ up-seed-prod-local:
 build-seed-prod-local:
 	$(MAKE) build-seed ENV=prod-local
 
-up-seed-gcp:
-	$(MAKE) up-seed ENV=gcp
+up-seed-monolito:
+	$(MAKE) up-seed ENV=monolito
 
-build-seed-gcp:
-	$(MAKE) build-seed ENV=gcp
+build-seed-monolito:
+	$(MAKE) build-seed ENV=monolito

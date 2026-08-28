@@ -6,7 +6,7 @@ Tres modos. Todos se manejan con `make` desde la raíz del repo.
 |---|---|---|---|
 | `dev` (default) | `docker-compose.dev.yml` | `.env.development` | Local. Incluye `seaweedfs` embebido. Hot-reload de web/admin. |
 | `prod` | `docker-compose.yml` | `.env.production` | Producción "administración": servidor aislado, Acervo accedido por URL pública. |
-| `gcp` | `docker-compose.yml` + `docker-compose.gcp.yml` | `.env.production` | Producción GCP: todo en una VM. Conecta al Acervo via red Docker `iieg-network`. Útil también para testear local. |
+| `monolito` | `docker-compose.yml` + `docker-compose.monolito.yml` | `.env.production` | Producción con todo en una sola VM. Conecta al Acervo via red Docker `iieg-network`. Útil también para testear local. |
 
 ## Setup inicial
 
@@ -26,7 +26,7 @@ Si actualizas CKAN o su configuracion, reconstruye:
 ```bash
 make build ENV=dev
 make build ENV=prod
-make build ENV=gcp
+make build ENV=monolito
 ```
 
 > Genera secretos así: `openssl rand -hex 32`
@@ -36,7 +36,7 @@ make build ENV=gcp
 ```bash
 make up              # arranca dev (default)
 make up ENV=prod     # producción administración (acervo externo via URL)
-make up ENV=gcp      # producción GCP (acervo via iieg-network)
+make up ENV=monolito # producción monolito (acervo via iieg-network)
 
 make build           # rebuild + up
 make down            # detiene contenedores del ENV actual
@@ -119,7 +119,7 @@ POSTGRES_PORT=25432
 
 Las URLs en `VITE_*_API_URL`, `CKAN_SITE_URL` y `CKAN_DOWNLOAD_PROXY` también deben actualizarse al mismo `NGINX_PORT`.
 
-## Producción real (admin / GCP)
+## Producción real (nodo propio / monolito)
 
 Para deploy real (no local):
 
@@ -136,9 +136,9 @@ Para deploy real (no local):
    ```
    El Acervo se accede vía URL pública del gateway.
 
-3. **Modo "GCP" (mismo VM que Acervo):**
+3. **Modo "monolito" (misma VM que el Acervo):**
    ```bash
-   make up ENV=gcp
+   make up ENV=monolito
    ```
    El Acervo se accede vía la red Docker `iieg-network` (debe estar creada y compartida).
 
@@ -148,7 +148,7 @@ Para deploy real (no local):
 |---|---|---|
 | `failed to set up container networking: Bind for 0.0.0.0:XXXX failed: port is already allocated` | Otro proyecto usa ese puerto | Cambia el puerto correspondiente en `.env` |
 | `405 Method Not Allowed` al hacer login en CKAN | Browser tiene HSTS de otro proyecto en `localhost` | Borra HSTS en `chrome://net-internals/#hsts` o usa `127.0.0.1` |
-| `404` alternante en api/admin | DNS de docker resolviendo `api` a otro contenedor de otro proyecto en `iieg-network` | Verificar que `docker-compose.gcp.yml` tenga aliases `portal-api`, `portal-ckan` |
+| `404` alternante en api/admin | DNS de docker resolviendo `api` a otro contenedor de otro proyecto en `iieg-network` | Verificar que `docker-compose.monolito.yml` tenga aliases `portal-api`, `portal-ckan` |
 | 401 al hacer login en CKAN | Password mal | Reset: `docker exec portal-ckan python -c "import ckan.model as m; from ckan.cli import CKANConfigLoader; from ckan.config.environment import load_environment; load_environment(CKANConfigLoader('/srv/app/ckan.ini').get_config()); u=m.User.by_name('ckan_admin'); u._set_password('NUEVA_PASS'); m.repo.commit_and_remove()"` |
 | `Acceso restringido` al subir archivos al Acervo | El servicio `seaweedfs` (dev) o el Acervo externo no responde | `docker logs portal-seaweedfs-dev` o verificar que `iieg-network` exista |
 | `Plugin not found` al iniciar CKAN | Falta el plugin en el Dockerfile custom | Editar `ckan/Dockerfile` para instalar la extension |

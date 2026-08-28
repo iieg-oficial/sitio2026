@@ -2,6 +2,21 @@
 
 Todos los cambios notables se documentan en este archivo. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
+## [1.10.0] - 2026-08-28
+
+### Cambiado
+- El entorno `gcp` pasa a llamarse `monolito` y `docker-compose.gcp.yml` a
+  `docker-compose.monolito.yml`. El overlay nunca tuvo nada de GCP: lo único que hace es meter
+  `nginx`, `api` y `ckan` en `iieg-network` con sus aliases, que es lo que hace falta cuando el
+  portal comparte máquina con el gateway y el acervo. El nombre viejo ataba a un proveedor una
+  capacidad que en realidad es «todo en una sola VM», y que se usa igual para probar en local.
+  Alcanza a `DEPLOY_ENV`, a los atajos `up-seed-*` / `build-seed-*` y a los docs.
+- `ENV` con un valor desconocido ahora **aborta** en vez de caer en silencio a `dev`. Antes
+  cualquier typo —`ENV=gcp` incluido, después de este rename— entraba al `else` y levantaba el
+  entorno de desarrollo con `.env.development`, lo que en una VM de producción es un fallo mudo.
+
+---
+
 ## [1.9.1] - 2026-08-05
 
 ### Corregido
