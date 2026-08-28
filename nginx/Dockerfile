@@ -1,7 +1,7 @@
 FROM node:24-alpine AS web-builder
 WORKDIR /app
 COPY ./web/package*.json ./
-RUN npm ci
+RUN npm install --no-audit --no-fund
 COPY ./web/ .
 ARG VITE_NODE_ENV=production
 ARG VITE_GOOGLE_ANALYTICS_ID
@@ -22,7 +22,7 @@ RUN npm run build && node scripts/generate-csp-nginx.js
 FROM node:24-alpine AS admin-builder
 WORKDIR /app
 COPY ./admin/package*.json ./
-RUN npm ci
+RUN npm install --no-audit --no-fund
 COPY ./admin/ .
 ARG VITE_NODE_ENV=production
 ARG VITE_GOOGLE_ANALYTICS_ID
