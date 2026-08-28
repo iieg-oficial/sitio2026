@@ -10,51 +10,6 @@ from ckan.config.declaration import Declaration, Key
 # === ESTOS DOS IMPORTS SON CRUCIALES PARA TU FUNCIÓN DE IMAGEN ===
 import ckan.model as model
 import ckan.lib.helpers as h
-import json
-from urllib.parse import urlparse
-
-def _apply_custom_license_register():
-    '''Carga el registro de licencias desde licenses_group_url para CKAN 2.11.
-
-    Esto se ejecuta cuando el plugin se inicializa para evitar que CKAN se quede
-    con la lista por defecto de licencias aunque el archivo JSON esté bien.
-    '''
-    license_url = config.get('licenses_group_url') or config.get('CKAN_LICENSES_GROUP_URL')
-    if not license_url or not license_url.startswith('file://'):
-        return False
-
-    try:
-        parsed = urlparse(license_url)
-        path = parsed.path
-        with open(path, 'r', encoding='utf-8') as stream:
-            licenses = json.load(stream)
-    except Exception:
-        return False
-
-    custom = {}
-    for item in licenses:
-        custom[item['id']] = {
-            'id': item['id'],
-            'title': item.get('title', item['id']),
-            'url': item.get('url', ''),
-            'osd_conformance': item.get('osd_conformance', 'not reviewed'),
-            'od_conformance': item.get('od_conformance', 'not reviewed'),
-            'domain_data': item.get('domain_data', False),
-            'domain_content': item.get('domain_content', False),
-            'domain_software': item.get('domain_software', False),
-        }
-
-    model.Package._license_register = custom
-    model.Package.license_register = custom
-
-    try:
-        import ckan.model.license as license_module
-        license_module._license_register = custom
-        license_module.license_register = custom
-    except Exception:
-        pass
-
-    return True
 
 def show_most_popular_groups():
     '''Return the value of the most_popular_groups config setting.
@@ -255,9 +210,6 @@ class IiegThemePlugin(plugins.SingletonPlugin):
     # IConfigurable ----------------------------------------------------------
 
     def configure(self, config_):
-        """Inicializa parches del plugin y la licencia custom de CKAN."""
-        _apply_custom_license_register()
-
         """Parchea get_signed_url_to_key de s3filestore para construir URLs
         directas (sin parámetros X-Amz-*) cuando hay download_proxy configurado.
 

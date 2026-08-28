@@ -8,6 +8,7 @@ import TrackedLink from '@components/blocks/boton'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import ConvocatoriasInst from './convocatorias_inst';
+import { SafeHtml } from '@components/SafeHtml';
 
 dayjs.locale('es')
 
@@ -74,7 +75,8 @@ export default function Convocatorias() {
                         </div>
                         <div className='lg:col-span-9 text-left'> 
                             <h1 className='text-44 font-bold mb-4'>{singleConvocatoria.titulo}</h1>
-                            <div dangerouslySetInnerHTML={{__html: singleConvocatoria.descripcion}} className='mt-5 prose max-w-none diez' />
+                            
+                            <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none diez'/>
                             <div className='mt-5 flex flex-wrap gap-5'>
                                 {singleConvocatoria.archivo && (
                                     <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.archivo} target="_blank" download>
@@ -125,7 +127,8 @@ export default function Convocatorias() {
                                 )}
                             </div>
                             <h2 className='text-primary text-36 font-extrabold'>Objetivo</h2>
-                            <div dangerouslySetInnerHTML={{__html: singleConvocatoria.Objetivo}} className='mt-5 prose max-w-none cursos' />
+                            
+                            <SafeHtml htmlContent={singleConvocatoria.Objetivo} className='mt-5 prose max-w-none cursos'/>
                         </div>
                     </div>
                 )}
@@ -136,8 +139,10 @@ export default function Convocatorias() {
                         </div>
                         <div className='col-span-11'>
                             <h2 className='text-primary text-36 font-extrabold'>Perfil de Ingreso</h2>
-                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_ingreso}} className='mt-5 prose max-w-none cursos' />
+                            <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none cursos'/>
+
                         </div>
+                        
                     </div>
                 )}
                 {singleConvocatoria.p_egreso && (
@@ -147,8 +152,10 @@ export default function Convocatorias() {
                         </div>
                         <div className='col-span-11'>
                             <h2 className='text-primary text-36 font-extrabold'>Perfil de Egreso</h2>
-                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_egreso}} className='mt-5 prose max-w-none cursos' />                        
+                                             
+                            <SafeHtml htmlContent={singleConvocatoria.p_egreso} className='mt-5 prose max-w-none cursos'/>
                         </div>
+                        
                     </div>
                 )}
                 </section>

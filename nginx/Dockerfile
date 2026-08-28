@@ -1,7 +1,7 @@
 FROM node:24-alpine AS web-builder
 WORKDIR /app
 COPY ./web/package*.json ./
-RUN npm ci
+RUN npm install --no-audit --no-fund
 COPY ./web/ .
 ARG VITE_NODE_ENV=production
 ARG VITE_GOOGLE_ANALYTICS_ID
@@ -17,15 +17,12 @@ ENV VITE_API_TIMEOUT=$VITE_API_TIMEOUT
 ENV VITE_APP_NAME=$VITE_APP_NAME
 ENV VITE_MAPALAB_BASE_URL=$VITE_MAPALAB_BASE_URL
 ENV VITE_MAPALAB_API_KEY=$VITE_MAPALAB_API_KEY
-# --- ÚNICA LÍNEA MODIFICADA respecto a tu Dockerfile original ---
-# Antes: RUN npm run build
 RUN npm run build && node scripts/generate-csp-nginx.js
-# ------------------------------------------------------------------
 
 FROM node:24-alpine AS admin-builder
 WORKDIR /app
 COPY ./admin/package*.json ./
-RUN npm ci
+RUN npm install --no-audit --no-fund
 COPY ./admin/ .
 ARG VITE_NODE_ENV=production
 ARG VITE_GOOGLE_ANALYTICS_ID

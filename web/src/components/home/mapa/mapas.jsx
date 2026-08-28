@@ -43,7 +43,7 @@ export default function Mapas() {
     const mapasFiltrados = isMobile ? mapas.slice(0, 1) : mapas
     
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-15 extra:max-w-[1980px] mx-auto w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 extra:max-w-[1980px] mx-auto w-full">
             {mapasFiltrados.map((mapa) => {
                 if (!mapa) return null
                 

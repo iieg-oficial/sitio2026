@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Capacitaciones() {
     const [capacitaciones, setCapacitaciones] = useState([])
@@ -75,18 +76,13 @@ export default function Capacitaciones() {
                             <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-full object-cover' />
                         </div>
                         <div className='md:col-span-4'>
-                            <h3 className='text-44 text-primary'>{capacitacion.titulo}</h3>       
-                            <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez my-5' />
-                            {esFechaPasada(capacitacion.fin) ? (
-                            <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2'>
-                                Convocatoria cerrada
-                            </span>
-                            ) : (
-                            <span className='rounded-2xl bg-etiqueta-sec border-tertiary text-tertiary text-14 px-5 py-2'>
-                                Convocatoria abierta
-                            </span>
+                            <h3 className='text-44 text-primary'>{capacitacion.titulo}</h3>
+                            {esFechaPasada(capacitacion.fin) && (
+                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
                             )} 
-                            <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10 mr-5'>
+                            
+                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>
+                            <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
                                 <span className="material-symbols--chevron-right"></span>
                             </div>
                         </div>                        
@@ -102,17 +98,12 @@ export default function Capacitaciones() {
                             <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-full object-cover' />
                         </div>                        
                         <div className='md:col-span-4 p-6'>
-                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>                              
-                            <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez my-5' />                        
-                            {esFechaPasada(capacitacion.fin) ? (
-                            <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2 mt-5'>
-                                Convocatoria cerrada
-                            </span>
-                            ) : (
-                            <span className='rounded-2xl bg-etiqueta-sec border-tertiary text-tertiary text-14 px-5 py-2 mt-5'>
-                                Convocatoria abierta
-                            </span>
-                            )} 
+                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>
+                            {esFechaPasada(capacitacion.fin) && (
+                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
+                            )}     
+                            
+                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>                      
                             <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
                                 <span className="material-symbols--chevron-right"></span>
                             </div>

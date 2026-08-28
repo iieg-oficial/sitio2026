@@ -28,4 +28,3 @@ function UploadAcervo({ onUploaded, bucket = 'portal', folder = '/' , label = 'S
 }
 
 export { UploadAcervo };
-export default UploadAcervo;

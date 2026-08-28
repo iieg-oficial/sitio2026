@@ -1,6 +1,7 @@
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import api from '@services/apiService'
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function ConvocatoriasList() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
@@ -66,7 +67,8 @@ export default function ConvocatoriasList() {
                         return (
                             <div key={perfil.id}>
                                 <h2 className='text-tertiary text-28 font-extrabold'>{perfil.nombre}</h2>
-                                <div dangerouslySetInnerHTML={{__html: perfil.descripcion}} className='mt-5 prose max-w-none cursos' />                        
+                                                      
+                                <SafeHtml htmlContent={perfil.descripcion} className='mt-5 prose max-w-none cursos'/>
                             </div>
                         )
                     }

@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import TrackedLink from '@components/blocks/boton'
 import ConditionalLink from '../pageComponents/ConditionalLink'
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Flashes() {
     const [flashes, setFlashes] = useState([])
@@ -106,7 +107,7 @@ export default function Flashes() {
     const filteredFlashes = useMemo(() => {
         const normalizedSearch = searchTerm.toLowerCase().trim();
 
-        const filtered = flashesWithoutLast.filter(post => {
+        return flashesWithoutLast.filter(post => {
             const matchesSearch = !normalizedSearch || keys.some(key => {
                 const value = key.split('.').reduce((obj, part) => obj?.[part], post);
                 return value?.toString().toLowerCase().includes(normalizedSearch);
@@ -124,12 +125,6 @@ export default function Flashes() {
             const matchesMonth = !selectedMonth || publicationDate?.getMonth() + 1 === Number(selectedMonth);
 
             return matchesSearch && matchesTema && matchesSubtema && matchesYear && matchesMonth;
-        });
-
-        return filtered.sort((a, b) => {
-            const dateA = a.fecha_publicacion ? new Date(a.fecha_publicacion).getTime() : 0;
-            const dateB = b.fecha_publicacion ? new Date(b.fecha_publicacion).getTime() : 0;
-            return dateB - dateA;
         });
     }, [flashesWithoutLast, searchTerm, selectedTemaId, selectedSubtemaId, selectedYear, selectedMonth]);
 
@@ -158,19 +153,22 @@ export default function Flashes() {
                     <h3 className='text-36 text-tertiary font-garet-extra'>{lastFlash.titulo}</h3>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
                         <div className='bg-white rounded-2xl p-8'>
+
                             <div className="flex gap-4 items-center">
                                 <img src="/ico_jalisco.svg" alt="Jalisco" className="w-16 h-16 object-contain" />
                                 <h4 className="text-primary"> Jalisco</h4>
                             </div>
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_jal}} className='mt-5 prose max-w-none' />
+                            <SafeHtml htmlContent={lastFlash.desc_jal} className='mt-5 prose max-w-none'/>
                         </div>
                         <div className='bg-white rounded-2xl p-6'>
                             <div className="flex gap-4 items-center">
                                 <img src="/ico_Nacional.svg" alt="Nacional" className="w-16 h-16 object-contain" /> 
                                 <h4 className="text-primary">Nacional</h4>
                             </div>
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_nac}} className='mt-5 prose max-w-none text-14!' />
+                            <SafeHtml htmlContent={lastFlash.desc_nac} className='mt-5 prose max-w-none text-14!' />                            
+
                         </div>
+
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                             {lastFlash.periocidad && (
                                 <p className='text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{lastFlash.periocidad}</p>
@@ -273,13 +271,12 @@ export default function Flashes() {
             </div>
 
             
-
-            <div className='grid lg:grid-cols-3 container mx-auto gap-4'>
+<div className='grid lg:grid-cols-3 container mx-auto gap-4'>
                 {currentFlashes.length > 0 ? currentFlashes.map(flash => (
                     
                     <ConditionalLink
                         key={flash.id}
-                        link={`/datos-expres/${flash.slug}`}
+                        link={`/flashes/${flash.slug}`}
                         rel="noopener noreferrer"
                     >
                         
@@ -315,18 +312,21 @@ export default function Flashes() {
 
             {pageCount > 1 && (
                 <ReactPaginate
-                previousLabel={"<"}
-                nextLabel={">"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / itemsPerPage)}
-            />
+                    previousLabel={'Ant'}
+                    nextLabel={'Sig'}
+                    breakLabel={'...'}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={1}
+                    pageRangeDisplayed={2}
+                    onPageChange={handlePageClick}
+                    containerClassName='flex justify-center gap-2 mt-8 mb-10'
+                    pageClassName='rounded-full border border-primary px-3 py-2 text-sm'
+                    activeClassName='bg-primary text-white'
+                    previousClassName='rounded-full border border-primary px-3 py-2 text-sm'
+                    nextClassName='rounded-full border border-primary px-3 py-2 text-sm'
+                    breakClassName='px-3 py-2 text-sm'
+                    forcePage={Math.floor(itemOffset / itemsPerPage)}
+                />
             )}
         </div>
     )

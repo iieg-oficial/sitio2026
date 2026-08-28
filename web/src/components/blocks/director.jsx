@@ -74,7 +74,7 @@ export default function Directorio() {
                 );
             })}
 
-            <div className='grid lg:grid-cols-2 gap-4 mt-10'>
+            <div className='grid md:grid-cols-2 gap-4 mt-10'>
                 {directorios.map(elementos => {
                 const isOpen = idAbierto === elementos.id;
                 
@@ -86,7 +86,7 @@ export default function Directorio() {
                     >                    
                         <div className="grid grid-cols-12 gap-4">
                             <div className="col-span-11">
-                                <p className='text-primary text-22 font-extrabold mb-4'>{elementos.nombre}</p>
+                                <p className='text-primary text-22 font-bold'>{elementos.nombre}</p>
                                 <p className='text-base text-titulo font-bold'>{elementos.cargo}</p>
                             </div>
                             {/* Icono que gira si está abierto */}

@@ -121,7 +121,7 @@ export default function Reportes() {
     }, [temaFilter, subtemas, subtemaFilter]);
 
     const filteredReportes = useMemo(() => {
-        const filtered = reportesWithMeta.filter(post => {
+        return reportesWithMeta.filter(post => {
             const searchTermLower = searchTerm.toLowerCase();
             const matchesSearch = !searchTerm || [
                 post.titulo,
@@ -137,12 +137,6 @@ export default function Reportes() {
             const matchesMonth = !monthFilter || post.month === monthFilter;
 
             return matchesSearch && matchesTema && matchesSubtema && matchesYear && matchesMonth;
-        });
-
-        return filtered.sort((a, b) => {
-            const dateA = a.fecha ? new Date(a.fecha).getTime() : 0;
-            const dateB = b.fecha ? new Date(b.fecha).getTime() : 0;
-            return dateB - dateA;
         });
     }, [reportesWithMeta, searchTerm, temaFilter, subtemaFilter, yearFilter, monthFilter]);
 
@@ -170,9 +164,7 @@ export default function Reportes() {
 
     return (
         <div>
-            <div className='w-full md:w-11/12 mx-auto md:ml-auto md:mr-0'>
-                <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
-            </div>
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
 
             <div className='mx-auto px-2 container my-15'>
                 <div className='flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5'>
@@ -249,12 +241,12 @@ export default function Reportes() {
 
             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mx-auto container px-2'>
                 {currentReportes.map(reporte => (
-                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" download>
-                        <div className='border-2 border-card rounded-2xl p-8 hover:border-tertiary hover:border' key={reporte.id}>
+                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" download>
+                        <div className='border-2 border-card rounded-2xl p-8 hover:border-titulo hover:border' key={reporte.id}>
                             
                             <div className="flex items-center gap-2 mb-4 bg-white justify-between">
-                                <p className=' text-18 font-garet-bold text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
-                                <div className='bg-[#FF83004D] h-[31px] w-[30px] rounded-full flex items-center justify-center p-1'>
+                                <p className=' text-22 text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
+                                <div className='bg-[#FF83004D] h-[37px] w-[40px] rounded-full flex items-center justify-center'>
                                     <span className="material-symbols--download text-tertiary"></span> 
                                 </div>
                             </div> 

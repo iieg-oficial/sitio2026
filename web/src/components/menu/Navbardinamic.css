@@ -25,21 +25,8 @@
   color: #ffffff;
   text-decoration: none;
   border-bottom: none;
-  font-size: 16px; 
+  font-size: 16px;
 }
-
-@media (width >= 80rem) {
-  .menu-wrapper a {
-    font-size: 14px; 
-  }
-}
-
-@media (width >= 96rem) {
-  .menu-wrapper a {
-    font-size: 16px; 
-  }
-}
-
 .menu-wrapper a:hover {  
   transition: all 0.5s;
   color: #ff8300;
@@ -102,7 +89,7 @@
 
 
 /* Responsive Menu */
-@media screen and (max-width: 1279px) {
+@media screen and (max-width: 768px) {
   body .menu-wrapper nav[role=navigation] {
     overflow: hidden;
     max-height: 0em;
@@ -237,7 +224,7 @@
     top: 5px;
     margin-top:0px;
     right: 4px;
-    color: #fff;
+    color: #6618a2;
     font-size: 28px;
     padding-bottom: 5px;
   }

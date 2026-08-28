@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import { format, isValid} from 'date-fns';
 import { es } from 'date-fns/locale';
 import TrackedLink from '@components/blocks/boton'
+import { SafeHtml } from '@components/SafeHtml';
 
 function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
     if (!results || results.length === 0) return <p>No se encontraron resultados.</p>;
@@ -74,8 +75,8 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
                                                     {tema.titulo}
                                                 </p>
                                             ))}
-                                        </div>
-                                        <div dangerouslySetInnerHTML={{ __html: post.resumen }} className='mt-5 prose max-w-none' />
+                                        </div>                                        
+                                        <SafeHtml htmlContent={post.description} className='mt-5 prose max-w-none'/>
                                         <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
                                             <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                         </div>

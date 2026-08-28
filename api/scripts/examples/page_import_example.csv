@@ -15,7 +15,7 @@ Reportes,"Publicaciones periódicas, que concentran información oficial de inte
 Datos abiertos y documentación,,TRUE,TRUE,#,,,3,datos-abiertos-y-documentacion,
 Datos abiertos,,FALSE,TRUE,datos-abiertos,,,0,,datos-abiertos-y-documentacion
 Documentación,"Este espacio reúne recursos técnicos, normativos y operativos para facilitar el acceso y la consulta de la información institucional.",TRUE,TRUE,documentacion,"Este espacio reúne recursos técnicos, normativos y operativos para facilitar el acceso y la consulta de la información institucional.",,1,,datos-abiertos-y-documentacion
-Cuadernillos,"Referencia de consulta que preseta información de los 125 municipios de Jalisco mediante los principales idicadores disponibles sobre temas socioeconómicos, territoriales y de gobierno.",TRUE,TRUE,cuadernillos,,,2,,datos-abiertos-y-documentacion
+Cuadernillos,,TRUE,TRUE,cuadernillos,,,2,,datos-abiertos-y-documentacion
 Comunidad,,TRUE,TRUE,#,,,4,comunidad,
 Educación continua,"Te invitamos a explorar nuestras próximas jornadas de capacitación. Aquí encontrarás toda la información necesaria sobre contenidos, fechas de inicio y disponibilidad.",TRUE,TRUE,educacion-continua,"Te invitamos a explorar nuestras próximas jornadas de capacitación. Aquí encontrarás toda la información necesaria sobre contenidos, fechas de inicio y disponibilidad.",,0,,comunidad
 Convocatorias,"Aquí podrás consultar cómo participar en eventos, cursos, prácticas profesionales y servicio social en el IIEG",TRUE,TRUE,convocatorias,"Aquí podrás consultar cómo participar en eventos, cursos, prácticas profesionales y servicio social en el IIEG",,1,,comunidad

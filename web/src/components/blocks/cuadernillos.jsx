@@ -51,7 +51,7 @@ export default function Cuadernillos() {
     );
 
     const filteredCuadernillos = useMemo(() => {
-        const filtered = cuadernillosFilter.filter(cuaderno => {
+        return cuadernillosFilter.filter(cuaderno => {
             const matchesSearch = !searchTerm || keys.some(key => {
                 const value = key.split('.').reduce((obj, part) => obj?.[part], cuaderno);
                 return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());
@@ -61,8 +61,6 @@ export default function Cuadernillos() {
 
             return matchesSearch && matchesYear && matchesMunicipio;
         });
-
-        return filtered.sort((a, b) => (a.municipio || '').localeCompare(b.municipio || ''));
     }, [cuadernillosFilter, searchTerm, yearFilter, municipioFilter]);
 
     const [itemOffset, setItemOffset] = useState(0);

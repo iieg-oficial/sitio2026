@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import api from '@services/apiService'
 import Backlink from '../components/pageComponents/Backlink'
 import NotFound from '@components/blocks/NotFound'
+import { SafeHtml } from '@components/SafeHtml';
 
 const SLUG_INTEGRAL = 'aviso-de-privacidad'
 const PDF_INTEGRAL = '/aviso-de-privacidad.pdf'
@@ -66,8 +67,8 @@ export default function AvisoDePrivacidad({ slug = SLUG_INTEGRAL }) {
             <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
                 <div className='md:col-span-1'><Backlink /></div>
                 <main className='md:col-span-11'>
-                    <h1 className='text-44 font-extrabold mb-4 text-primary text-center'>{titulo}</h1>
-                    <div className='text-body text-16 leading-8 prose diez w-full mx-auto max-w-full' dangerouslySetInnerHTML={{ __html: page.description }}></div>
+                    <h1 className='text-44 font-extrabold mb-4 text-primary text-center'>{titulo}</h1>                    
+                    <SafeHtml htmlContent={page.description} className='text-body text-16 leading-8 prose diez w-full mx-auto max-w-full'/>
                     {slug === SLUG_INTEGRAL && (
                         <a
                             href="https://iieg.jalisco.gob.mx/acervo/portal/aviso_de_privacidad_integral_iieg_06_2025.pdf"

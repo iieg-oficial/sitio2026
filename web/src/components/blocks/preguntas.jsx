@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Preguntas() {
     const [preguntas, setPreguntas] = useState([]);
@@ -98,7 +99,8 @@ export default function Preguntas() {
                                     </div>
                                 </button>
                                 {isOpen && (
-                                    <div dangerouslySetInnerHTML={{ __html: pregunta.respuesta }} className='diez mt-5 font-garet text-18' />
+                                    
+                                    <SafeHtml htmlContent={pregunta.respuesta} className='diez mt-5 font-garet text-18'/>
                                 )}
                             </div>
                         )
