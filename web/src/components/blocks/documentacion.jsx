@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
+import Searcher from '../pageComponents/searcher';
 
 export default function Documentacion() {
     const [documentaciones, setDocumentaciones] = useState([])
@@ -119,13 +120,7 @@ export default function Documentacion() {
         <div>
 
             <div className='mx-auto container md:w-6/12'>
-                        <input
-                            type="search"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="¿Qué quieres buscar?"
-                            className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
-                        />
+                        <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
             </div>
             <div className='mx-auto px-2 container my-15'>
                 <div className='flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5'>
@@ -233,15 +228,17 @@ export default function Documentacion() {
                                 ))
                             }
                             <div className='flex justify-between'>
-                                <h3 className='text-primary'>{documentacion.titulo}</h3>               
-                                <span className="material-symbols--download text-tertiary"></span> 
+                                <h3 className='text-titulos font-garet-bold text-18'>{documentacion.titulo}</h3>               
+                                <div className="group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1">
+                                    <span className="material-symbols--download group-hover:bg-white!"></span>
+                                </div> 
                             </div>                                                        
                             <div className='flex flex-wrap gap-4 mt-10'>
                                 {documentacion.tipo && (
-                                    <span className='rounded-2xl bg-etiqueta-ter border-[#162A554D] border-1 text-primary text-[12px] p-2'>{documentacion.tipo}</span>
+                                    <span className='text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{documentacion.tipo}</span>
                                 )}
                                 {documentacion.anyo && (
-                                    <span className='rounded-2xl bg-etiqueta-ter text-tertiary border-[#FF83004D] border-1 text-[12px] p-2'>{documentacion.anyo}</span>
+                                    <span className='text-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>{documentacion.anyo}</span>
                                 )}
                             </div>
                         </div>
