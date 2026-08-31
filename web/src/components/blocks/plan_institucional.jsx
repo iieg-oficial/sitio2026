@@ -36,7 +36,7 @@ export default function PlanInstitucional() {
 
     return (
         <div className="container-fluid py-15 px-2 bg-card" id="plan-institucional">
-            <h2 className="text-center mb-15">Plan Institucional</h2>
+            <h2 className="text-center mb-15">Plan Institucional 2025-2030</h2>
             
             {planInstitucional.length > 0 ? (
                 <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10">

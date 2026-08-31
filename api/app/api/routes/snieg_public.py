@@ -11,7 +11,7 @@ router = APIRouter(prefix="/snieg", tags=["snieg - public"])
 def read_snieg(
     db: Session = Depends(get_db),
     ):
-    snieg = db.query(Snieg).all()
+    snieg = db.query(Snieg).order_by(Snieg.id.asc()).all()
     return {
         "snieg": snieg,
         "total": len(snieg),

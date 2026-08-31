@@ -10,6 +10,7 @@ class AreaEnum(str, enum.Enum):
     grafico = "grafico"
     juridico = "juridico"
     administracion = "administracion"
+    soporte = "soporte"
 
 class Perfiles(Base):
     __tablename__ = "perfiles"

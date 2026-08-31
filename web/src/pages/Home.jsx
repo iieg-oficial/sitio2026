@@ -121,13 +121,13 @@ function HomePage() {
                 <h2 className="text-titulo text-center my-10">Visita nuestras plataformas interactivas</h2>
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
                 <TrackedLink to="/nuestros-productos" className="button2 sm:w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
-                    Conoce todos nuestros productos
+                    Quiero ver todas las plataformas
                 </TrackedLink>
 
             </section>
 
             <section className="w-11/12 mx-auto relative my-15">
-                <h2 className="text-titulo text-center mb-14 text-44 font-extrabold">Conoce los mapas históricos de Jalisco</h2>
+                <h2 className="text-titulo text-center mb-14 text-44 font-extrabold">Consulta los mapas históricos de Jalisco</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <TrackedLink 
                 to="/mapas-historicos" 

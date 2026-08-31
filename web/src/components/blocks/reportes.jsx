@@ -246,7 +246,7 @@ export default function Reportes() {
                             
                             <div className="flex items-center gap-2 mb-4 bg-white justify-between">
                                 <p className=' text-22 text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
-                                <div className='bg-[#FF83004D] h-[37px] w-[40px] rounded-full flex items-center justify-center'>
+                                <div className='bg-[#FF83004D] h-[30px] w-[40px] rounded-full flex items-center justify-center'>
                                     <span className="material-symbols--download text-tertiary"></span> 
                                 </div>
                             </div> 

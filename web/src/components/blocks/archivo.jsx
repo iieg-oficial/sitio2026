@@ -88,7 +88,7 @@ export default function Archivo() {
         <div>
             <div>
            
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo buscas?" />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo quieres buscar?" />
             
             <div className='mx-auto px-2 container my-15'>
                 <div className="flex gap-2 mb-5">

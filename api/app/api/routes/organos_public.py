@@ -11,7 +11,7 @@ router = APIRouter(prefix="/organos", tags=["organos - publico"])
 def read_organos(
     db: Session = Depends(get_db),
 ):
-    organos = db.query(Organos).all()
+    organos = db.query(Organos).order_by(Organos.id.asc()).all()
     return {
         "organos": organos,
         "total": len(organos),

@@ -99,8 +99,10 @@ export default function Mapas() {
                                     Importante
                                     </h2>
                                     <p className="text-base text-body mb-6">
-                                    Información no oficial, sin efectos legales, este material se difunde exclusivamente por su valor historico-cultural y para fines de investigación
+                                        <b>Información no oficial y sin efectos legales.</b>                                        
+                                        <br />Este material se difunde exclusivamente por su valor histórico-cultural y con fines de investigación.
                                     </p>
+                                    
                         
                                     <div className="flex gap-3 justify-end">
                                     <button
@@ -126,6 +128,14 @@ export default function Mapas() {
                             )}
                     </div>
                     )}
+
+                    <>
+                        <div className='col-span-6 text-14'>
+                            Información no oficial y sin efectos legales. Este material se difunde exclusivamente por su valor histórico-cultural y con fines de investigación.
+
+                        </div>
+                    </>
+
                     <div className='mb-4 gap-4 grid grid-cols-6'>
                         
                         { singleMapa.autor && singleMapa.autor.trim() !== '' && (
@@ -223,12 +233,7 @@ export default function Mapas() {
                         </>
                             
                         )}
-
-                        <>
-                        <div className='col-span-6 text-14'>
-                            <i>***Información no oficial, sin efectos legales, este material se difunde exclusivamente por su valor historico-cultural y para fines de investigación</i>
-                        </div>
-                        </>
+                        
 
                     </div>                                
                 </div>

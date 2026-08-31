@@ -166,6 +166,7 @@ export default function Flashes() {
                                 <h4 className="text-primary">Nacional</h4>
                             </div>
                             <SafeHtml htmlContent={lastFlash.desc_nac} className='mt-5 prose max-w-none text-14!' />                            
+
                         </div>
 
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
@@ -192,7 +193,7 @@ export default function Flashes() {
                 </div>
             )}
 
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder='¿Qué quieres buscar?' />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
 
             <div className='mx-auto container flex flex-col lg:flex-wrap lg:flex-row gap-5 mt-15'>
                 <div>
