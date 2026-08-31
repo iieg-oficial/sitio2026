@@ -73,7 +73,7 @@
 .menu-wrapper .sub-menu a:hover,
 .menu-wrapper .sub-menu a.active,
 .menu-wrapper .sub-menu li.active > a {
-  background: #f4d8ff;
+  background: #FFEFDE;
   color: #ff8300;
   font-weight: 600;
 }
