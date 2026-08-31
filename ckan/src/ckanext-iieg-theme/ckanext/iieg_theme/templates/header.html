@@ -5,7 +5,7 @@
       <a class="logo" href="{{ h.url_for('home.index') }}">
         {% if g.site_logo.startswith('http://') or g.site_logo.startswith('https://') %}
           {# Caso 1: URL remota externa #}
-          <img src="{{ g.site_logo }}" alt="{{ g.site_title }}"
+          <img src="{{ h.url_for_static('/images/ico_IIEG_header.svg') }}" alt="{{ g.site_title }}"
             aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
         {% elif g.site_logo.startswith('/datos-abiertos') %}
           {# Caso 2: La ruta almacenada ya trae la ruta base del portal #}
@@ -13,7 +13,7 @@
             aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
         {% else %}
           {# Caso 3: Archivo relativo estático estándar #}
-          <img src="{{ h.url_for_static(g.site_logo) }}" alt="{{ g.site_title }}"
+          <img src="{{ h.url_for_static('/images/ico_IIEG_header.svg') }}" alt="{{ g.site_title }}"
             aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
         {% endif %}
       </a>
@@ -28,19 +28,24 @@
 {% endblock %}
 
 {% block header_site_navigation_tabs %}
-  <!-- Enlaces nativos de CKAN (Datasets, Organizaciones, Grupos) -->
+  <!-- Enlaces nativos de CKAN (Datasets, Grupos, Organizaciones) -->
   {% set org_type = h.default_group_type('organization') %}
   {% set group_type = h.default_group_type('group') %}
 
   {# 1. Construimos los items base del menú #}
   {% set nav_items = [
     (dataset_type ~ '.search', h.humanize_entity_type('package', dataset_type, 'main nav') or _('Datasets'), ["dataset", "resource"]),
-    (org_type ~ '.index', h.humanize_entity_type('organization', org_type, 'main nav') or _('Organizations'), ['organization'])
+    (group_type ~ '.index', h.humanize_entity_type('group', group_type, 'main nav') or _('Categories'), ['group'])
   ] %}
 
-  {# 2. Agregamos Grupos si hay un usuario en sesión #}
+  {# 2. Agregamos opción de Configuración si el usuario está logueado #}
   {% if c.user %}
-    {% set nav_items = nav_items + [(group_type ~ '.index', h.humanize_entity_type('group', group_type, 'main nav') or _('Groups'), ['group'])] %}
+    {% if h.check_access('sysadmin') %}
+      {% set nav_items = [
+        ('admin.config', _('Configuración'), ['admin']) ,
+        (org_type ~ '.index', h.humanize_entity_type('organization', org_type, 'main nav') or _('Organizations'), ['organization']) 
+      ] + nav_items %}
+    {% endif %}
   {% endif %}
 
   {# 3. Renderizamos el menú usando la lista de items #}

@@ -47,48 +47,10 @@
 
               </div>
           </div>
+        </div>          
 
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-          <div class="grupos">
-            {% snippet 'snippets/iieg_theme_all_groups.html' %}
-          </div>
-
-        {% endblock %}
-        </div>
-        <div class="2 container">
-          <h2>organizaciones</h2>
-        {% block featured_organization %}
-            {% snippet 'home/snippets/featured_organization.html' %}
-            {% endblock %}
-          </div>
-        
-
-        <div class="custom-tags-section container" style="margin-top: 30px;">
-          <h3>Etiquetas populares recientes</h3>
-=======
         <div class="custom-tags-section container my-14">
           <h3>{{ _('Recent tags') }}</h3>
-=======
-          <div class="grupos">
-            {% snippet 'snippets/iieg_theme_all_groups.html' %}
-          </div>
-
-        {% endblock %}
-        </div>
-        <div class="2 container">
-          <h2>organizaciones</h2>
-        {% block featured_organization %}
-            {% snippet 'home/snippets/featured_organization.html' %}
-            {% endblock %}
-          </div>
-        
-
-        <div class="custom-tags-section container" style="margin-top: 30px;">
-          <h3>Etiquetas populares recientes</h3>
->>>>>>> 41cf78ba1 (fix: filter-repo #39)
->>>>>>> develop
           
           {# Usamos el stream de actividad que sabemos que sí funciona en tu CKAN #}
           {% set stream = h.recently_changed_packages_activity_stream(limit=10) %}
@@ -124,19 +86,11 @@
               {% endfor %}
               
               {% if etiquetas_renderizadas|length == 0 %}
-<<<<<<< HEAD
                 <p>{{ _('No hay etiquetas recientes en los últimos conjuntos de datos.') }}</p>
               {% endif %}
             </div>
           {% else %}
             <p>{{ _('No hay etiquetas disponibles en este momento.') }}</p>
-=======
-                <p style="color: #777; font-style: italic;">No hay etiquetas recientes en los últimos conjuntos de datos.</p>
-              {% endif %}
-            </div>
-          {% else %}
-            <p style="color: #777; font-style: italic;">No hay etiquetas disponibles en este momento.</p>
->>>>>>> 41cf78ba1 (fix: filter-repo #39)
           {% endif %}
         </div>
 
