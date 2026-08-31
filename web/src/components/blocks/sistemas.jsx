@@ -133,7 +133,7 @@ export default function Sistemas() {
                                 const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);
                                 const content = (
                                     <div 
-                                        className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 md:min-h-[640px] lg:min-h-[575px] xl:min-h-[445px]${
+                                        className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 md:min-h-[640px] lg:min-h-[485px] xl:min-h-[445px] ${
                                             hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
                                         }`}
                                     >

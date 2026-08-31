@@ -40,7 +40,7 @@ export default function Normatividad() {
             <div className="container mx-auto mt-8">
                 {normatividad.length > 0 ? (
                     normatividad.map((item, idx) => (
-                        <div key={item?.id || idx} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-3xl group bg-white hover:border-tertiary">
+                        <div key={item?.id || idx} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-3xl group bg-white hover:border-tertiary group">
                             <a 
                                 href={item?.documento || '#'} 
                                 target="_blank" 
@@ -48,8 +48,10 @@ export default function Normatividad() {
                                 download 
                                 className='flex gap-4'
                             >
-                                <span className="material-symbols--download"></span> 
-                                <p className='text-22 text-titulo group-hover:text-tertiary'>
+                                <div className="group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-2">
+                                    <span className="material-symbols--download group-hover:bg-white!"></span>
+                                </div>
+                                    <p className='text-22 text-titulo group-hover:text-tertiary'>
                                     {item?.nombre || 'Documento sin título'}
                                 </p>
                             </a>
