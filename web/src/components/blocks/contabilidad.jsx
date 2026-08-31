@@ -164,7 +164,7 @@ export default function Contabilidad() {
                                                                             </div>
                                                                         </TrackedLink>
                                
-                                                                        <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{contabilidad.titulo}</p>
+                                                                        <p className='ml-5 text-28 font-garet-extra text-titulo group-hover:text-tertiary'>{contabilidad.titulo}</p>
                                                                     </div>
                                                                 </div>
                                                             ))}

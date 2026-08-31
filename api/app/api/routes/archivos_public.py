@@ -10,17 +10,17 @@ router = APIRouter(prefix="/archivos", tags=["archivos -publicos"])
 
 @router.get("", response_model=list[ArchivoResponse])
 async def listar_archivos_publicos(db: Session = Depends(get_db)):
-    archivos = db.execute(select(Archivos).order_by(Archivos.fecha.desc())).scalars().all()
+    archivos = db.execute(select(Archivos).order_by(Archivos.id.asc())).scalars().all()
     return archivos
 
 @router.get("/institucionales", response_model=list[ArchivoResponse])
 async def listar_archivos_institucionales(db: Session = Depends(get_db)):
-    archivos_institucionales = db.execute(select(Archivos).filter(Archivos.tipo == "institucional").order_by(Archivos.fecha.desc())).scalars().all()
+    archivos_institucionales = db.execute(select(Archivos).filter(Archivos.tipo == "institucional").order_by(Archivos.id.asc())).scalars().all()
     return archivos_institucionales
 
 @router.get("/contabilidad", response_model=list[ArchivoResponse])
 async def listar_archivos_contabilidad(db: Session = Depends(get_db)):
-    archivos_contabilidad = db.execute(select(Archivos).filter(Archivos.tipo == "contabilidad").order_by(Archivos.fecha.desc())).scalars().all()
+    archivos_contabilidad = db.execute(select(Archivos).filter(Archivos.tipo == "contabilidad").order_by(Archivos.id.asc())).scalars().all()
     return archivos_contabilidad
 
 @router.get("/{archivo_id}", response_model=ArchivoOut)
