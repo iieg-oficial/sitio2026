@@ -9,11 +9,11 @@ router = APIRouter(prefix="/cuadernillos", tags=["public - cuadernillos"])
 @router.get("", response_model=CuadernilloResponse)
 def read_cuadernillos(
     db: Session = Depends(get_db),
-    limit: int = 125,
+    order_by: str = "anyo",
     skip: int = 0,
 ):
     """Obtener todos los cuadernillos"""
-    cuadernillos = db.query(Cuadernillo).offset(skip).limit(limit).all()
+    cuadernillos = db.query(Cuadernillo).order_by(Cuadernillo.anyo.desc()).offset(skip).all()
 
     return {
         "cuadernillos": cuadernillos,
