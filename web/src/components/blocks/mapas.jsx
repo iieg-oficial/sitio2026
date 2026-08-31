@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate'
 import TrackedLink from '@components/blocks/boton'
+import Searcher from '../pageComponents/searcher';
 
 // ─── Utilidad: mezcla aleatoria (Fisher-Yates) ────────────────────────────────
 function shuffleArray(arr) {
@@ -121,14 +122,13 @@ export default function Mapas() {
         <div className="container mx-auto px-2 ">
             {/* ── Panel de filtros ── */}
 
-            <div className="mx-auto container md:w-6/12 mb-15">
-                        <input
-                            type="search"
-                            value={keyword}
-                            onChange={handleKeywordChange}
-                            placeholder="Filtrar por palabras clave"
-                            className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
-                        />
+            <div className="mx-auto container mb-15">
+
+                        <Searcher
+                    searchTerm={keyword}
+                    setSearchTerm={handleKeywordChange}
+                    placeholder="¿Qué quieres buscar?"
+                />
                     </div>
             
                 <div className="flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5">

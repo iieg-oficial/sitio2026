@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
+import Searcher from '../pageComponents/searcher';
 
 export default function Documentacion() {
     const [documentaciones, setDocumentaciones] = useState([])
@@ -118,15 +119,14 @@ export default function Documentacion() {
     return (
         <div>
 
-            <div className='mx-auto container md:w-6/12'>
-                        <input
-                            type="search"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Busca por ..."
-                            className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
-                        />
+            <div className='mx-auto container'>
+                <Searcher
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    placeholder="¿Qué quieres buscar?"
+                />
             </div>
+
             <div className='mx-auto px-2 container my-15'>
                 <div className='flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5'>
                     
