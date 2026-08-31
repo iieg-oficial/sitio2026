@@ -165,13 +165,7 @@ const Navbardinamic = () => {
           </div>
         </nav>    
 
-        <div className="col-span-2 mt-2 lg:col-span-12 lg:mt-1">
-          <HeaderSearch
-            initialValue=""
-            onSubmit={handleSearch}
-            placeholder="Buscar en todo el sitio..."
-          />
-        </div>  
+
       </div>
     </div>
   );
