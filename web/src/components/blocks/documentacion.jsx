@@ -211,14 +211,14 @@ export default function Documentacion() {
             <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mx-auto px-2 container my-15'>
                 {filteredDocumentaciones.map(documentacion => (
                     <TrackedLink to={documentacion.archivo} className="" target="_blank" download>
-                        <div className='rounded-2xl bg-card p-8 hover:border hover:border-tertiary' key={documentacion.id}>   
+                        <div className='rounded-2xl bg-card p-8 hover:border hover:border-tertiary group' key={documentacion.id}>   
                             {documentacion.temas
                                 .filter(tema => !tema.parent_id)
                                 .map(tema => (
                                     <div key={tema.id}>
-                                        <span className='text-18'>{tema.titulo}</span>
+                                       {/* <span className='text-18'>{tema.titulo}</span>
 
-                                        {/*documentacion.temas
+                                        documentacion.temas
                                             .filter(subtema => subtema.parent_id === tema.id)
                                             .map(subtema => (
                                                 <span key={subtema.id} className='text-16'> | {subtema.titulo}</span>
