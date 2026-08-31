@@ -55,19 +55,6 @@ async def obtener_post(
         )
     return post
 
-@router.post("/uploads/image")
-async def upload_image(file: UploadFile = File(...)):
-    if file.content_type not in ALLOWED:
-        raise HTTPException(400, "Tipo de archivo no permitido")
-
-    ext = file.filename.split(".")[-1]
-    filename = f"{uuid.uuid4()}.{ext}"
-    dest = UPLOAD_DIR / filename
-
-    with dest.open("wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    return {"url": f"/static/uploads/{filename}"}
 
 @router.post("/create", response_model=PostOut, status_code=status.HTTP_201_CREATED)
 async def crear_post(
