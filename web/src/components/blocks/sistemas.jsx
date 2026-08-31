@@ -124,7 +124,7 @@ export default function Sistemas() {
                     {filteredByTab.length === 0 && <p>No hay sistemas</p>}
 
                     {filteredByTab.length > 0 && (
-                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                             {currentSystems.map((sistema) => {
                                 const original = sistema.imagen;
                                 const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
@@ -133,11 +133,11 @@ export default function Sistemas() {
                                 const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);
                                 const content = (
                                     <div 
-                                        className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 ${
+                                        className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 md:min-h-[640px] lg:min-h-[575px] xl:min-h-[445px]${
                                             hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
                                         }`}
                                     >
-                                        <div className='md:h-[60px] lg:h-auto lg:col-span-2'>
+                                        <div className='sm:w-[150px] md:h-[60px] lg:h-auto lg:col-span-2'>
                                             <img
                                                 src={sistema.imagen ? sistema.imagen : '/demo.jpg'}                                                
                                                 alt={sistema.titulo}
