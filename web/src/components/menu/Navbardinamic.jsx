@@ -45,6 +45,7 @@ const Navbardinamic = () => {
     return () => { isMounted = false; };
   }, []);
 
+  
   // 2. Funciones para alternar menú y submenús
   const toggleMenu = (e) => {
     if (e) e.preventDefault();
@@ -164,14 +165,7 @@ const Navbardinamic = () => {
             </ul>
           </div>
         </nav>    
-
-        <div className="col-span-2 mt-2 lg:col-span-12 lg:mt-1">
-          <HeaderSearch
-            initialValue=""
-            onSubmit={handleSearch}
-            placeholder="Buscar en todo el sitio..."
-          />
-        </div>  
+ 
       </div>
     </div>
   );
