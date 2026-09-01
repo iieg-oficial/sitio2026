@@ -12,7 +12,7 @@ export default function Mapas() {
 
     useEffect(() => {
         const fetchMapas = async () => {
-            const response = await api.get('/mapas/random/')
+            const response = await api.get('/mapas/random')
             if (Array.isArray(response.data?.mapas)) {
                     setMapas(response.data.mapas)
                 } else if (Array.isArray(response.data)) {

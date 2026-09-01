@@ -15,7 +15,7 @@ export default function PlataformasSlider() {
     useEffect(() => {
     const fetchPlataformas = async () => {
         try {
-        const response = await api.get('/sistemas/', {
+        const response = await api.get('/sistemas', {
             params: {
             destacado: false,
             slider: true

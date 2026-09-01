@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
 import ConvocatoriasList from './convocatorias_list';
-import Backlink from '../pageComponents/Backlink';
+import BackLink from './../pageComponents/Backlink'
 import TrackedLink from '@components/blocks/boton'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
