@@ -218,16 +218,16 @@ def resolve_relationships(db, model_cls, row: dict[str, Any]) -> dict[str, Any]:
     mapper = inspect(model_cls)
 
     def build_aliases(rel_name: str) -> list[str]:
-        aliases = {rel_name}
+        aliases = [rel_name]
         if rel_name.endswith("es"):
-            aliases.add(rel_name[:-2])
+            aliases.append(rel_name[:-2])
         elif rel_name.endswith("s"):
-            aliases.add(rel_name[:-1])
+            aliases.append(rel_name[:-1])
 
         if rel_name == "temas":
-            aliases.update({"tema", "temas", "subtema", "subtemas"})
+            aliases = ["temas", "tema", "subtemas", "subtema"]
         elif rel_name == "sistemas":
-            aliases.update({"sistema"})
+            aliases = ["sistemas", "sistema"]
 
         ordered = []
         for alias in aliases:
@@ -247,23 +247,23 @@ def resolve_relationships(db, model_cls, row: dict[str, Any]) -> dict[str, Any]:
             candidates_slugs.extend([f"{alias}_slugs", f"{alias}_slug"])
             candidates_ids.extend([f"{alias}_ids", f"{alias}_id"])
 
-        slugs_val = None
-        for c in candidates_slugs:
-            slugs_val = find_row_value(row, c)
-            if slugs_val is not None:
-                break
+        slug_values = []
+        for candidate in candidates_slugs:
+            value = find_row_value(row, candidate)
+            if value is not None:
+                slug_values.extend(split_values(value))
 
-        ids_val = None
-        for c in candidates_ids:
-            ids_val = find_row_value(row, c)
-            if ids_val is not None:
-                break
+        id_values = []
+        for candidate in candidates_ids:
+            value = find_row_value(row, candidate)
+            if value is not None:
+                id_values.extend(split_values(value))
 
-        if slugs_val is None and ids_val is None:
+        if not slug_values and not id_values:
             continue
 
-        slugs = split_values(slugs_val)
-        ids = [int(i) for i in split_values(ids_val) if str(i).isdigit()]
+        slugs = list(dict.fromkeys(str(v).strip() for v in slug_values if str(v).strip()))
+        ids = [int(i) for i in id_values if str(i).isdigit()]
 
         items = []
         if ids:

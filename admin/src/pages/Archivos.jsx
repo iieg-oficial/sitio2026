@@ -52,16 +52,29 @@ export default function Archivos() {
 
     const handleEdit = (record) => {
         setEditingArchivo(record);
-        // Pre-cargar los temas seleccionados desde el registro
-        const ids = (record.temas ?? []).map((t) => t.id);
-        setSelectedSubjects(ids);
 
-        const normalizedRecord = {
+        const selectedIds = [...new Set(
+            (record.temas ?? []).flatMap((tema) => {
+                const ids = [];
+                if (tema?.id) ids.push(Number(tema.id));
+                if (tema?.parent_id) ids.push(Number(tema.parent_id));
+                return ids;
+            })
+        )].filter((id) => !Number.isNaN(id));
+
+        setSelectedSubjects(selectedIds);
+
+        const normalizedFecha = (() => {
+            if (!record.fecha) return undefined;
+            const value = typeof record.fecha === 'string' ? record.fecha : new Date(record.fecha).toISOString();
+            return value.slice(0, 10);
+        })();
+
+        form.setFieldsValue({
             ...record,
-            fecha: record.fecha ? new Date(record.fecha).toISOString().slice(0, 10) : undefined,
-        };
+            fecha: normalizedFecha,
+        });
 
-        form.setFieldsValue(normalizedRecord);
         setModalVisible(true);
     };
 

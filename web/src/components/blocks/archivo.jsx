@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
-import api from '@services/apiService'
+import { useEffect, useState } from 'react';
+import api from '@services/apiService';
 import Searcher from '../pageComponents/searcher';
 import { format } from 'date-fns';
-import TrackedLink from '@components/blocks/boton'
+import TrackedLink from '@components/blocks/boton';
 
 export default function Archivo() {
     const [archivos, setArchivos] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState('');
     const [activeTab, setActiveTab] = useState(null);
     const [openSubjects, setOpenSubjects] = useState({});
     const [activeSubtema, setActiveSubtema] = useState({});
@@ -14,29 +14,46 @@ export default function Archivo() {
     const itemsPerPage = 12;
 
     const showData = async () => {
-        const response = await api.get('/archivos/institucionales')
-        console.log('response.data', response.data)
-        setArchivos(response.data)
-    }
+        const response = await api.get('/archivos/institucionales');
+        setArchivos(response.data);
+    };
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => {
-        showData()
+        showData();
     }, []);
 
-    const getPrimaryTema = (archivo) => {
-        const temas = archivo.temas ?? [];
-        const parentTema = temas.find(t => !t.parent_id);
-        return parentTema?.titulo ?? temas[0]?.titulo ?? 'Sin tema';
-    }
+    const normalizeText = (text) =>
+        text
+            ?.normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim() ?? '';
 
-    const getSubtema = (archivo) => {
+    const getTemaPadre = (archivo) => {
         const temas = archivo.temas ?? [];
-        const subtema = temas.find(t => t.parent_id);
-        return subtema?.titulo ?? null;
-    }
+        if (temas.length === 0) return null;
 
-    const filteredPosts = !searchTerm 
-        ? archivos 
+        const temaPadre = temas.find((tema) => {
+            const parentId = Number(tema?.parent_id ?? 0);
+            return !tema?.parent_id || parentId === 0 || Number.isNaN(parentId);
+        });
+
+        return temaPadre ?? temas[0];
+    };
+
+    const getSubtemasDelTemaPadre = (archivo, temaPadre) => {
+        const temas = archivo.temas ?? [];
+        if (!temaPadre) return [];
+
+        return temas.filter((tema) => {
+            if (!tema?.parent_id) return false;
+            return Number(tema.parent_id) === Number(temaPadre.id);
+        });
+    };
+
+    const filteredPosts = !searchTerm
+        ? archivos
         : archivos.filter(post => {
             const term = searchTerm.toLowerCase();
             if (post.titulo?.toLowerCase().includes(term)) return true;
@@ -49,28 +66,19 @@ export default function Archivo() {
         filteredPosts.map(a => format(new Date(a.fecha), 'yyyy'))
     )].sort((a, b) => b - a);
 
-    useEffect(() => {
-        if (years.length > 0 && !years.includes(activeTab)) {
-            setActiveTab(years[0]);
-        }
-    }, [years.join(',')]);
-
-    const postsByYear = filteredPosts.filter(a =>
-        format(new Date(a.fecha), 'yyyy') === activeTab
-    );
+    const effectiveActiveYear = activeTab ?? years[0] ?? null;
+    const postsByYear = effectiveActiveYear
+        ? filteredPosts.filter(a => format(new Date(a.fecha), 'yyyy') === effectiveActiveYear)
+        : [];
 
     const groupedBySubject = postsByYear.reduce((grupos, archivo) => {
-        const tema = getPrimaryTema(archivo);
-        if (!grupos[tema]) grupos[tema] = [];
-        grupos[tema].push(archivo);
+        const temaPadre = getTemaPadre(archivo);
+        const clave = temaPadre?.titulo ?? 'Sin tema';
+
+        if (!grupos[clave]) grupos[clave] = [];
+        grupos[clave].push(archivo);
         return grupos;
     }, {});
-
-    const normalizeTema = (tema) =>
-        tema
-            ?.normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase() ?? '';
 
     const subjectOrder = {
         'instrumentos de control y consulta archivistica': 0,
@@ -79,8 +87,8 @@ export default function Archivo() {
     };
 
     const subjects = Object.keys(groupedBySubject).sort((a, b) => {
-        const orderA = subjectOrder[normalizeTema(a)] ?? 999;
-        const orderB = subjectOrder[normalizeTema(b)] ?? 999;
+        const orderA = subjectOrder[normalizeText(a)] ?? 999;
+        const orderB = subjectOrder[normalizeText(b)] ?? 999;
 
         if (orderA !== orderB) return orderA - orderB;
         return a.localeCompare(b, undefined, { sensitivity: 'base' });
@@ -88,41 +96,35 @@ export default function Archivo() {
 
     const endOffset = itemOffset + itemsPerPage;
     const currentSubjects = subjects.slice(itemOffset, endOffset);
-    const pageCount = Math.ceil(subjects.length / itemsPerPage);
-
-    const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % subjects.length;
-        setItemOffset(newOffset);
-    };
 
     const toggleSubject = (tema) => {
         setOpenSubjects(prev => ({ ...prev, [tema]: !prev[tema] }));
     };
 
-    useEffect(() => {
+    const handleYearChange = (year) => {
+        setActiveTab(year);
         setItemOffset(0);
-    }, [searchTerm, activeTab]);
+    };
 
     return (
         <div>
-            <div>
-           
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo quieres buscar?" />
-            
+
             <div className='mx-auto px-2 container my-15'>
-                <div className="flex gap-2 mb-5">
+                <div className="flex gap-2 mb-5 overflow-x-auto">
                     {years.map(year => (
                         <button
                             key={year}
-                            onClick={() => { setActiveTab(year); setItemOffset(0); } }
-                                className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
-                                        ? 'bg-etiqueta-sec text-tertiary border-tertiary'
-                                        : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
+                            onClick={() => handleYearChange(year)}
+                            className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${effectiveActiveYear === year
+                                ? 'bg-etiqueta-sec text-tertiary border-tertiary'
+                                : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
                         >
                             {year}
                         </button>
                     ))}
                 </div>
+
                 <div className='border-card rounded-2xl p-5'>
                     {currentSubjects.length === 0 && (
                         <p>No hay resultados.</p>
@@ -131,45 +133,48 @@ export default function Archivo() {
                     {currentSubjects.map((tema) => {
                         const items = groupedBySubject[tema];
                         const isOpen = openSubjects[tema] ?? false;
+
                         const groupedBySubtema = items.reduce((grupos, archivo) => {
-                            const subtema = getSubtema(archivo) ?? 'Sin subtema';
+                            const temaPadre = getTemaPadre(archivo);
+                            const subtemas = getSubtemasDelTemaPadre(archivo, temaPadre);
+                            const subtema = subtemas[0]?.titulo ?? 'Sin subtema';
+
                             if (!grupos[subtema]) grupos[subtema] = [];
                             grupos[subtema].push(archivo);
                             return grupos;
                         }, {});
+
                         const subtemas = Object.keys(groupedBySubtema);
                         const selectedSubtema = activeSubtema[tema] ?? subtemas[0] ?? null;
+                        const temaNormalized = normalizeText(tema);
 
-                        const obtenerNombreSubtema = (subtema, temaPadre) => {
-                            // 1. Planeación y normatividad: no lleva título ni pestaña
-                            if (temaPadre === "Planeación y normatividad archivística institucional") {
+                        const obtenerNombreSubtema = (subtema, temaPadreNorm) => {
+                            if (temaPadreNorm.includes('planeacion y normatividad')) {
                                 return null;
                             }
 
-                            // 2. Grupo interdisciplinario
-                            if (temaPadre === "Grupo interdisciplinario de archivos") {
-                                return (subtema && subtema !== 'Sin subtema') ? subtema : "Reglas de operación";
+                            if (temaPadreNorm.includes('grupo interdisciplinario')) {
+                                return (subtema && subtema !== 'Sin subtema') ? subtema : 'Reglas de operación';
                             }
 
-                            // 3. Instrumentos de control y consulta
-                            if (temaPadre === "Instrumentos de control y consulta archivística") {
-                                return (subtema && subtema !== 'Sin subtema') ? subtema : "Gestión archivística";
+                            if (temaPadreNorm.includes('instrumentos de control')) {
+                                return (subtema && subtema !== 'Sin subtema') ? subtema : 'Gestión archivística';
                             }
 
-                            // 4. Cualquier otro tema con 'Sin subtema'
                             if (subtema === 'Sin subtema') {
                                 return null;
                             }
 
                             return subtema;
-                                            };
+                        };
 
-                       
+                        const esPlaneacion = temaNormalized.includes('planeacion y normatividad');
+
                         return (
                             <div key={tema} className='bg-card rounded-2xl mb-4 p-4'>
                                 <button
                                     onClick={() => toggleSubject(tema)}
-                                    className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-extrabold"
+                                    className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-extrabold cursor-pointer"
                                 >
                                     <span>{tema}</span>
                                     <span className="flex items-center gap-8">
@@ -184,19 +189,15 @@ export default function Archivo() {
 
                                 {isOpen && (
                                     <div className="px-4 pb-3 space-y-4">
-                                        {/* -------------------------------------------------------------
-                                            CASO A: "Planeación y normatividad archivística institucional"
-                                            Muestra únicamente la lista de archivos, sin pestañas ni títulos.
-                                        ------------------------------------------------------------- */}
-                                        {tema === "Planeación y normatividad archivística institucional" ? (
+                                        {esPlaneacion ? (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {(groupedBySubtema[selectedSubtema] || []).map((archivo) => (
+                                                {items.map((archivo) => (
                                                     <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
                                                         <div className='flex'>
                                                             <TrackedLink to={archivo.archivo} target="_blank" rel="noopener noreferrer">
                                                                 <div className="col-span-1 group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
                                                                     <span className="material-symbols--download group-hover:bg-white!"></span>
-                                                                </div> 
+                                                                </div>
                                                             </TrackedLink>
                                                             <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
                                                         </div>
@@ -204,18 +205,13 @@ export default function Archivo() {
                                                 ))}
                                             </div>
                                         ) : (
-                                            /* -------------------------------------------------------------
-                                                CASO B: Demás categorías (Pestañas + Título dinámico)
-                                            ------------------------------------------------------------- */
                                             <>
-                                                {/* Solo muestra pestañas si hay más de 1 subtema o si el subtema actual NO es 'Sin subtema' */}
                                                 {subtemas.length > 0 && (
                                                     <div className="flex flex-wrap gap-2 mb-4">
                                                         {subtemas.map((subtema) => {
                                                             const isActive = selectedSubtema === subtema;
-                                                            const textoBoton = obtenerNombreSubtema(subtema, tema);
+                                                            const textoBoton = obtenerNombreSubtema(subtema, temaNormalized);
 
-                                                            // Si no devuelve un texto, no dibujamos el botón de tab
                                                             if (!textoBoton) return null;
 
                                                             return (
@@ -223,7 +219,7 @@ export default function Archivo() {
                                                                     key={subtema}
                                                                     type="button"
                                                                     onClick={() => setActiveSubtema(prev => ({ ...prev, [tema]: subtema }))}
-                                                                    className={`px-4 py-2 rounded-full border font-bold text-18 transition-colors ${
+                                                                    className={`px-4 py-2 rounded-full border font-bold text-18 transition-colors cursor-pointer ${
                                                                         isActive
                                                                             ? 'bg-[#FFF2E5] text-tertiary border-tertiary'
                                                                             : 'bg-[#F3EAFF] text-primary border-primary hover:border-tertiary hover:text-tertiary'
@@ -236,14 +232,17 @@ export default function Archivo() {
                                                     </div>
                                                 )}
 
-                                                {/* Contenido y Título de la sección seleccionada */}
                                                 {selectedSubtema && (() => {
-                                                    const tituloSeccion = obtenerNombreSubtema(selectedSubtema, tema);
+                                                    const tituloSeccion = obtenerNombreSubtema(selectedSubtema, temaNormalized);
 
-                                                    return (                                            
+                                                    return (
                                                         <div>
-                                                            {/* Imprime "Reglas de operación", "Gestión archivística" o el subtema real arriba de los archivos */}
-                                                            
+                                                            {tituloSeccion && (
+                                                                <div className='mb-3 text-20 font-bold text-primary'>
+                                                                    {tituloSeccion}
+                                                                </div>
+                                                            )}
+
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                                 {(groupedBySubtema[selectedSubtema] || []).map((archivo) => (
                                                                     <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
@@ -251,7 +250,7 @@ export default function Archivo() {
                                                                             <TrackedLink to={archivo.archivo} target="_blank" rel="noopener noreferrer">
                                                                                 <div className="col-span-1 group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
                                                                                     <span className="material-symbols--download group-hover:bg-white!"></span>
-                                                                                </div> 
+                                                                                </div>
                                                                             </TrackedLink>
                                                                             <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
                                                                         </div>
@@ -270,9 +269,6 @@ export default function Archivo() {
                     })}
                 </div>
             </div>
-           
         </div>
-
-    </div>
-  )
+    )
 }
