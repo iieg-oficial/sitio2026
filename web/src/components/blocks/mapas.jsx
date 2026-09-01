@@ -123,14 +123,8 @@ export default function Mapas() {
             {/* ── Panel de filtros ── */}
 
             <div className="mx-auto container md:w-6/12 mb-15">
-                        <input
-                            type="search"
-                            value={keyword}
-                            onChange={handleKeywordChange}
-                            placeholder="¿Qué quieres buscar?"
-                            className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
-                        />
-                    </div>
+                 <Searcher searchTerm={keyword} setSearchTerm={handleKeywordChange} placeholder="¿Qué quieres buscar?" />
+              </div>
             
                 <div className="flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5">
 
