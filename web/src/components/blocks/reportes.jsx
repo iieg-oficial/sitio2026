@@ -242,13 +242,13 @@ export default function Reportes() {
             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mx-auto container px-2'>
                 {currentReportes.map(reporte => (
                     <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" download>
-                        <div className='border-2 border-card rounded-2xl p-8 hover:border-titulo hover:border' key={reporte.id}>
+                        <div className='border-2 border-card rounded-2xl p-8 hover:border-tertiary hover:border group' key={reporte.id}>
                             
                             <div className="flex items-center gap-2 mb-4 bg-white justify-between">
                                 <p className=' text-22 text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
-                                <div className='bg-[#FF83004D] h-[30px] w-[40px] rounded-full flex items-center justify-center'>
-                                    <span className="material-symbols--download text-tertiary"></span> 
-                                </div>
+                                <div className="group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
+                                    <span className="material-symbols--download group-hover:bg-white!"></span>
+                                </div> 
                             </div> 
 
                             <div className='flex flex-wrap gap-5 '>

@@ -56,10 +56,10 @@ export default function Flashes() {
                 <section className="page-header text-center py-12">
                     <div className="container mx-auto grid md:grid-cols-12 gap-1">  
                         <div className='md:col-span-1'><BackLink /></div>
-                        <div className='md:col-span-11 w-full px-2 md:px-0 md:w-3/6 mx-auto'>
-                            <h1 className='text-titulos text-center'>Flashes</h1>
+                        <div className='md:col-span-11 w-11/12 prose mt-5 mx-auto text-18'>
+                            <h1 className='text-titulos text-center'>Datos exprés</h1>
                             <div className='prose diez mt-5'>
-                                <p>descripcion</p>
+                                <p>Datos puntuales de interés público estatal procedentes de fuentes oficiales y seleccionados estratégicamente por su relevancia para el contexto actual.</p>
                             </div>
                         </div>
                     </div>

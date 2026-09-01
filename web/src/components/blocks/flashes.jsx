@@ -276,11 +276,11 @@ export default function Flashes() {
                     
                     <ConditionalLink
                         key={flash.id}
-                        link={`/flashes/${flash.slug}`}
+                        link={`/datos-expres/${flash.slug}`}
                         rel="noopener noreferrer"
                     >
                         
-                        <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mx-auto container bg-white mt-8 hover:border hover:border-tertiary group'>
+                        <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mx-auto container bg-white mt-8 hover:border hover:border-titulos group'>
                             <h3 className='text-18 text-titulos'>{flash.titulo}</h3>
                             <div className='grid grid-cols-1 grid-cols-6 gap-6 mt-2'>
                                 <div className='col-span-4 flex gap-4 flex-wrap mt-5'>
@@ -294,7 +294,7 @@ export default function Flashes() {
                                 { flash.slug ?
                                     <div className='col-span-2 mt-6'>
                                         
-                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-tertiary'>
+                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-titulos'>
                                                 <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                             </div>
                                         
@@ -312,19 +312,16 @@ export default function Flashes() {
 
             {pageCount > 1 && (
                 <ReactPaginate
-                    previousLabel={'Ant'}
-                    nextLabel={'Sig'}
-                    breakLabel={'...'}
+                    previousLabel={"<"}
+                    nextLabel={">"}
+                    breakLabel={"..."}
+                    breakClassName={"break-me"}
                     pageCount={pageCount}
-                    marginPagesDisplayed={1}
-                    pageRangeDisplayed={2}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
                     onPageChange={handlePageClick}
-                    containerClassName='flex justify-center gap-2 mt-8 mb-10'
-                    pageClassName='rounded-full border border-primary px-3 py-2 text-sm'
-                    activeClassName='bg-primary text-white'
-                    previousClassName='rounded-full border border-primary px-3 py-2 text-sm'
-                    nextClassName='rounded-full border border-primary px-3 py-2 text-sm'
-                    breakClassName='px-3 py-2 text-sm'
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
                     forcePage={Math.floor(itemOffset / itemsPerPage)}
                 />
             )}

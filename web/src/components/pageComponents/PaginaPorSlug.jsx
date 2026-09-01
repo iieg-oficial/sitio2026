@@ -4,6 +4,7 @@ import PaginaDinamica from './PaginaDinamica';
 import api from '@services/apiService';
 import NotFound from '../blocks/NotFound';
 import Backlink from "./Backlink";
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function PaginaPorSlug({ slug }) {
   const [page, setPage] = useState(null);
@@ -79,7 +80,8 @@ export default function PaginaPorSlug({ slug }) {
             {interno && <div className='md:col-span-1'><Backlink /></div>}            
             <h1 className={`text-titulos text-center ${interno ? 'col-span-11' : 'col-span-12'}`}>
               {page.title}
-            </h1>
+            </h1>            
+            <SafeHtml htmlContent={page.description} className={interno ? 'w-11/12 prose mt-5 mx-auto text-18' : 'w-11/12 prose mt-5 mx-auto text-18'} />
           </div>
         </section>
 
