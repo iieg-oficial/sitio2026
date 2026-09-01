@@ -75,13 +75,15 @@ export default function PaginaPorSlug({ slug }) {
         <title>{page.title || 'Cargando...'}</title>
       </Helmet>
       <article className="px-5 2xl:px-0">
-        <section className="page-header text-center py-12">
+        <section className={interno ? "page-header text-center pb-12 md:py-12" : "page-header text-center py-12"}>
           <div className="container mx-auto grid md:grid-cols-12 gap-1">  
             {interno && <div className='md:col-span-1'><Backlink /></div>}            
-            <h1 className={`text-titulos text-center ${interno ? 'col-span-11' : 'col-span-12'}`}>
-              {page.title}
-            </h1>            
-            <SafeHtml htmlContent={page.description} className={interno ? 'w-11/12 prose mt-5 mx-auto text-18' : 'w-11/12 prose mt-5 mx-auto text-18'} />
+            <div className={interno ? 'col-span-11 w-full px-2 md:px-0' : 'col-span-12 mx-auto'}>
+              <h1 className="text-titulos text-center">
+                {page.title}
+              </h1>           
+              <SafeHtml htmlContent={page.description} className={interno ? 'w-11/12 prose mt-5 mx-auto text-18' : 'w-11/12 prose mt-5 mx-auto text-18'} />
+            </div>             
           </div>
         </section>
 

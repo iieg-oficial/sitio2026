@@ -55,7 +55,13 @@ export default function Archivos() {
         // Pre-cargar los temas seleccionados desde el registro
         const ids = (record.temas ?? []).map((t) => t.id);
         setSelectedSubjects(ids);
-        form.setFieldsValue(record);
+
+        const normalizedRecord = {
+            ...record,
+            fecha: record.fecha ? new Date(record.fecha).toISOString().slice(0, 10) : undefined,
+        };
+
+        form.setFieldsValue(normalizedRecord);
         setModalVisible(true);
     };
 

@@ -9,11 +9,13 @@ export default function Archivo() {
     const [searchTerm, setSearchTerm] = useState("");
     const [activeTab, setActiveTab] = useState(null);
     const [openSubjects, setOpenSubjects] = useState({});
+    const [activeSubtema, setActiveSubtema] = useState({});
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
 
     const showData = async () => {
         const response = await api.get('/archivos/institucionales')
+        console.log('response.data', response.data)
         setArchivos(response.data)
     }
 
@@ -64,8 +66,25 @@ export default function Archivo() {
         return grupos;
     }, {});
 
-    const subjects = Object.keys(groupedBySubject).sort();
+    const normalizeTema = (tema) =>
+        tema
+            ?.normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase() ?? '';
 
+    const subjectOrder = {
+        'instrumentos de control y consulta archivistica': 0,
+        'planeacion y normatividad archivistica institucional': 1,
+        'grupo interdisciplinario de archivos': 2,
+    };
+
+    const subjects = Object.keys(groupedBySubject).sort((a, b) => {
+        const orderA = subjectOrder[normalizeTema(a)] ?? 999;
+        const orderB = subjectOrder[normalizeTema(b)] ?? 999;
+
+        if (orderA !== orderB) return orderA - orderB;
+        return a.localeCompare(b, undefined, { sensitivity: 'base' });
+    });
 
     const endOffset = itemOffset + itemsPerPage;
     const currentSubjects = subjects.slice(itemOffset, endOffset);
@@ -111,15 +130,41 @@ export default function Archivo() {
 
                     {currentSubjects.map((tema) => {
                         const items = groupedBySubject[tema];
-                        const isOpen = openSubjects[tema] ?? false; // abierto por defecto
+                        const isOpen = openSubjects[tema] ?? false;
                         const groupedBySubtema = items.reduce((grupos, archivo) => {
                             const subtema = getSubtema(archivo) ?? 'Sin subtema';
                             if (!grupos[subtema]) grupos[subtema] = [];
                             grupos[subtema].push(archivo);
                             return grupos;
                         }, {});
-                        const subtemas = Object.keys(groupedBySubtema).sort((a, b) => a.localeCompare(b));
+                        const subtemas = Object.keys(groupedBySubtema);
+                        const selectedSubtema = activeSubtema[tema] ?? subtemas[0] ?? null;
 
+                        const obtenerNombreSubtema = (subtema, temaPadre) => {
+                            // 1. Planeación y normatividad: no lleva título ni pestaña
+                            if (temaPadre === "Planeación y normatividad archivística institucional") {
+                                return null;
+                            }
+
+                            // 2. Grupo interdisciplinario
+                            if (temaPadre === "Grupo interdisciplinario de archivos") {
+                                return (subtema && subtema !== 'Sin subtema') ? subtema : "Reglas de operación";
+                            }
+
+                            // 3. Instrumentos de control y consulta
+                            if (temaPadre === "Instrumentos de control y consulta archivística") {
+                                return (subtema && subtema !== 'Sin subtema') ? subtema : "Gestión archivística";
+                            }
+
+                            // 4. Cualquier otro tema con 'Sin subtema'
+                            if (subtema === 'Sin subtema') {
+                                return null;
+                            }
+
+                            return subtema;
+                                            };
+
+                       
                         return (
                             <div key={tema} className='bg-card rounded-2xl mb-4 p-4'>
                                 <button
@@ -139,33 +184,85 @@ export default function Archivo() {
 
                                 {isOpen && (
                                     <div className="px-4 pb-3 space-y-4">
-                                        {subtemas.map((subtema) => {
-                                            const showHeading = subtema !== 'Sin subtema' || subtemas.length > 1;
-                                            return (
-                                                <div key={subtema}>
-                                                    {showHeading && (
-                                                        <div className='mb-3 text-20 font-bold text-primary'>
-                                                            {subtema}
+                                        {/* -------------------------------------------------------------
+                                            CASO A: "Planeación y normatividad archivística institucional"
+                                            Muestra únicamente la lista de archivos, sin pestañas ni títulos.
+                                        ------------------------------------------------------------- */}
+                                        {tema === "Planeación y normatividad archivística institucional" ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {(groupedBySubtema[selectedSubtema] || []).map((archivo) => (
+                                                    <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
+                                                        <div className='flex'>
+                                                            <TrackedLink to={archivo.archivo} target="_blank" rel="noopener noreferrer">
+                                                                <div className="col-span-1 group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
+                                                                    <span className="material-symbols--download group-hover:bg-white!"></span>
+                                                                </div> 
+                                                            </TrackedLink>
+                                                            <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
                                                         </div>
-                                                    )}
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        {groupedBySubtema[subtema].map((archivo) => (
-                                                            <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
-                                                                <div className='flex'>
-                                                                    <TrackedLink to={archivo.archivo} className="" target="_blank" rel="noopener noreferrer">
-                                                                        <div className='col-span-1 bg-[#FF83004D] h-[40px] w-[40px] rounded-full flex items-center justify-center'>
-                                                                            <span className="material-symbols--download text-tertiary"></span> 
-                                                                        </div>
-                                                                    </TrackedLink>
-
-                                                                    <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
-                                                                </div>
-                                                            </div>
-                                                        ))}
                                                     </div>
-                                                </div>
-                                            )
-                                        })}
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            /* -------------------------------------------------------------
+                                                CASO B: Demás categorías (Pestañas + Título dinámico)
+                                            ------------------------------------------------------------- */
+                                            <>
+                                                {/* Solo muestra pestañas si hay más de 1 subtema o si el subtema actual NO es 'Sin subtema' */}
+                                                {subtemas.length > 0 && (
+                                                    <div className="flex flex-wrap gap-2 mb-4">
+                                                        {subtemas.map((subtema) => {
+                                                            const isActive = selectedSubtema === subtema;
+                                                            const textoBoton = obtenerNombreSubtema(subtema, tema);
+
+                                                            // Si no devuelve un texto, no dibujamos el botón de tab
+                                                            if (!textoBoton) return null;
+
+                                                            return (
+                                                                <button
+                                                                    key={subtema}
+                                                                    type="button"
+                                                                    onClick={() => setActiveSubtema(prev => ({ ...prev, [tema]: subtema }))}
+                                                                    className={`px-4 py-2 rounded-full border font-bold text-18 transition-colors ${
+                                                                        isActive
+                                                                            ? 'bg-[#FFF2E5] text-tertiary border-tertiary'
+                                                                            : 'bg-[#F3EAFF] text-primary border-primary hover:border-tertiary hover:text-tertiary'
+                                                                    }`}
+                                                                >
+                                                                    {textoBoton}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
+
+                                                {/* Contenido y Título de la sección seleccionada */}
+                                                {selectedSubtema && (() => {
+                                                    const tituloSeccion = obtenerNombreSubtema(selectedSubtema, tema);
+
+                                                    return (                                            
+                                                        <div>
+                                                            {/* Imprime "Reglas de operación", "Gestión archivística" o el subtema real arriba de los archivos */}
+                                                            
+                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                {(groupedBySubtema[selectedSubtema] || []).map((archivo) => (
+                                                                    <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
+                                                                        <div className='flex'>
+                                                                            <TrackedLink to={archivo.archivo} target="_blank" rel="noopener noreferrer">
+                                                                                <div className="col-span-1 group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
+                                                                                    <span className="material-symbols--download group-hover:bg-white!"></span>
+                                                                                </div> 
+                                                                            </TrackedLink>
+                                                                            <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })()}
+                                            </>
+                                        )}
                                     </div>
                                 )}
                             </div>
