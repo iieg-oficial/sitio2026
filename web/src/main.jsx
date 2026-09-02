@@ -11,7 +11,7 @@ import Post from '@pages/Post';
 import BusquedaGlobal from '@pages/BusquedaGlobal';
 import PaginaIndividual from './components/pageComponents/PaginaIndividual'
 import ClasificadorCultivos from '@pages/ClasificadorCultivos'
-import Sieej from '@pages/Siiej'
+import Sieej from '@pages/Sieej'
 
 const env = import.meta.env;
 const MODE = env.VITE_NODE_ENV
@@ -55,7 +55,7 @@ const router = createBrowserRouter([
             { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
             { path: '/galeria-de-mapas/:slug', element: <PaginaIndividual /> },
             { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> },
-            { path: '/siiej', element: <Sieej /> }
+            { path: '/sieej', element: <Sieej /> }
         ],
     },
 ]);

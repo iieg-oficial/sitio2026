@@ -5,7 +5,7 @@ import api from '@services/apiService'
 import Backlink from '../components/pageComponents/Backlink'
 import TrackedLink from '@components/blocks/boton'
 
-export default function Siiej() {
+export default function Sieej() {
     const [page, setPage] = useState(null);
     const [loading, setLoading] = useState(true)
 
