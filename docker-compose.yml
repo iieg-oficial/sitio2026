@@ -30,6 +30,7 @@ services:
       - ckan
     networks:
       portal_network:
+        ipv4_address: ${NGINX_CONTAINER_IP:?NGINX_CONTAINER_IP is required}
 
   postgres:
     image: postgres:18-alpine
@@ -186,6 +187,7 @@ services:
       redis:
         condition: service_healthy
     environment:
+      FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS:?FORWARDED_ALLOW_IPS is required}
       PROJECT_NAME: Portal IIEG
       VERSION: "1.9.0"
       ALGORITHM: HS256
@@ -242,5 +244,8 @@ volumes:
 networks:
   portal_network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: ${PORTAL_SUBNET:?PORTAL_SUBNET is required}
   ckan_network:
     driver: bridge

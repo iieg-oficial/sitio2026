@@ -12,7 +12,7 @@ export default function Mapas() {
 
     useEffect(() => {
         const fetchMapas = async () => {
-            const response = await api.get('/mapas/random/')
+            const response = await api.get('/mapas/random')            
             if (Array.isArray(response.data?.mapas)) {
                     setMapas(response.data.mapas)
                 } else if (Array.isArray(response.data)) {
@@ -61,8 +61,15 @@ export default function Mapas() {
                             alt={mapa.titulo} 
                             className='w-full h-full object-cover'
                             onError={(e) => {
-                                    e.target.onerror = null; 
-                                    e.target.src = `https://iieg.jalisco.gob.mx/acervo/portal/mapas/${thumb}`;
+                                    if (!e.target.dataset.triedFallback) {
+                                        e.target.dataset.triedFallback = 'true';
+                                        e.target.src = mapa.imagen 
+                                            ? mapa.imagen 
+                                            : "/demo.jpg";
+                                    } else {                                        
+                                        e.target.onerror = null;
+                                        e.target.src = "/demo.jpg";
+                                    }
                                 }}
                             />
                         <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>

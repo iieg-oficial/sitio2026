@@ -15,7 +15,7 @@ export default function Flashes() {
 
     useEffect(() => {
         const fetchFlashes = async () => {
-            const response = await api.get('/flashes/last/')
+            const response = await api.get('/flashes/last')
             setFlashes(response.data)
         }
         

@@ -13,18 +13,17 @@ function HomePage() {
     const [loading, setLoading] = useState(true)
 
     const fetchPageHome = async () => {
-        setLoading(true)
         try {
-            const res = await api.get('/paginas/slug/home/')
-            setPage(res.data)            
+            const res = await api.get('/paginas/slug/home')
+            return res.data
         } catch (err) {
             console.error("Error fetching page home:", err)
-        }
-        finally {
-            setLoading(false)
+            throw err
         }
     }
     useEffect(() => {
+        setLoading(true)
+
         const loadPage = previewToken
             ? getPreviewPage(previewToken)
             : fetchPageHome()
