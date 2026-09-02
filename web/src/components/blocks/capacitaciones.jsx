@@ -68,7 +68,7 @@ export default function Capacitaciones() {
 
     return (
         <div>
-            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
+            <div className='grid grid-cols-1 gap-4 rounded-3xl p-7 container 2xl:w-[70%] mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
                 {capacitacionesDestacadas.map(capacitacion => (
                     <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
                     <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group' key={capacitacion.id}>                                               
@@ -76,7 +76,7 @@ export default function Capacitaciones() {
                             <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-full object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
                         </div>
                         <div className='lg:col-span-4'>
-                            <h3 className='text-44 text-primary'>{capacitacion.titulo}</h3>
+                            <h3 className='text-44 text-primary font-extrabold'>{capacitacion.titulo}</h3>
                             
                             <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>
                             
@@ -97,7 +97,7 @@ export default function Capacitaciones() {
                     </TrackedLink>
                 ))}
             </div>
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-15 container mx-auto xl:px-5 2xl:px-0'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 p-7 gap-4 mt-15 container 2xl:w-[70%] mx-auto xl:px-5 2xl:px-0'>
                 {currentItems.map(capacitacion => (
                     <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
                     <div className='grid lg:grid-cols-6 hover:border hover:border-tertiary rounded-3xl px-2 sm:px-5 group' key={capacitacion.id}>                        

@@ -64,7 +64,7 @@ export default function Convocatorias() {
             <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
                 {currentItems.map(convocatoria => (
                     <TrackedLink to={`/convocatorias/${convocatoria.slug}`} className="" rel="noopener noreferrer">
-                        <div className='grid lg:grid-cols-6 px-2 sm:px-5 group' key={convocatoria.id}>                        
+                        <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group' key={convocatoria.id}>                        
                             <div className='lg:col-span-2'>
                                 <img src={convocatoria.img_portada} alt={convocatoria.titulo} className='rounded-3xl w-full h-full object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
                             </div>
@@ -107,12 +107,12 @@ export default function Convocatorias() {
             />
             */}
 
-            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
-                <div className='grid md:grid-cols-6'>                        
-                    <div className='md:col-span-2'>
-                        <img src='https://iieg.jalisco.gob.mx/acervo/portal/cursos/sesiones-informativas.png' alt='Sesiones informativas' className='rounded-3xl w-full h-full object-cover' />
+            <div className='my-15 grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
+                <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group'>                        
+                    <div className='lg:col-span-2'>
+                        <img src='https://iieg.jalisco.gob.mx/acervo/portal/cursos/sesiones-informativas.png' alt='Sesiones informativas' className='rounded-3xl w-full h-full object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
                     </div>
-                        <div className='md:col-span-4 p-6'>
+                        <div className='lg:col-span-4'>
                             <h3 className='text-28 text-primary'>Sesiones informativas</h3>                            
                                 <div className='diez mt-5'>                        
                                     <p>Presentaciones orientadas a dar a conocer el trabajo, productos y servicios del IIEG, en función de las necesidades del público participante.</p>
