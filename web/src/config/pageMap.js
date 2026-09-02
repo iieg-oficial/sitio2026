@@ -9,7 +9,7 @@ export const pageMap = {
     "nuestros-productos": ['sistemas'],
     "datos-expres": ['flashes'],
     "reportes": ['reportes'],
-    "mapas-historicos": ['mapas'],
+    "galeria-de-mapas": ['mapas'],
     "documentacion": ['documentacion'],
     "educacion-continua": ['capacitaciones'],
     "convocatorias": ['convocatorias'],

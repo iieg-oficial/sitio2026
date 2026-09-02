@@ -129,7 +129,7 @@ function HomePage() {
                 <h2 className="text-titulo text-center mb-14 text-44 font-extrabold">Consulta los mapas históricos de Jalisco</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <TrackedLink 
-                to="/mapas-historicos" 
+                to="/galeria-de-mapas" 
                 target="_self"
                 className="button2 block w-[350px] text-center mx-auto mt-14 text-primary hover:text-white border-primary hover:bg-primary">
                     Quiero ver todos los mapas

@@ -122,7 +122,7 @@ export default function Mapas() {
         <div className="container mx-auto px-2 ">
             {/* ── Panel de filtros ── */}
 
-            <div className="mx-auto container md:w-6/12 mb-15">
+            <div className="mx-auto container mb-15">
                  <Searcher searchTerm={keyword} setSearchTerm={handleKeywordChange} placeholder="¿Qué quieres buscar?" />
               </div>
             
