@@ -42,7 +42,7 @@ export default function Flashes() {
                 <title>{flash.titulo}</title>                
                 <meta property="og:title" content={flash.titulo} />
                 <meta name="description" content={flash.desc_jal} />
-                <meta property="og:image" content={flash.postlink ? flash.postlink : "/demo.jpg"} />
+                <meta property="og:image" content={flash.postlink ? flash.postlink : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 <meta name="keywords" content={flash.claves} />
@@ -50,7 +50,7 @@ export default function Flashes() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={flash.titulo} />
                 <meta name="twitter:description" content={flash.desc_jal} />
-                <meta name="twitter:image" content={flash.postlink ? flash.postlink : "/demo.jpg"} />
+                <meta name="twitter:image" content={flash.postlink ? flash.postlink : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <section className="page-header text-center py-12">

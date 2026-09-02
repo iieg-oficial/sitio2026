@@ -32,14 +32,14 @@ export default function ClasificadorCultivos() {
                 <title>{page?.title || 'Clasificador de Cultivos - IIEG'}</title>
                 {page?.description_meta && <meta name="description" content={page.description_meta} />}
                 {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
-                <meta property="og:image" content={page?.postlink ? page.postlink : "/demo.jpg"} />
+                <meta property="og:image" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 {/* Twitter Cards (Específico para X / Twitter) */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={page?.title || 'Clasificador de Cultivos - IIEG'} />
                 <meta name="twitter:description" content={page?.description_meta || 'Este instrumento ofrece una representación geoespacial de los cultivos en Jalisco del año 2021. A través de un mapa interactivo, integra información procesada con modelos de inteligencia artificial que identifican el tipo de cultivo y su ubicación mediante el análisis de imágenes satelitales.'} />
-                <meta name="twitter:image" content={page?.postlink ? page.postlink : "/demo.jpg"} />
+                <meta name="twitter:image" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
             </Helmet>
             <div className='mx-auto container mb-15'>
                 <div className='mt-5'>

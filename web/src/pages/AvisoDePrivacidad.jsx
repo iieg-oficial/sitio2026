@@ -55,14 +55,14 @@ export default function AvisoDePrivacidad({ slug = SLUG_INTEGRAL }) {
                 <title>{titulo}</title>
                 {page.description_meta && <meta name="description" content={page.description_meta} />}
                 {page.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
-                <meta property="og:image" content={page.postlink ? page.postlink : '/demo.jpg'} />
+                <meta property="og:image" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 {/* Twitter Cards (Específico para X / Twitter) */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={titulo} />
                 <meta name="twitter:description" content={page.description_meta || titulo} />
-                <meta name="twitter:image" content={page.postlink ? page.postlink : '/demo.jpg'} />
+                <meta name="twitter:image" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
             </Helmet>
             <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
                 <div className='md:col-span-1'><Backlink /></div>
