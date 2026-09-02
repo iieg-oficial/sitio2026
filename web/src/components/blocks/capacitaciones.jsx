@@ -68,44 +68,58 @@ export default function Capacitaciones() {
 
     return (
         <div>
-            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover border-tertiary px-5 xl:px-5 2xl:px-0'>
+            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
                 {capacitacionesDestacadas.map(capacitacion => (
                     <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
-                    <div className='grid md:grid-cols-6' key={capacitacion.id}>                                               
-                        <div className='md:col-span-2'>
-                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-full object-cover' />
+                    <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group' key={capacitacion.id}>                                               
+                        <div className='lg:col-span-2'>
+                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-full object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
                         </div>
-                        <div className='md:col-span-4'>
+                        <div className='lg:col-span-4'>
                             <h3 className='text-44 text-primary'>{capacitacion.titulo}</h3>
-                            {esFechaPasada(capacitacion.fin) && (
-                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
-                            )} 
                             
                             <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>
-                            <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
-                                <span className="material-symbols--chevron-right"></span>
+                            
+                            <div className='grid grid-cols-2 gap-4 mt-10'>
+                                <div>
+                                    {esFechaPasada(capacitacion.fin) && (
+                                        <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] text-tertiary text-14 px-5 py-2'>Finalizado</span>
+                                    )}   
+                                </div>
+                                <div>
+                                    <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary text-center float-right'>
+                                        <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                    </div>                                
+                                </div>
                             </div>
                         </div>                        
                     </div>
                     </TrackedLink>
                 ))}
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-15 container mx-auto px-5 xl:px-5 2xl:px-0'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mt-15 container mx-auto xl:px-5 2xl:px-0'>
                 {currentItems.map(capacitacion => (
                     <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
-                    <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl' key={capacitacion.id}>                        
-                        <div className='md:col-span-2'>
-                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-full object-cover' />
+                    <div className='grid lg:grid-cols-6 hover:border hover:border-tertiary rounded-3xl px-2 sm:px-5 group' key={capacitacion.id}>                        
+                        <div className='lg:col-span-2 pt-6'>
+                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-auto object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
                         </div>                        
-                        <div className='md:col-span-4 p-6'>
-                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>
-                            {esFechaPasada(capacitacion.fin) && (
-                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
-                            )}     
+                        <div className='lg:col-span-4 p-6'>
+                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>                                
                             
-                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>                      
-                            <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
-                                <span className="material-symbols--chevron-right"></span>
+                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>
+                                                
+                            <div className='grid grid-cols-2 gap-4 mt-10'>
+                                <div>
+                                    {esFechaPasada(capacitacion.fin) && (
+                                        <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] text-tertiary text-14 px-5 py-2'>Finalizado</span>
+                                    )}   
+                                </div>
+                                <div>
+                                    <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary text-center float-right'>
+                                        <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                    </div>                                
+                                </div>
                             </div>
                         </div>                        
                     </div>

@@ -79,11 +79,11 @@ export default function CapacitacionesList({ curso }) {
                             <h2 className='text-primary text-36 font-extrabold'>Conoce a los profesores</h2>
                         </div>
                     </div>
-                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-2 md:gap-4'>
+                    <div className='grid grid-cols-1 xl:grid-cols-2 gap-2 md:gap-4'>
                         {profesoresReversed.map((profesor) => (
                            <div key={profesor.id} className='bg-card p-5 my-5 grid sm:grid-cols-12 rounded-3xl gap-4'>
-                            <div className='sm:col-span-2 flex items-center'>
-                                <img src={profesor.foto} alt={profesor.nombre} className='object-cover' />
+                            <div className='sm:col-span-2'>
+                                <img src={profesor.foto} alt={profesor.nombre} className='object-cover mx-auto' />
                             </div>
                             <div className='sm:col-span-10'>
                                 <p className='text-tertiary font-bold text-22 mb-5'>{profesor.nombre}</p>
