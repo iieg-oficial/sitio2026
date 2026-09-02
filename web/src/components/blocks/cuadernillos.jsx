@@ -137,10 +137,12 @@ export default function Cuadernillos() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 container mx-auto my-15 px-5 xl:px-5 2xl:px-0">
                 {currentCuadernillos.map((cuadernillo) => (
                     <TrackedLink key={cuadernillo.id} to={cuadernillo.archivo} target="_blank" download>
-                        <div className="bg-card hover:border hover:border-tertiary rounded-3xl p-4">
+                        <div className="bg-card hover:border hover:border-tertiary rounded-3xl p-4 group">
                             <div className='flex justify-between'>
                                 <h3 className='text-primary text-20'>{cuadernillo.titulo}</h3>
-                                <span className="material-symbols--download text-tertiary"></span>
+                                <div className="group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1">
+                                    <span className="material-symbols--download group-hover:bg-white!"></span>
+                                </div> 
                             </div>
                             <div className='flex flex-wrap gap-4 mt-10'>
                                 <p className='rounded-2xl bg-etiqueta-ter text-primary text-[12px] p-2'>Año: {cuadernillo.anyo}</p>
