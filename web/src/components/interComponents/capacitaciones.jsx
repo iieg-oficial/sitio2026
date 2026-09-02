@@ -45,7 +45,7 @@ export default function Capacitaciones() {
         return ahora > fecha;
     };
 
-    const portada = singleCapacitacion.img_portada || '/demo.jpg';
+    const portada = singleCapacitacion.img_portada || 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png';
 
     return (
         <>

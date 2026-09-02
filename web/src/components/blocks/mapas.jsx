@@ -202,7 +202,7 @@ export default function Mapas() {
                         const original = mapa.imagen
                         const thumb = original.substring(original.lastIndexOf('/') + 1);
                         return (
-                            <a href={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
+                            <a href={`/galeria-de-mapas/${mapa.slug}`} key={mapa.id}>
                                                 <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl">                    
                                                     
 

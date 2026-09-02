@@ -46,7 +46,7 @@ export default function Convocatorias() {
         return ahora > fecha;
     };
 
-    const portada = singleConvocatoria.img_portada || '/demo.jpg';
+    const portada = singleConvocatoria.img_portada || 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png';
 
     return (
         <>
