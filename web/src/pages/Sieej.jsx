@@ -93,7 +93,7 @@ export default function Sieej() {
                         </div>
                         <div className="text-center bg-card rounded-3xl p-5 border-[#E6EEFF] border">
                             <b className='text-44 text-tertiary font-garet-extra'>16,9 M</b><br></br>
-                            <p className='text-18 text-titulo font-garet-bold'>16,9 M</p>
+                            <p className='text-18 text-titulo font-garet-bold'>Registros ingestados automáticamente</p>
                         </div>                        
                     </div>
                 </section>
