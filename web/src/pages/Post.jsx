@@ -13,7 +13,7 @@ function Post() {
         description: '<p>Bienvenido a la comunidad. Aquí encontrarás las últimas publicaciones y novedades.</p><p>Usa el buscador para filtrar los posts según tus intereses y términos de búsqueda.</p>',
         description_meta: 'Encuentra publicaciones de la comunidad con el buscador y accede a las novedades del portal.',
         keywords_meta: 'comunidad,posts,búsqueda,noticias',
-        postlink: '/demo.jpg'
+        postlink: 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png'
     };
 
     const [posts, setPosts] = useState([]);
@@ -127,14 +127,14 @@ const filteredPosts = useMemo(() => (
         <title>{page?.title || defaultPage.title}</title>
         {page?.description_meta && <meta name="description" content={page.description_meta} />}
         {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
-        <meta property="og:image" content={page?.postlink ? page.postlink : "/demo.jpg"} />
+        <meta property="og:image" content={page?.postlink ? page.postlink : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:type" content="article" />
         {/* Twitter Cards (Específico para X / Twitter) */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={page?.title || defaultPage.title} />
         <meta name="twitter:description" content={page?.description_meta || defaultPage.description_meta || 'Comunicación institucional'} />
-        <meta name="twitter:image" content={page?.postlink ? page.postlink : "/demo.jpg"} />
+        <meta name="twitter:image" content={page?.postlink ? page.postlink : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
     </Helmet>
         <article className="px-5 xl:px-5 2xl:px-0 ">
             <div className='page-header text-center py-12'>

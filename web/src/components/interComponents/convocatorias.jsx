@@ -46,7 +46,7 @@ export default function Convocatorias() {
         return ahora > fecha;
     };
 
-    const portada = singleConvocatoria.img_portada || '/demo.jpg';
+    const portada = singleConvocatoria.img_portada || 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png';
 
     return (
         <>
@@ -68,58 +68,58 @@ export default function Convocatorias() {
                 <section className="page-header text-center pb-12">
                     <div className="container mx-auto grid md:grid-cols-12 gap-1">  
                         <div className='md:col-span-1 text-left'><BackLink /></div>
-                    </div>
-                    <div className='md:col-span-11 w-full px-2 md:px-0 md:ml-auto md:mr-0 grid lg:grid-cols-12 mx-auto'>
-                        <div className='lg:col-span-3 px-5'>
-                            <img src={portada} alt={singleConvocatoria.titulo} />
-                        </div>
-                        <div className='lg:col-span-9 text-left'> 
-                            <h1 className='text-44 font-bold mb-4'>{singleConvocatoria.titulo}</h1>
-                            
-                            <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none diez'/>
-                            <div className='mt-5 flex flex-wrap gap-5'>
-                                {singleConvocatoria.archivo && (
-                                    <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.archivo} target="_blank" download>
-                                        <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Descarga el archivo informativo</span>
-                                    </TrackedLink>
-                                )}
-                                {singleConvocatoria.formulario && !esFechaPasada(singleConvocatoria.fin) ? (
-                                    <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.formulario} target="_blank">
-                                        <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
-                                    </TrackedLink>
-                                ): 
-                                    <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2 mt-5'>Convocatoria cerrada</span>
-                                }
+                        <div className='md:col-span-11 w-full px-2 md:px-0 md:ml-auto md:mr-0 grid lg:grid-cols-12 mx-auto'>
+                            <div className='lg:col-span-3 px-5'>
+                                <img src={portada} alt={singleConvocatoria.titulo} />
+                            </div>
+                            <div className='lg:col-span-9 text-left'> 
+                                <h1 className='text-44 font-extrabold mb-4'>{singleConvocatoria.titulo}</h1>
+                                
+                                <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none diez'/>
+                                <div className='mt-5 flex flex-wrap gap-5'>
+                                    {singleConvocatoria.archivo && (
+                                        <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.archivo} target="_blank" download>
+                                            <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Descarga el archivo informativo</span>
+                                        </TrackedLink>
+                                    )}
+                                    {singleConvocatoria.formulario && !esFechaPasada(singleConvocatoria.fin) ? (
+                                        <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.formulario} target="_blank">
+                                            <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
+                                        </TrackedLink>
+                                    ): 
+                                        <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2 mt-5'>Convocatoria cerrada</span>
+                                    }
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </div>                    
                 </section>
 
 
                 <section className='lg:w-8/12 mx-auto my-15'>
                 {singleConvocatoria.Objetivo && (
-                    <div className='grid grid-cols-12 gap-5'>
+                    <div className='grid grid-cols-12 sm:gap-1'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
                             <div className="flez flex-wrap mb-12.5 gap-1">
                                 {singleConvocatoria.inicio && (
-                                    <div className='lg:mt-8 lg:pt-4'>
+                                    <div className='mb-3 lg:pt-4'>
                                         <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
                                             Inicio: {dayjs(singleConvocatoria.inicio).format('D [de] MMMM [de] YYYY')}                             
                                         </p>
                                     </div>
                                 )}
                                 {singleConvocatoria.tipo_curso.formato && (
-                                    <div className='lg:mt-8 lg:pt-4'>
+                                    <div className='mb-3 lg:pt-4'>
                                         <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
                                             Formato: {singleConvocatoria.tipo_curso.formato}
                                         </p>
                                     </div>
                                 )}
                                 {singleConvocatoria.Horario && (
-                                    <div className='lg:mt-8 lg:pt-4'>
+                                    <div className='mb-3 lg:pt-4'>
                                         <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
                                             Horario: {singleConvocatoria.Horario}
                                         </p>

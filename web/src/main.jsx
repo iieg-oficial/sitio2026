@@ -11,7 +11,7 @@ import Post from '@pages/Post';
 import BusquedaGlobal from '@pages/BusquedaGlobal';
 import PaginaIndividual from './components/pageComponents/PaginaIndividual'
 import ClasificadorCultivos from '@pages/ClasificadorCultivos'
-import PaginaDinamica from './components/pageComponents/PaginaDinamica';
+import Sieej from '@pages/Sieej'
 
 const env = import.meta.env;
 const MODE = env.VITE_NODE_ENV
@@ -53,8 +53,9 @@ const router = createBrowserRouter([
             { path: '/educacion-continua/:slug', element: <PaginaIndividual /> },
             { path: '/convocatoria/:slug', element: <PaginaIndividual /> },
             { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
-            { path: '/mapas-historicos/:slug', element: <PaginaIndividual /> },
-            { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> }
+            { path: '/galeria-de-mapas/:slug', element: <PaginaIndividual /> },
+            { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> },
+            { path: '/sieej', element: <Sieej /> }
         ],
     },
 ]);

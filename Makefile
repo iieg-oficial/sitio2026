@@ -71,7 +71,7 @@ help:
 	@echo '  ${YELLOW}make bucket-ls [PREFIX=datos-abiertos/]${RESET} - Lista archivos del bucket S3/SeaweedFS en consola'
 	@echo '  ${YELLOW}make import-data SCRIPT=api/scripts/import_reportes_data.py SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Ejecuta un importador genérico'
 	@echo '  ${YELLOW}make import-one MODEL=mapa FILE=api/scripts/examples/mapa_import_example.csv${RESET} - Importa un archivo individual usando scripts/import_<modelo>.py'
-	@echo '  ${YELLOW}make clear-model MODEL=Archivos${RESET} - Borra todos los registros de un modelo de la BD'
+	@echo '  ${YELLOW}make clear-model MODEL=Archivos [DRY_RUN=1] [FORCE=1]${RESET} - Borra todos los registros de un modelo de la BD; con DRY_RUN=1 solo muestra lo que se borraría'
 	@echo '  ${YELLOW}make import-mapa FILE=api/scripts/examples/mapa_import_example.csv${RESET} - Importa un archivo individual para mapa'
 	@echo '  ${YELLOW}make import-reportes SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Alias para el importador de reportes'
 	@echo '  ${YELLOW}make import-posts SOURCE=api/scripts/examples/posts_import_example.csv${RESET} - Alias para el importador de posts'
@@ -224,9 +224,14 @@ import-one:
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python scripts/import_$(MODEL).py $(patsubst api/%,%,$(FILE)) $(if $(MODE),--mode $(MODE),) $(if $(LIMIT),--limit $(LIMIT),) $(if $(DRY_RUN),--dry-run,) $(ARGS)
 
 clear-model:
-	@test -n "$(MODEL)" || { echo "${RED}Uso: make clear-model MODEL=Archivos [ENV=dev|prod|gcp]${RESET}"; exit 1; }
-	@echo "${RED}⚠ Eliminando todos los registros de $(MODEL) en $(MSG_ENV)...${RESET}"
-	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python -c "import importlib; from sqlalchemy import delete, select; from app.core.database import Base, SessionLocal; model_name='$(MODEL)'; module=importlib.import_module('app.models'); model=getattr(module, model_name, None); assert model is not None, f'No existe el modelo {model_name!r} en app.models'; db=SessionLocal(); ids=db.scalars(select(model.id)).all(); exec(\"\"\"for table in Base.metadata.tables.values():\n    if table is model.__table__:\n        continue\n    for fk in table.foreign_keys:\n        if fk.column.table is model.__table__:\n            db.execute(delete(table).where(fk.parent.in_(ids)))\n\"\"\"); db.commit(); count=db.query(model).delete(synchronize_session=False); db.commit(); print(f'Registros eliminados de {model_name}: {count}'); db.close()"
+	@test -n "$(MODEL)" || { echo "${RED}Uso: make clear-model MODEL=Archivos [ENV=dev|prod|gcp] [DRY_RUN=1] [FORCE=1]${RESET}"; exit 1; }
+	@if [ "$(FORCE)" != "1" ]; then \
+		printf "Escribe ${YELLOW}yes${RESET} para confirmar la eliminación de todos los registros de ${RED}$(MODEL)${RESET} en $(MSG_ENV): "; \
+		read confirm; \
+		[ "$$confirm" = "yes" ] || { echo "${YELLOW}Cancelado.${RESET}"; exit 1; }; \
+	fi
+	@echo "${RED}⚠ $(if $(DRY_RUN),Vista previa de borrado,Eliminando) todos los registros de $(MODEL) en $(MSG_ENV)...${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python scripts/clear_model.py --model "$(MODEL)" $(if $(DRY_RUN),--dry-run,)
 
 import-mapa:
 	@test -n "$(FILE)" || { echo "${RED}Uso: make import-mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--key-field slug']${RESET}"; exit 1; }
