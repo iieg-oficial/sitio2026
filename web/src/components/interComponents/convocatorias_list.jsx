@@ -43,32 +43,32 @@ export default function ConvocatoriasList() {
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
-                            <h2 className='text-primary text-36 font-extrabold'>Perfiles</h2>
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfiles</h2>
                         </div>
                     </div>
 
-            <div className='flex justify-left mt-8 gap-4 mx-auto w-full lg:w-8/12 overflow-x-auto pb-2'>
+            <div className='flex justify-left mt-8 gap-4 mx-auto w-full overflow-x-auto pb-2'>
                 {singleConvocatoria.perfiles.map((perfil) => (
                     <button 
                     key={perfil.id}
                     onClick={() => setActiveTab(perfil.area)}
-                    className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-lg font-extrabold text-28 transition-colors ${activeTab === perfil.area
-                                ? 'bg-etiqueta-sec text-tertiary border-tertiary border-1'
-                                : 'bg-white text-titulo hover:bg-etiqueta-sec hover:text-tertiary hover:border-1'}`
+                    className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-3xl font-garet-extra text-18 transition-colors ${activeTab === perfil.area
+                                ? 'bg-[#FFF2E5] text-tertiary border-tertiary border-1'
+                                : 'bg-white text-body hover:bg-[#FFF2E5] hover:text-tertiary hover:border-1'}`
                             }
                     >
                         {perfil.area}
                     </button>
                 ))}
             </div>
-            <div className='p-5 my-5 mx-auto md:px-10 xl:px-25 w-8/12 '>
+            <div className='p-5 my-5 mx-auto md:px-10 xl:px-25'>
                 {singleConvocatoria.perfiles.map((perfil) => {
                     if (activeTab === perfil.area) {
                         return (
                             <div key={perfil.id}>
-                                <h2 className='text-tertiary text-28 font-extrabold'>{perfil.nombre}</h2>
+                                <h2 className='text-tertiary text-28 font-garet-extra'>{perfil.nombre}</h2>
                                                       
-                                <SafeHtml htmlContent={perfil.descripcion} className='mt-5 prose max-w-none cursos'/>
+                                <SafeHtml htmlContent={perfil.descripcion} className='mt-5 prose max-w-none cursos text-22! text-titulo!'/>
                             </div>
                         )
                     }

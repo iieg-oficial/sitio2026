@@ -72,9 +72,9 @@ export default function Capacitaciones() {
                                 <img src={portada} alt={singleCapacitacion.titulo} />
                             </div>
                             <div className='lg:col-span-9 text-left'>
-                                <h1 className='text-44 font-extrabold mb-4'>{singleCapacitacion.titulo}</h1>
+                                <h1 className='text-44 font-garet-extra mb-4'>{singleCapacitacion.titulo}</h1>
                                 
-                                <SafeHtml htmlContent={singleCapacitacion.descripcion} className='mt-5 prose max-w-none diez'/>
+                                <SafeHtml htmlContent={singleCapacitacion.descripcion} className='mt-5 prose max-w-none diez text-22!'/>
                                 <div className='mt-5 flex flex-wrap gap-5'>
                                     {singleCapacitacion.archivo && (
                                         <TrackedLink key={singleCapacitacion.id} to={singleCapacitacion.archivo} target="_blank" download>
@@ -86,7 +86,7 @@ export default function Capacitaciones() {
                                             <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
                                         </TrackedLink>
                                     ): 
-                                        <span className='rounded-2xl bg-etiqueta-ter text-titulo text-14 px-5 py-2'>Convocatoria cerrada</span>
+                                        <span className='rounded-2xl bg-etiqueta-ter text-titulo! text-14 px-5 py-2'>Convocatoria cerrada</span>
                                     }
                                 </div>
                             </div>                            
@@ -112,7 +112,7 @@ export default function Capacitaciones() {
                                 )}
                                 {singleCapacitacion.formato && (
                                 <div className='mb-3 lg:pt-4'>
-                                    <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
+                                    <p className='rounded-2xl bg-etiqueta-ter text-titulo! text-26 font-bold px-5 py-2'>
                                         Formato: {singleCapacitacion.formato}
                                     </p>
                                 </div>
@@ -125,8 +125,8 @@ export default function Capacitaciones() {
                                 </div>
                                 )}
                             </div>
-                            <h2 className='text-primary text-36 font-extrabold'>Objetivo</h2>
-                            <SafeHtml htmlContent={singleCapacitacion.Objetivo} className='mt-5 prose max-w-none cursos'/>
+                            <h2 className='text-primary text-36 font-garet-extra'>Objetivo</h2>
+                            <SafeHtml htmlContent={singleCapacitacion.Objetivo} className='text-titulo! text-22! mt-5 prose max-w-none cursos'/>
                         </div>
                     </div>
                     )}
@@ -136,8 +136,8 @@ export default function Capacitaciones() {
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
-                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Ingreso</h2>
-                            <SafeHtml htmlContent={singleCapacitacion.p_ingreso} className='mt-5 prose max-w-none cursos'/>
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Ingreso</h2>
+                            <SafeHtml htmlContent={singleCapacitacion.p_ingreso} className='text-titulo! text-22! mt-5 prose max-w-none cursos'/>
                         </div>
                     </div>
                     )}
@@ -147,8 +147,8 @@ export default function Capacitaciones() {
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
-                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Egreso</h2>
-                            <SafeHtml htmlContent={singleCapacitacion.p_egreso} className='mt-5 prose max-w-none cursos'/>
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Egreso</h2>
+                            <SafeHtml htmlContent={singleCapacitacion.p_egreso} className='text-titulo! text-22! mt-5 prose max-w-none cursos'/>
                         </div>
                     </div>
                     )}
@@ -161,33 +161,33 @@ export default function Capacitaciones() {
                     <div className='col-span-11 grid lg:grid-cols-2 gap-5'>
                         {singleCapacitacion.inscripcion && (
                         <div className='my-5'>
-                            <strong className='text-primary font-extrabold text-36 mb-10'>Inscripción</strong> 
-                            <SafeHtml htmlContent={singleCapacitacion.inscripcion} className='mt-5 prose max-w-none cursos'/>  
+                            <strong className='text-primary font-garet-extra text-36 mb-10'>Inscripción</strong> 
+                            <SafeHtml htmlContent={singleCapacitacion.inscripcion} className='text-titulo! text-20! mt-5 prose max-w-none cursos'/>  
                                                   
                         </div>
                         )}
                         {singleCapacitacion.acreditacion && (
                         <div className='my-5'>
-                            <strong className='text-primary font-extrabold text-36 mb-10'>Acreditación</strong> 
-                            <SafeHtml htmlContent={singleCapacitacion.acreditacion} className='mt-5 prose max-w-none cursos'/>                        
+                            <strong className='text-primary font-garet-extra text-36 mb-10'>Acreditación</strong> 
+                            <SafeHtml htmlContent={singleCapacitacion.acreditacion} className='text-titulo! text-20! mt-5 prose max-w-none cursos'/>                        
                         </div>
                         )}
                         {singleCapacitacion.vigencia && (
                         <div className='my-5'>
-                            <strong className='text-primary font-extrabold text-36'>Vigencia</strong> 
-                            <p className='text-20 text-titulo pt-6'>{singleCapacitacion.vigencia}</p>
+                            <strong className='text-primary font-garet-extra text-36'>Vigencia</strong> 
+                            <p className='text-titulo! text-20! pt-6'>{singleCapacitacion.vigencia}</p>
                         </div>
                         )}
                         {singleCapacitacion.contacto && (
                         <div className='my-5'>
-                            <strong className='text-primary font-extrabold text-36'>Contacto</strong> 
-                            <p className='text-20 text-titulo pt-6'>{singleCapacitacion.contacto}</p>
+                            <strong className='text-primary font-garet-extra text-36'>Contacto</strong> 
+                            <p className='text-titulo! text-20! textpt-6'>{singleCapacitacion.contacto}</p>
                         </div>
                         )}
                         {singleCapacitacion.clave && (
                         <div className='my-5'>
-                            <strong className='text-primary font-extrabold text-36'>Clave</strong> 
-                            <p className='text-20 text-titulo pt-6'>{singleCapacitacion.clave}</p>
+                            <strong className='text-primary font-garet-extra text-36'>Clave</strong> 
+                            <p className='text-titulo! text-20! pt-6'>{singleCapacitacion.clave}</p>
                         </div>
                         )}
                     </div>                    
