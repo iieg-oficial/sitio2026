@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Reportes, Usuario, Subject
 from app.models.reportes import PeriocidadEnum, MesEnum
 from app.schemas import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
@@ -35,15 +35,8 @@ async def crear_reporte(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    slug = slugify(reporte_in.titulo)
-    base_slug = slug
-    contador = 1
-    while db.execute(
-        select(Reportes).where(Reportes.slug == slug)
-    ).scalars().first():
-        slug = f"{base_slug}-{contador}"
-        contador += 1
-    
+    slug = make_unique_slug(db, Reportes, reporte_in.titulo)
+
     nuevo = Reportes(
         titulo=reporte_in.titulo,
         fecha=reporte_in.fecha,    
@@ -124,15 +117,9 @@ async def actualizar_reporte(
     update_data = reporte_in.dict(exclude_unset=True)
 
     if "titulo" in update_data and update_data["titulo"] != reporte.titulo:
-        slug = slugify(update_data["titulo"])
-        base_slug = slug
-        contador = 1
-        while db.execute(
-            select(Reportes).where(Reportes.slug == slug)
-        ).scalars().first():
-            slug = f"{base_slug}-{contador}"
-            contador += 1
-        update_data["slug"] = slug
+        update_data["slug"] = make_unique_slug(
+            db, Reportes, update_data["titulo"], exclude_id=reporte_id
+        )
     elif "slug" in update_data and not update_data["slug"]:
         del update_data["slug"]
 
