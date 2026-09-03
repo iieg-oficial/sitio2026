@@ -13,8 +13,7 @@ export default function ClasificadorCultivos() {
         setLoading(true)
         try {            
             const res = await api.get('/paginas/slug/clasificador-de-cultivos')
-            setPage(res.data)
-            console.log('Page data:', res.data)  
+            setPage(res.data) 
         } catch (err) {
             console.error("Error fetching page:", err)
         } finally {
