@@ -111,7 +111,7 @@ export default function Mapas() {
                                     <div className="flex gap-4 justify-center">
                                     <button
                                         onClick={() => setOpen(false)}
-                                        className="button2 px-10 text-base font-garet-extra bg-white border boder-[#697176] text-[#697176] hover:bg-[#697176] hover:text-white"
+                                        className="button2 px-16! text-base font-garet-extra bg-white border boder-[#697176] text-[#697176] hover:bg-[#697176] hover:text-white"
                                     >
                                         Cancelar
                                     </button>
@@ -122,7 +122,7 @@ export default function Mapas() {
                                         target="_blank" 
                                         download={singleMapa.imagen}
                                         onClick={() => setOpen(false)}
-                                        className="button2 px-10 text-base font-garet-extra hover:bg-white border border-[#8936AB] text-white bg-[#8936AB] hover:text-[#8936AB]">                                        
+                                        className="button2 px-16! text-base font-garet-extra hover:bg-white border border-[#8936AB] text-white bg-[#8936AB] hover:text-[#8936AB]">                                        
                                         Descargar
                                     </TrackedLink>
                                     </div>

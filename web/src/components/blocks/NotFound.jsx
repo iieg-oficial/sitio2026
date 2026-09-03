@@ -7,7 +7,7 @@ function NotFound() {
                 <img src="/ico_pag_no_encontrada.svg" alt="Página no encontrada" className="mx-auto mb-5 w-7/12 h-auto sm:w-1/2 xl:w-5/12" />
                 <div className="text-center my-5">
                     <h1>No encontramos la página que estás buscando…</h1>
-                    <Link to="/" className="mt-5 mx-auto w-[250px] button block font-18 text-white font-garat-bold bg-primary px-10 hover:text-primary hover:bg-white border border-primary">
+                    <Link to="/" className="mt-5 mx-auto w-[250px] button block font-18 text-white font-garat-bold bg-primary px-10 hover:text-primary! hover:bg-white border border-2 border-primary">
                         Regresar al inicio
                     </Link>
                 </div>
