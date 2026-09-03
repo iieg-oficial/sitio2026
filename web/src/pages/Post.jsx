@@ -10,8 +10,8 @@ import { SafeHtml } from '@components/SafeHtml';
 function Post() {
     const defaultPage = {
         title: 'Comunidación institucional',
-        description: '<p>Bienvenido a la comunidad. Aquí encontrarás las últimas publicaciones y novedades.</p><p>Usa el buscador para filtrar los posts según tus intereses y términos de búsqueda.</p>',
-        description_meta: 'Encuentra publicaciones de la comunidad con el buscador y accede a las novedades del portal.',
+        description: '',
+        description_meta: 'Comunicación institucional',
         keywords_meta: 'comunidad,posts,búsqueda,noticias',
         postlink: 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png'
     };
@@ -148,7 +148,7 @@ const filteredPosts = useMemo(() => (
                 )}
                 </div>
 
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />            
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />            
 
             <PostList 
                 results={currentItems} 

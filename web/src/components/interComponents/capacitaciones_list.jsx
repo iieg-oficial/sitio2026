@@ -40,19 +40,23 @@ export default function CapacitacionesList({ curso }) {
                         </div>
                     </div>
                     <div className=''>
-                            <div className='flex justify-left mt-8 gap-4 mx-auto w-full overflow-x-auto pb-2'>
-                                {modulosReversed.map((modulo) => (
-                                    <button 
-                                    key={modulo.id}
-                                    onClick={() => setActiveTab(modulo.nombre)}
-                                    className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-3xl font-garet-bold text-28 transition-colors ${activeTab === modulo.nombre
-                                        ? 'bg-[#FFF2E5] text-tertiary border-tertiary border-1'
-                                        : 'bg-white text-titulo! hover:bg-[#FFF2E5] hover:text-tertiary hover:border-1'}`
-                                    }
-                                    >
-                                        {modulo.nombre}
-                                    </button>
-                                ))}
+                            <div className='relative'>
+                                <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 xl:hidden!"></span>
+                                <div className='flex justify-left mt-8 gap-4 mx-auto w-full overflow-x-auto pb-2'>
+                                    {modulosReversed.map((modulo) => (
+                                        <button 
+                                        key={modulo.id}
+                                        onClick={() => setActiveTab(modulo.nombre)}
+                                        className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-3xl font-garet-bold text-28 transition-colors ${activeTab === modulo.nombre
+                                            ? 'bg-[#FFF2E5] text-tertiary border-tertiary border-1'
+                                            : 'bg-white text-titulo! hover:bg-[#FFF2E5] hover:text-tertiary hover:border-1'}`
+                                        }
+                                        >
+                                            {modulo.nombre}
+                                        </button>
+                                    ))}
+                                </div>
+                                <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 xl:hidden!"></span>
                             </div>
                             <div className='p-5 my-5 md:mx-auto'>
                                 {modulosReversed.map((modulo) => {
