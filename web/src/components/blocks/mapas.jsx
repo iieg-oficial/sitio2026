@@ -213,10 +213,10 @@ export default function Mapas() {
                                                                     e.target.dataset.triedFallback = 'true';
                                                                     e.target.src = mapa.imagen 
                                                                         ? mapa.imagen 
-                                                                        : "/demo.jpg";
+                                                                        : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
                                                                 } else {                                        
                                                                     e.target.onerror = null;
-                                                                    e.target.src = "/demo.jpg";
+                                                                    e.target.src = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
                                                                 }
                                                             }}
                                                         />

@@ -43,7 +43,7 @@ export default function PlanInstitucional() {
                     {planInstitucional.map((item, idx) => (
                         <div key={item?.id || idx} className="p-4 my-4 text-center">
                             <img 
-                                src={item?.imagen ? item.imagen : "/default.png"} 
+                                src={item?.imagen ? item.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} 
                                 alt={item?.nombre || "Plan Institucional"} 
                                 className="object-contain mx-auto mb-5 w-[50%]"
                             />

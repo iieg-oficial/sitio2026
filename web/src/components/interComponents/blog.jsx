@@ -60,7 +60,7 @@ export default function Blog() {
             <title>{singlePost.titulo}</title>            
             <meta property="og:title" content={singlePost.titulo} />
             <meta property="og:description" content={singlePost.resumen} />
-            <meta property="og:image" content={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "/demo.jpg"} />
+            <meta property="og:image" content={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
             <meta property="og:url" content={window.location.href} />
             <meta property="og:type" content="article" />
             <meta name="keywords" content={singlePost.claves} />
@@ -68,7 +68,7 @@ export default function Blog() {
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content={singlePost.resumen} />
             <meta name="twitter:description" content={singlePost.resumen} />
-            <meta name="twitter:image" content={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "/demo.jpg"} />
+            <meta name="twitter:image" content={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
         </Helmet>
         <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
             <div className='md:col-span-1'><Backlink /></div>

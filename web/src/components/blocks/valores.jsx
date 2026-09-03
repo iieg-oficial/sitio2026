@@ -53,7 +53,7 @@ export default function Valores() {
                     <div key={valor?.id} className="bg-card rounded-3xl px-4 py-6 my-4 grid grid-cols-12 gap-4">
                         <div className="col-span-2">
                             <img 
-                                src={valor?.imagen ? valor.imagen : "/default.png"} 
+                                src={valor?.imagen ? valor.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} 
                                 alt={valor?.nombre || "Valor"} 
                                 className="w-[50px] h-auto float-right"
                             />

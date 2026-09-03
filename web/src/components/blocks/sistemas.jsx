@@ -139,7 +139,7 @@ export default function Sistemas() {
                                     >
                                         <div className='sm:w-[150px] md:h-[60px] lg:h-auto lg:col-span-2'>
                                             <img
-                                                src={sistema.imagen ? sistema.imagen : '/demo.jpg'}                                                
+                                                src={sistema.imagen ? sistema.imagen : 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png'}                                                
                                                 alt={sistema.titulo}
                                                 className="mb-3 h-auto w-full rounded-lg object-cover md:h-full lg:h-auto md:w-auto lg:w-full"
                                             />

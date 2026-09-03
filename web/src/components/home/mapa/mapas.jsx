@@ -57,7 +57,7 @@ export default function Mapas() {
                     <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl">  
                 
                         <img 
-                            src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=560` : "/demo.jpg"} 
+                            src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=560` : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} 
                             alt={mapa.titulo} 
                             className='w-full h-full object-cover'
                             onError={(e) => {
@@ -65,10 +65,10 @@ export default function Mapas() {
                                         e.target.dataset.triedFallback = 'true';
                                         e.target.src = mapa.imagen 
                                             ? mapa.imagen 
-                                            : "/demo.jpg";
+                                            : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
                                     } else {                                        
                                         e.target.onerror = null;
-                                        e.target.src = "/demo.jpg";
+                                        e.target.src = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
                                     }
                                 }}
                             />
