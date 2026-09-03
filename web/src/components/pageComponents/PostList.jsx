@@ -57,7 +57,7 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
 
                         return(
                             <TrackedLink to={`/comunicacion-institucional/${post.slug}`} className="" rel="noopener noreferrer" key={post.id}>
-                                <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid lg:grid-cols-2 gap-4 px-5 group">
+                                <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid xl:grid-cols-2 gap-4 px-5 group">
                                     <div>
                                         <img src={post.gallery_images?.[0]?.url ?? "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={post.titulo} className='rounded-3xl mx-auto'/>
                                         {/*<img src={imgSrc} alt={post.titulo} className='rounded-3xl'/>*/}

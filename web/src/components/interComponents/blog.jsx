@@ -89,14 +89,14 @@ export default function Blog() {
                     allowFullScreen />
                 )}
                 {singlePost.gallery_images && singlePost.gallery_images.length > 0 ? (
-                    <section className='my-25'>
+                    <section className='my-5'>
                         <h2 className='text-28 font-garet-extra text-primary text-center mb-4'>Galería de Imágenes</h2>
                         <Galeria images={singlePost.gallery_images} />
                     </section> 
                 ) : 
-                    <section className='my-25'>
+                    <section className='my-5'>
                         <h2 className='text-28 font-garet-extra text-primary text-center mb-4'>Galería de Imágenes</h2>
-                        <img src={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt="" 
+                        <img className='w-full h-auto mx-auto' src={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt="" 
                             onError={(e) => {
                                     if (!e.target.dataset.triedFallback) {
                                         e.target.dataset.triedFallback = 'true';
