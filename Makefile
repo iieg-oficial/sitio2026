@@ -231,7 +231,7 @@ clear-model:
 		[ "$$confirm" = "yes" ] || { echo "${YELLOW}Cancelado.${RESET}"; exit 1; }; \
 	fi
 	@echo "${RED}⚠ $(if $(DRY_RUN),Vista previa de borrado,Eliminando) todos los registros de $(MODEL) en $(MSG_ENV)...${RESET}"
-	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python scripts/clear_model.py --model "$(MODEL)" $(if $(DRY_RUN),--dry-run,)
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -e PYTHONPATH=/app -T api python scripts/clear_model.py --model "$(MODEL)" $(if $(DRY_RUN),--dry-run,)
 
 import-mapa:
 	@test -n "$(FILE)" || { echo "${RED}Uso: make import-mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|gcp] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--key-field slug']${RESET}"; exit 1; }
