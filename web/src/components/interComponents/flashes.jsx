@@ -57,7 +57,7 @@ export default function Flashes() {
                     <div className="container mx-auto grid md:grid-cols-12 gap-1">  
                         <div className='md:col-span-1'><BackLink /></div>
                         <div className='md:col-span-11 w-11/12 prose mt-5 mx-auto text-18'>
-                            <h1 className='text-titulos text-center'>Datos exprés</h1>
+                            <h1 className='text-titulo text-center'>Datos exprés</h1>
                             <div className='prose diez mt-5'>
                                 <p>Datos puntuales de interés público estatal procedentes de fuentes oficiales y seleccionados estratégicamente por su relevancia para el contexto actual.</p>
                             </div>

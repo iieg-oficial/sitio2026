@@ -73,12 +73,12 @@ export default function Capacitaciones() {
                     <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
                     <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group' key={capacitacion.id}>                                               
                         <div className='lg:col-span-2'>
-                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-full object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
+                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='h-auto rounded-3xl w-full object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
                         </div>
                         <div className='lg:col-span-4'>
-                            <h3 className='text-44 text-primary font-extrabold'>{capacitacion.titulo}</h3>
+                            <h3 className='text-44 text-primary font-garet-extra'>{capacitacion.titulo}</h3>
                             
-                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>
+                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5 text-22 font-garet'/>
                             
                             <div className='grid grid-cols-2 gap-4 mt-10'>
                                 <div>
@@ -100,14 +100,14 @@ export default function Capacitaciones() {
             <div className='grid grid-cols-1 lg:grid-cols-2 p-7 gap-4 mt-15 container 2xl:w-[70%] mx-auto xl:px-5 2xl:px-0'>
                 {currentItems.map(capacitacion => (
                     <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
-                    <div className='grid lg:grid-cols-6 hover:border hover:border-tertiary rounded-3xl px-2 sm:px-5 group' key={capacitacion.id}>                        
+                    <div className='grid lg:grid-cols-6 hover:border hover:border-primary rounded-3xl px-2 sm:px-5 group' key={capacitacion.id}>                        
                         <div className='lg:col-span-2 pt-6'>
                             <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-auto object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
                         </div>                        
                         <div className='lg:col-span-4 p-6'>
-                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>                                
+                            <h3 className='text-28 text-primary fot-garet-extra'>{capacitacion.titulo}</h3>                                
                             
-                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5'/>
+                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5 font-garet text-18'/>
                                                 
                             <div className='grid grid-cols-2 gap-4 mt-10'>
                                 <div>

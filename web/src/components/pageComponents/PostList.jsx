@@ -11,9 +11,9 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
             <button
               type="button"
               {...props}
-              className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${active
-                  ? 'bg-etiqueta-sec text-tertiary border-tertiary'
-                  : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
+              className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-extra text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${active
+                  ? 'bg-[#FFF2E5] text-tertiary border-tertiary'
+                  : 'text-titulo hover:border hover:border-tertiary hover:text-tertiary hover:bg-[#FFF2E5]'}`}
             >
                 {children}
             </button>
@@ -24,9 +24,9 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
   return (
             <>
             <div className="relative container mx-auto px-2 mt-15">
-                <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
+                <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 xl:hidden!"></span>
                 <div
-                    className="flex gap-5 mb-10 lg:ml-15 overflow-x-auto sm:overflow-visible snap-x snap-mandatory"
+                    className="flex gap-5 mb-10 lg:ml-15 overflow-x-auto overflow-visible snap-x snap-mandatory"
                     style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
                 >
                     {tabs.map((tab, index) => (
@@ -39,13 +39,13 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
                         </TabButton>
                     ))}
                 </div>
-                <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 sm:hidden!"></span>
+                <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 xl:hidden!"></span>
             </div>
 
             {(!results || results.length === 0) ? (
-                <p>No se encontraron resultados.</p>
+                <p className="text-center my-15">No se encontraron resultados.</p>
             ) : (
-                <section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6 container mx-auto">
+                <section className="grid md:grid-cols-2 gap-5 mt-6 container mx-auto">
                     {results.map((post) => {
 
                         const original = post.gallery_images?.[0]?.url
@@ -53,25 +53,25 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
 
                         const imgSrc = thumb 
                                         ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/blog/${thumb}?w=400` 
-                                        : "/demo.jpg";
+                                        : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
 
                         return(
                             <TrackedLink to={`/comunicacion-institucional/${post.slug}`} className="" rel="noopener noreferrer" key={post.id}>
-                                <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid md:grid-cols-2 gap-4 px-5 group">
+                                <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid xl:grid-cols-2 gap-4 px-5 group">
                                     <div>
-                                        <img src={post.gallery_images?.[0]?.url ?? "/demo.jpg"} alt={post.titulo} className='rounded-3xl'/>
+                                        <img src={post.gallery_images?.[0]?.url ?? "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={post.titulo} className='rounded-3xl mx-auto'/>
                                         {/*<img src={imgSrc} alt={post.titulo} className='rounded-3xl'/>*/}
                                     </div>
                                     <div>
-                                        <h3 className="text-primary font-extrabold text-28">{post.titulo}</h3>
+                                        <h3 className="text-primary font-garet-extra text-28">{post.titulo}</h3>
                                         <div className="flex gap-4 my-4 flex-wrap">
-                                            <p className='bg-[#ccc] text-body rounded-2xl px-4 py-2 text-14'>
+                                            <p className='bg-[#DDE7FF] text-titulo rounded-3xl px-4 py-2 text-14 border border-[#162A554D]'>
                                                 {isValid(new Date(post.fecha))
                                                     ? format(new Date(post.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })
                                                     : 'Fecha no disponible'}
                                             </p>
                                             {post.temas?.map((tema) => (
-                                                <p key={tema.id} className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>
+                                                <p key={tema.id} className='bg-[#F3EAFF] text-secondary rounded-3xl px-4 py-2 text-14 border border-[#5C24724D]'>
                                                     {tema.titulo}
                                                 </p>
                                             ))}

@@ -155,17 +155,19 @@ export default function Contabilidad() {
                                     <div className="px-4 pb-3 space-y-4">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {items.map((contabilidad) => (
+                                                <TrackedLink to={contabilidad.archivo} className="" target="_blank" rel="noopener noreferrer">
                                                 <div key={contabilidad.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary group'>
                                                     <div className='flex'>
-                                                        <TrackedLink to={contabilidad.archivo} className="" target="_blank" rel="noopener noreferrer">
+                                                        
                                                             <div className="col-span-1  group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
                                                                 <span className="material-symbols--download group-hover:bg-white!"></span>
                                                             </div> 
-                                                        </TrackedLink>
+                                                        
 
                                                         <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{contabilidad.titulo}</p>
                                                     </div>
                                                 </div>
+                                                </TrackedLink>
                                             ))}
                                         </div>
                                     </div>

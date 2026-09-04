@@ -57,11 +57,20 @@ export default function Mapas() {
             <div className='md:col-span-1'><Backlink /></div>
             <main className='md:col-span-11 grid grid-cols-1 md:px-2 lg:grid-cols-12 gap-6'>
                 <div className='col-span-1 lg:col-span-5'>
-                    {/*<img src={singleMapa.imagen ? singleMapa.imagen : "/demo.jpg"} alt={singleMapa.titulo} className='rounded-4xl w-full' />*/}                    
-                    <img src={singleMapa.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280` : "/demo.jpg"} alt={singleMapa.titulo} className='rounded-3xl' onError={(e) => {
-                                    e.target.onerror = null; 
-                                    e.target.src = `https://iieg.jalisco.gob.mx/acervo/portal/mapas/${thumb}`;
-                                }}/>                                                                     
+                    {/*<img src={singleMapa.imagen ? singleMapa.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={singleMapa.titulo} className='rounded-4xl w-full' />*/}                    
+                    <img src={singleMapa.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280` : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={singleMapa.titulo} className='rounded-3xl' 
+                        onError={(e) => {
+                                    if (!e.target.dataset.triedFallback) {
+                                        e.target.dataset.triedFallback = 'true';
+                                        e.target.src = singleMapa.imagen 
+                                            ? singleMapa.imagen 
+                                            : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                    } else {                                        
+                                        e.target.onerror = null;
+                                        e.target.src = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                    }
+                                }}
+                            />                                                                 
                 </div>
                 <div className='col-span-1 lg:col-span-7'>
                     <h1 className='text-center lg:text-left text-primary text-36 font-garet-extra'>{singleMapa.titulo}</h1>
@@ -111,7 +120,7 @@ export default function Mapas() {
                                     <div className="flex gap-4 justify-center">
                                     <button
                                         onClick={() => setOpen(false)}
-                                        className="button2 px-10 text-base font-garet-extra bg-white border boder-[#697176] text-[#697176] hover:bg-[#697176] hover:text-white"
+                                        className="button2 px-16! text-base font-garet-extra bg-white border boder-[#697176] text-[#697176] hover:bg-[#697176] hover:text-white"
                                     >
                                         Cancelar
                                     </button>
@@ -122,7 +131,7 @@ export default function Mapas() {
                                         target="_blank" 
                                         download={singleMapa.imagen}
                                         onClick={() => setOpen(false)}
-                                        className="button2 px-10 text-base font-garet-extra hover:bg-white border border-[#8936AB] text-white bg-[#8936AB] hover:text-[#8936AB]">                                        
+                                        className="button2 px-16! text-base font-garet-extra hover:bg-white border border-[#8936AB] text-white bg-[#8936AB] hover:text-[#8936AB]">                                        
                                         Descargar
                                     </TrackedLink>
                                     </div>

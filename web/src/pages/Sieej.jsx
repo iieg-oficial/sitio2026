@@ -3,7 +3,7 @@ import { useSearchParams, Link } from 'react-router'
 import { Helmet } from 'react-helmet-async'
 import api from '@services/apiService'
 import Backlink from '../components/pageComponents/Backlink'
-import TrackedLink from '@components/blocks/boton'
+
 
 export default function Sieej() {
     const [page, setPage] = useState(null);

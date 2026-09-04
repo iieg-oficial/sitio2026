@@ -4,36 +4,28 @@ import api from '@services/apiService'
 import Backlink from '../components/pageComponents/Backlink'
 import NotFound from '@components/blocks/NotFound'
 import { SafeHtml } from '@components/SafeHtml';
+import TrackedLink from '@components/blocks/boton'
 
-const SLUG_INTEGRAL = 'aviso-de-privacidad'
-const PDF_INTEGRAL = '/aviso-de-privacidad.pdf'
 
-export default function AvisoDePrivacidad({ slug = SLUG_INTEGRAL }) {
+export default function AvisoDePrivacidad() {
     const [page, setPage] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        let isMounted = true
-
-        const fetchPage = async () => {
-            setLoading(true)
+    const fetchPage = async () => {
+        setLoading(true)
             try {
-                const res = await api.get(`/paginas/slug/${slug}`)
-                if (isMounted) setPage(res.data)
+                const res = await api.get(`/paginas/slug/aviso-de-privacidad`)
+                setPage(res.data)
             } catch (err) {
-                if (isMounted) setPage(null)
                 console.error('Error fetching page:', err)
             } finally {
-                if (isMounted) setLoading(false)
-            }
+                setLoading(false)
         }
+    }
 
+    useEffect(() => {
         fetchPage()
-
-        return () => {
-            isMounted = false
-        }
-    }, [slug])
+    }, [])
 
     if (loading) {
         return <p className='text-center py-12'>Cargando...</p>
@@ -69,16 +61,10 @@ export default function AvisoDePrivacidad({ slug = SLUG_INTEGRAL }) {
                 <main className='md:col-span-11'>
                     <h1 className='text-44 font-extrabold mb-4 text-primary text-center'>{titulo}</h1>                    
                     <SafeHtml htmlContent={page.description} className='text-body text-16 leading-8 prose diez w-full mx-auto max-w-full'/>
-                    {slug === SLUG_INTEGRAL && (
-                        <a
-                            href="https://iieg.jalisco.gob.mx/acervo/portal/aviso_de_privacidad_integral_iieg_06_2025.pdf"
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            className='inline-block mt-8 text-16 text-primary underline'
-                        >
-                        Descargar el aviso integral en PDF
-                        </a>
-                    )}
+                    <TrackedLink to={`https://iieg.jalisco.gob.mx/acervo/portal/aviso_de_privacidad_integral_iieg_06_2025.pdf`} 
+                        className="mt-2 inline-block text-base rounded-4xl border px-6 py-3 text-center font-garet-extra bg-[#8838AB] text-white hover:bg-white hover:text-[#8837AA]  hover:border-[#8837AA] transition-all duration-200">
+                            Descargar el aviso integral en PDF
+                    </TrackedLink>
                 </main>
             </article>
         </>

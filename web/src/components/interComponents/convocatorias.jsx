@@ -73,9 +73,9 @@ export default function Convocatorias() {
                                 <img src={portada} alt={singleConvocatoria.titulo} />
                             </div>
                             <div className='lg:col-span-9 text-left'> 
-                                <h1 className='text-44 font-extrabold mb-4'>{singleConvocatoria.titulo}</h1>
+                                <h1 className='text-44 font-garet-extra mb-4'>{singleConvocatoria.titulo}</h1>
                                 
-                                <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none diez'/>
+                                <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none diez text-22!'/>
                                 <div className='mt-5 flex flex-wrap gap-5'>
                                     {singleConvocatoria.archivo && (
                                         <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.archivo} target="_blank" download>
@@ -96,7 +96,7 @@ export default function Convocatorias() {
                 </section>
 
 
-                <section className='lg:w-8/12 mx-auto my-15'>
+                <section className='lg:w-8/12 mx-auto mb-15'>
                 {singleConvocatoria.Objetivo && (
                     <div className='grid grid-cols-12 sm:gap-1'>
                         <div className='col-span-1'>
@@ -126,9 +126,9 @@ export default function Convocatorias() {
                                     </div>
                                 )}
                             </div>
-                            <h2 className='text-primary text-36 font-extrabold'>Objetivo</h2>
+                            <h2 className='text-primary text-36 font-garet-extra'>Objetivo</h2>
                             
-                            <SafeHtml htmlContent={singleConvocatoria.Objetivo} className='mt-5 prose max-w-none cursos'/>
+                            <SafeHtml htmlContent={singleConvocatoria.Objetivo} className='mt-5 prose max-w-none cursos text-22! text-titulo!'/>
                         </div>
                     </div>
                 )}
@@ -138,8 +138,8 @@ export default function Convocatorias() {
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
-                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Ingreso</h2>
-                            <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none cursos'/>
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Ingreso</h2>
+                            <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none cursos text-22! text-titulo!'/>
 
                         </div>
                         
@@ -151,9 +151,9 @@ export default function Convocatorias() {
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
-                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Egreso</h2>
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Egreso</h2>
                                              
-                            <SafeHtml htmlContent={singleConvocatoria.p_egreso} className='mt-5 prose max-w-none cursos'/>
+                            <SafeHtml htmlContent={singleConvocatoria.p_egreso} className='mt-5 prose max-w-none cursos text-22! text-titulo!'/>
                         </div>
                         
                     </div>
@@ -167,14 +167,14 @@ export default function Convocatorias() {
                     <div className='col-span-11 grid lg:grid-cols-2 gap-5'>
                         {singleConvocatoria.vigencia && (
                         <div className='my-5'>
-                            <strong className='text-primary font-extrabold text-36 mb-10'>Vigencia</strong> 
-                            <p className='text-20 text-titulo pt-6'>{singleConvocatoria.vigencia}</p>
+                            <strong className='text-primary font-garet-extra text-36 mb-10'>Vigencia</strong> 
+                            <p className='text-22! text-titulo! pt-6'>{singleConvocatoria.vigencia}</p>
                         </div>
                         )}
                         {singleConvocatoria.contacto && (
                         <div className='my-5'>
-                            <strong className='text-primary font-extrabold text-36'>Contacto</strong> 
-                        <p className='text-20 text-titulo pt-6'>{singleConvocatoria.contacto}</p>
+                            <strong className='text-primary font-garet-extra text-36'>Contacto</strong> 
+                        <p className='text-22! text-titulo! pt-6'>{singleConvocatoria.contacto}</p>
                         </div>
                         )}
                     </div>                

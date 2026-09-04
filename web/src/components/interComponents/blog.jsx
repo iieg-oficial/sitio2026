@@ -60,7 +60,7 @@ export default function Blog() {
             <title>{singlePost.titulo}</title>            
             <meta property="og:title" content={singlePost.titulo} />
             <meta property="og:description" content={singlePost.resumen} />
-            <meta property="og:image" content={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "/demo.jpg"} />
+            <meta property="og:image" content={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
             <meta property="og:url" content={window.location.href} />
             <meta property="og:type" content="article" />
             <meta name="keywords" content={singlePost.claves} />
@@ -68,19 +68,19 @@ export default function Blog() {
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content={singlePost.resumen} />
             <meta name="twitter:description" content={singlePost.resumen} />
-            <meta name="twitter:image" content={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "/demo.jpg"} />
+            <meta name="twitter:image" content={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
         </Helmet>
         <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
             <div className='md:col-span-1'><Backlink /></div>
             <main className='md:col-span-11'>
-                <h1 className='text-44 font-extrabold mb-4 text-primary'>{singlePost.titulo}</h1>
+                <h1 className='text-44 font-garet-extra mb-4 text-primary'>{singlePost.titulo}</h1>
                 <div className="flex gap-4 my-5 flex-wrap">
-                    <p className='bg-[#ccc] text-body rounded-2xl px-4 py-2 text-14'>{format(new Date(singlePost.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                    <p className='bg-[#DDE7FF] text-titulo rounded-3xl px-4 py-2 text-14 border border-[#162A554D]'>{format(new Date(singlePost.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                     {singlePost.subject ?
-                        <p className='bg-[#D1D1D1] text-body rounded-2xl px-4 py-2 text-14'>{singlePost.subject?.titulo}</p>
+                        <p className='bg-[#F3EAFF] text-primary rounded-3xl px-4 py-2 text-14 border boder-[#5C24724D]'>{singlePost.subject?.titulo}</p>
                     : null}
                 </div>                
-                <SafeHtml htmlContent={singlePost.contenido} className='mt-5 prose max-w-none mb-15'/>
+                <SafeHtml htmlContent={singlePost.contenido} className='mt-5 prose max-w-none mb-15 text-18 font-garet'/>
                 {singlePost.video && (
                     <iframe className="aspect-video w-full" 
                     src={embedUrl} 
@@ -89,14 +89,26 @@ export default function Blog() {
                     allowFullScreen />
                 )}
                 {singlePost.gallery_images && singlePost.gallery_images.length > 0 ? (
-                    <section className='my-25'>
-                        <h2 className='text-28 font-extrabold text-primary text-center mb-4'>Galería de Imágenes</h2>
+                    <section className='my-5'>
+                        <h2 className='text-28 font-garet-extra text-primary text-center mb-4'>Galería de Imágenes</h2>
                         <Galeria images={singlePost.gallery_images} />
                     </section> 
                 ) : 
-                    <section className='my-25'>
-                        <h2 className='text-28 font-extrabold text-primary text-center mb-4'>Galería de Imágenes</h2>
-                        <img src={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "/demo.jpg"} alt="" />
+                    <section className='my-5'>
+                        <h2 className='text-28 font-garet-extra text-primary text-center mb-4'>Galería de Imágenes</h2>
+                        <img className='w-full h-auto mx-auto' src={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt="" 
+                            onError={(e) => {
+                                    if (!e.target.dataset.triedFallback) {
+                                        e.target.dataset.triedFallback = 'true';
+                                        e.target.src = singlePost.gallery_images[0].url 
+                                            ? singlePost.gallery_images[0].url 
+                                            : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                    } else {                                        
+                                        e.target.onerror = null;
+                                        e.target.src = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                    }
+                                }}
+                            /> 
                     </section> 
                 }
                 <div>

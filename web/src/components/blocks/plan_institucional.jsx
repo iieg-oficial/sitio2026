@@ -43,7 +43,7 @@ export default function PlanInstitucional() {
                     {planInstitucional.map((item, idx) => (
                         <div key={item?.id || idx} className="p-4 my-4 text-center">
                             <img 
-                                src={item?.imagen ? item.imagen : "/default.png"} 
+                                src={item?.imagen ? item.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} 
                                 alt={item?.nombre || "Plan Institucional"} 
                                 className="object-contain mx-auto mb-5 w-[50%]"
                             />
@@ -59,7 +59,7 @@ export default function PlanInstitucional() {
 
             <div className="container mx-auto mt-6">
                 <TrackedLink 
-                    to="/plan-institucional" 
+                    to="https://iieg.jalisco.gob.mx/acervo/portal/conocenos/pi_iieg-2024_2030.docx" 
                     className="button2 block mx-auto w-[350px] text-center text-primary hover:text-white border-primary hover:bg-primary py-3 rounded-lg"
                 >
                     Quiero descargar el plan institucional

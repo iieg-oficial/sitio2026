@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from slugify import slugify
 from app.api.deps import get_current_user, get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Sistemas, Usuario, Subject
 from app.models.sistemas import TipoSistemaEnum
 from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse, SistemasList
@@ -45,13 +45,8 @@ def create_sistemas(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    slug = slugify(sistemas.titulo)
-    base_slug = slug
-    contador = 1
-    while db.execute(select(Sistemas).where(Sistemas.slug == slug)).scalar_one_or_none():
-        slug = f"{base_slug}-{contador}"
-        contador += 1
-    
+    slug = make_unique_slug(db, Sistemas, sistemas.titulo)
+
     """Crear un nuevo sistema"""
     db_sistemas = Sistemas(
         titulo=sistemas.titulo,
@@ -113,13 +108,9 @@ def update_sistemas(
     update_data = sistemas.dict(exclude_unset=True)
     
     if "titulo" in update_data and update_data["titulo"] != db_sistemas.titulo:
-        slug = slugify(update_data["titulo"])
-        base_slug = slug
-        contador = 1
-        while db.query(Sistemas).filter(Sistemas.slug == slug).first():
-            slug = f"{base_slug}-{contador}"
-            contador += 1
-        update_data["slug"] = slug
+        update_data["slug"] = make_unique_slug(
+            db, Sistemas, update_data["titulo"], exclude_id=id
+        )
     elif "slug" in update_data and not update_data["slug"]:
         del update_data["slug"]
 
