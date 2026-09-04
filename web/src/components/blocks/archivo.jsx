@@ -192,16 +192,18 @@ export default function Archivo() {
                                         {esPlaneacion ? (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {items.map((archivo) => (
+                                                    <TrackedLink to={archivo.archivo} target="_blank" rel="noopener noreferrer">
                                                     <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
                                                         <div className='flex'>
-                                                            <TrackedLink to={archivo.archivo} target="_blank" rel="noopener noreferrer">
+                                                            
                                                                 <div className="col-span-1 group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
                                                                     <span className="material-symbols--download group-hover:bg-white!"></span>
                                                                 </div>
-                                                            </TrackedLink>
+                                                            
                                                             <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
                                                         </div>
                                                     </div>
+                                                    </TrackedLink>
                                                 ))}
                                             </div>
                                         ) : (
@@ -245,16 +247,18 @@ export default function Archivo() {
 
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                                 {(groupedBySubtema[selectedSubtema] || []).map((archivo) => (
+                                                                    <TrackedLink to={archivo.archivo} target="_blank" rel="noopener noreferrer">
                                                                     <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
                                                                         <div className='flex'>
-                                                                            <TrackedLink to={archivo.archivo} target="_blank" rel="noopener noreferrer">
+                                                                            
                                                                                 <div className="col-span-1 group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
                                                                                     <span className="material-symbols--download group-hover:bg-white!"></span>
                                                                                 </div>
-                                                                            </TrackedLink>
+                                                                            
                                                                             <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
                                                                         </div>
                                                                     </div>
+                                                                    </TrackedLink>
                                                                 ))}
                                                             </div>
                                                         </div>
