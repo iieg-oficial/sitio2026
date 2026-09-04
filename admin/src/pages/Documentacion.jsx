@@ -45,7 +45,7 @@ export default function Documentacion() {
     const fetchTipo = async () => {
         try{
             const response = await api.get('/documentacion/tipos');
-            setTipo(response.data.tipos || {});
+            setTipo(response.data.tipos || []);
         } catch (error){
             message.error('Error al obtener los tipos');
         }
@@ -273,9 +273,9 @@ export default function Documentacion() {
                         filterOption={(input, option) =>
                             (option?.label || '').toLowerCase().includes(input.toLowerCase())
                         }
-                        options={Object.entries(tipo).map(([key, value]) => ({
-                            key,
-                            value,
+                        options={(tipo || []).map((value) => ({
+                            key: value,
+                            value: value,
                             label: value,
                         }))}
                     />

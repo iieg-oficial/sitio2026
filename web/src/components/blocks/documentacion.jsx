@@ -6,6 +6,7 @@ import Searcher from '../pageComponents/searcher';
 
 export default function Documentacion() {
     const [documentaciones, setDocumentaciones] = useState([])
+    const [tipos, setTipos] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedTemaId, setSelectedTemaId] = useState("");
     const [selectedSubtemaId, setSelectedSubtemaId] = useState("");
@@ -18,8 +19,18 @@ export default function Documentacion() {
         setDocumentaciones(response.data.documentaciones)        
     }
 
+    const fetchTipos = async () => {
+        try {
+            const response = await api.get('/documentacion/tipos')
+            setTipos(response.data.tipos || [])
+        } catch (error) {
+            console.error('Error fetching tipos', error)
+        }
+    }
+
     useEffect(() => {
         fetchDocumentaciones()
+        fetchTipos()
     }, []);
 
     const proyectos = useMemo(() => {
@@ -167,16 +178,9 @@ export default function Documentacion() {
                                 className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                             >
                                 <option value='' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
-                                <option value='Informes' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Informes</option>
-                                <option value='Análisis estadísticos' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Análisis estadísticos</option>
-                                <option value='Publicaciones institucionales' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Publicaciones institucionales</option>
-                                <option value='Documentación de censos' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Documentación de censos</option>
-                                <option value='Documentos normativos' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Documentos normativos</option>
-                                <option value='Metodologia' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Metodología</option>
-                                <option value='Código' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Código</option>
-                                <option value='Manuales' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Manuales</option>
-                                <option value='Guías' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Guías</option>
-                                <option value='FAQs' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>FAQs</option>
+                                {tipos.map(tipo => (
+                                    <option key={tipo} value={tipo} className='w-full rounded-lg bg-card text-titulo px-4 py-2'>{tipo}</option>
+                                ))}
                             </select>
                         </div>
 
