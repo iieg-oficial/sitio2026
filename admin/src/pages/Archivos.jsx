@@ -17,6 +17,32 @@ export default function Archivos() {
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
 
+    const watchTipo = Form.useWatch('tipo', form);
+    const watchFecha = Form.useWatch('fecha', form);
+
+    const getDynamicFolder = () => {
+        let folderPath = '/archivos';
+
+        if (watchTipo) {
+            folderPath += `/${watchTipo}`;
+        }
+
+        if (watchFecha) {
+            // Se asume que la fecha está en formato 'YYYY-MM-DD' desde el input
+            const dateParts = watchFecha.split('-');
+            if (dateParts.length >= 2) {
+                const year = dateParts[0];
+                /*const month = dateParts[1];
+                folderPath += `/${year}/${month}`;*/
+                folderPath += `/${year}`;
+                }
+        }
+
+        console.log('Ruta construida para el folder de carga:', folderPath);
+
+        return folderPath;
+    };
+
     useEffect(() => {
         fetchArchivos();
         fetchSubjects();
@@ -233,7 +259,7 @@ export default function Archivos() {
                                 <Space direction="vertical" style={{ width: '100%' }}>
                                     <UploadAcervo
                                         bucket="portal"
-                                        folder="/archivos"
+                                        folder={getDynamicFolder()}
                                         label="Subir archivo"
                                         onUploaded={(media) => {
                                             form.setFieldValue('archivo', media.url);

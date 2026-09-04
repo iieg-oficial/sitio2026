@@ -17,12 +17,48 @@ export default function Reportes() {
     const [periocidad, setPeriocidad] = useState([]);
     const [meses, setMeses] = useState([]);
 
+    const watchMes = Form.useWatch('mes', form);
+    const watchAnyo = Form.useWatch('anyo', form);
+    const MESES_MAP = {
+        enero: '01',
+        febrero: '02',
+        marzo: '03',
+        abril: '04',
+        mayo: '05',
+        junio: '06',
+        julio: '07',
+        agosto: '08',
+        septiembre: '09',
+        octubre: '10',
+        noviembre: '11',
+        diciembre: '12'
+    };
+
     useEffect(() => {
         fetchReportes();
         fetchSubjects();
         fetchPeriocidad();
         fetchMeses();
     }, []);
+
+    const getDynamicFolder = () => {
+        let folderPath = '/reportes';
+
+        if (watchAnyo) {
+            folderPath += `/${watchAnyo}`;
+        }
+
+        if (watchMes) {
+            const mesNumero = MESES_MAP[watchMes.toLowerCase()];
+            if (mesNumero) {
+                folderPath += `/${mesNumero}`;
+            }
+        }
+
+        console.log('Ruta construida para el folder de carga:', folderPath);
+
+        return folderPath;
+    };
 
     const fetchSubjects = async () => {
         try {
@@ -282,7 +318,7 @@ export default function Reportes() {
                         <Space direction="vertical" style={{ width: '100%' }}>
                              <UploadAcervo
                                 bucket="portal"
-                                folder="/reportes"
+                                folder={getDynamicFolder()}
                                 label="Subir archivo"
                                 onUploaded={(media) => {
                                     form.setFieldValue('archivo', media.url);

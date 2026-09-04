@@ -21,12 +21,26 @@ export default function Documentacion() {
     const [sistemasOptions, setSistemasOptions] = useState([]);
     const [selectedSistemas, setSelectedSistemas] = useState([]);
 
+    const watchAnyo = Form.useWatch('anyo', form);
+
     useEffect(() => {
         fetchDocumentaciones();
         fetchSubjects();
         fetchTipo();
         fetchSistemas();
     }, []);
+
+    const getDynamicFolder = () => {
+        let folderPath = '/documentacion';
+
+        if (watchAnyo) {
+            folderPath += `/${watchAnyo}`;
+        }
+
+        console.log('Ruta construida para el folder de carga:', folderPath);
+
+        return folderPath;
+    };
 
     const fetchTipo = async () => {
         try{
@@ -234,7 +248,7 @@ export default function Documentacion() {
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
-                                folder="/documentacion"
+                                folder={getDynamicFolder()}
                                 label="Subir archivo"
                                 onUploaded={(media) => {
                                     form.setFieldValue('archivo', media.url);
