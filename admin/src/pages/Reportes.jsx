@@ -55,8 +55,6 @@ export default function Reportes() {
             }
         }
 
-        console.log('Ruta construida para el folder de carga:', folderPath);
-
         return folderPath;
     };
 

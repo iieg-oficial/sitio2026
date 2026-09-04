@@ -27,7 +27,6 @@ export default function Cuadernillos() {
             folderPath += `/${watchAnyo}`;
         }
 
-        console.log('Ruta construida para el folder de carga:', folderPath);
 
         return folderPath;
     };

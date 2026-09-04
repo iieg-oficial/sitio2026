@@ -37,8 +37,6 @@ export default function Documentacion() {
             folderPath += `/${watchAnyo}`;
         }
 
-        console.log('Ruta construida para el folder de carga:', folderPath);
-
         return folderPath;
     };
 

@@ -38,7 +38,6 @@ export default function Archivos() {
                 }
         }
 
-        console.log('Ruta construida para el folder de carga:', folderPath);
 
         return folderPath;
     };
