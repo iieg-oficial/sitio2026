@@ -56,9 +56,9 @@ export default function Mapas() {
         <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
             <div className='md:col-span-1'><Backlink /></div>
             <main className='md:col-span-11 grid grid-cols-1 md:px-2 lg:grid-cols-12 gap-6'>
-                <div className='col-span-1 lg:col-span-5'>
+                <div className='col-span-1 lg:col-span-5 mapa'>
                     {/*<img src={singleMapa.imagen ? singleMapa.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={singleMapa.titulo} className='rounded-4xl w-full' />*/}                    
-                    <img src={singleMapa.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280` : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={singleMapa.titulo} className='rounded-3xl' 
+                    <img src={singleMapa.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280` : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={singleMapa.titulo} className='rounded-3xl image-mapa' 
                         onError={(e) => {
                                     if (!e.target.dataset.triedFallback) {
                                         e.target.dataset.triedFallback = 'true';
