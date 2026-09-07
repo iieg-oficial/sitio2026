@@ -49,7 +49,7 @@ export default function CapacitacionesList({ curso }) {
                                         onClick={() => setActiveTab(modulo.nombre)}
                                         className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-3xl font-garet-bold text-28 transition-colors ${activeTab === modulo.nombre
                                             ? 'bg-[#FFF2E5] text-tertiary border-tertiary border-1'
-                                            : 'bg-white text-titulo! hover:bg-[#FFF2E5] hover:text-tertiary hover:border-1'}`
+                                            : 'bg-white text-titulo! hover:bg-etiqueta-ter hover:text-tertiary hover:border-1'}`
                                         }
                                         >
                                             {modulo.nombre}
