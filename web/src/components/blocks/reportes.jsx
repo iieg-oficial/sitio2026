@@ -82,6 +82,10 @@ export default function Reportes() {
                 year: anyo ? String(anyo) : '',
                 month: month || '',
             }
+        }).sort((reporteA, reporteB) => {
+            const fechaA = reporteA.fecha ? new Date(reporteA.fecha).getTime() : 0;
+            const fechaB = reporteB.fecha ? new Date(reporteB.fecha).getTime() : 0;
+            return fechaB - fechaA;
         })
     }, [reportes]);
 
@@ -101,7 +105,7 @@ export default function Reportes() {
     }, [reportesWithMeta, temaFilter]);
 
     const years = useMemo(
-        () => [...new Set(reportesWithMeta.map(r => r.year).filter(Boolean))].sort((a, b) => Number(b) - Number(a)),
+        () => [...new Set(reportesWithMeta.map(r => r.year).filter(Boolean))].sort((b, a) => Number(b) - Number(a)),
         [reportesWithMeta]
     );
 

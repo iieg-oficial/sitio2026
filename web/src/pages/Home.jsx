@@ -91,7 +91,7 @@ function HomePage() {
                     <div className='bg-primary text-center z-10 mx-auto absolute top-[50%] lg:top-[60%] 2xl:top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-10 py-11 rounded-2xl w-11/12 lg:w-10/12 xl:w-7/12 extra:max-w-[1220px]'>
                         <img src="/ico_mapalab.png" alt="MapaLab" className="inline-block mr-2" />
                         <p className='text-center text-white my-8 text-22'>Explora el territorio de Jalisco con datos geoespaciales</p>
-                        <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-medio hover:bg-tertiary text-base block max-w-[395px] mx-auto">
+                        <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-tertiary hover:bg-medio text-base block max-w-[395px] mx-auto">
                             Quiero explorar MapaLab
                         </TrackedLink>
                     </div>

@@ -54,7 +54,7 @@ export default function Banners() {
                             <div class="xl:col-span-5 xl:col-start-2">
                                 <h2 className='text-white'>{banner.titulo}</h2>          
                                 <SafeHtml htmlContent={banner.descripcion} className='mt-10 prose max-w-none banner !text-white mb-15'/>
-                                <Link to={banner.link} className="button block font-base float-left bg-medio hover:bg-tertiary">{banner.boton}</Link>
+                                <Link to={banner.link} className="button block font-base float-left bg-tertiary hover:bg-medio">{banner.boton}</Link>
                             </div>
                         </div>
                         <div>
