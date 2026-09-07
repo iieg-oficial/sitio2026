@@ -2,6 +2,7 @@ from slugify import slugify
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
+from sqlalchemy.exc import IntegrityError
 from typing import Any
 from app.api.deps import get_current_user, get_db, verify_csrf
 from app.models.menu_item import MenuItem
@@ -87,7 +88,14 @@ def create_page(
 
     page = Page(**page_data, slug=slug)
     db.add(page)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="No se pudo crear la página porque sus datos entran en conflicto con otra página",
+        )
     db.refresh(page)
     return page
 

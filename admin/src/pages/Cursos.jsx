@@ -282,7 +282,7 @@ export default function Cursos() {
           <Form.Item
             name="vigencia"
             label="Vigencia"
-            rules={[{ required: true, message: 'Por favor seleccione una vigencia' }]}
+            rules={[{ required: false, message: 'Por favor seleccione una vigencia' }]}
         >
             <Input />
         </Form.Item>
@@ -290,7 +290,7 @@ export default function Cursos() {
           <Form.Item
             name="contacto"
             label="Contacto"
-            rules={[{ required: true, message: 'Por favor seleccione un contacto' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un contacto' }]}
           >
             <Input />
           </Form.Item>
