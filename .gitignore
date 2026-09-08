@@ -25,6 +25,7 @@ htmlcov/
 .tox/
 venv/
 .venv/
+.venv_test/
 env/
 
 .DS_Store
