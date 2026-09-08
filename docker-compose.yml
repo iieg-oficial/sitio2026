@@ -152,7 +152,7 @@ services:
       CKANEXT__S3FILESTORE__AWS_SECRET_ACCESS_KEY: ${ACERVO_SECRET_KEY:?ACERVO_SECRET_KEY is required}
       CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
       # AWS_STORAGE_PATH = prefijo de carpeta dentro del bucket (sin /acervo, ya está en HOST_NAME)
-      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:-datos-abiertos}
+      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:?CKAN_S3_STORAGE_PATH is required}
       CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
       # Evita que CKAN verifique el bucket al arrancar (HeadBucket → 403 → crash loop)
       # El error de autenticación aparecerá al subir un archivo, no al iniciar
@@ -225,8 +225,8 @@ services:
       ACERVO_IIEG_SECRET_KEY: ${ACERVO_IIEG_SECRET_KEY:?ACERVO_IIEG_SECRET_KEY is required}
       ACERVO_IIEG_BUCKET_NAME: ${ACERVO_IIEG_BUCKET_NAME:?ACERVO_IIEG_BUCKET_NAME is required}
       ACERVO_API_KEY: ${ACERVO_API_KEY}
-      ACERVO_API_KEY_HEADER: ${ACERVO_API_KEY_HEADER:-x-api-key}
-      SEED_EXAMPLES: ${SEED_EXAMPLES:-false}
+      ACERVO_API_KEY_HEADER: ${ACERVO_API_KEY_HEADER:?ACERVO_API_KEY_HEADER is required}
+      SEED_EXAMPLES: ${SEED_EXAMPLES:?SEED_EXAMPLES is required}
       SMTP_USER: ${SMTP_USER:?SMTP_USER is required}
       SMTP_PASSWORD: ${SMTP_PASSWORD:?SMTP_PASSWORD is required}
       CONTACT_DEST_EMAIL: ${CONTACT_DEST_EMAIL:?CONTACT_DEST_EMAIL is required}
