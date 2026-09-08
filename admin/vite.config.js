@@ -11,12 +11,21 @@ export default defineConfig(({ mode }) => {
         VITE_ADMIN_PORT,
         VITE_ADMIN_HOST,
         VITE_ADMIN_API_PROXY_TARGET,
+        VITE_MEDIA_BASE_URL,
     } = loadEnv(mode, __dirname, '');
 
     const apiProxyTarget = VITE_ADMIN_API_PROXY_TARGET ?? 'http://api:8000';
 
     return {
-        plugins: [react()],
+        plugins: [
+            react(),
+            {
+                name: 'html-transform',
+                    transformIndexHtml(html) {
+                        return html.replace(/%VITE_MEDIA_BASE_URL%/g, VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo');
+                    },
+            }
+        ],
         root: '.',
         server: {
             host: VITE_ADMIN_HOST ?? '0.0.0.0',

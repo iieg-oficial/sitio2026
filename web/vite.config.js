@@ -9,7 +9,15 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, __dirname, '');
 
     return {
-        plugins: [react()],
+        plugins: [
+            react(),
+            {
+                name: 'html-transform',
+                transformIndexHtml(html) {
+                    return html.replace(/%VITE_MEDIA_BASE_URL%/g, env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo');
+                },
+            }
+        ],
         root: '.',
         server: {
             host: env.VITE_WEB_HOST ?? '0.0.0.0',
