@@ -60,7 +60,7 @@ export default function PlanInstitucional() {
             <div className="container mx-auto mt-6">
                 <TrackedLink 
                     to="https://iieg.jalisco.gob.mx/acervo/portal/documentosIieg/documentos/plan_institucional_iieg_2024_2030.pdf" 
-                    className="button2 block mx-auto w-[350px] text-center text-primary hover:text-white border-primary hover:bg-primary py-3 rounded-lg"
+                    className="button2 block mx-auto w-full sm:w-[405px] text-center text-primary hover:text-white border-primary hover:bg-primary py-3 rounded-lg"
                 >
                     Quiero descargar el plan institucional
                 </TrackedLink>
