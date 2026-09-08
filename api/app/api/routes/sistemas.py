@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.core.slugs import make_unique_slug
-from app.models import Sistemas, Usuario, Subject
+from app.models import Sistemas, Subject, Usuario
 from app.models.sistemas import TipoSistemaEnum
-from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse, SistemasList
+from app.schemas.sistemas import SistemasCreate, SistemasList, SistemasOut, SistemasResponse
 
 router = APIRouter(prefix="/sistemas", tags=["sistemas"])
 
@@ -19,12 +20,12 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
     ).scalars().all()
 
 @router.get("/tree", response_model=list[SistemasOut])
-async def obtener_sistemas_tree(    
+async def obtener_sistemas_tree(
     db: Session = Depends(get_db)):
-    sistemas = db.execute(select(Sistemas).where(Sistemas.parent_id == None)).scalars().all()
+    sistemas = db.execute(select(Sistemas).where(Sistemas.parent_id.is_(None))).scalars().all()
     return sistemas
 
-    
+
 @router.get("/", response_model=SistemasList)
 def read_sistemas(
     db: Session = Depends(get_db),
@@ -33,7 +34,7 @@ def read_sistemas(
 ):
     """Obtener todos los sistemas"""
     sistemas = db.execute(select(Sistemas).offset(skip).limit(limit)).scalars().all()
-    
+
     return {
         "sistemas": sistemas,
         "total": len(sistemas),
@@ -106,7 +107,7 @@ def update_sistemas(
         )
 
     update_data = sistemas.dict(exclude_unset=True)
-    
+
     if "titulo" in update_data and update_data["titulo"] != db_sistemas.titulo:
         update_data["slug"] = make_unique_slug(
             db, Sistemas, update_data["titulo"], exclude_id=id

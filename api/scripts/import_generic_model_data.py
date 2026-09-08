@@ -1,4 +1,3 @@
-from typing import Optional
 import argparse
 import csv
 import json
@@ -8,14 +7,13 @@ from pathlib import Path
 from typing import Any, Callable, Optional
 
 from slugify import slugify
-from sqlalchemy import select, inspect
-from sqlalchemy.sql.sqltypes import Boolean, Date, DateTime, Enum, Integer, JSON
+from sqlalchemy import inspect, select
+from sqlalchemy.sql.sqltypes import JSON, Boolean, Date, DateTime, Enum, Integer
 
 sys.path.append(str(Path(__file__).parent.parent))
 
 from app.core.database import SessionLocal
 from app.models import Base
-
 
 DEFAULT_KEY_CANDIDATES = [
     "slug",
@@ -302,8 +300,6 @@ def resolve_fk_slugs(db, model_cls, row: dict[str, Any], payload: dict[str, Any]
     y el CSV contiene `parent_slug`, busca el registro por slug y asigna el ID.
     Esto permite usar slugs legibles en los CSV en lugar de IDs numéricos.
     """
-    columns = {col.name: col for col in model_cls.__table__.columns}
-    mapper = inspect(model_cls)
     fk_map: dict[str, Any] = {}  # fk_col_name -> target ORM class
 
     for column in model_cls.__table__.columns:

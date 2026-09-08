@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_db, get_current_user, verify_csrf
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.models import Profesores, Usuario
 from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresResponse
 
@@ -9,7 +10,7 @@ router = APIRouter(prefix="/profesores", tags=["profesores"])
 
 @router.get("", response_model=ProfesoresResponse)
 async def listar_profesores(
-    db: Session = Depends(get_db), 
+    db: Session = Depends(get_db),
 ):
     profesores = db.query(Profesores).all()
     return {
@@ -41,7 +42,7 @@ async def crear_profesor(
     while db.query(Profesores).filter(Profesores.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     nuevo = Profesores(
         nombre=profesor_in.nombre,
         descripcion=profesor_in.descripcion,
@@ -64,7 +65,7 @@ async def actualizar_profesor(
     profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
     if not profesor:
         raise HTTPException(status_code=404, detail="Profesor no encontrado")
-    
+
     update_data = profesor_in.model_dump(exclude_unset=True)
 
     if "nombre" in update_data and update_data["nombre"] != profesor.nombre:
@@ -80,7 +81,7 @@ async def actualizar_profesor(
 
     for campo, valor in update_data.items():
         setattr(profesor, campo, valor)
-    
+
     db.commit()
     db.refresh(profesor)
     return profesor

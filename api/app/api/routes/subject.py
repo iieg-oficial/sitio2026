@@ -1,18 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.models import Subject, Usuario
-from app.schemas.subject import SubjectCreate, SubjectFlat, SubjectOut, SubjectResponse
+from app.schemas.subject import SubjectCreate, SubjectFlat, SubjectOut
 
 router = APIRouter(prefix="/subject", tags=["temas"])
 
 
 @router.get("/tree", response_model=list[SubjectOut])
-async def obtener_temas_tree(    
+async def obtener_temas_tree(
     db: Session = Depends(get_db)):
-    temas = db.execute(select(Subject).where(Subject.parent_id == None)).scalars().all()
+    temas = db.execute(select(Subject).where(Subject.parent_id.is_not(None))).scalars().all()
     return temas
 
 @router.get("", response_model=list[SubjectFlat])
@@ -20,12 +21,12 @@ async def listar_subjects(
     db: Session = Depends(get_db)
 ):
     subjects = db.execute(select(Subject)).scalars().all()
-    return subjects 
+    return subjects
 
 
 @router.get("/{subject_id}", response_model=SubjectOut)
 async def obtener_subject(
-    subject_id: int, 
+    subject_id: int,
     db: Session = Depends(get_db)
 ):
     subject = db.execute(select(Subject).where(Subject.id == subject_id)).scalar_one_or_none()
@@ -48,7 +49,7 @@ async def crear_subject(
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Parent no encontrado"
             )
-        
+
     base_slug = slugify(subject_in.titulo)
     slug = base_slug
     contador = 1
@@ -56,7 +57,7 @@ async def crear_subject(
     while db.execute(select(Subject).where(Subject.slug == slug)).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     nuevo = Subject(**subject_in.model_dump(exclude={"slug"}), slug=slug)
     db.add(nuevo)
     db.commit()
@@ -91,10 +92,10 @@ async def actualizar_subject(
 
     elif "slug" in update_data and not update_data["slug"]:
         del update_data["slug"]
-    
+
     for campo, valor in update_data.items():
         setattr(subject, campo, valor)
-    
+
     db.commit()
     db.refresh(subject)
     return subject

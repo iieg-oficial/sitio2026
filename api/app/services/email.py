@@ -1,7 +1,9 @@
-import aiosmtplib
 from email.message import EmailMessage
-from app.schemas import ContactoCreate
+
+import aiosmtplib
+
 from app.core.settings import get_settings
+from app.schemas import ContactoCreate
 
 settings = get_settings()
 

@@ -1,6 +1,7 @@
-from pydantic import BaseModel
 from typing import List, Optional
-from enum import Enum
+
+from pydantic import BaseModel
+
 from app.models.datos_nuevos import NuevoEnum
 
 

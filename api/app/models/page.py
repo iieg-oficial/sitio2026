@@ -1,7 +1,10 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey
-from app.core.database import Base
+
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
+
+from app.core.database import Base
+
 
 class Page(Base):
     __tablename__ = "pages"
@@ -10,10 +13,10 @@ class Page(Base):
     title = Column(String, nullable=False)
     description = Column(Text, nullable=True)
     link_interno = Column(Boolean, default=True, nullable=True)
-    activar = Column(Boolean, default=True, nullable=True)      
+    activar = Column(Boolean, default=True, nullable=True)
     slug_custom = Column(String, nullable=False)
     description_meta = Column(Text, nullable=True)
-    keywords_meta = Column(String, nullable=True)    
+    keywords_meta = Column(String, nullable=True)
     order = Column(Integer, default=0, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     slug = Column(String(200), nullable=False)

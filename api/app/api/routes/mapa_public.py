@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
-from slugify import slugify
+
 from app.api.deps import get_db
-from app.models import Mapa     
-from app.schemas.mapa import MapaResponse, MapaOut
+from app.models import Mapa
+from app.schemas.mapa import MapaOut, MapaResponse
 
 router = APIRouter(prefix="/mapas", tags=["mapa-public"])
 
@@ -17,7 +17,7 @@ def read_mapas(
     return {
         "mapas": mapas,
         "total": len(mapas),
-    }   
+    }
 
 
 @router.get("/random", response_model=MapaResponse)

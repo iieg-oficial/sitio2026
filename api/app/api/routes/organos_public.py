@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from slugify import slugify
-from app.schemas.organos import OrganosResponse, OrganosOut
-from app.models import Organos
+
 from app.api.deps import get_db
+from app.models import Organos
+from app.schemas.organos import OrganosOut, OrganosResponse
 
 router = APIRouter(prefix="/organos", tags=["organos - publico"])
 

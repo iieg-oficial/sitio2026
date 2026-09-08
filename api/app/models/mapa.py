@@ -1,7 +1,9 @@
 import enum
-from datetime import datetime
-from sqlalchemy import Column, Integer, String, Text, Enum
+
+from sqlalchemy import Column, Enum, Integer, String, Text
+
 from app.core.database import Base
+
 
 class TipoMapaEnum(str, enum.Enum):
     separado = "Mapa separado"
@@ -34,12 +36,11 @@ class Mapa(Base):
     area = Column(String, nullable=True)
     editor = Column(String, nullable=True)
     medida = Column(String, nullable=True)
-    escala = Column(String, nullable=True)    
+    escala = Column(String, nullable=True)
     edicion = Column(Text, nullable=True)
-    ubicacion = Column(String, nullable=True)    
-    sitio_web = Column(String, nullable=True)    
+    ubicacion = Column(String, nullable=True)
+    sitio_web = Column(String, nullable=True)
     informacion = Column(Text, nullable=True)
     imagen = Column(String, nullable=True)
     archivo = Column(String, nullable=True)
     slug = Column(String(200), nullable=False)
-    

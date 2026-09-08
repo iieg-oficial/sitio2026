@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-from slugify import slugify
+from sqlalchemy.orm import Session
+
 from app.api.deps import get_db
 from app.models import Archivos
 from app.schemas.archivo import ArchivoOut, ArchivoResponse
@@ -31,7 +31,7 @@ async def obtener_archivo_publico(archivo_id: int, db: Session = Depends(get_db)
             status_code=status.HTTP_404_NOT_FOUND, detail="Archivo no encontrado"
         )
     return archivo
-    
+
 @router.get("/slug/{slug}", response_model=ArchivoOut)
 def get_archivos_slug(
     slug: str,

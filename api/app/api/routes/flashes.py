@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Flashes, Usuario, Subject  
-from app.models.flashes import PeriocidadEnum, MesEnum 
-from app.schemas.flashes import FlashesOut, FlashesResponse, FlashesCreate, FlashesList
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/flashes", tags=["flashes"])  
+from app.api.deps import get_db, verify_csrf
+from app.models import Flashes, Subject, Usuario
+from app.models.flashes import MesEnum, PeriocidadEnum
+from app.schemas.flashes import FlashesCreate, FlashesList, FlashesOut, FlashesResponse
+
+router = APIRouter(prefix="/flashes", tags=["flashes"])
 
 def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
     """Carga los objetos Subject dado una lista de IDs, ignorando IDs inválidos."""
@@ -56,7 +57,7 @@ def create_flashes(
         slug=slug,
     )
     db_flashes.temas = _load_temas(db, flashes.tema_ids or [])
-    
+
     db.add(db_flashes)
     db.commit()
     db.refresh(db_flashes)
@@ -106,7 +107,7 @@ def update_flashes(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Flash no encontrado",
         )
-    
+
     update_data = flashes.dict(exclude_unset=True)
 
     if "titulo" in update_data and update_data["titulo"] != db_flashes.titulo:
@@ -122,7 +123,7 @@ def update_flashes(
 
     if "tema_ids" in update_data:
         db_flashes.temas = _load_temas(db, update_data.pop("tema_ids") or [])
-    
+
     for campo, valor in update_data.items():
         setattr(db_flashes, campo, valor)
 
@@ -131,7 +132,7 @@ def update_flashes(
     return db_flashes
 
 @router.delete("/{flashes_id}")
-def delete_flashes( 
+def delete_flashes(
     flashes_id: int,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),

@@ -1,7 +1,8 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-from typing import Optional
-from slugify import slugify
+
 from app.api.deps import get_db
 from app.models import Cursos
 from app.models.cursos import TipoCurso

@@ -5,10 +5,9 @@ Revises: merge_zz_ffcbb
 Create Date: 2026-06-17 21:36:53.495952
 
 """
-from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
 
+from alembic import op
 
 revision = '4f4c8ef54726'
 down_revision = 'merge_zz_ffcbb'

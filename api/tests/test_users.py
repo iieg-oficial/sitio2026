@@ -1,4 +1,3 @@
-import pytest
 
 
 def test_listar_usuarios(client, admin_user, admin_token):
@@ -99,8 +98,8 @@ def test_actualizar_usuario_otro_sin_permisos(client, admin_user, editora_token)
 
 
 def test_eliminar_usuario_admin(client, db_session, admin_token):
-    from app.models.user import Usuario
     from app.core.security import hash_password
+    from app.models.user import Usuario
 
     usuario_eliminar = Usuario(
         username="eliminar_test",

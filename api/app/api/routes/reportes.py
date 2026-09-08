@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.core.slugs import make_unique_slug
-from app.models import Reportes, Usuario, Subject
-from app.models.reportes import PeriocidadEnum, MesEnum
-from app.schemas import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
+from app.models import Reportes, Subject, Usuario
+from app.models.reportes import MesEnum, PeriocidadEnum
+from app.schemas import ReporteCreate, ReporteList, ReporteOut, ReporteResponse
 
 router = APIRouter(prefix="/reportes", tags=["reportes"])
 
@@ -39,7 +40,7 @@ async def crear_reporte(
 
     nuevo = Reportes(
         titulo=reporte_in.titulo,
-        fecha=reporte_in.fecha,    
+        fecha=reporte_in.fecha,
         periocidad=reporte_in.periocidad,
         mes=reporte_in.mes,
         anyo=reporte_in.anyo,
@@ -91,7 +92,7 @@ def get_reporte_slug(
 
 @router.get("/{reporte_id}", response_model=ReporteResponse)
 async def obtener_reporte(
-    reporte_id: int, 
+    reporte_id: int,
     db: Session = Depends(get_db),
 ):
     reporte = db.get(Reportes, reporte_id)
@@ -113,7 +114,7 @@ async def actualizar_reporte(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Reporte no encontrado"
         )
-    
+
     update_data = reporte_in.dict(exclude_unset=True)
 
     if "titulo" in update_data and update_data["titulo"] != reporte.titulo:
@@ -125,7 +126,7 @@ async def actualizar_reporte(
 
     if "tema_ids" in update_data:
         reporte.temas = _load_temas(db, update_data.pop("tema_ids") or [])
-    
+
     for campo, valor in update_data.items():
         setattr(reporte, campo, valor)
 

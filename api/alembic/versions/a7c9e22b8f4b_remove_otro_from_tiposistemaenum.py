@@ -4,8 +4,9 @@ Revision ID: a7c9e22b8f4b
 Revises: merge_90296bb12604_b2d3
 Create Date: 2026-06-17
 """
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 revision = 'a7c9e22b8f4b'
 down_revision = 'merge_90296bb12604_b2d3'

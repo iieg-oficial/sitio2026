@@ -1,12 +1,12 @@
 import inspect
 import logging
 
-import app.models as model_registry
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import String, cast, or_
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
+import app.models as model_registry
 from app.api.deps import get_db
 from app.schemas.search import SearchResponse
 

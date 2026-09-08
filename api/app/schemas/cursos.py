@@ -1,15 +1,18 @@
-from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import List, Optional
-from app.schemas.modulos import ModulosOut
+
+from pydantic import BaseModel, field_validator
+
+from app.models.cursos import TipoCurso
 from app.schemas.instituciones import InstitucionesOut
+from app.schemas.modulos import ModulosOut
 from app.schemas.perfiles import PerfilesOut
 from app.schemas.profesores import ProfesoresOut
-from app.models.cursos import TipoCurso
 from app.schemas.subject import SubjectFlat
 
+
 class CursosCreate(BaseModel):
-    
+
     titulo: str
     descripcion: Optional[str] = None
     img_portada: Optional[str] = None

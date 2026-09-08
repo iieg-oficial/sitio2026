@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from sqlalchemy import select
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Archivos, Usuario, Subject
-from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse, ArchivoList
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
+from app.models import Archivos, Subject, Usuario
+from app.schemas.archivo import ArchivoCreate, ArchivoList, ArchivoOut, ArchivoResponse
 
 router = APIRouter(prefix="/archivos", tags=["archivos"])
 

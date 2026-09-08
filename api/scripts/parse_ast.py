@@ -3,7 +3,8 @@ import os
 
 models_dir = "/home/isabel-perez/portales/sitio2026/api/app/models"
 for file in os.listdir(models_dir):
-    if not file.endswith(".py"): continue
+    if not file.endswith(".py"):
+        continue
     path = os.path.join(models_dir, file)
     with open(path, "r") as f:
         tree = ast.parse(f.read())

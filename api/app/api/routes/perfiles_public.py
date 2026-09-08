@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from slugify import slugify
+
 from app.api.deps import get_db
 from app.models import Perfiles
-from app.schemas.perfiles import PerfilesResponse, PerfilesOut
+from app.schemas.perfiles import PerfilesOut, PerfilesResponse
 
 router = APIRouter(prefix="/perfiles", tags=["perfiles - public"])
 

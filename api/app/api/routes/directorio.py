@@ -1,9 +1,10 @@
 from typing import List
-from slugify import slugify
+
 from fastapi import APIRouter, Depends, HTTPException, status
+from slugify import slugify
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, verify_csrf
+from app.api.deps import get_db, verify_csrf
 from app.models import Directorio, Usuario
 from app.schemas.directorio import DirectorioCreate, DirectorioOut
 

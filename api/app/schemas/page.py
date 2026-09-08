@@ -1,7 +1,10 @@
 from __future__ import annotations
+
 from datetime import datetime
-from typing import Optional, List 
+from typing import List, Optional
+
 from pydantic import BaseModel
+
 
 class PageBase(BaseModel):
     title: str
@@ -61,7 +64,7 @@ class PageResponse(PageTreeOut):
 
 class PageResponseList(BaseModel):
     pages: List[PageResponse]
-    total: int  
+    total: int
 
 
 class PageReorderItem(BaseModel):

@@ -9,8 +9,8 @@ Uso:
     slug = make_unique_slug(db, MiModelo, "Mi Título", exclude_id=42)  # en PATCH
 """
 
-from sqlalchemy.orm import Session
 from slugify import slugify
+from sqlalchemy.orm import Session
 
 
 def make_unique_slug(

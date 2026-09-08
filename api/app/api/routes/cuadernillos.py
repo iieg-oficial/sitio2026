@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.models import Cuadernillo, Usuario
 from app.models.cuadernillos import MunicipioEnum
 from app.schemas import CuadernilloCreate, CuadernilloOut, CuadernilloResponse
@@ -32,7 +33,7 @@ def create_cuadernillo(
     while db.query(Cuadernillo).filter(Cuadernillo.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     """Crear un nuevo cuadernillo"""
     db_cuadernillo = Cuadernillo(
         titulo=cuadernillo.titulo,

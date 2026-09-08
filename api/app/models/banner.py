@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Boolean, Text
+from sqlalchemy import Boolean, Column, Integer, String, Text
+
 from app.core.database import Base
+
 
 class Banner(Base):
     __tablename__ = "banner"
