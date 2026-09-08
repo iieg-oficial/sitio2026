@@ -5,6 +5,10 @@ import ReactPaginate from 'react-paginate'
 import TrackedLink from '@components/blocks/boton'
 import Searcher from '../pageComponents/searcher';
 
+const BASE_MEDIA_URL = import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo'
+const THUMB_BASE_URL = `${BASE_MEDIA_URL}/thumb/portal/mapas`
+const DEFAULT_IMAGE = `${BASE_MEDIA_URL}/portal/img_postlink.png`
+
 // ─── Utilidad: mezcla aleatoria (Fisher-Yates) ────────────────────────────────
 function shuffleArray(arr) {
     const a = [...arr]
@@ -201,22 +205,28 @@ export default function Mapas() {
 
                         const original = mapa.imagen
                         const thumb = original.substring(original.lastIndexOf('/') + 1);
+                        const titulo = mapa?.titulo ?? '';
+
+                        const srcImagen = thumb 
+                            ? `${THUMB_BASE_URL}/${thumb}?w=560` 
+                            : DEFAULT_IMAGE;
+
                         return (
                             <a href={`/galeria-de-mapas/${mapa.slug}`} key={mapa.id}>
                                                 <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl">                    
                                                     
 
                                                     {mapa.imagen && (
-                                                        <img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280`} alt={mapa.titulo} className='w-full h-full object-cover image-mapa' 
+                                                        <img src={srcImagen} alt={titulo} className='w-full h-full object-cover image-mapa' 
                                                             onError={(e) => {
                                                                 if (!e.target.dataset.triedFallback) {
                                                                     e.target.dataset.triedFallback = 'true';
                                                                     e.target.src = mapa.imagen 
                                                                         ? mapa.imagen 
-                                                                        : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                                                        : DEFAULT_IMAGE;
                                                                 } else {                                        
                                                                     e.target.onerror = null;
-                                                                    e.target.src = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                                                    e.target.src = DEFAULT_IMAGE;
                                                                 }
                                                             }}
                                                         />
