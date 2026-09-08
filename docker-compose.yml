@@ -125,7 +125,7 @@ services:
       CKAN_DATASTORE_READ_URL: postgresql://datastore_default:${DATASTORE_RO_PASSWORD}@ckan-db:5432/datastore_default
       CKAN_SOLR_URL: http://ckan-solr:8983/solr/ckan
       CKAN_REDIS_URL: redis://redis:6379/1
-      CKAN___DEBUG: "True"
+      CKAN___DEBUG: "Flase"
       CKAN__UPLOADS_ENABLED: "True"
       CKAN___BEAKER__SESSION__SECRET: ${CKAN_BEAKER_SESSION_SECRET:?CKAN_BEAKER_SESSION_SECRET is required}
       CKAN___API_TOKEN__JWT__ENCODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET:?CKAN_API_TOKEN_JWT_SECRET is required}
@@ -162,6 +162,7 @@ services:
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme
+      - ./ckan/licenses.json:/srv/app/licenses.json
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:5000/api/3/action/status_show"]
       interval: 30s

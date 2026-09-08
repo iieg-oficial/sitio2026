@@ -129,6 +129,12 @@ class IiegThemePlugin(plugins.SingletonPlugin):
         toolkit.add_public_directory(config, 'public')
         toolkit.add_resource('fanstatic', 'iieg_theme')
 
+       
+        # Asignación directa
+        config['licenses_group_url'] = 'file:///srv/app/licenses.json'
+
+
+    
     # ITemplateHelpers ------------------------------------------------------
     def get_helpers(self) -> dict[str, Callable[..., Any]]:
         '''Register the most_popular_groups() function above as a template
