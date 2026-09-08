@@ -8,6 +8,14 @@ from app.schemas import DocumentacionOut, DocumentacionResponse, DocumentacionLi
 
 router = APIRouter(prefix="/documentacion", tags=["documentacion - public"])
 
+from app.models.documentacion import TipoEnum
+
+@router.get("/tipos")
+def get_tipos():
+    return {
+        "tipos": [tipo.value for tipo in TipoEnum]
+    }
+
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
     db: Session = Depends(get_db),

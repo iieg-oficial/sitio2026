@@ -141,8 +141,9 @@ export default function Paginas() {
                 setModalVisible(false);
                 fetchPages();
                 fetchPagesTree();
-            } catch {
-                message.error(editingPage ? 'Error al actualizar página' : 'Error al crear página');
+            } catch (error) {
+                const detail = error.response?.data?.detail;
+                message.error(detail || (editingPage ? 'Error al actualizar página' : 'Error al crear página'));
             }
         };
 

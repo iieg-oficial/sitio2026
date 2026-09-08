@@ -21,6 +21,8 @@ export default function Documentacion() {
     const [sistemasOptions, setSistemasOptions] = useState([]);
     const [selectedSistemas, setSelectedSistemas] = useState([]);
 
+    const watchAnyo = Form.useWatch('anyo', form);
+
     useEffect(() => {
         fetchDocumentaciones();
         fetchSubjects();
@@ -28,10 +30,20 @@ export default function Documentacion() {
         fetchSistemas();
     }, []);
 
+    const getDynamicFolder = () => {
+        let folderPath = '/documentacion';
+
+        if (watchAnyo) {
+            folderPath += `/${watchAnyo}`;
+        }
+
+        return folderPath;
+    };
+
     const fetchTipo = async () => {
         try{
             const response = await api.get('/documentacion/tipos');
-            setTipo(response.data.tipos || {});
+            setTipo(response.data.tipos || []);
         } catch (error){
             message.error('Error al obtener los tipos');
         }
@@ -234,7 +246,7 @@ export default function Documentacion() {
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
-                                folder="/documentacion"
+                                folder={getDynamicFolder()}
                                 label="Subir archivo"
                                 onUploaded={(media) => {
                                     form.setFieldValue('archivo', media.url);
@@ -259,9 +271,9 @@ export default function Documentacion() {
                         filterOption={(input, option) =>
                             (option?.label || '').toLowerCase().includes(input.toLowerCase())
                         }
-                        options={Object.entries(tipo).map(([key, value]) => ({
-                            key,
-                            value,
+                        options={(tipo || []).map((value) => ({
+                            key: value,
+                            value: value,
                             label: value,
                         }))}
                     />

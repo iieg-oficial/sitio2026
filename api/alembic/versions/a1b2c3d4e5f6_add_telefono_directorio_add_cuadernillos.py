@@ -44,35 +44,39 @@ municipio_enum = sa.Enum(
 
 
 def upgrade() -> None:
-    # Crear tabla directorio (nunca se creó vía Alembic originalmente)
-    op.create_table(
-        'directorio',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('nombre', sa.String(255), nullable=False),
-        sa.Column('cargo', sa.String(255), nullable=False),
-        sa.Column('director', sa.Boolean(), nullable=True),
-        sa.Column('slug', sa.String(200), nullable=False),
-        sa.PrimaryKeyConstraint('id'),
-    )
-    op.create_index(op.f('ix_directorio_id'), 'directorio', ['id'], unique=False)
+    inspector = sa.inspect(op.get_bind())
+    tables = set(inspector.get_table_names())
 
-    # Crear tabla cuadernillos (nunca se creó vía Alembic originalmente)
-    op.create_table(
-        'cuadernillos',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('titulo', sa.String(200), nullable=False),
-        sa.Column('archivo', sa.String(200), nullable=True),
-        sa.Column('municipio', municipio_enum, nullable=True),
-        sa.Column('anyo', sa.Integer(), nullable=True),
-        sa.Column('slug', sa.String(200), nullable=True),
-        sa.PrimaryKeyConstraint('id'),
-    )
-    op.create_index(op.f('ix_cuadernillos_id'), 'cuadernillos', ['id'], unique=False)
+    if 'directorio' not in tables:
+        op.create_table(
+            'directorio',
+            sa.Column('id', sa.Integer(), nullable=False),
+            sa.Column('nombre', sa.String(255), nullable=False),
+            sa.Column('cargo', sa.String(255), nullable=False),
+            sa.Column('director', sa.Boolean(), nullable=True),
+            sa.Column('slug', sa.String(200), nullable=False),
+            sa.PrimaryKeyConstraint('id'),
+        )
+    op.execute('CREATE INDEX IF NOT EXISTS ix_directorio_id ON directorio (id)')
 
-    # Solo agregar columnas faltantes en directorio
-    # (cuadernillos y municipioenum ya existen en la BD)
-    op.add_column('directorio', sa.Column('telefono', sa.String(50), nullable=True))
-    op.add_column('directorio', sa.Column('email', sa.String(255), nullable=True))
+    if 'cuadernillos' not in tables:
+        op.create_table(
+            'cuadernillos',
+            sa.Column('id', sa.Integer(), nullable=False),
+            sa.Column('titulo', sa.String(200), nullable=False),
+            sa.Column('archivo', sa.String(200), nullable=True),
+            sa.Column('municipio', municipio_enum, nullable=True),
+            sa.Column('anyo', sa.Integer(), nullable=True),
+            sa.Column('slug', sa.String(200), nullable=True),
+            sa.PrimaryKeyConstraint('id'),
+        )
+    op.execute('CREATE INDEX IF NOT EXISTS ix_cuadernillos_id ON cuadernillos (id)')
+
+    directorio_columns = {column['name'] for column in inspector.get_columns('directorio')}
+    if 'telefono' not in directorio_columns:
+        op.add_column('directorio', sa.Column('telefono', sa.String(50), nullable=True))
+    if 'email' not in directorio_columns:
+        op.add_column('directorio', sa.Column('email', sa.String(255), nullable=True))
 
 
 def downgrade() -> None:

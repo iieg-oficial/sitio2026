@@ -7,7 +7,8 @@ import Table from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
 import TableHeader from '@tiptap/extension-table-header'
 import TableCell from '@tiptap/extension-table-cell'
-import { useEffect, useRef } from 'react'
+import Link from '@tiptap/extension-link'
+import { useCallback, useEffect, useRef } from 'react'
 
 const ToolbarButton = ({ onClick, active, title, children }) => (
   <button
@@ -48,6 +49,14 @@ export default function RichTextEditor({ value, onChange }) {
       TableRow,
       TableHeader,
       TableCell,
+      Link.configure({ 
+        openOnClick: false, // Evita que se abra la pestaña al hacer clic mientras se edita
+        autolink: true,     // Detecta enlaces pegados automáticamente
+        HTMLAttributes: {
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        },
+      }),
     ],
     content: value || '',
     onUpdate: ({ editor }) => {
@@ -85,6 +94,25 @@ export default function RichTextEditor({ value, onChange }) {
     fileInputRef.current?.click();
   };
 
+  const setLink = useCallback(() => {
+    if (!editor) return
+
+    const previousUrl = editor.getAttributes('link').href
+    const url = window.prompt('URL del enlace:', previousUrl)
+
+    // Si se cancela el prompt
+    if (url === null) {
+      return
+    }
+
+    // Si está vacío, quita el enlace del texto seleccionado
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run()
+      return
+    }
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+  }, [editor])
+
   if (!editor) return null;
 
   // Sincroniza cuando el Form carga datos (edición)
@@ -121,6 +149,14 @@ export default function RichTextEditor({ value, onChange }) {
         <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Lista numerada">
           1. Lista
         </ToolbarButton>
+        <ToolbarButton onClick={setLink} active={editor.isActive('link')} title="Insertar Enlace">
+          🔗 Enlace
+        </ToolbarButton>
+        {editor.isActive('link') && (
+        <ToolbarButton onClick={() => editor.chain().focus().unsetLink().run()} title="Quitar Enlace">
+            ❌ Quitar Enlace
+        </ToolbarButton>
+        )}
         <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('left').run()} active={editor.isActive({ textAlign: 'left' })} title="Alinear izquierda">
           ←
         </ToolbarButton>

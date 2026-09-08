@@ -16,8 +16,10 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # add img_portada column to cursos
-    op.add_column('cursos', sa.Column('img_portada', sa.String(), nullable=True))
+    inspector = sa.inspect(op.get_bind())
+    columns = {column['name'] for column in inspector.get_columns('cursos')}
+    if 'img_portada' not in columns:
+        op.add_column('cursos', sa.Column('img_portada', sa.String(), nullable=True))
 
 
 def downgrade() -> None:

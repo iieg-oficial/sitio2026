@@ -88,9 +88,7 @@ async def crear_documentacion(
 @router.get("/tipos")
 def get_tipos():
     return {
-        "tipos":{
-            tipo.name: tipo.value for tipo in TipoEnum
-        }
+        "tipos": [tipo.value for tipo in TipoEnum]
     }
 
 @router.get("/slug/{slug}", response_model=DocumentacionOut)
