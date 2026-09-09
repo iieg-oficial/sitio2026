@@ -1,6 +1,6 @@
 import mimetypes
 import uuid
-import python_magic
+
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
 
