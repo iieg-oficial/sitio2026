@@ -174,7 +174,7 @@ export default function Archivo() {
                             <div key={tema} className='bg-card rounded-2xl mb-4 p-4'>
                                 <button
                                     onClick={() => toggleSubject(tema)}
-                                    className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-extrabold cursor-pointer"
+                                    className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-garet-extra cursor-pointer"
                                 >
                                     <span>{tema}</span>
                                     <span className="flex items-center gap-8">
@@ -239,11 +239,7 @@ export default function Archivo() {
 
                                                     return (
                                                         <div>
-                                                            {tituloSeccion && (
-                                                                <div className='mb-3 text-20 font-bold text-primary'>
-                                                                    {tituloSeccion}
-                                                                </div>
-                                                            )}
+                                                            
 
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                                 {(groupedBySubtema[selectedSubtema] || []).map((archivo) => (

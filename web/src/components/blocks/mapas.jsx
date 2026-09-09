@@ -207,7 +207,7 @@ export default function Mapas() {
                                                     
 
                                                     {mapa.imagen && (
-                                                        <img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280`} alt={mapa.titulo} className='w-full h-full object-cover' 
+                                                        <img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280`} alt={mapa.titulo} className='w-full h-full object-cover image-mapa' 
                                                             onError={(e) => {
                                                                 if (!e.target.dataset.triedFallback) {
                                                                     e.target.dataset.triedFallback = 'true';

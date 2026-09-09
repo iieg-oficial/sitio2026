@@ -16,20 +16,23 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.create_table(
-        'borradores',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('resource_type', sa.String(), nullable=False),
-        sa.Column('resource_id', sa.String(), nullable=False),
-        sa.Column('usuario_id', sa.Integer(), nullable=False),
-        sa.Column('data', sa.JSON(), nullable=False),
-        sa.Column('creado_en', sa.DateTime(), nullable=True),
-        sa.Column('actualizado_en', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['usuario_id'], ['usuarios.id'], ),
-        sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('resource_type', 'resource_id', 'usuario_id', name='uq_borrador_recurso_usuario'),
-    )
-    op.create_index(op.f('ix_borradores_id'), 'borradores', ['id'], unique=False)
+    inspector = sa.inspect(op.get_bind())
+    if 'borradores' not in inspector.get_table_names():
+        op.create_table(
+            'borradores',
+            sa.Column('id', sa.Integer(), nullable=False),
+            sa.Column('resource_type', sa.String(), nullable=False),
+            sa.Column('resource_id', sa.String(), nullable=False),
+            sa.Column('usuario_id', sa.Integer(), nullable=False),
+            sa.Column('data', sa.JSON(), nullable=False),
+            sa.Column('creado_en', sa.DateTime(), nullable=True),
+            sa.Column('actualizado_en', sa.DateTime(), nullable=True),
+            sa.ForeignKeyConstraint(['usuario_id'], ['usuarios.id'], ),
+            sa.PrimaryKeyConstraint('id'),
+            sa.UniqueConstraint('resource_type', 'resource_id', 'usuario_id', name='uq_borrador_recurso_usuario'),
+        )
+    op.execute("CREATE INDEX IF NOT EXISTS ix_borradores_id ON borradores (id)")
+
 
 
 def downgrade() -> None:

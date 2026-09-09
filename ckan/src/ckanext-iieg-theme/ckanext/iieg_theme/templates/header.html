@@ -1,6 +1,10 @@
 {% ckan_extends %}
 
 {% block header_logo %}
+  <a class="logo mr-3" href="https://iieg.jalisco.gob.mx">
+    <img src="" alt="Sitio IIEG"
+            aria-label="{{ _('Navigate to IIEG') }}" alt="IIEG"/>
+  </a>
   {% if g.site_logo %}
       <a class="logo" href="{{ h.url_for('home.index') }}">
         {% if g.site_logo.startswith('http://') or g.site_logo.startswith('https://') %}

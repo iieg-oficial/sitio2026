@@ -56,7 +56,7 @@ export default function AvisoDePrivacidad() {
                 <meta name="twitter:description" content={page.description_meta || titulo} />
                 <meta name="twitter:image" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
             </Helmet>
-            <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
+            <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container xl:w-8/12 md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
                 <div className='md:col-span-1'><Backlink /></div>
                 <main className='md:col-span-11'>
                     <h1 className='text-44 font-extrabold mb-4 text-primary text-center'>{titulo}</h1>                    

@@ -24,6 +24,7 @@ class TipoEnum(str, enum.Enum):
     censos = "Documentación de censos"
     normativos = "Documentos normativos"
     metodologia = "Metodologia"
+    cartografia = "Cartografía"
     codigo = "Código"
     manual = "Manuales"
     guias = "Guías"

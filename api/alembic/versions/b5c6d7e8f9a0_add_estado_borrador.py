@@ -16,8 +16,13 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column('borradores', sa.Column('estado', sa.String(), nullable=False, server_default='en_progreso'))
-    op.add_column('borradores', sa.Column('comentario_rechazo', sa.Text(), nullable=True))
+    op.execute(
+        "ALTER TABLE borradores ADD COLUMN IF NOT EXISTS estado VARCHAR "
+        "NOT NULL DEFAULT 'en_progreso'"
+    )
+    op.execute(
+        "ALTER TABLE borradores ADD COLUMN IF NOT EXISTS comentario_rechazo TEXT"
+    )
 
 
 def downgrade() -> None:

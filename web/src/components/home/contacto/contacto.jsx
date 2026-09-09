@@ -39,7 +39,7 @@ export default function Contacto() {
                         <input 
                             type="text" 
                             placeholder="Ej. Juan Pérez" 
-                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
+                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all active:ring-primary"
                             value={form.name} 
                             onChange={(e) => setForm({ ...form, name: e.target.value })} 
                             required
@@ -51,7 +51,7 @@ export default function Contacto() {
                         <input 
                             type="email" 
                             placeholder="correo@ejemplo.com" 
-                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
+                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all active:ring-primary"
                             value={form.email} 
                             onChange={(e) => setForm({ ...form, email: e.target.value })} 
                             required
@@ -63,7 +63,7 @@ export default function Contacto() {
                         <textarea 
                             rows="5" 
                             placeholder="¿En qué podemos ayudarte?" 
-                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all resize-none"
+                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all resize-none"
                             value={form.message} 
                             onChange={(e) => setForm({ ...form, message: e.target.value })}
                             required

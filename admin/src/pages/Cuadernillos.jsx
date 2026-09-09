@@ -12,11 +12,24 @@ export default function Cuadernillos() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingCuadernillo, setEditingCuadernillo] = useState(null);
     const [municipios, setMunicipios] = useState([]);
+
+    const watchAnyo = Form.useWatch('anyo', form);
     
     useEffect(() => {
         fetchCuadernillos();
         fetchMunicipios();
     }, []);
+
+    const getDynamicFolder = () => {
+        let folderPath = '/cuadernillos';
+
+        if (watchAnyo) {
+            folderPath += `/${watchAnyo}`;
+        }
+
+
+        return folderPath;
+    };
 
     const fetchMunicipios = async () => {
         try {
@@ -151,7 +164,7 @@ export default function Cuadernillos() {
                     <Space direction="vertical" style={{ width: '100%' }}>
                         <UploadAcervo 
                             bucket="portal"
-                            folder="/cuadernillos"
+                            folder={getDynamicFolder()}
                             label="Subir Archivo"
                             onUploaded={(media) =>
                                 form.setFieldsValue({ archivo: media.url })

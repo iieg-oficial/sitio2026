@@ -59,7 +59,7 @@ export default function Mapas() {
                         <img 
                             src={thumb ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=560` : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} 
                             alt={mapa.titulo} 
-                            className='w-full h-full object-cover'
+                            className='w-full h-full object-cover image-mapa'
                             onError={(e) => {
                                     if (!e.target.dataset.triedFallback) {
                                         e.target.dataset.triedFallback = 'true';

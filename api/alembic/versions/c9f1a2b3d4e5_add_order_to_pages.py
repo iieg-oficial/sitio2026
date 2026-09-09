@@ -16,7 +16,10 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
+    inspector = sa.inspect(op.get_bind())
+    columns = {column['name'] for column in inspector.get_columns('pages')}
+    if 'order' not in columns:
+        op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
 
     # Assign a stable order inside each sibling group.
     op.execute(
