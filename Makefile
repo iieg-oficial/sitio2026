@@ -35,7 +35,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build rebuild build-clean-cache deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one clear-model import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
+.PHONY: help up build rebuild build-clean-cache deploy _up-prod down logs restart clean prune prune-all backup shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one clear-model import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-gcp build-seed-gcp
 
 help:
 	@echo ''
@@ -58,6 +58,7 @@ help:
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
 	@echo '  ${YELLOW}make clean${RESET}            - Borra contenedores, redes y volúmenes de BD (conserva buckets/acervo)'
+	@echo '  ${YELLOW}make backup${RESET}           - Respalda código/configuración, PostgreSQL y volúmenes auxiliares (excluye acervo/mariachi)'
 	@echo '  ${YELLOW}make up-prod-local${RESET}    - Inicia el entorno en modo producción local'
 	@echo '  ${YELLOW}make down-prod-local${RESET}  - Detiene el entorno en modo producción local'
 	@echo '  ${YELLOW}make restart-prod-local${RESET}- Reinicia el entorno en modo producción local'
@@ -134,6 +135,41 @@ prune-all:
 	@echo "${GREEN}Sistema Docker limpiado.${RESET}"
 
 restart: down up
+
+BACKUP_ROOT ?= backups
+
+backup:
+	@set -eu; \
+	STAMP=$$(date +%Y-%m-%d-%H%M%S); \
+	DEST="$(BACKUP_ROOT)/$$STAMP"; \
+	mkdir -p "$$DEST/databases" "$$DEST/volumes"; \
+	chmod 700 "$(BACKUP_ROOT)" "$$DEST"; \
+	echo "${GREEN}Creando respaldo en $$DEST ($(MSG_ENV))${RESET}"; \
+	echo "${YELLOW}Respaldando PostgreSQL del portal...${RESET}"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T postgres sh -c 'pg_dump -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -Fc' > "$$DEST/databases/portal.dump"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T postgres sh -c 'pg_dumpall -U "$$POSTGRES_USER" --globals-only' > "$$DEST/databases/portal-globals.sql"; \
+	echo "${YELLOW}Respaldando PostgreSQL de CKAN...${RESET}"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T ckan-db pg_dump -U postgres -d ckan_default -Fc > "$$DEST/databases/ckan.dump"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T ckan-db pg_dump -U postgres -d datastore_default -Fc > "$$DEST/databases/datastore.dump"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T ckan-db pg_dumpall -U postgres --globals-only > "$$DEST/databases/ckan-globals.sql"; \
+	backup_volume() { \
+		service="$$1"; destination="$$2"; output="$$3"; \
+		container=$$(docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) ps -q "$$service"); \
+		[ -n "$$container" ] || { echo "${RED}El servicio $$service no está creado o ejecutándose.${RESET}" >&2; exit 1; }; \
+		volume=$$(docker inspect -f "{{range .Mounts}}{{if eq .Destination \"$$destination\"}}{{.Name}}{{end}}{{end}}" "$$container"); \
+		[ -n "$$volume" ] || { echo "${RED}No se encontró el volumen de $$service en $$destination.${RESET}" >&2; exit 1; }; \
+		docker run --rm -v "$$volume":/data:ro alpine:3.22 tar czf - -C /data . > "$$DEST/volumes/$$output"; \
+	}; \
+	echo "${YELLOW}Respaldando volúmenes auxiliares de CKAN, Solr y Redis...${RESET}"; \
+	backup_volume ckan /var/lib/ckan ckan-storage.tgz; \
+	backup_volume ckan-solr /var/solr ckan-solr.tgz; \
+	backup_volume redis /data redis.tgz; \
+	echo "${YELLOW}Respaldando código y configuración del proyecto (sin acervo/mariachi)...${RESET}"; \
+	tar --exclude='./.git' --exclude='./backups' --exclude='*/node_modules' --exclude='*/dist' --exclude='*/build' --exclude='*/static/uploads' --exclude='*/acervo/*' --exclude='*/mariachi/*' -czf "$$DEST/proyecto.tgz" .; \
+	( cd "$$DEST" && sha256sum databases/* volumes/* proyecto.tgz > SHA256SUMS ); \
+	chmod -R go-rwx "$$DEST"; \
+	echo "${GREEN}Respaldo terminado: $$DEST${RESET}"; \
+	echo "${YELLOW}Incluye .env y otros secretos si existen; almacénalo con permisos restringidos.${RESET}"
 
 deploy:
 	@echo "${GREEN}Desplegando con ENV=$(DEPLOY_ENV)${RESET}"
