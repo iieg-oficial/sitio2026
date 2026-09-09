@@ -7,6 +7,7 @@ upstream ckan_backend {
 }
 
 
+
 server {
     listen 80;
     server_name _;

@@ -197,6 +197,55 @@ export const validateFileClientSecurity = async (file, maxSize = DEFAULT_MAX_SIZ
 
     return true;
 };
+/**
+ * Lee los primeros bytes del archivo para verificar su "firma digital" real (Magic Bytes)
+ */
+const readMagicBytes = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+            if (e.target.readyState === FileReader.DONE) {
+                const uint = new Uint8Array(e.target.result);
+                const bytes = [];
+                uint.forEach((byte) => bytes.push(byte));
+                resolve(bytes);
+            } else {
+                reject(new Error('No se pudo leer la cabecera del archivo'));
+            }
+        };
+        // Leemos solo los primeros 8 bytes
+        const blob = file.slice(0, 8);
+        reader.readAsArrayBuffer(blob);
+    });
+};
+
+/**
+ * Valida tamaño, extensión y Magic Bytes del archivo.
+ */
+export const validateFileClientSecurity = async (file, maxSize = DEFAULT_MAX_SIZE) => {
+    // 1. Validar Tamaño
+    if (file.size > maxSize) {
+        throw new Error(`El archivo excede el tamaño máximo permitido de ${formatFileSize(maxSize)}.`);
+    }
+
+    // 2. Extraer extensión del nombre
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    if (!extension || !ALLOWED_MIME_MAP[extension]) {
+        throw new Error(`La extensión .${extension} no está permitida.`);
+    }
+
+    const expectedConfig = ALLOWED_MIME_MAP[extension];
+
+    // 3. Validar Magic Bytes
+    const fileBytes = await readMagicBytes(file);
+    const isValidSignature = expectedConfig.bytes.every((byte, index) => fileBytes[index] === byte);
+
+    if (!isValidSignature) {
+        throw new Error(`El contenido del archivo no coincide con una firma válida de tipo .${extension}`);
+    }
+
+    return true;
+};
 
 export const getMediaFiles = async (filters = {}) => {
     try {
@@ -227,6 +276,9 @@ export const getMediaFile = async (id) => {
 
 export const uploadMediaFile = async (file, options = {}) => {
     try {
+        const maxSize = options.maxSize || DEFAULT_MAX_SIZE;
+        await validateFileClientSecurity(file, maxSize);
+
         const maxSize = options.maxSize || DEFAULT_MAX_SIZE;
         await validateFileClientSecurity(file, maxSize);
 
