@@ -75,7 +75,7 @@ export default function Convocatorias() {
                                     <div className='grid grid-cols-2 gap-4 mt-10'>
                                         <div>
                                             {esFechaPasada(convocatoria.fin) && (
-                                                <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] text-tertiary text-14 px-5 py-2'>Finalizado</span>
+                                                <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] font-garet-bold text-tertiary text-14 px-5 py-2'>Finalizado</span>
                                             )}   
                                         </div>
                                         <div>

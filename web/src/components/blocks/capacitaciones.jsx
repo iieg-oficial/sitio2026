@@ -83,7 +83,7 @@ export default function Capacitaciones() {
                             <div className='grid grid-cols-2 gap-4 mt-10'>
                                 <div>
                                     {esFechaPasada(capacitacion.fin) && (
-                                        <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] text-tertiary text-14 px-5 py-2'>Finalizado</span>
+                                        <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] font-garet-bold text-tertiary text-14 px-5 py-2'>Finalizado</span>
                                     )}   
                                 </div>
                                 <div>
@@ -112,7 +112,7 @@ export default function Capacitaciones() {
                             <div className='grid grid-cols-2 gap-4 mt-10'>
                                 <div>
                                     {esFechaPasada(capacitacion.fin) && (
-                                        <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] text-tertiary text-14 px-5 py-2'>Finalizado</span>
+                                        <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] font-garet-bold text-tertiary text-14 px-5 py-2'>Finalizado</span>
                                     )}   
                                 </div>
                                 <div>
@@ -128,19 +128,20 @@ export default function Capacitaciones() {
             </div>
 
 
-            <ReactPaginate
-                previousLabel={"Ant"}
-                nextLabel={"Sig"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / itemsPerPage)}
-            />
+            {pageCount > 1 && (
+                        <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            breakLabel={'...'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                            forcePage={Math.floor(itemOffset / itemsPerPage)}
+                        />
+                    )}
         </div>
     )
 }

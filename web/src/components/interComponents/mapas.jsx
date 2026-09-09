@@ -85,9 +85,9 @@ export default function Mapas() {
                 <div className='col-span-1 lg:col-span-7'>
                     <h1 className='text-center lg:text-left text-primary text-36 font-garet-extra'>{singleMapa.titulo}</h1>
                     <div className='flex gap-4 my-10 flex-wrap '>
-                        <p className='font-garet bg-[#FFF2E5] border border-[#FF83004D] text-tertiary rounded-xl px-4 py-2 text-14'>{singleMapa.anyo}</p>
-                        <p className='font-garet bg-[#DDE7FF] border border-[#162A554D] text-titulo rounded-xl px-4 py-2 text-14'>{singleMapa.tipo}</p> 
-                        <p className='font-garet bg-[#F3EAFF] border border-[#5C24724D] text-primary rounded-xl px-4 py-2 text-14'>{singleMapa.tipo}</p>
+                        <p className='font-garet-bold bg-[#FFF2E5] border border-[#FF83004D] text-tertiary rounded-xl px-4 py-2 text-14'>{singleMapa.anyo}</p>
+                        <p className='font-garet-bold bg-[#DDE7FF] border border-[#162A554D] text-titulo rounded-xl px-4 py-2 text-14'>{singleMapa.tipo}</p> 
+                        <p className='font-garet-bold bg-[#F3EAFF] border border-[#5C24724D] text-primary rounded-xl px-4 py-2 text-14'>{singleMapa.tipo}</p>
                     </div>
                     {singleMapa.imagen && (
                     <div className='my-8'>

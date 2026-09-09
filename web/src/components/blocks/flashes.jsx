@@ -171,13 +171,13 @@ export default function Flashes() {
 
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                             {lastFlash.periocidad && (
-                                <p className='text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{lastFlash.periocidad}</p>
+                                <p className='font-garet-bold text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{lastFlash.periocidad}</p>
                             )}
                             {lastFlash.fecha_publicacion && (
-                                <p className='text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                <p className='font-garet-bold text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                             )}
                             {lastFlash.fuente && (
-                                <p className='text-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>{lastFlash.fuente}</p>                            
+                                <p className='font-garet-bold text-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>{lastFlash.fuente}</p>                            
                             )}                            
                         </div>
                         {lastFlash.link && (
@@ -311,20 +311,19 @@ export default function Flashes() {
             </div>
 
             {pageCount > 1 && (
-                <ReactPaginate
-                    previousLabel={"<"}
-                    nextLabel={">"}
-                    breakLabel={"..."}
-                    breakClassName={"break-me"}
-                    pageCount={pageCount}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={3}
-                    onPageChange={handlePageClick}
-                    containerClassName={"pagination"}
-                    activeClassName={"active"}
-                    forcePage={Math.floor(itemOffset / itemsPerPage)}
-                />
-            )}
+                        <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            breakLabel={'...'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                            forcePage={Math.floor(itemOffset / itemsPerPage)}
+                        />
+                    )}
         </div>
     )
 }

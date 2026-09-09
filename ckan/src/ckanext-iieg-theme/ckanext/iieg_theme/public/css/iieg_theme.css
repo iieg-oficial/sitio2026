@@ -347,7 +347,7 @@ body, .main {
 .masthead .main-navbar ul li:hover a, 
 .masthead .main-navbar ul li:focus a, .masthead .main-navbar ul li.active a,
 .account-masthead .account ul li a:hover{
-  background-color: var(--iieg-accent) !important;
+  background-color: var(--iieg-secondary) !important;
 }
 
 .account-masthead .account ul li a{
@@ -413,4 +413,12 @@ body, .main {
   width: 100% !important;
   float: left !important;
   margin-bottom: 50px !important;
+}
+
+.recent-datasets-list li a{
+  color: var(--iieg-primary) !important;
+}
+
+.recent-datasets-list li a:hover{
+  color: var(--iieg-secondary) !important;
 }

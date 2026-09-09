@@ -104,8 +104,8 @@ export default function Sistemas() {
             <div className="relative container mx-auto px-2 mt-15">
                     <span class="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
                     <div
-                        className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto sm:overflow-visible snap-x snap-mandatory"
-                        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
+                        className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto snap-x snap-mandatory"
+                        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: '5px' }}
                     >
                         {tabs.map((tab, index) => (
                             <TabButton
@@ -152,7 +152,7 @@ export default function Sistemas() {
                                         </div>
                                         <div className='lg:col-span-6 mt-5'>
                                             {sistema.tipo && (
-                                                <span className={`e${sistema.tipo} rounded-xl px-4 py-2 text-14`}>
+                                                <span className={`e${sistema.tipo} rounded-xl px-4 py-2 text-14 font-garet-bold`}>
                                                     {sistema.tipo_label || sistema.tipo.replace('-', ' ')}
                                                 </span>
                                             )}
