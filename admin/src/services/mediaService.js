@@ -4,6 +4,24 @@ const DB_NAME = 'CMS_MediaStorage';
 const DB_VERSION = 1;
 const STORE_NAME = 'media_files';
 
+const DEFAULT_MAX_SIZE = 100 * 1024 * 1024; // 10 MB
+
+const ALLOWED_MIME_MAP = {
+    'jpg':  { mime: 'image/jpeg',      bytes: [0xFF, 0xD8, 0xFF] },
+    'jpeg': { mime: 'image/jpeg',      bytes: [0xFF, 0xD8, 0xFF] },
+    'png':  { mime: 'image/png',       bytes: [0x89, 0x50, 0x4E, 0x47] },
+    'gif':  { mime: 'image/gif',       bytes: [0x47, 0x49, 0x46, 0x38] },
+    'pdf':  { mime: 'application/pdf', bytes: [0x25, 0x50, 0x44, 0x46] },
+    'zip':  { mime: 'application/zip', bytes: [0x50, 0x4B, 0x03, 0x04] },
+    'doc':  { mime: 'application/msword', bytes: [0xD0, 0xCF, 0x11, 0xE0] },
+    'docx': { mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', bytes: [0x50, 0x4B, 0x03, 0x04] },
+    'xls':  { mime: 'application/vnd.ms-excel', bytes: [0xD0, 0xCF, 0x11, 0xE0] },
+    'xlsx': { mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', bytes: [0x50, 0x4B, 0x03, 0x04] },
+    'xml':  { mime: 'application/xml', textFallback: true },
+    'json': { mime: 'application/json', textFallback: true },
+    'csv':  { mime: 'text/csv',        textFallback: true }
+};
+
 let dbInstance = null;
 
 const initDB = () => {
@@ -69,6 +87,55 @@ const deleteFromIndexedDB = async (id) => {
     }
 };
 
+/**
+ * Lee los primeros bytes del archivo para verificar su "firma digital" real (Magic Bytes)
+ */
+const readMagicBytes = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+            if (e.target.readyState === FileReader.DONE) {
+                const uint = new Uint8Array(e.target.result);
+                const bytes = [];
+                uint.forEach((byte) => bytes.push(byte));
+                resolve(bytes);
+            } else {
+                reject(new Error('No se pudo leer la cabecera del archivo'));
+            }
+        };
+        // Leemos solo los primeros 8 bytes
+        const blob = file.slice(0, 8);
+        reader.readAsArrayBuffer(blob);
+    });
+};
+
+/**
+ * Valida tamaño, extensión y Magic Bytes del archivo.
+ */
+export const validateFileClientSecurity = async (file, maxSize = DEFAULT_MAX_SIZE) => {
+    // 1. Validar Tamaño
+    if (file.size > maxSize) {
+        throw new Error(`El archivo excede el tamaño máximo permitido de ${formatFileSize(maxSize)}.`);
+    }
+
+    // 2. Extraer extensión del nombre
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    if (!extension || !ALLOWED_MIME_MAP[extension]) {
+        throw new Error(`La extensión .${extension} no está permitida.`);
+    }
+
+    const expectedConfig = ALLOWED_MIME_MAP[extension];
+
+    // 3. Validar Magic Bytes
+    const fileBytes = await readMagicBytes(file);
+    const isValidSignature = expectedConfig.bytes.every((byte, index) => fileBytes[index] === byte);
+
+    if (!isValidSignature) {
+        throw new Error(`El contenido del archivo no coincide con una firma válida de tipo .${extension}`);
+    }
+
+    return true;
+};
 
 export const getMediaFiles = async (filters = {}) => {
     try {
@@ -99,6 +166,9 @@ export const getMediaFile = async (id) => {
 
 export const uploadMediaFile = async (file, options = {}) => {
     try {
+        const maxSize = options.maxSize || DEFAULT_MAX_SIZE;
+        await validateFileClientSecurity(file, maxSize);
+
         const formData = new FormData();
         formData.append('file', file);
 

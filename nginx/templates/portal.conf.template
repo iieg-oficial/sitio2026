@@ -6,6 +6,7 @@ upstream ckan_backend {
     server portal-ckan:5000;
 }
 
+
 server {
     listen 80;
     server_name _;
@@ -141,6 +142,9 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Content-Disposition "attachment; filename=\"$request_filename\"" always;
+        add_header Content-Security-Policy "default-src 'none';" always;
         proxy_connect_timeout 60;
         proxy_send_timeout 60;
         proxy_read_timeout 60;
