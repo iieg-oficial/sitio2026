@@ -21,6 +21,8 @@ services:
     restart: unless-stopped
     ports:
       - "${NGINX_PORT:?NGINX_PORT is required}:80"
+    volumes:
+      - ./security-headers.inc:/etc/nginx/conf.d/security-headers.inc:ro
     environment:
       ACERVO_UPSTREAM_URL: ${ACERVO_UPSTREAM_URL:?ACERVO_UPSTREAM_URL is required}
       ACERVO_UPSTREAM_HOST: ${ACERVO_UPSTREAM_HOST:?ACERVO_UPSTREAM_HOST is required}
