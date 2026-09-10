@@ -38,7 +38,7 @@ export default function ConvocatoriasInst() {
         <section className='lg:w-8/12 mx-auto my-15'>
             <div className='grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4 mx-auto w-11/12 md:w-full'>
                 {singleConvocatoria.instituciones.map((institucion) => (
-                    <div key={institucion.id} className='rounded-3xl gap-4'>
+                    <div key={institucion.id} className='bg-card p-6 rounded-xl gap-4'>
                         <img src={institucion.logo} alt="{institucion.nombre}" />                        
                     </div>
                 ))}

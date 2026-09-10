@@ -83,10 +83,10 @@ export default function Capacitaciones() {
                                     )}                        
                                     {singleCapacitacion.formulario && !esFechaPasada(singleCapacitacion.fin) ? (
                                         <TrackedLink key={singleCapacitacion.id} to={singleCapacitacion.formulario} target="_blank">
-                                            <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
+                                            <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2 border'>Inscribete aquí</span>
                                         </TrackedLink>
                                     ): 
-                                        <span className='rounded-2xl bg-etiqueta-ter text-titulo! text-14 px-5 py-2'>Convocatoria cerrada</span>
+                                        <span className='rounded-2xl bg-etiqueta-ter text-titulo! text-14 px-5 py-2 border'>Convocatoria cerrada</span>
                                     }
                                 </div>
                             </div>                            
@@ -105,29 +105,29 @@ export default function Capacitaciones() {
                                 <div className='flex flex-wrap mb-12.5 gap-1'>
                                 {singleCapacitacion.inicio && (
                                 <div className='mb-3 lg:pt-4'>
-                                    <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
+                                    <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-garet-bold border text-26 px-5 py-2'>
                                         Inicio de clases: {dayjs(singleCapacitacion.inicio).format('D [de] MMMM [de] YYYY')}                             
                                     </p>
                                 </div>
                                 )}
                                 {singleCapacitacion.formato && (
                                 <div className='mb-3 lg:pt-4'>
-                                    <p className='rounded-2xl bg-etiqueta-ter text-titulo! text-26 font-bold px-5 py-2'>
+                                    <p className='rounded-2xl bg-etiqueta-ter text-titulo! text-26 font-garet-bold border px-5 py-2'>
                                         Formato: {singleCapacitacion.formato}
                                     </p>
                                 </div>
                                 )}
                                 {singleCapacitacion.Horario && (
                                 <div className='mb-3 lg:pt-4'>
-                                    <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
+                                    <p className='rounded-2xl bg-etiqueta text-primary text-26 font-garet-bold border px-5 py-2'>
                                         Horario: {singleCapacitacion.Horario}
                                     </p>
                                 </div>
                                 )}
                             </div>
-                            <h2 className='text-primary text-36 font-garet-extra'>Objetivo</h2>
-                            <SafeHtml htmlContent={singleCapacitacion.Objetivo} className='text-titulo! text-22! mt-5 prose max-w-none cursos'/>
+                            <h2 className='text-primary text-36 font-garet-extra'>Objetivo</h2>                            
                         </div>
+                        <SafeHtml htmlContent={singleCapacitacion.Objetivo} className='text-titulo! text-22! mt-5 prose max-w-none cursos bg-card p-6 rounded-xl col-span-12'/>
                     </div>
                     )}
                     {singleCapacitacion.p_ingreso && (
@@ -136,9 +136,9 @@ export default function Capacitaciones() {
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
-                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Ingreso</h2>
-                            <SafeHtml htmlContent={singleCapacitacion.p_ingreso} className='text-titulo! text-22! mt-5 prose max-w-none cursos'/>
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Ingreso</h2>                            
                         </div>
+                        <SafeHtml htmlContent={singleCapacitacion.p_ingreso} className='text-titulo! text-22! mt-5 prose max-w-none cursos bg-card p-6 rounded-xl col-span-12'/>
                     </div>
                     )}
                     {singleCapacitacion.p_egreso && (
@@ -147,9 +147,9 @@ export default function Capacitaciones() {
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
-                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Egreso</h2>
-                            <SafeHtml htmlContent={singleCapacitacion.p_egreso} className='text-titulo! text-22! mt-5 prose max-w-none cursos'/>
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Egreso</h2>                            
                         </div>
+                        <SafeHtml htmlContent={singleCapacitacion.p_egreso} className='text-titulo! text-22! mt-5 prose max-w-none cursos bg-card p-6 rounded-xl col-span-12'/>
                     </div>
                     )}
                 </section>
@@ -160,32 +160,31 @@ export default function Capacitaciones() {
                     <div className='col-span-1'></div>
                     <div className='col-span-11 grid lg:grid-cols-2 gap-5'>
                         {singleCapacitacion.inscripcion && (
-                        <div className='my-5'>
+                        <div className='my-5 bg-card p-6 rounded-xl'>
                             <strong className='text-primary font-garet-extra text-36 mb-10'>Inscripción</strong> 
-                            <SafeHtml htmlContent={singleCapacitacion.inscripcion} className='text-titulo! text-20! mt-5 prose max-w-none cursos'/>  
-                                                  
+                            <SafeHtml htmlContent={singleCapacitacion.inscripcion} className='text-titulo! text-20! mt-5 prose max-w-none cursos'/>                                                    
                         </div>
                         )}
                         {singleCapacitacion.acreditacion && (
-                        <div className='my-5'>
+                        <div className='my-5 bg-card p-6 rounded-xl'>
                             <strong className='text-primary font-garet-extra text-36 mb-10'>Acreditación</strong> 
                             <SafeHtml htmlContent={singleCapacitacion.acreditacion} className='text-titulo! text-20! mt-5 prose max-w-none cursos'/>                        
                         </div>
                         )}
                         {singleCapacitacion.vigencia && (
-                        <div className='my-5'>
+                        <div className='my-5 bg-card p-6 rounded-xl'>
                             <strong className='text-primary font-garet-extra text-36'>Vigencia</strong> 
                             <p className='text-titulo! text-20! pt-6'>{singleCapacitacion.vigencia}</p>
                         </div>
                         )}
                         {singleCapacitacion.contacto && (
-                        <div className='my-5'>
+                        <div className='my-5 bg-card p-6 rounded-xl'>
                             <strong className='text-primary font-garet-extra text-36'>Contacto</strong> 
                             <p className='text-titulo! text-20! textpt-6'>{singleCapacitacion.contacto}</p>
                         </div>
                         )}
                         {singleCapacitacion.clave && (
-                        <div className='my-5'>
+                        <div className='my-5 bg-card p-6 rounded-xl'>
                             <strong className='text-primary font-garet-extra text-36'>Clave</strong> 
                             <p className='text-titulo! text-20! pt-6'>{singleCapacitacion.clave}</p>
                         </div>

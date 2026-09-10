@@ -79,15 +79,15 @@ export default function Convocatorias() {
                                 <div className='mt-5 flex flex-wrap gap-5'>
                                     {singleConvocatoria.archivo && (
                                         <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.archivo} target="_blank" download>
-                                            <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Descarga el archivo informativo</span>
+                                            <span className='rounded-2xl bg-etiqueta-ter text-primary border text-14 px-5 py-2 font-garet-bold'>Descarga el archivo informativo</span>
                                         </TrackedLink>
                                     )}
                                     {singleConvocatoria.formulario && !esFechaPasada(singleConvocatoria.fin) ? (
                                         <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.formulario} target="_blank">
-                                            <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
+                                            <span className='rounded-2xl bg-etiqueta-ter text-primary border text-14 px-5 py-2 font-garet-bold'>Inscribete aquí</span>
                                         </TrackedLink>
                                     ): 
-                                        <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2 mt-5'>Convocatoria cerrada</span>
+                                        <span className='rounded-2xl bg-etiqueta-ter border-titulo border text-titulo text-14 px-5 py-2 mt-5 font-garet-bold'>Convocatoria cerrada</span>
                                     }
                                 </div>
                             </div>
@@ -103,33 +103,32 @@ export default function Convocatorias() {
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
-                            <div className="flez flex-wrap mb-12.5 gap-1">
+                            <div className="flex flex-wrap mb-12.5 gap-1">
                                 {singleConvocatoria.inicio && (
                                     <div className='mb-3 lg:pt-4'>
-                                        <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
+                                        <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-garet-bold border text-26 px-5 py-2'>
                                             Inicio: {dayjs(singleConvocatoria.inicio).format('D [de] MMMM [de] YYYY')}                             
                                         </p>
                                     </div>
                                 )}
                                 {singleConvocatoria.tipo_curso.formato && (
                                     <div className='mb-3 lg:pt-4'>
-                                        <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
+                                        <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-garet-bold border px-5 py-2'>
                                             Formato: {singleConvocatoria.tipo_curso.formato}
                                         </p>
                                     </div>
                                 )}
                                 {singleConvocatoria.Horario && (
                                     <div className='mb-3 lg:pt-4'>
-                                        <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
+                                        <p className='rounded-2xl bg-etiqueta text-primary text-26 font-garet-bold border px-5 py-2'>
                                             Horario: {singleConvocatoria.Horario}
                                         </p>
                                     </div>
                                 )}
                             </div>
                             <h2 className='text-primary text-36 font-garet-extra'>Objetivo</h2>
-                            
-                            <SafeHtml htmlContent={singleConvocatoria.Objetivo} className='mt-5 prose max-w-none cursos text-22! text-titulo!'/>
                         </div>
+                        <SafeHtml htmlContent={singleConvocatoria.Objetivo} className='mt-5 prose max-w-none cursos text-22! text-titulo! bg-card p-6 rounded-xl col-span-12'/>
                     </div>
                 )}
                 {singleConvocatoria.p_ingreso && (
@@ -138,10 +137,9 @@ export default function Convocatorias() {
                             <img src="" alt="" />
                         </div>
                         <div className='col-span-11'>
-                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Ingreso</h2>
-                            <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none cursos text-22! text-titulo!'/>
-
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Ingreso</h2>                        
                         </div>
+                        <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none cursos text-22! text-titulo! bg-card p-6 rounded-xl col-span-12'/>
                         
                     </div>
                 )}
@@ -152,10 +150,8 @@ export default function Convocatorias() {
                         </div>
                         <div className='col-span-11'>
                             <h2 className='text-primary text-36 font-garet-extra'>Perfil de Egreso</h2>
-                                             
-                            <SafeHtml htmlContent={singleConvocatoria.p_egreso} className='mt-5 prose max-w-none cursos text-22! text-titulo!'/>
                         </div>
-                        
+                        <SafeHtml htmlContent={singleConvocatoria.p_egreso} className='mt-5 prose max-w-none cursos text-22! text-titulo! bg-card p-6 rounded-xl col-span-12'/>                        
                     </div>
                 )}
                 </section>
@@ -166,13 +162,13 @@ export default function Convocatorias() {
                     <div className='col-span-1'></div>
                     <div className='col-span-11 grid lg:grid-cols-2 gap-5'>
                         {singleConvocatoria.vigencia && (
-                        <div className='my-5'>
+                        <div className='my-5 bg-card p-6 rounded-xl'>
                             <strong className='text-primary font-garet-extra text-36 mb-10'>Vigencia</strong> 
                             <p className='text-22! text-titulo! pt-6'>{singleConvocatoria.vigencia}</p>
                         </div>
                         )}
                         {singleConvocatoria.contacto && (
-                        <div className='my-5'>
+                        <div className='my-5 bg-card p-6 rounded-xl'>
                             <strong className='text-primary font-garet-extra text-36'>Contacto</strong> 
                         <p className='text-22! text-titulo! pt-6'>{singleConvocatoria.contacto}</p>
                         </div>

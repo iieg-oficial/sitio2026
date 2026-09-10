@@ -15,6 +15,7 @@ class AreaEnum(str, enum.Enum):
     administracion = "administracion"
     soporte = "soporte"
 
+
 class Perfiles(Base):
     __tablename__ = "perfiles"
 

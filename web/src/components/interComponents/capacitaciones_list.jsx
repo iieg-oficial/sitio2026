@@ -58,7 +58,7 @@ export default function CapacitacionesList({ curso }) {
                                 </div>
                                 <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 xl:hidden!"></span>
                             </div>
-                            <div className='p-5 my-5 md:mx-auto'>
+                            <div className='p-5 my-5 md:mx-auto bg-card rounded-xl p-6'>
                                 {modulosReversed.map((modulo) => {
                                     if (activeTab === modulo.nombre) {
                                         return (
