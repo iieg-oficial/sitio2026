@@ -137,7 +137,7 @@ export default function Sistemas() {
                                             hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
                                         }`}
                                     >
-                                        <div className='sm:w-[150px] md:h-[60px] lg:h-auto lg:col-span-2'>
+                                        <div className='sm:w-[150px] md:h-[115px] lg:h-auto lg:w-full lg:col-span-2'>
                                             <img
                                                 src={sistema.imagen ? sistema.imagen : 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png'}                                                
                                                 alt={sistema.titulo}

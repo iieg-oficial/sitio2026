@@ -160,6 +160,7 @@ services:
       # DOWNLOAD_PROXY = URL pública base para los links de descarga
       # Apunta a /acervo/ en tu propio Nginx para que éste lo proxee al acervo externo
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
+      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:-file:///srv/app/licenses.json}
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme

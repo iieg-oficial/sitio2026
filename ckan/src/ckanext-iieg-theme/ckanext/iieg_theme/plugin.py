@@ -3,7 +3,7 @@ from __future__ import annotations
 from cmath import log
 from collections.abc import Callable
 from typing import Any
-
+import os
 import ckan.lib.helpers as h
 from ckan.common import CKANConfig, config
 from ckan.config.declaration import Declaration, Key
@@ -145,7 +145,11 @@ class IiegThemePlugin(plugins.SingletonPlugin):
 
        
         # Asignación directa
-        config['licenses_group_url'] = 'file:///srv/app/licenses.json'
+        #config['licenses_group_url'] = 'file:///srv/app/licenses.json'
+        licenses_url = os.getenv(
+            "LICENSES_GROUP_URL", "file:///srv/app/licenses.json"
+        )        
+        config['licenses_group_url'] = licenses_url
 
 
     
