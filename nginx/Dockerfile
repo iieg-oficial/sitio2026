@@ -39,6 +39,7 @@ RUN npm run build
 FROM nginx:alpine
 RUN rm -f /etc/nginx/conf.d/default.conf
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx/security-headers.inc /etc/nginx/conf.d/security-headers.inc
 COPY ./nginx/templates/portal.conf.template /etc/nginx/templates/portal.conf.template
 COPY ./nginx/static /usr/share/nginx/static
 COPY --from=web-builder /app/dist /usr/share/nginx/html

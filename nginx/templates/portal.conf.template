@@ -197,12 +197,10 @@ server {
     }
 
     location / {
-        include /etc/nginx/conf.d/security-headers.inc;
         try_files $uri /index.html;
     }
 
     location = /index.html {
-        include /etc/nginx/conf.d/security-headers.inc;
         add_header Cache-Control "no-store" always;
     }
 }
