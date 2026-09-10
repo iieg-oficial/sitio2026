@@ -99,10 +99,12 @@ cat <RESPALDO>/databases/portal.dump | docker compose --env-file .env.production
 cat <RESPALDO>/databases/ckan-globals.sql | docker compose --env-file .env.production -f docker-compose.yml exec -T ckan-db \
   psql -U postgres -d postgres
 cat <RESPALDO>/databases/ckan.dump | docker compose --env-file .env.production -f docker-compose.yml exec -T ckan-db \
-  pg_restore -U postgres -d ckan_default --clean --if-exists --no-owner
+  pg_restore -U postgres -d ckan_default --clean --if-exists --no-owner --role=ckan
 cat <RESPALDO>/databases/datastore.dump | docker compose --env-file .env.production -f docker-compose.yml exec -T ckan-db \
-  pg_restore -U postgres -d datastore_default --clean --if-exists --no-owner
+  pg_restore -U postgres -d datastore_default --clean --if-exists --no-owner --role=ckan
 ```
+
+`ckan_default` y `datastore_default` deben conservar a `ckan` como propietario: CKAN se conecta con ese usuario. `--no-owner` evita restaurar propietarios del servidor de origen, mientras que `--role=ckan` hace que los objetos restaurados queden bajo el rol correcto. Si se conecta directamente como `ckan`, no es necesario pasar `--role=ckan`.
 
 Después inicia los servicios:
 
