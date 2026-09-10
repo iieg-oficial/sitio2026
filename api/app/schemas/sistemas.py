@@ -1,16 +1,18 @@
-from pydantic import BaseModel, field_validator, computed_field
-from enum import Enum
 from typing import List, Optional
-from app.schemas.subject import SubjectFlat
+
+from pydantic import BaseModel, computed_field, field_validator
+
 from app.models.sistemas import TipoSistemaEnum
+from app.schemas.subject import SubjectFlat
+
 
 class SistemasCreate(BaseModel):
     titulo: str
     descripcion: Optional[str]
     link: Optional[str] = None
     tipo: TipoSistemaEnum
-    imagen: Optional[str] = None 
-    claves: Optional[str] = None    
+    imagen: Optional[str] = None
+    claves: Optional[str] = None
     slug: Optional[str] = None
     tema_ids: Optional[List[int]] = None
     destacado: Optional[bool] = False
@@ -42,7 +44,7 @@ class SistemasOut(BaseModel):
     link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     slug: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
     destacado: Optional[bool] = False
@@ -60,7 +62,7 @@ class SistemasResponse(BaseModel):
     link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     slug: Optional[str] = None
     destacado: bool = False
     slider: bool = False

@@ -1,9 +1,8 @@
-import os
 import boto3
 from botocore.client import Config
-import sys
 
 from app.core.settings import get_settings
+
 settings = get_settings()
 
 print(f"Using Endpoint: {settings.acervo_s3_url}")

@@ -2,6 +2,7 @@
 .env.*
 !.env.*.example
 
+backups/
 node_modules/
 dist/
 build/
@@ -25,6 +26,7 @@ htmlcov/
 .tox/
 venv/
 .venv/
+.venv_test/
 env/
 
 .DS_Store

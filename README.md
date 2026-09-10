@@ -39,7 +39,7 @@ Acceso:
 - CMS admin: http://localhost:18080/portal-admin
 - CKAN: http://localhost:18080/datos-abiertos/
 
-Detalle de URLs, puertos y credenciales por defecto en [docs/AMBIENTES.md](./docs/AMBIENTES.md).
+Detalle de URLs, puertos y credenciales por defecto en [docs/ambientes.md](./docs/ambientes.md).
 
 ## Comandos
 
@@ -60,11 +60,13 @@ make shell-admin              # sh en admin (solo dev)
 
 | Documento | Descripción |
 |---|---|
-| [Ambientes](./docs/AMBIENTES.md) | Levantar dev / prod / gcp, URLs, troubleshooting |
-| [Infraestructura](./docs/INFRAESTRUCTURA.md) | Stack, arquitectura, redes Docker, convenciones |
-| [Media y Acervo](./docs/MEDIA_ACERVO.md) | Cómo subir/leer archivos al S3, MediaSelector, buckets |
-| [Flow de componente](./docs/FLOW_COMPONENTE.md) | Crear un componente end-to-end (DB → API → CMS → web) |
-| [Drafts](./docs/DRAFTS.md) | Sistema de borradores genérico |
+| [Ambientes](./docs/ambientes.md) | Levantar dev / prod / gcp, URLs, troubleshooting |
+| [Infraestructura](./docs/infraestructura.md) | Stack, arquitectura, redes Docker, convenciones |
+| [Media y Acervo](./docs/media_acervo.md) | Cómo subir/leer archivos al S3, MediaSelector, buckets |
+| [Flow de componente](./docs/flow_componente.md) | Crear un componente end-to-end (DB → API → CMS → web) |
+| [Drafts](./docs/drafts.md) | Sistema de borradores genérico |
+| [Importacion](./docs/importacion_masiva.md) | Guía de importacion mediante seeds |
+| [Migracion servidor](./docs/migracion_servidor_final.md) | Formas para migrar de proxmos a servidor final |
 | [Contribución](./CONTRIBUTING.md) | Guía para contribuidores |
 
 ## Licencia

@@ -1,6 +1,8 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Integer, String, Table, ForeignKey
+
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
+
 from app.core.database import Base
 
 archivo_temas = Table(

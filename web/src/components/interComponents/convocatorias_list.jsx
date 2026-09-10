@@ -9,6 +9,16 @@ export default function ConvocatoriasList() {
     const [activeTab, setActiveTab] = useState(null);
     const [error, setError] = useState(null);
 
+    const AREA_LABELS = {
+        desarrollo: 'Desarrollo de Software',
+        analisis: 'Análisis de Datos',
+        geoespacial: 'Geoespacial',
+        grafico: 'Diseño Gráfico',
+        juridico: 'Jurídico',
+        administracion: 'Administración',
+        soporte: 'Soporte Técnico',
+    };
+
     useEffect(() => {
         const fetchConvocatoria = async () => {
             try {
@@ -58,20 +68,19 @@ export default function ConvocatoriasList() {
                                     : 'bg-white text-body hover:bg-[#FFF2E5] hover:text-tertiary hover:border-1'}`
                                 }
                         >
-                            {perfil.area}
+                            {AREA_LABELS[perfil.area] || perfil.area}
                         </button>
                     ))}
                 </div>
                 <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 xl:hidden!"></span>
             </div>
             
-            <div className='p-5 my-5 mx-auto md:px-10 xl:px-25'>
+            <div className='p-5 my-5 mx-auto md:px-10 xl:px-25 bg-card rounded-xl p-6'>
                 {singleConvocatoria.perfiles.map((perfil) => {
                     if (activeTab === perfil.area) {
                         return (
                             <div key={perfil.id}>
-                                <h2 className='text-tertiary text-28 font-garet-extra'>{perfil.nombre}</h2>
-                                                      
+                                <h2 className='text-tertiary text-28 font-garet-extra'>{perfil.nombre}</h2>                                                      
                                 <SafeHtml htmlContent={perfil.descripcion} className='mt-5 prose max-w-none cursos text-22! text-titulo!'/>
                             </div>
                         )

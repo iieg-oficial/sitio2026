@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from slugify import slugify
+
 from app.api.deps import get_db
 from app.models import Modulos
-from app.schemas.modulos import ModulosResponse, ModulosOut
+from app.schemas.modulos import ModulosOut, ModulosResponse
 
 router = APIRouter(prefix="/modulos", tags=["modulos - public"])
 

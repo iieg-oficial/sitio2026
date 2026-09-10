@@ -4,10 +4,15 @@ import string
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, require_role, verify_csrf
+from app.api.deps import get_current_user, get_db, verify_csrf
 from app.core.security import hash_password, verify_password
 from app.models.user import Usuario
-from app.schemas.user import PasswordChange, PasswordReset, UsuarioCreate, UsuarioResponse, UsuarioUpdate
+from app.schemas.user import (
+    PasswordChange,
+    UsuarioCreate,
+    UsuarioResponse,
+    UsuarioUpdate,
+)
 
 router = APIRouter(prefix="/usuarios", tags=["usuarios"])
 
@@ -119,10 +124,10 @@ async def actualizar_usuario(
 
     if "role" in update_data and current_user.role != "tetlamamakani":
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, 
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="No tienes permisos para modificar el rol"
         )
-    
+
     for field, value in update_data.items():
         setattr(usuario, field, value)
 

@@ -11,7 +11,6 @@ were defined in the model but never added to the DB enum). This
 migration imports the model directly so it can never miss a value again.
 """
 from alembic import op
-
 from app.models.cuadernillos import MunicipioEnum
 
 revision = 'b2c3d4e5f6a7'

@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
@@ -14,8 +14,8 @@ def test_resolve_relationships_accepts_subtemas_slugs_for_archivos():
         poolclass=StaticPool,
     )
     Base.metadata.create_all(bind=engine)
-    Session = sessionmaker(bind=engine)
-    with Session() as db:
+    session = sessionmaker(bind=engine)
+    with session() as db:
         root = Subject(titulo="Instrumentos", slug="instrumentos-de-control-y-consulta-archivistica")
         child = Subject(titulo="Fichas técnicas", slug="fichas-tecnicas-de-valoracion-documental", parent=root)
         db.add_all([root, child])
@@ -38,8 +38,8 @@ def test_resolve_relationships_keeps_parent_and_child_slugs_for_archivos():
         poolclass=StaticPool,
     )
     Base.metadata.create_all(bind=engine)
-    Session = sessionmaker(bind=engine)
-    with Session() as db:
+    session = sessionmaker(bind=engine)
+    with session() as db:
         root = Subject(titulo="Grupo interdisciplinario de archivos", slug="grupo-interdisciplinario-de-archivos")
         child = Subject(titulo="Actas", slug="actas", parent=root)
         db.add_all([root, child])

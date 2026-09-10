@@ -69,13 +69,13 @@ export default function Convocatorias() {
                                 <img src={convocatoria.img_portada} alt={convocatoria.titulo} className='rounded-3xl w-full h-full object-cover sm:w-1/2 lg:w-7/12 text-center mx-auto' />
                             </div>
                                 <div className='lg:col-span-4'>
-                                    <h3 className='text-28 text-primary'>{convocatoria.titulo}</h3>                            
+                                    <h3 className='text-28 text-primary font-garet-extra'>{convocatoria.titulo}</h3>                            
                                     
                                     <SafeHtml htmlContent={convocatoria.descripcion} className='diez mt-5' />
                                     <div className='grid grid-cols-2 gap-4 mt-10'>
                                         <div>
                                             {esFechaPasada(convocatoria.fin) && (
-                                                <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] text-tertiary text-14 px-5 py-2'>Finalizado</span>
+                                                <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] font-garet-bold text-tertiary text-14 px-5 py-2'>Finalizado</span>
                                             )}   
                                         </div>
                                         <div>
@@ -113,7 +113,7 @@ export default function Convocatorias() {
                         <img src='https://iieg.jalisco.gob.mx/acervo/portal/cursos/sesiones-informativas.png' alt='Sesiones informativas' className='rounded-3xl w-full h-full object-cover sm:w-1/2 lg:w-7/12 text-center mx-auto' />
                     </div>
                         <div className='lg:col-span-4'>
-                            <h3 className='text-28 text-primary'>Sesiones informativas</h3>                            
+                            <h3 className='text-28 text-primary font-garet-extra'>Sesiones informativas</h3>                            
                                 <div className='diez mt-5'>                        
                                     <p>Presentaciones orientadas a dar a conocer el trabajo, productos y servicios del IIEG, en función de las necesidades del público participante.</p>
                                 </div>

@@ -101,7 +101,7 @@ def normalize_row(row: dict) -> dict:
     slug = (row.get("slug") or "").strip() or slugify(titulo)
     tema_ids = [int(item) for item in split_values(row.get("tema_ids"))]
     tema_slugs = split_values(row.get("tema_slugs"))
-    
+
     subtema_ids = [int(item) for item in split_values(row.get("subtema_ids"))]
     subtema_slugs = split_values(row.get("subtema_slugs"))
 

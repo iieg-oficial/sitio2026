@@ -7,6 +7,11 @@ import { Download, X } from "lucide-react";
 import TrackedLink from '@components/blocks/boton'
 import { SafeHtml } from '@components/SafeHtml';
 
+const BASE_MEDIA_URL = import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo'
+const THUMB_BASE_URL = `${BASE_MEDIA_URL}/thumb/portal/mapas`
+const DEFAULT_IMAGE = `${BASE_MEDIA_URL}/portal/img_postlink.png`
+
+
 export default function Mapas() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
     const [singleMapa, setSingleMapa] = useState(null);
@@ -37,6 +42,11 @@ export default function Mapas() {
 
     const original = singleMapa.imagen
     const thumb = original.substring(original.lastIndexOf('/') + 1);
+    const titulo = singleMapa?.titulo ?? '';
+
+    const srcImagen = thumb 
+        ? `${THUMB_BASE_URL}/${thumb}?w=1280` 
+        : DEFAULT_IMAGE;
                         
   return (
     <>    
@@ -44,30 +54,30 @@ export default function Mapas() {
             <title>{singleMapa.titulo}</title>
              <meta property="og:title" content={singleMapa.titulo} />
                 <meta name="description" content={singleMapa.informacion} />
-                <meta property="og:image" content={singleMapa.imagen ? singleMapa.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
+                <meta property="og:image" content={singleMapa.imagen ? singleMapa.imagen : DEFAULT_IMAGE} />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 {/* Twitter Cards (Específico para X / Twitter) */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={singleMapa.titulo} />
                 <meta name="twitter:description" content={singleMapa.informacion} />
-                <meta name="twitter:image" content={singleMapa.imagen ? singleMapa.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
+                <meta name="twitter:image" content={singleMapa.imagen ? singleMapa.imagen : DEFAULT_IMAGE} />
         </Helmet>
         <article className='w-full px-5 xl:px-5 2xl:px-0 mx-auto md:container md:px-0 mb-15 md:grid md:grid-cols-12 gap-1 mt-10'>
             <div className='md:col-span-1'><Backlink /></div>
             <main className='md:col-span-11 grid grid-cols-1 md:px-2 lg:grid-cols-12 gap-6'>
                 <div className='col-span-1 lg:col-span-5 mapa'>
-                    {/*<img src={singleMapa.imagen ? singleMapa.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={singleMapa.titulo} className='rounded-4xl w-full' />*/}                    
-                    <img src={singleMapa.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280` : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={singleMapa.titulo} className='rounded-3xl image-mapa' 
+                    
+                    <img src={srcImagen} alt={titulo} className='rounded-3xl image-mapa' 
                         onError={(e) => {
                                     if (!e.target.dataset.triedFallback) {
                                         e.target.dataset.triedFallback = 'true';
                                         e.target.src = singleMapa.imagen 
                                             ? singleMapa.imagen 
-                                            : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                            : DEFAULT_IMAGE;
                                     } else {                                        
                                         e.target.onerror = null;
-                                        e.target.src = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                        e.target.src = DEFAULT_IMAGE;
                                     }
                                 }}
                             />                                                                 
@@ -75,9 +85,9 @@ export default function Mapas() {
                 <div className='col-span-1 lg:col-span-7'>
                     <h1 className='text-center lg:text-left text-primary text-36 font-garet-extra'>{singleMapa.titulo}</h1>
                     <div className='flex gap-4 my-10 flex-wrap '>
-                        <p className='font-garet bg-[#FFF2E5] border border-[#FF83004D] text-tertiary rounded-xl px-4 py-2 text-14'>{singleMapa.anyo}</p>
-                        <p className='font-garet bg-[#DDE7FF] border border-[#162A554D] text-titulo rounded-xl px-4 py-2 text-14'>{singleMapa.tipo}</p> 
-                        <p className='font-garet bg-[#F3EAFF] border border-[#5C24724D] text-primary rounded-xl px-4 py-2 text-14'>{singleMapa.tipo}</p>
+                        <p className='font-garet-bold bg-[#FFF2E5] border border-[#FF83004D] text-tertiary rounded-xl px-4 py-2 text-14'>{singleMapa.anyo}</p>
+                        <p className='font-garet-bold bg-[#DDE7FF] border border-[#162A554D] text-titulo rounded-xl px-4 py-2 text-14'>{singleMapa.tipo}</p> 
+                        <p className='font-garet-bold bg-[#F3EAFF] border border-[#5C24724D] text-primary rounded-xl px-4 py-2 text-14'>{singleMapa.tipo}</p>
                     </div>
                     {singleMapa.imagen && (
                     <div className='my-8'>

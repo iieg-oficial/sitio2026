@@ -77,7 +77,7 @@ export default function Blog() {
                 <div className="flex gap-4 my-5 flex-wrap">
                     <p className='bg-[#DDE7FF] text-titulo rounded-3xl px-4 py-2 text-14 border border-[#162A554D]'>{format(new Date(singlePost.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                     {singlePost.subject ?
-                        <p className='bg-[#F3EAFF] text-primary rounded-3xl px-4 py-2 text-14 border boder-[#5C24724D]'>{singlePost.subject?.titulo}</p>
+                        <p className='font-garet-bold bg-[#F3EAFF] text-primary rounded-3xl px-4 py-2 text-14 border boder-[#5C24724D]'>{singlePost.subject?.titulo}</p>
                     : null}
                 </div>                
                 <SafeHtml htmlContent={singlePost.contenido} className='mt-5 prose max-w-none mb-15 text-18 font-garet'/>

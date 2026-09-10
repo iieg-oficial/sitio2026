@@ -116,7 +116,7 @@ export default function Archivo() {
                         <button
                             key={year}
                             onClick={() => handleYearChange(year)}
-                            className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${effectiveActiveYear === year
+                            className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-bold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${effectiveActiveYear === year
                                 ? 'bg-etiqueta-sec text-tertiary border-tertiary'
                                 : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
                         >
@@ -196,7 +196,7 @@ export default function Archivo() {
                                                     <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
                                                         <div className='flex'>
                                                             
-                                                                <div className="col-span-1 group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
+                                                                <div className="col-span-1 group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
                                                                     <span className="material-symbols--download group-hover:bg-white!"></span>
                                                                 </div>
                                                             
@@ -224,7 +224,7 @@ export default function Archivo() {
                                                                     className={`px-4 py-2 rounded-full border font-bold text-18 transition-colors cursor-pointer ${
                                                                         isActive
                                                                             ? 'bg-[#FFF2E5] text-tertiary border-tertiary'
-                                                                            : 'bg-[#F3EAFF] text-primary border-primary hover:border-tertiary hover:text-tertiary'
+                                                                            : 'bg-[#F3EAFF] text-primary border-primary hover:border-tertiary hover:text-tertiary hover:bg-[#FFF2E5]'
                                                                     }`}
                                                                 >
                                                                     {textoBoton}
@@ -247,7 +247,7 @@ export default function Archivo() {
                                                                     <div key={archivo.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
                                                                         <div className='flex'>
                                                                             
-                                                                                <div className="col-span-1 group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
+                                                                                <div className="col-span-1 group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
                                                                                     <span className="material-symbols--download group-hover:bg-white!"></span>
                                                                                 </div>
                                                                             

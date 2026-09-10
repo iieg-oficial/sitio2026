@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.models import Modulos, Usuario
 from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
 
 router = APIRouter(prefix="/modulos", tags=["modulos"])
 
 @router.get("", response_model=ModulosResponse)
-def read_modulo(   
+def read_modulo(
     db: Session = Depends(get_db),
 ):
     """Obtener todos los modulos"""
@@ -41,7 +42,7 @@ def create_modulo(
     while db.query(Modulos).filter(Modulos.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     """Crear un nuevo modulo"""
     db_modulo = Modulos(
         nombre=modulo.nombre,
@@ -64,7 +65,7 @@ def update_modulo(
     db_modulo = db.query(Modulos).filter(Modulos.id == id).first()
     if not db_modulo:
         raise HTTPException(status_code=404, detail="Modulo no encontrado")
-    
+
     update_data = modulo.model_dump(exclude_unset=True)
 
     if "nombre" in update_data and update_data["nombre"] != db_modulo.nombre:

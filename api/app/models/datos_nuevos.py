@@ -1,6 +1,9 @@
 import enum
-from sqlalchemy import Column, Integer, String, Text, Enum
+
+from sqlalchemy import Column, Enum, Integer, String, Text
+
 from app.core.database import Base
+
 
 class NuevoEnum(str, enum.Enum):
     sube = "sube"

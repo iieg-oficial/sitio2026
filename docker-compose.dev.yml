@@ -186,9 +186,13 @@ services:
       CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
       CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: datos-abiertos
       CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
+      CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
+      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?LICENSES_GROUP_URL is required, default file:///srv/app/licenses.json}
     volumes:
       - ckan_storage_dev:/var/lib/ckan
+      - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme
+      - ./ckan/licenses.json:/srv/app/licenses.json
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:5000/api/3/action/status_show"]
       interval: 30s

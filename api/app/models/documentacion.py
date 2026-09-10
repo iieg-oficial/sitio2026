@@ -1,6 +1,8 @@
 import enum
-from sqlalchemy import Column, Integer, String, ForeignKey, Table, Text, Enum
+
+from sqlalchemy import Column, Enum, ForeignKey, Integer, String, Table, Text
 from sqlalchemy.orm import relationship
+
 from app.core.database import Base
 
 documentacion_temas = Table(
@@ -41,14 +43,14 @@ class Documentacion(Base):
     tipo = Column(Enum(TipoEnum), nullable=True)
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=True)
-    
+
     temas = relationship(
         "Subject",
         secondary=documentacion_temas,
         back_populates="documentacion",
         lazy="selectin",
     )
-    
+
     sistemas = relationship(
         "Sistemas",
         secondary=documentacion_sistemas,

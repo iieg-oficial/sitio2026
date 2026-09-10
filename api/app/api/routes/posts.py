@@ -1,13 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
-from sqlalchemy.orm import Session
-from sqlalchemy import select
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Posts, Usuario, Subject
-from app.models.posts import GalleryImage
-from app.schemas.posts import PostCreate, PostOut, PostResponse, PostList
-from slugify import slugify
-import uuid, shutil
 from pathlib import Path
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from slugify import slugify
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
+from app.models import Posts, Subject, Usuario
+from app.models.posts import GalleryImage
+from app.schemas.posts import PostCreate, PostList, PostOut, PostResponse
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 UPLOAD_DIR = Path("static/uploads")
@@ -81,8 +82,8 @@ async def crear_post(
         video=post_in.video,
     )
     nuevo.temas = _load_temas(db, post_in.tema_ids or [])
-    
-    
+
+
     db.add(nuevo)
 
     db.flush()
@@ -90,7 +91,7 @@ async def crear_post(
         nuevo.gallery_images.append(
             GalleryImage(url=url, order=i)
         )
-        
+
     db.commit()
     db.refresh(nuevo)
 
@@ -98,7 +99,7 @@ async def crear_post(
 
 @router.get("/slug/{slug}", response_model=PostOut)
 async def obtener_post_slug(
-    slug: str, 
+    slug: str,
     db: Session = Depends(get_db)
 ):
     post = db.execute(select(Posts).where(Posts.slug == slug)).scalar_one_or_none()
@@ -119,7 +120,7 @@ async def actualizar_post(
     post = db.get(Posts, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post no encontrado")
-    
+
     update_data = post_in.dict(exclude_unset=True)
     if "titulo" in update_data and update_data["titulo"] != post.titulo:
         slug = slugify(update_data["titulo"])
@@ -131,10 +132,10 @@ async def actualizar_post(
         update_data["slug"] = slug
     elif "slug" in update_data and not update_data["slug"]:
         del update_data["slug"]
-    
+
     if "tema_ids" in update_data:
         post.temas = _load_temas(db, update_data.pop("tema_ids") or [])
-    
+
     if "gallery_urls" in update_data:
         gallery_urls = update_data.pop("gallery_urls") or []
         post.gallery_images.clear()
@@ -144,10 +145,10 @@ async def actualizar_post(
 
     for campo, valor in update_data.items():
         setattr(post, campo, valor)
-    
+
     db.commit()
     db.refresh(post)
-    
+
     return post
 
 @router.delete("/{post_id}")

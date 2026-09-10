@@ -60,7 +60,7 @@ export default function PlataformasSlider() {
             {plataformas.map(plataforma => (
                         <SwiperSlide key={plataforma.id} className="place-items-center p-2 pb-14" >
                             <a href={plataforma.link} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center group">
-                                <img src={plataforma.imagen_slider || "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={plataforma.titulo} className="w-full object-cover group-hover:scale-110"/>                                                              
+                                <img src={plataforma.imagen_slider || "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={plataforma.titulo} className="w-full object-cover group-hover:scale-110 rounded-xl bg-white border border-[#E6EEFF] p-3"/>                                                              
                             </a>
                         </SwiperSlide>
                     ))} 

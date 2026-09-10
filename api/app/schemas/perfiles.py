@@ -1,15 +1,17 @@
-from pydantic import BaseModel
 from enum import Enum
 from typing import List, Optional
+
+from pydantic import BaseModel
+
 
 class AreaEnum(str, Enum):
     desarrollo = "desarrollo"
     analisis = "analisis"
-    geoespacial = "geoespacial"    
+    geoespacial = "geoespacial"
     grafico = "grafico"
     juridico = "juridico"
     administracion = "administracion"
-    soporte = "soporte"    
+    soporte = "soporte"
 
 class PerfilesCreate(BaseModel):
     nombre: str

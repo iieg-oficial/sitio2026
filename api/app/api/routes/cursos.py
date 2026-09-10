@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session, joinedload
-
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Cursos, Usuario, Modulos, Instituciones, Perfiles, Profesores, Subject
-from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 from slugify import slugify
 from sqlalchemy import select
+from sqlalchemy.orm import Session, joinedload
+
+from app.api.deps import get_db, verify_csrf
+from app.models import Cursos, Instituciones, Modulos, Perfiles, Profesores, Subject, Usuario
+from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 
 router = APIRouter(prefix="/cursos", tags=["cursos"])
 
@@ -44,7 +44,7 @@ def create_cursos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    
+
     # Validar y obtener objetos de las relaciones many-to-many
     modulos = (
         db.query(Modulos).filter(Modulos.id.in_(cursos.modulos)).all()
@@ -120,7 +120,7 @@ def create_cursos(
         formulario=cursos.formulario,
         slug=slug,
     )
-    
+
     db_cursos.modulos = modulos
     db_cursos.instituciones = instituciones
     db_cursos.perfiles = perfiles
@@ -129,7 +129,7 @@ def create_cursos(
 
     db.add(db_cursos)
     db.flush()
-    
+
     db.commit()
     db.refresh(db_cursos)
 
@@ -257,7 +257,7 @@ def update_cursos(
         db_cursos.temas = _load_temas(db, cursos.tema_ids)
 
     update_data = dict(cursos)
-    
+
     if "titulo" in update_data and update_data["titulo"] != db_cursos.titulo:
         slug = slugify(update_data["titulo"])
         base_slug = slug

@@ -142,24 +142,16 @@ services:
       CKAN___SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CKANEXT__S3FILESTORE__SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
-      # HOST_NAME = endpoint_url de boto3. Con path-style, boto3 construye:
-      # HOST_NAME / BUCKET / STORAGE_PATH / archivo
-      # => https://iieg.jalisco.gob.mx/acervo / portal / datos-abiertos / file  ✅
-      # Por eso HOST_NAME debe incluir /acervo (usar ACERVO_S3_URL, no ACERVO_S3_HOST)
       CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
       CKANEXT__S3FILESTORE__REGION_NAME: us-east-1
       CKANEXT__S3FILESTORE__AWS_ACCESS_KEY_ID: ${ACERVO_ACCESS_KEY:?ACERVO_ACCESS_KEY is required}
       CKANEXT__S3FILESTORE__AWS_SECRET_ACCESS_KEY: ${ACERVO_SECRET_KEY:?ACERVO_SECRET_KEY is required}
       CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
-      # AWS_STORAGE_PATH = prefijo de carpeta dentro del bucket (sin /acervo, ya está en HOST_NAME)
-      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:-datos-abiertos}
+      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:?CKAN_S3_STORAGE_PATH is required}
       CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
-      # Evita que CKAN verifique el bucket al arrancar (HeadBucket → 403 → crash loop)
-      # El error de autenticación aparecerá al subir un archivo, no al iniciar
       CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
-      # DOWNLOAD_PROXY = URL pública base para los links de descarga
-      # Apunta a /acervo/ en tu propio Nginx para que éste lo proxee al acervo externo
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
+      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?file:///srv/app/licenses.json}
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme
@@ -225,8 +217,8 @@ services:
       ACERVO_IIEG_SECRET_KEY: ${ACERVO_IIEG_SECRET_KEY:?ACERVO_IIEG_SECRET_KEY is required}
       ACERVO_IIEG_BUCKET_NAME: ${ACERVO_IIEG_BUCKET_NAME:?ACERVO_IIEG_BUCKET_NAME is required}
       ACERVO_API_KEY: ${ACERVO_API_KEY}
-      ACERVO_API_KEY_HEADER: ${ACERVO_API_KEY_HEADER:-x-api-key}
-      SEED_EXAMPLES: ${SEED_EXAMPLES:-false}
+      ACERVO_API_KEY_HEADER: ${ACERVO_API_KEY_HEADER:?ACERVO_API_KEY_HEADER is required}
+      SEED_EXAMPLES: ${SEED_EXAMPLES:?SEED_EXAMPLES is required}
       SMTP_USER: ${SMTP_USER:?SMTP_USER is required}
       SMTP_PASSWORD: ${SMTP_PASSWORD:?SMTP_PASSWORD is required}
       CONTACT_DEST_EMAIL: ${CONTACT_DEST_EMAIL:?CONTACT_DEST_EMAIL is required}

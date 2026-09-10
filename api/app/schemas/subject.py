@@ -1,7 +1,8 @@
 from __future__ import annotations
-from pydantic import BaseModel
 
-from typing import Optional, List
+from typing import List, Optional
+
+from pydantic import BaseModel
 
 
 class SubjectBase(BaseModel):

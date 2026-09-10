@@ -1,15 +1,17 @@
-# encoding: utf-8
 from __future__ import annotations
 
-from typing import Any, Callable
-import ckan.plugins as plugins
-import ckan.plugins.toolkit as toolkit
+from cmath import log
+from collections.abc import Callable
+from typing import Any
+import os
+import ckan.lib.helpers as h
 from ckan.common import CKANConfig, config
 from ckan.config.declaration import Declaration, Key
+from ckan.plugins import toolkit
 
 # === ESTOS DOS IMPORTS SON CRUCIALES PARA TU FUNCIÓN DE IMAGEN ===
-import ckan.model as model
-import ckan.lib.helpers as h
+from ckan import model, plugins
+
 
 def show_most_popular_groups():
     '''Return the value of the most_popular_groups config setting.
@@ -71,7 +73,10 @@ def get_entity_image_url(entity_name: str, entity_type: str = 'organization') ->
             return ''
             
         return display_url or image_url
-    except Exception:
+    except Exception as e: # noqa: BLE001
+        log.error(
+            'Error al obtener la imagen del grupo: %s', e
+        )
         return ''
 
 
@@ -85,7 +90,10 @@ def get_all_groups_list():
             {'all_fields': True, 'sort': 'title asc'}
         )
         return groups
-    except Exception:
+    except Exception as e: # noqa: BLE001
+        log.error(
+            'Error al obtener la lista de grupos: %s', e
+        )
         return []
 
 def get_localized_current_url(locale: str) -> str:
@@ -103,11 +111,17 @@ def get_localized_current_url(locale: str) -> str:
         
         # Generamos la nueva URL
         return toolkit.url_for(endpoint, **args)
-    except Exception:
+    except Exception as e: # noqa: BLE001
+        log.error(
+            'Error al generar la URL localizada: %s', e
+        )
         # Fallback de seguridad
         try:
             return toolkit.url_for(toolkit.h.current_url(), locale=locale)
-        except Exception:
+        except Exception as e: # noqa: BLE001
+            log.error(
+                'Error al generar la URL localizada: %s', e
+            )
             return ''
     
 class IiegThemePlugin(plugins.SingletonPlugin):
@@ -130,8 +144,11 @@ class IiegThemePlugin(plugins.SingletonPlugin):
         toolkit.add_resource('fanstatic', 'iieg_theme')
 
        
-        # Asignación directa
-        config['licenses_group_url'] = 'file:///srv/app/licenses.json'
+
+        licenses_url = os.getenv(
+            "LICENSES_GROUP_URL"
+        )        
+        config['licenses_group_url'] = licenses_url
 
 
     
@@ -161,7 +178,10 @@ class IiegThemePlugin(plugins.SingletonPlugin):
             # Llamada segura a la API interna de CKAN
             result = toolkit.get_action('package_search')({}, {'q': '*:*', 'rows': 0})
             return result['count']
-        except Exception:
+        except Exception as e: # noqa: BLE001
+            log.error(
+                'Error al obtener el total de datasets: %s', e
+            )
             return 0
 
     def _obtener_datasets_recientes(self, limite=15):
@@ -176,7 +196,10 @@ class IiegThemePlugin(plugins.SingletonPlugin):
                 {'q': '*:*', 'sort': 'metadata_modified desc', 'rows': limit, 'include_private': False}
             )
             return result.get('results', [])
-        except Exception:
+        except Exception as e: # noqa: BLE001
+            log.error(
+                'Error al obtener los datasets recientes: %s', e
+            )
             return []
 
     def _obtener_activity_reciente(self, limit=10):
@@ -197,7 +220,10 @@ class IiegThemePlugin(plugins.SingletonPlugin):
                     'data': {'package': pkg},
                 })
             return activities
-        except Exception:
+        except Exception as e: # noqa: BLE001
+            log.error(
+                'Error al obtener la actividad reciente: %s', e
+            )
             return []
 
     def _obtener_datasets_populares(self, limite=5):
@@ -210,7 +236,10 @@ class IiegThemePlugin(plugins.SingletonPlugin):
             }
             result = toolkit.get_action('package_search')(context, data_dict)
             return result.get('results', [])
-        except Exception:
+        except Exception as e: # noqa: BLE001
+            log.error(
+                'Error al obtener los datasets populares: %s', e
+            )
             return []
 
     # IConfigurable ----------------------------------------------------------
@@ -233,9 +262,9 @@ class IiegThemePlugin(plugins.SingletonPlugin):
             sin necesidad de autenticación por firma.
         """
         try:
-            from ckanext.s3filestore.uploader import BaseS3Uploader
             import logging
-            import os
+
+            from ckanext.s3filestore.uploader import BaseS3Uploader
             log = logging.getLogger(__name__)
 
             _original_get_signed_url = BaseS3Uploader.get_signed_url_to_key
@@ -249,11 +278,7 @@ class IiegThemePlugin(plugins.SingletonPlugin):
                     # Construir URL limpia sin pre-firma:
                     # {download_proxy}/{bucket}/{key_path}
                     proxy = self_uploader.download_proxy.rstrip('/')
-                    url = '{}/{}/{}'.format(
-                        proxy,
-                        self_uploader.bucket_name,
-                        key
-                    )
+                    url = f'{proxy}/{self_uploader.bucket_name}/{key}'
                     log.debug(
                         '[iieg_theme] URL de descarga directa (sin presign): %s',
                         url
@@ -325,8 +350,11 @@ class IiegThemePlugin(plugins.SingletonPlugin):
                 if first_group.image_url:
                     # Construimos y retornamos la URL final resuelta de forma estática o externa
                     return h.url_for_static_or_external(first_group.image_url)
-        except Exception:
-            pass
+        except Exception as e: # noqa: BLE001
+            log.error(
+                'Errordel grupo para el paquete %s: %s', package_id_or_name, e
+            )
+            
             
         return None
     

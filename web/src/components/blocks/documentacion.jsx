@@ -6,7 +6,6 @@ import Searcher from '../pageComponents/searcher';
 
 export default function Documentacion() {
     const [documentaciones, setDocumentaciones] = useState([])
-    const [tipos, setTipos] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedTemaId, setSelectedTemaId] = useState("");
     const [selectedSubtemaId, setSelectedSubtemaId] = useState("");
@@ -19,19 +18,17 @@ export default function Documentacion() {
         setDocumentaciones(response.data.documentaciones)        
     }
 
-    const fetchTipos = async () => {
-        try {
-            const response = await api.get('/documentacion/tipos')
-            setTipos(response.data.tipos || [])
-        } catch (error) {
-            console.error('Error fetching tipos', error)
-        }
-    }
-
     useEffect(() => {
         fetchDocumentaciones()
-        fetchTipos()
     }, []);
+
+    const tipos = useMemo(() => (
+        [...new Set(
+            documentaciones
+                .map(documentacion => documentacion.tipo)
+                .filter(Boolean)
+        )]
+    ), [documentaciones]);
 
     const proyectos = useMemo(() => {
         const map = new Map();
@@ -130,9 +127,8 @@ export default function Documentacion() {
     return (
         <div>
 
-            <div className='mx-auto container md:w-6/12'>
-                        <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
-            </div>
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
+            
 
             <div className='mx-auto px-2 container my-15'>
                 <div className='flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5'>
@@ -234,16 +230,16 @@ export default function Documentacion() {
                             }
                             <div className='flex justify-between'>
                                 <h3 className='text-titulos font-garet-bold text-18'>{documentacion.titulo}</h3>               
-                                <div className="group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1">
+                                <div className="group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1">
                                     <span className="material-symbols--download group-hover:bg-white!"></span>
                                 </div> 
                             </div>                                                        
                             <div className='flex flex-wrap gap-4 mt-10'>
                                 {documentacion.tipo && (
-                                    <span className='text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{documentacion.tipo}</span>
+                                    <span className='font-garet-bold text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{documentacion.tipo}</span>
                                 )}
                                 {documentacion.anyo && (
-                                    <span className='text-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>{documentacion.anyo}</span>
+                                    <span className='font-garet-boldtext-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>{documentacion.anyo}</span>
                                 )}
                             </div>
                         </div>
@@ -251,19 +247,20 @@ export default function Documentacion() {
                 ))}
             </div>
 
-            <ReactPaginate
-                previousLabel={"Ant"}
-                nextLabel={"Sig"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / itemsPerPage)}
-            />
+            {pageCount > 1 && (
+                        <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            breakLabel={'...'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                            forcePage={Math.floor(itemOffset / itemsPerPage)}
+                        />
+                    )}
         </div>
     )
 }

@@ -77,13 +77,13 @@ export default function Flashes() {
                             </div>
                             <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                                 {flash.periocidad && (
-                                    <p className='bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
+                                    <p className='font-garet-bold bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
                                 )}
                                 {flash.fecha_publicacion && (
-                                    <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                    <p className='font-garet-bold bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                 )}
                                 {flash.fuente && (
-                                    <p className='bg-etiqueta border-[#5C24724D] text-primary rounded-2xl px-4 py-2 text-14'>{flash.fuente}</p>                            
+                                    <p className='font-garet-bold bg-etiqueta border-[#5C24724D] text-primary rounded-2xl px-4 py-2 text-14'>{flash.fuente}</p>                            
                                 )}                            
                             </div>
                             {flash.link && (

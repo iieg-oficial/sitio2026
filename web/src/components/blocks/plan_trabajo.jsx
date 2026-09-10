@@ -104,7 +104,7 @@ export default function PlanTrabajo() {
                                         download 
                                         className='flex gap-4'
                                     >
-                                        <div className="group-hover:bg-tertiary rounded-full w-[32px] h-[32px] p-1">
+                                        <div className="group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1">
                                             <span className="material-symbols--download group-hover:bg-white!"></span>
                                         </div>
                                         <p className='text-22 text-titulo group-hover:text-tertiary'>

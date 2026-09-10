@@ -1,10 +1,11 @@
-from pydantic import BaseModel, field_validator
 from datetime import datetime
-from enum import Enum
-from typing import Optional, List
+from typing import List, Optional
+
+from pydantic import BaseModel, field_validator
+
+from app.models.reportes import MesEnum, PeriocidadEnum
 from app.schemas.subject import SubjectFlat
-from app.models.reportes import PeriocidadEnum
-from app.models.reportes import MesEnum
+
 
 class ReporteCreate(BaseModel):
     titulo: str
@@ -13,7 +14,7 @@ class ReporteCreate(BaseModel):
     subtema: Optional[str] = None
     archivo: Optional[str] = None
     tema_ids: Optional[List[int]] = None
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     slug: Optional[str] = None
     mes: Optional[MesEnum] = None
     anyo: Optional[int] = None
@@ -31,10 +32,10 @@ class ReporteOut(BaseModel):
     id: int
     titulo: str
     fecha: Optional[datetime] = None
-    periocidad: Optional[PeriocidadEnum] = None   
+    periocidad: Optional[PeriocidadEnum] = None
     archivo: Optional[str] = None
     slug: Optional[str] = None
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
     mes: Optional[MesEnum] = None
     anyo: Optional[int] = None
@@ -49,7 +50,7 @@ class ReporteResponse(BaseModel):
     periocidad: Optional[PeriocidadEnum] = None
     archivo: Optional[str] = None
     slug: Optional[str] = None
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
     mes: Optional[MesEnum] = None
     anyo: Optional[int] = None

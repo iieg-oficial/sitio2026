@@ -1,7 +1,9 @@
-from pydantic import BaseModel
 from typing import List, Optional
 
-class ModulosCreate(BaseModel):    
+from pydantic import BaseModel
+
+
+class ModulosCreate(BaseModel):
     nombre: str
     descripcion: Optional[str] = None
     slug: Optional[str] = None

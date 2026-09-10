@@ -1,9 +1,10 @@
-from pydantic import BaseModel, field_validator
 from datetime import datetime
-from typing import Optional, List
-from enum import Enum
+from typing import List, Optional
+
+from pydantic import BaseModel, field_validator
+
 from app.models.mapa import TipoMapaEnum
-from app.core.database import Base
+
 
 class MapaCreate(BaseModel):
     titulo: str
@@ -19,7 +20,7 @@ class MapaCreate(BaseModel):
     sitio_web: Optional[str] = None
     informacion: Optional[str] = None
     imagen: Optional[str] = None
-    archivo: Optional[str] = None   
+    archivo: Optional[str] = None
     slug: Optional[str] = None
 
     @field_validator('anyo')

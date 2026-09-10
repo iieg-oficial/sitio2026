@@ -5,9 +5,9 @@ Revises: ee37ba52b458
 Create Date: 2026-02-09 20:45:43.855701
 
 """
-from alembic import op
 import sqlalchemy as sa
 
+from alembic import op
 
 revision = '62523bba38ac'
 down_revision = '001'

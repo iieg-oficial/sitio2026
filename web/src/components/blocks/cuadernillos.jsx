@@ -137,35 +137,35 @@ export default function Cuadernillos() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 container mx-auto my-15 px-5 xl:px-5 2xl:px-0">
                 {currentCuadernillos.map((cuadernillo) => (
                     <TrackedLink key={cuadernillo.id} to={cuadernillo.archivo} target="_blank" download>
-                        <div className="bg-card hover:border hover:border-tertiary rounded-3xl p-4 group">
+                        <div className="bg-card hover:border hover:border-tertiary rounded-3xl p-4 group sm:min-h-[170px] 2xl:min-h-[150px]">
                             <div className='flex justify-between'>
                                 <h3 className='text-primary text-20'>{cuadernillo.titulo}</h3>
-                                <div className="group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1">
+                                <div className="group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1">
                                     <span className="material-symbols--download group-hover:bg-white!"></span>
                                 </div> 
                             </div>
                             <div className='flex flex-wrap gap-4 mt-10'>
-                                <p className='rounded-2xl bg-etiqueta-ter text-primary text-[12px] p-2'>Año: {cuadernillo.anyo}</p>
-                                <p className='rounded-2xl bg-etiqueta-sec text-tertiary text-[12px] p-2'>Municipio: {cuadernillo.municipio || 'N/A'}</p>
+                                <p className='font-garet-bold text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{cuadernillo.anyo}</p>                                
                             </div>
                         </div>
                     </TrackedLink>
                 ))}
             </div>
 
-            <ReactPaginate
-                previousLabel={"Ant"}
-                nextLabel={"Sig"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / itemsPerPage)}
-            />
+            {pageCount > 1 && (
+                        <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            breakLabel={'...'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                            forcePage={Math.floor(itemOffset / itemsPerPage)}
+                        />
+                    )}
         </div>
     );
 }

@@ -1,6 +1,7 @@
 import enum
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Table, Text
+
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, Table, Text
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -48,7 +49,7 @@ class Flashes(Base):
     link = Column(String, nullable=True)
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=False)
-    
+
     temas = relationship(
         "Subject",
         secondary=flash_temas,

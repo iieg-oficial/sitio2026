@@ -2,7 +2,6 @@ import argparse
 
 from import_generic_model_data import import_model_data
 
-
 MODEL_NAME = "Modulos"
 
 

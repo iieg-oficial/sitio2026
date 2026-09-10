@@ -1,6 +1,7 @@
 import enum
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Integer, String, Text, ForeignKey, Enum, Boolean, Table
+
+from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, Table, Text
 from sqlalchemy.orm import relationship
 
 from app.core.database import Base
@@ -82,5 +83,5 @@ class Cursos(Base):
     instituciones = relationship("Instituciones", secondary=curso_instituciones, back_populates="cursos")
     perfiles = relationship("Perfiles", secondary=curso_perfiles, back_populates="cursos")
     profesores = relationship("Profesores", secondary=curso_profesores, back_populates="cursos")
-    
+
     slug = Column(String(200), nullable=False)

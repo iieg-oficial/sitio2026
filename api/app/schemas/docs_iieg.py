@@ -1,9 +1,10 @@
-from pydantic import BaseModel
-from typing import List, Optional
-from app.models.docs_iieg import TipoDocsEnum
 from datetime import datetime
-from enum import Enum
+from typing import List, Optional
+
+from pydantic import BaseModel
+
 from app.models.docs_iieg import TipoDocsEnum
+
 
 class DocsIIEGCreate(BaseModel):
     nombre: str
@@ -14,7 +15,7 @@ class DocsIIEGCreate(BaseModel):
     documento: Optional[str] = None
     fecha: Optional[datetime] = None
     slug: Optional[str] = None
-    
+
 
 class DocsIIEGOut(BaseModel):
     id: int

@@ -1,16 +1,20 @@
 import enum
-from sqlalchemy import Column, Integer, String, Enum, Text
+
+from sqlalchemy import Column, Enum, Integer, String, Text
 from sqlalchemy.orm import relationship
+
 from app.core.database import Base
+
 
 class AreaEnum(str, enum.Enum):
     desarrollo = "desarrollo"
     analisis = "analisis"
-    geoespacial = "geoespacial"    
+    geoespacial = "geoespacial"
     grafico = "grafico"
     juridico = "juridico"
     administracion = "administracion"
     soporte = "soporte"
+
 
 class Perfiles(Base):
     __tablename__ = "perfiles"
@@ -23,4 +27,3 @@ class Perfiles(Base):
 
     cursos = relationship("Cursos", secondary="curso_perfiles", back_populates="perfiles")
 
-        

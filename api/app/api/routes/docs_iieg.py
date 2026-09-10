@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session, joinedload
+from slugify import slugify
+from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, verify_csrf
+from app.api.deps import get_db, verify_csrf
 from app.models import DocsIIEG, Usuario
 from app.schemas.docs_iieg import DocsIIEGCreate, DocsIIEGOut, DocsIIEGResponse
-from slugify import slugify
 
 router = APIRouter(prefix="/docs_iieg", tags=["docs_iieg"])
 
@@ -67,7 +67,7 @@ def update_docs_iieg(
     db_docs_iieg.documento = docs_iieg.documento
     db_docs_iieg.fecha = docs_iieg.fecha
     db_docs_iieg.slug = slugify(docs_iieg.nombre)
-    
+
     db.commit()
     db.refresh(db_docs_iieg)
     return db_docs_iieg
@@ -102,7 +102,7 @@ def get_docs_iieg_slug(
             detail="Documento del IIEG no encontrado",
         )
     return db_docs_iieg
-    
+
 @router.get("/tipo/{tipo}", response_model=DocsIIEGResponse)
 def get_docs_iieg_tipo(
     tipo: str,

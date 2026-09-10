@@ -116,7 +116,7 @@ export default function Contabilidad() {
                         <button
                             key={year}
                             onClick={() => { setActiveTab(year); setItemOffset(0); } }
-                                className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
+                                className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-bold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
                                         ? 'bg-etiqueta-sec text-tertiary border-tertiary'
                                         : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
                         >
@@ -138,9 +138,9 @@ export default function Contabilidad() {
                             <div key={tema} className='bg-card rounded-2xl mb-4 p-4'>
                                 <button
                                     onClick={() => toggleSubject(tema)}
-                                    className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-extrabold"
+                                    className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-garet-extra cursor-pointer"
                                 >
-                                    <span>{tema}</span>
+                                    <span className="">{tema}</span>
                                     <span className="flex items-center gap-8">
                                         <span className="bg-etiqueta-sec text-tertiary border border-tertiary font-bold px-5 py-2 rounded-2xl text-22">
                                             {items.length}
@@ -159,7 +159,7 @@ export default function Contabilidad() {
                                                 <div key={contabilidad.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary group'>
                                                     <div className='flex'>
                                                         
-                                                            <div className="col-span-1  group-hover:bg-tertiary group-hover:rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
+                                                            <div className="col-span-1  group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
                                                                 <span className="material-symbols--download group-hover:bg-white!"></span>
                                                             </div> 
                                                         

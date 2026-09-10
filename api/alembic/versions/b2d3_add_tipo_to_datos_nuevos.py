@@ -5,9 +5,8 @@ Revises: a1d2_add_datos_nuevos_table
 Create Date: 2026-06-08
 
 """
-from alembic import op
-import sqlalchemy as sa
 
+from alembic import op
 
 revision = 'b2d3_add_tipo_to_datos_nuevos'
 down_revision = 'a1d2_add_datos_nuevos_table'
