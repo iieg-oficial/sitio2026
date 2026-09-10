@@ -144,10 +144,9 @@ class IiegThemePlugin(plugins.SingletonPlugin):
         toolkit.add_resource('fanstatic', 'iieg_theme')
 
        
-        # Asignación directa
-        #config['licenses_group_url'] = 'file:///srv/app/licenses.json'
+
         licenses_url = os.getenv(
-            "LICENSES_GROUP_URL", "file:///srv/app/licenses.json"
+            "LICENSES_GROUP_URL"
         )        
         config['licenses_group_url'] = licenses_url
 

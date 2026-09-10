@@ -4,17 +4,13 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.models import Documentacion
-from app.models.documentacion import TipoEnum
 from app.schemas import DocumentacionList, DocumentacionOut, DocumentacionResponse
+from app.services.documentacion import get_tipos as get_documentacion_tipos
 
 router = APIRouter(prefix="/documentacion", tags=["documentacion - public"])
 
 
-@router.get("/tipos")
-def get_tipos():
-    return {
-        "tipos": [tipo.value for tipo in TipoEnum]
-    }
+router.add_api_route("/tipos", get_documentacion_tipos, methods=["GET"])
 
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
