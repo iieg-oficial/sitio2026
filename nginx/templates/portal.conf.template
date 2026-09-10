@@ -39,7 +39,7 @@ server {
         proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_connect_timeout 60;
         proxy_send_timeout 60;
         proxy_read_timeout 60;
@@ -97,7 +97,7 @@ server {
         proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
         proxy_connect_timeout 60;
@@ -109,7 +109,7 @@ server {
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
@@ -118,7 +118,7 @@ server {
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
@@ -127,7 +127,7 @@ server {
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
@@ -141,7 +141,7 @@ server {
         proxy_set_header Host ${ACERVO_UPSTREAM_HOST};
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         add_header Content-Disposition "attachment; filename=\"\$request_filename\"" always;
         
         proxy_connect_timeout 60;

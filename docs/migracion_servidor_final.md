@@ -95,7 +95,7 @@ Si el Acervo va a cambiar, realiza una copia S3 de ambos buckets conservando exa
 Levanta primero la infraestructura para que se creen las bases vacias:
 
 ```bash
-make up ENV=prod
+make build ENV=prod
 ```
 
 Deten CKAN y API antes de restaurar para evitar escrituras concurrentes:
@@ -117,12 +117,6 @@ docker compose --env-file .env.production -f docker-compose.yml start api ckan
 Si se restaura en una base que no esta vacia, la opcion `--clean` elimina objetos existentes. Verifica el nombre de la base y conserva una copia del estado previo antes de usarla.
 
 Ambas bases de CKAN tienen a `ckan` como propietario y CKAN se conecta con ese usuario. `--no-owner` evita conservar los propietarios del origen; `--role=ckan` asigna el rol correcto durante la restauracion. Si te conectas directamente como `ckan`, puedes omitir `--role=ckan`.
-
-Después reconstruye CKAN si se cambio la imagen o el codigo:
-
-```bash
-make build ENV=prod
-```
 
 Solr puede reconstruirse con la reindexacion de CKAN. No borres el volumen de Solr hasta confirmar que CKAN funciona y que los datasets aparecen en la busqueda.
 
