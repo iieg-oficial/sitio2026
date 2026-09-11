@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import select, func, or_
 from slugify import slugify
-from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db, verify_csrf
@@ -33,17 +34,33 @@ def _load_sistemas(db: Session, sistema_ids: list[int]) -> list[Sistemas]:
 
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    pageSize: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    documentaciones = (
-        db.query(Documentacion)
-        .options(
-            joinedload(Documentacion.temas),
-            joinedload(Documentacion.sistemas)
+    query = select(Documentacion)
+
+    if search:
+        like = f"%{search}%"
+        query = query.where(
+            or_(
+            Documentacion.titulo.ilike(like),
+            Documentacion.descripcion.ilike(like),
+            )
         )
-        .all()
-    )
-    return {"documentaciones": documentaciones, "total": len(documentaciones)}
+
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    documentaciones = db.execute(
+        query.order_by(Documentacion.anyo.desc())
+        .offset((page - 1) * pageSize)
+        .limit(pageSize)
+    ).scalars().all()
+
+    return {"documentaciones": documentaciones, "total": total}
 
 @router.post("/create", response_model=DocumentacionOut, status_code=status.HTTP_201_CREATED)
 async def crear_documentacion(

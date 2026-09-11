@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import select, func, or_
 from slugify import slugify
 from sqlalchemy.orm import Session
 
@@ -11,14 +13,32 @@ router = APIRouter(prefix="/cuadernillos", tags=["cuadernillos"])
 
 @router.get("/", response_model=CuadernilloResponse)
 def read_cuadernillos(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    pageSize: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los cuadernillos"""
-    cuadernillos = db.query(Cuadernillo).all()
-    return {
-        "cuadernillos": cuadernillos,
-        "total": len(cuadernillos),
-    }
+    query = select(Cuadernillo)
+
+    if search:
+        like = f"%{search}%"
+        query = query.where(
+            or_(
+                Cuadernillo.titulo.ilike(like),
+            )
+        )
+
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    cuadernillos = db.execute(
+        query.order_by(Cuadernillo.anyo.desc())
+        .offset((page - 1) * pageSize)
+        .limit(pageSize)
+    ).scalars().all()
+
+    return {"cuadernillos": cuadernillos, "total": total}
 
 
 @router.post("/", response_model=CuadernilloOut, status_code=status.HTTP_201_CREATED)

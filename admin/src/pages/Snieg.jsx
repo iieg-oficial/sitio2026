@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { useSearchFilter, TableSearch } from '@components/common/TableSearch';
 
 const { Title } = Typography;
 
@@ -13,6 +14,7 @@ export default function Snieg() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingSnieg, setEditingSnieg] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(snieg, ['titulo']);
 
     useEffect(() => {
         fetchSnieg();
@@ -120,8 +122,14 @@ export default function Snieg() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table 
-                    dataSource={snieg} 
+                    dataSource={filteredData} 
                     columns={columns} 
                     rowKey="id" 
                     pagination={{

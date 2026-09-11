@@ -5,6 +5,7 @@ import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
 import parse from 'html-react-parser';
+import { useDebouncedSearch, TableSearch } from '@components/common/TableSearch';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -15,21 +16,42 @@ export default function DocsIieg() {
     const [form] = Form.useForm();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingDoc, setEditingDoc] = useState(null);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
     useEffect(() => {
         fetchDocsIieg();
     }, []);
 
-    const fetchDocsIieg = async () => {
+    const fetchDocsIieg = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         try {
             setLoading(true);
-            const response = await api.get('/docs_iieg');
+            const response = await api.get('/docs_iieg', {
+                params: {
+                    ...(search ? { search } : {}),
+                    page,
+                    pageSize
+                }
+            });
             setDocsIieg(response.data.docs_iieg);
+            setPagination((prev) => ({
+                ...prev,
+                current: page,
+                pageSize,
+                total: response.data.total
+            }));
         } catch (error) {
             message.error('Error al cargar los documentos del IIEG');
         } finally {
             setLoading(false);
         }
+    };
+
+     const { searchText, setSearchText } = useDebouncedSearch((text) => {
+        fetchDocsIieg(text, 1, pagination.pageSize);
+    });
+
+    const handleTableChange = (newPagination) => {
+        fetchDocsIieg(searchText, newPagination.current, newPagination.pageSize);
     };
 
     const handleCreate = () => {
@@ -55,7 +77,7 @@ export default function DocsIieg() {
                 try {
                     await api.delete(`/docs_iieg/${record.id}`);
                     message.success('Documento del IIEG eliminado exitosamente');
-                    fetchDocsIieg();
+                    fetchDocsIieg(searchText, pagination.current, pagination.pageSize);
                 } catch (error) {
                     console.log(error);
                     message.error('Error al eliminar el documento del IIEG');
@@ -74,7 +96,7 @@ export default function DocsIieg() {
                 message.success('Documento del IIEG creado exitosamente');
             }
             setIsModalVisible(false);
-            fetchDocsIieg();
+            fetchDocsIieg(searchText, pagination.current, pagination.pageSize);
         } catch (error) {
             message.error(editingDoc ? 'Error al actualizar el documento del IIEG' : 'Error al crear el documento del IIEG');
         }
@@ -143,16 +165,25 @@ export default function DocsIieg() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
                     dataSource={docsIieg}
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                        pageSize: 10,
-                        showSizeChanger: true,
-                        showTotal: (total) => `Total ${total} documentos del IIEG`
-                    }}
+                            current: pagination.current,
+                            pageSize: pagination.pageSize,
+                            total: pagination.total,
+                            showSizeChanger: true,
+                            showTotal: (total) => `Total ${total} reportes`
+                        }}
+                    onChange={handleTableChange}
                 />
             </Card>
 

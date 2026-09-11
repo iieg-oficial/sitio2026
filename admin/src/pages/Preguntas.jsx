@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { useSearchFilter, TableSearch } from '@components/common/TableSearch';
 
 const { Title } = Typography;
 
@@ -15,6 +16,7 @@ export default function Preguntas() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingPregunta, setEditingPregunta] = useState(null);
     const [loading, setLoading] = useState(false);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(preguntas, ['pregunta']);
 
     useEffect(() => {
         fetchPreguntas();
@@ -167,9 +169,15 @@ export default function Preguntas() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
-                    dataSource={preguntas}
+                    dataSource={filteredData}
                     rowKey="id"
                     loading={loading}
                     pagination={{

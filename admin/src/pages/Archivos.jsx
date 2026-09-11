@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { useDebouncedSearch, TableSearch } from '@components/common/TableSearch';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -16,6 +17,7 @@ export default function Archivos() {
     const [editingArchivo, setEditingArchivo] = useState(null);
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
     const watchTipo = Form.useWatch('tipo', form);
     const watchFecha = Form.useWatch('fecha', form);
@@ -56,16 +58,36 @@ export default function Archivos() {
         }
     };
 
-    const fetchArchivos = async () => {
+    const fetchArchivos = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
-            const response = await api.get('/archivos');
+            const response = await api.get('/archivos', {
+                params: {
+                    ...(search ? { search } : {}),
+                    page,
+                    pageSize
+                }
+            });
             setArchivos(response.data.archivos);
+            setPagination((prev) => ({
+                ...prev,
+                current: page,
+                pageSize,
+                total: response.data.total
+            }));
         } catch {
             message.error('Error al cargar archivos');
         } finally {
             setLoading(false);
         }
+    };
+
+    const { searchText, setSearchText } = useDebouncedSearch((text) => {
+        fetchArchivos(text, 1, pagination.pageSize);
+    });
+
+    const handleTableChange = (newPagination) => {
+        fetchArchivos(searchText, newPagination.current, newPagination.pageSize);
     };
 
     const handleCreate = () => {
@@ -114,7 +136,7 @@ export default function Archivos() {
                 try {
                     await api.delete(`/archivos/${record.id}`);
                     message.success('Archivo eliminado exitosamente');
-                    fetchArchivos();
+                    fetchArchivos(searchText, pagination.current, pagination.pageSize);
                 } catch {
                     message.error('Error al eliminar archivo');
                 }
@@ -134,7 +156,7 @@ export default function Archivos() {
                 message.success('Archivo creado exitosamente');
             }
             setModalVisible(false);
-            fetchArchivos();
+            fetchArchivos(searchText, pagination.current, pagination.pageSize);
         } catch {
             message.error(editingArchivo ? 'Error al actualizar archivo' : 'Error al crear archivo');
         }
@@ -204,16 +226,25 @@ export default function Archivos() {
                     </div>
 
                     <Card>
+                        <TableSearch
+                            value={searchText}
+                            onChange={setSearchText}
+                            placeholder="Buscar por título..."
+                            loading={loading}
+                        />
                         <Table
                             columns={columns}
                             dataSource={archivos}
                             rowKey="id"
                             loading={loading}
                             pagination={{
-                                pageSize: 10,
+                                current: pagination.current,
+                                pageSize: pagination.pageSize,
+                                total: pagination.total,
                                 showSizeChanger: true,
-                                showTotal: (total) => `Total ${total} archivos`
-                            }}
+                                showTotal: (total) => `Total ${total} reportes`
+                                }}
+                            onChange={handleTableChange}
                         />
                     </Card>
 

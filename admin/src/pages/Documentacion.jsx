@@ -5,6 +5,7 @@ import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
+import { useDebouncedSearch, TableSearch } from '@components/common/TableSearch';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -20,6 +21,7 @@ export default function Documentacion() {
     const [tipo, setTipo] = useState([]);
     const [sistemasOptions, setSistemasOptions] = useState([]);
     const [selectedSistemas, setSelectedSistemas] = useState([]);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
     const watchAnyo = Form.useWatch('anyo', form);
 
@@ -58,16 +60,36 @@ export default function Documentacion() {
         }
     };
 
-    const fetchDocumentaciones = async () => {
+    const fetchDocumentaciones = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
-            const response = await api.get('/documentacion');
+            const response = await api.get('/documentacion', {
+                params: {
+                    ...(search ? { search } : {}),
+                    page,
+                    pageSize
+                }
+            });
             setDocumentaciones(response.data.documentaciones);
+            setPagination((prev) => ({
+                ...prev,
+                current: page,
+                pageSize,
+                total: response.data.total
+            }));
         } catch (error) {
             console.error('Error al obtener documentaciones:', error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const { searchText, setSearchText } = useDebouncedSearch((text) => {
+        fetchDocumentaciones(text, 1, pagination.pageSize);
+    });
+
+    const handleTableChange = (newPagination) => {
+        fetchDocumentaciones(searchText, newPagination.current, newPagination.pageSize);
     };
 
     const fetchSistemas = async () => {
@@ -112,7 +134,7 @@ export default function Documentacion() {
                 try {
                     await api.delete(`/documentacion/${record.id}`);
                     message.success('Documentación eliminada exitosamente');
-                    fetchDocumentaciones();
+                    fetchDocumentaciones(searchText, pagination.current, pagination.pageSize);
                 } catch (error) {
                     console.error('Error al eliminar documentación:', error);
                     message.error('Error al eliminar documentación');
@@ -132,7 +154,7 @@ export default function Documentacion() {
                 message.success('Documentación creada exitosamente');
             }
             setModalVisible(false);
-            fetchDocumentaciones();
+            fetchDocumentaciones(searchText, pagination.current, pagination.pageSize);
         } catch (error) {            
             message.error(editingDocumentacion ? 'Error al actualizar documentación' : 'Error al crear documentación');
         }
@@ -198,16 +220,25 @@ export default function Documentacion() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
                     dataSource={documentaciones}
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                        pageSize: 10,
-                        showSizeChanger: true,
-                        showTotal: (total) => `Total ${total} documentaciones`
-                    }}
+                            current: pagination.current,
+                            pageSize: pagination.pageSize,
+                            total: pagination.total,
+                            showSizeChanger: true,
+                            showTotal: (total) => `Total ${total} reportes`
+                        }}
+                    onChange={handleTableChange}
                 />
             </Card>
 

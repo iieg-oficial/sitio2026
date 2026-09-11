@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { useSearchFilter, TableSearch } from '@components/common/TableSearch';
 
 const { Title } = Typography;
 
@@ -13,6 +14,7 @@ export default function DatosNuevos() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [tipos, setTipos] = useState([]);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(datosNuevos, ['cifras']);
 
     useEffect(() => {
         fetchDatosNuevos();
@@ -148,9 +150,15 @@ export default function DatosNuevos() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
-                    dataSource={datosNuevos}
+                    dataSource={filteredData}
                     rowKey="id"
                     loading={loading}
                     pagination={{

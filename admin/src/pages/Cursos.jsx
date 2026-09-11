@@ -4,7 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { CamposCapacitaciones, CamposConvocatorias, CamposComunes } from '@components/campos/cursos';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
-
+import { useSearchFilter, TableSearch } from '@components/common/TableSearch';
 
 
 const { Title } = Typography;
@@ -23,6 +23,7 @@ export default function Cursos() {
   const [temas, setTemas] = useState([]);
   const [selectedTemas, setSelectedTemas] = useState([]);
   const [tipoCurso, setTipoCurso] = useState(null);
+  const { searchText, setSearchText, filteredData } = useSearchFilter(cursos, ['titulo']);
 
   useEffect(() => {
     fetchCursos();
@@ -228,9 +229,15 @@ export default function Cursos() {
       </div>
 
       <Card>
+        <TableSearch
+            value={searchText}
+            onChange={setSearchText}
+            placeholder="Buscar por título..."
+            loading={loading}
+        />
         <Table
           columns={columns}
-          dataSource={cursos}
+          dataSource={filteredData}
           rowKey="id"
           loading={loading}
           pagination={{

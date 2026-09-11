@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import select, func, or_
 from slugify import slugify
 from sqlalchemy.orm import Session
 
@@ -11,14 +13,33 @@ router = APIRouter(prefix="/mapas", tags=["mapa"])
 
 @router.get("/", response_model=MapaResponse)
 def read_mapa(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    pageSize: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los mapas"""
-    mapas = db.query(Mapa).all()
-    return {
-        "mapas": mapas,
-        "total": len(mapas),
-    }
+    query = select(Mapa)
+
+    if search:
+        like = f"%{search}%"
+        query = query.where(
+            or_(
+                Mapa.titulo.ilike(like),
+                Mapa.informacion.ilike(like),
+            )
+        )
+
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    mapas = db.execute(
+        query.order_by(Mapa.anyo.desc())
+        .offset((page - 1) * pageSize)
+        .limit(pageSize)
+    ).scalars().all()
+
+    return {"mapas": mapas, "total": total}
 
 @router.post("/create", response_model=MapaOut)
 def create_mapa(

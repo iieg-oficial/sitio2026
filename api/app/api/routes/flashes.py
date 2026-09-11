@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import select, func, or_
 from slugify import slugify
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
@@ -20,14 +21,34 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 
 @router.get("", response_model=FlashesList)
 def read_flashes(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    pageSize: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los flashes"""
-    flashes = db.execute(select(Flashes)).scalars().all()
-    return {
-        "flashes": flashes,
-        "total": len(flashes),
-    }
+    query = select(Flashes)
+    
+    if search:
+        like = f"%{search}%"
+        query = query.where(
+            or_(
+                Flashes.titulo.ilike(like),
+                Flashes.desc_jal.ilike(like),
+                Flashes.desc_nac.ilike(like),
+            )
+        )
+    
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    flashes = db.execute(
+        query.order_by(Flashes.anyo.desc())
+        .offset((page - 1) * pageSize)
+        .limit(pageSize)
+    ).scalars().all()
+
+    return {"flashes": flashes, "total": total}
 
 @router.post("/create", response_model=FlashesOut, status_code=status.HTTP_201_CREATED)
 def create_flashes(

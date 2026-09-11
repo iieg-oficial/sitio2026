@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } f
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { useSearchFilter, TableSearch } from '@components/common/TableSearch';
 
 const { Title } = Typography;
 
@@ -12,6 +13,7 @@ export default function Organos() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingOrgano, setEditingOrgano] = useState(null);
     const [loading, setLoading] = useState(false);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(organos, ['titulo']);
 
     const fetchOrganos = async () => {
         setLoading(true);
@@ -134,10 +136,15 @@ export default function Organos() {
             </div>
 
         <Card>
-            
+            <TableSearch
+                value={searchText}
+                onChange={setSearchText}
+                placeholder="Buscar por título..."
+                loading={loading}
+            />
             <Table 
             columns={columns} 
-            dataSource={organos} 
+            dataSource={filteredData} 
             rowKey="id"
             pagination={{
                 pageSize: 10,

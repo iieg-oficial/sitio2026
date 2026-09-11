@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import select, func, or_
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
@@ -20,14 +21,36 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 
 @router.get("", response_model=ReporteList)
 async def listar_reportes(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    pageSize: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
+    query = select(Reportes)
+
+    if search:
+        like = f"%{search}%"
+        query = query.where(
+            or_(
+                Reportes.titulo.ilike(like),
+                Reportes.claves.ilike(like),
+            )
+        )
+
+    # total antes de paginar
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
     reportes = db.execute(
-        select(Reportes).order_by(Reportes.titulo)
+        query.order_by(Reportes.titulo)
+        .offset((page - 1) * pageSize)
+        .limit(pageSize)
     ).scalars().all()
+
     return {
         "reportes": reportes,
-        "total": len(reportes),
+        "total": total,
     }
 
 @router.post("/create", response_model=ReporteOut, status_code=status.HTTP_201_CREATED)

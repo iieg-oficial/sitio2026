@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { useDebouncedSearch, TableSearch } from '@components/common/TableSearch';
 const { Title } = Typography;
 
 export default function Cuadernillos() {
@@ -12,6 +13,7 @@ export default function Cuadernillos() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingCuadernillo, setEditingCuadernillo] = useState(null);
     const [municipios, setMunicipios] = useState([]);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
     const watchAnyo = Form.useWatch('anyo', form);
     
@@ -40,17 +42,37 @@ export default function Cuadernillos() {
         }
     }
 
-    const fetchCuadernillos = async () => {
+    const fetchCuadernillos = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
-            const response = await api.get('/cuadernillos/');
+            const response = await api.get('/cuadernillos/', {
+                params: {
+                    ...(search ? { search } : {}),
+                    page,
+                    pageSize
+                }
+            });
             setCuadernillos(response.data.cuadernillos);
+            setPagination((prev) => ({
+                ...prev,
+                current: page,
+                pageSize,
+                total: response.data.total
+            }));
         } catch (error) {
             message.error('Error al obtener los cuadernillos');
         } finally {
             setLoading(false);
         }
     };  
+
+    const { searchText, setSearchText } = useDebouncedSearch((text) => {
+        fetchCuadernillos(text, 1, pagination.pageSize);
+    });
+
+    const handleTableChange = (newPagination) => {
+        fetchCuadernillos(searchText, newPagination.current, newPagination.pageSize);
+    };
 
     const handleCreate = () => {
         setEditingCuadernillo(null);
@@ -74,7 +96,7 @@ export default function Cuadernillos() {
                 try {
                     await api.delete(`/cuadernillos/${record.id}/`);
                     message.success('Cuadernillo eliminado');
-                    fetchCuadernillos();
+                    fetchCuadernillos(searchText, pagination.current, pagination.pageSize);
                 } catch (error) {
                     message.error('Error al eliminar el cuadernillo');
                 }
@@ -92,7 +114,7 @@ export default function Cuadernillos() {
                 message.success('Cuadernillo creado');
             }
             setModalVisible(false);
-            fetchCuadernillos();
+            fetchCuadernillos(searchText, pagination.current, pagination.pageSize);
         } catch (error) {
             message.error('Error al guardar el cuadernillo');
         }
@@ -135,16 +157,25 @@ export default function Cuadernillos() {
         </div>
 
         <Card>
+            <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
             <Table
                 dataSource={cuadernillos}
                 columns={columns}
                 rowKey="id"
                 loading={loading}
-                pagination={{ 
-                    pageSize: 10,
+                pagination={{
+                    current: pagination.current,
+                    pageSize: pagination.pageSize,
+                    total: pagination.total,
                     showSizeChanger: true,
-                    showTotal: (total) => `Total ${total} cuadernillos`
+                    showTotal: (total) => `Total ${total} reportes`
                 }}
+                onChange={handleTableChange}
             />
         </Card>
 

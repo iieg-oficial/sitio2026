@@ -2,7 +2,7 @@
 
 {% block header_logo %}
   <a class="logo mr-3" href="https://iieg.jalisco.gob.mx">
-    <img src="" alt="Sitio IIEG"
+    <img src="{{ h.url_for_static('/images/ico_IIEG_header.svg') }}" alt="Sitio IIEG"
             aria-label="{{ _('Navigate to IIEG') }}" alt="IIEG"/>
   </a>
   {% if g.site_logo %}

@@ -1,8 +1,9 @@
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from sqlalchemy import select, func, or_
 from slugify import slugify
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
@@ -35,13 +36,33 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 
 @router.get("", response_model=PostList)
 async def listar_posts(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    pageSize: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    posts = db.execute(select(Posts)).scalars().all()
-    return {
-        "posts": posts,
-        "total": len(posts),
-    }
+    query = select(Posts)
+        
+    if search:
+        like = f"%{search}%"
+        query = query.where(
+            or_(
+                Posts.titulo.ilike(like),
+                Posts.resumen.ilike(like),
+            )
+        )
+        
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    posts = db.execute(
+        query.order_by(Posts.fecha.desc())
+        .offset((page - 1) * pageSize)
+        .limit(pageSize)
+    ).scalars().all()
+
+    return {"posts": posts, "total": total}
 
 
 @router.get("/{post_id}", response_model=PostResponse)

@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { useSearchFilter, TableSearch } from '@components/common/TableSearch';
 
 const { Title } = Typography;
 
@@ -13,6 +14,7 @@ export default function Profesores() {
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [editingProfesor, setEditingProfesor] = useState(null);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(profesores, ['nombre']);
 
     useEffect(() => {
         fetchProfesores();
@@ -135,9 +137,15 @@ export default function Profesores() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
-                    dataSource={profesores}
+                    dataSource={filteredData}
                     rowKey="id"
                     loading={loading}
                     pagination={{
