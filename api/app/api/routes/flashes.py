@@ -29,7 +29,7 @@ def read_flashes(
     query = select(Flashes)
     
     if search:
-        like = f"%{search}%"
+        like = f"%{escape_like(search)}%"
         query = query.where(
             or_(
                 Flashes.titulo.ilike(like, escape='\\'),

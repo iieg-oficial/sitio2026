@@ -29,7 +29,7 @@ async def listar_reportes(
     query = select(Reportes)
 
     if search:
-        like = f"%{search}%"
+        like = f"%{escape_like(search)}%"
         query = query.where(
             or_(
                 Reportes.titulo.ilike(like, escape='\\'),

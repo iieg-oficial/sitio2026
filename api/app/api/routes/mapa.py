@@ -21,7 +21,7 @@ def read_mapa(
     query = select(Mapa)
 
     if search:
-        like = f"%{search}%"
+        like = f"%{escape_like(search)}%"
         query = query.where(
             or_(
                 Mapa.titulo.ilike(like, escape='\\'),

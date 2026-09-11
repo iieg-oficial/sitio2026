@@ -55,8 +55,8 @@ export function useDebouncedSearch(fetchFn, delay = 400, deps = []) {
         }, delay);
 
         return () => clearTimeout(timeoutRef.current);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchText, delay, ...deps]);   // <- restaurar las dependencias reales
+        
+    }, [searchText, delay, ...deps]);   
 
     const setSearchTextImmediate = useCallback((value) => {
         setSearchText(value);

@@ -20,7 +20,7 @@ def get_docs_iieg(
     query = select(DocsIIEG)
 
     if search:
-        like = f"%{search}%"
+        like = f"%{escape_like(search)}%"
         query = query.where(
             or_(
                 DocsIIEG.nombre.ilike(like, escape='\\'),

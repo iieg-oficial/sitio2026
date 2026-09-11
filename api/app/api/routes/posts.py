@@ -44,7 +44,7 @@ async def listar_posts(
     query = select(Posts)
         
     if search:
-        like = f"%{search}%"
+        like = f"%{escape_like(search)}%"
         query = query.where(
             or_(
                 Posts.titulo.ilike(like, escape='\\'),

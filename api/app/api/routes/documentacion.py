@@ -42,7 +42,7 @@ async def listar_documentaciones(
     query = select(Documentacion)
 
     if search:
-        like = f"%{search}%"
+        like = f"%{escape_like(search)}%"
         query = query.where(
             or_(
             Documentacion.titulo.ilike(like, escape='\\'),
