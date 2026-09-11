@@ -68,8 +68,10 @@ Los `.env` del respaldo quedan disponibles para comparación, pero no se aplican
 Levanta el entorno para crear los servicios y volúmenes:
 
 ```bash
-make up ENV=prod
+make build ENV=prod
 ```
+
+`make build` crea los volúmenes y reconstruye las imágenes con el commit restaurado. No uses `make up` en este paso: podría levantar imágenes antiguas que ya existan en el destino.
 
 Detén los servicios que escriben datos:
 
@@ -91,18 +93,18 @@ Solr y Redis son auxiliares. Puedes restaurarlos con el mismo patrón si necesit
 Detén API y CKAN antes de importar. Usa los nombres de base configurados en el compose y verifica el entorno antes de ejecutar `--clean`:
 
 ```bash
-cat <RESPALDO>/databases/portal-globals.sql | docker compose --env-file .env.production -f docker-compose.yml exec -T postgres \
-  sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 cat <RESPALDO>/databases/portal.dump | docker compose --env-file .env.production -f docker-compose.yml exec -T postgres \
   sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists --no-owner'
 
-cat <RESPALDO>/databases/ckan-globals.sql | docker compose --env-file .env.production -f docker-compose.yml exec -T ckan-db \
-  psql -U postgres -d postgres
 cat <RESPALDO>/databases/ckan.dump | docker compose --env-file .env.production -f docker-compose.yml exec -T ckan-db \
-  pg_restore -U postgres -d ckan_default --clean --if-exists --no-owner
+  pg_restore -U postgres -d ckan_default --clean --if-exists --no-owner --role=ckan
 cat <RESPALDO>/databases/datastore.dump | docker compose --env-file .env.production -f docker-compose.yml exec -T ckan-db \
-  pg_restore -U postgres -d datastore_default --clean --if-exists --no-owner
+  pg_restore -U postgres -d datastore_default --clean --if-exists --no-owner --role=ckan
 ```
+
+No restaures `portal-globals.sql` ni `ckan-globals.sql` automáticamente: contienen `ALTER ROLE ... PASSWORD` con las credenciales del origen y sobrescribirían las contraseñas configuradas en el destino. Los roles y sus contraseñas ya se crean al inicializar los servicios; conserva estos archivos solo como referencia o revísalos y edítalos antes de importar cualquier sentencia global.
+
+`ckan_default` y `datastore_default` deben conservar a `ckan` como propietario: CKAN se conecta con ese usuario. `--no-owner` evita restaurar propietarios del servidor de origen, mientras que `--role=ckan` hace que los objetos restaurados queden bajo el rol correcto. Si se conecta directamente como `ckan`, no es necesario pasar `--role=ckan`.
 
 Después inicia los servicios:
 
@@ -110,7 +112,14 @@ Después inicia los servicios:
 docker compose --env-file .env.production -f docker-compose.yml start redis ckan-solr ckan api
 ```
 
-Si Solr quedó vacío, reindexa CKAN usando el comando disponible en la imagen y valida la búsqueda antes de publicar el servicio.
+Si Solr quedó vacío, reindexa CKAN antes de publicar el servicio:
+
+```bash
+docker compose --env-file .env.production -f docker-compose.yml exec ckan \
+  ckan -c /srv/app/ckan.ini search-index rebuild
+```
+
+Valida que la reindexación haya producido resultados con `package_search` desde CKAN antes de publicar el servicio.
 
 ## 6. Migrar archivos CKAN y corregir la URL del Acervo
 

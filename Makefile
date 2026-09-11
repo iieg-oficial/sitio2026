@@ -165,7 +165,7 @@ backup:
 	backup_volume ckan-solr /var/solr ckan-solr.tgz; \
 	backup_volume redis /data redis.tgz; \
 	echo "${YELLOW}Respaldando código y configuración del proyecto (sin acervo/mariachi)...${RESET}"; \
-	tar --exclude='./.git' --exclude='./backups' --exclude='*/node_modules' --exclude='*/dist' --exclude='*/build' --exclude='*/static/uploads' --exclude='*/acervo/*' --exclude='*/mariachi/*' -czf "$$DEST/proyecto.tgz" .; \
+	tar --exclude='./.git' --exclude='./backups' --exclude='*/node_modules' --exclude='*/dist' --exclude='*/build' --exclude='*/__pycache__' --exclude='*/static/uploads' --exclude='*/acervo/*' --exclude='*/mariachi/*' -czf "$$DEST/proyecto.tgz" .; \
 	( cd "$$DEST" && sha256sum databases/* volumes/* proyecto.tgz > SHA256SUMS ); \
 	chmod -R go-rwx "$$DEST"; \
 	echo "${GREEN}Respaldo terminado: $$DEST${RESET}"; \
