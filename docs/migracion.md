@@ -112,7 +112,14 @@ Después inicia los servicios:
 docker compose --env-file .env.production -f docker-compose.yml start redis ckan-solr ckan api
 ```
 
-Si Solr quedó vacío, reindexa CKAN usando el comando disponible en la imagen y valida la búsqueda antes de publicar el servicio.
+Si Solr quedó vacío, reindexa CKAN antes de publicar el servicio:
+
+```bash
+docker compose --env-file .env.production -f docker-compose.yml exec ckan \
+  ckan -c /srv/app/ckan.ini search-index rebuild
+```
+
+Valida que la reindexación haya producido resultados con `package_search` desde CKAN antes de publicar el servicio.
 
 ## 6. Migrar archivos CKAN y corregir la URL del Acervo
 

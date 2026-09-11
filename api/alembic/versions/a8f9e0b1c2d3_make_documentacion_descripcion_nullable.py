@@ -44,7 +44,7 @@ def upgrade() -> None:
                existing_type=sa.Text(),
                nullable=True)
     # ALTER TYPE cannot run inside a transaction in PostgreSQL
-    op.execute("COMMIT")
+    
     for value in NEW_MUNICIPIO_VALUES:
         op.execute(f"ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS '{value}'")
 
