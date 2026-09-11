@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from "../../../services/apiService";
 import MapaContacto from './mapaContacto';
+import mec from '@/config/mapalab-embed-content.json';
 
 export default function Contacto() {
     const [form, setForm] = useState({
@@ -95,14 +96,14 @@ export default function Contacto() {
                 </form>
                 <div className="my-6 text-20 font-bold text-titulo">
                     
-                    <a href="tel:+523337771770" className="text-titulo hover:text-tertiary flex items-center">
+                    <a href={`tel:+52${mec.telefono.replace(/\s+/g, '')}`} className="text-titulo hover:text-tertiary flex items-center">
                         <span class="et--phone mr-4 w-[26px] h-[26px] flex-none"></span> 
-                        <span className="flex-1">33 3777 1770</span>
+                        <span className="flex-1">{mec.telefono}</span>
                     </a>
                     
                     <p className="mt-2 text-20 font-bold text-titulo flex items-center mt-5">
                         <span class="mynaui--map-pin w-[25px] h-[25px] mr-4 flex-none"></span> 
-                        <span className="flex-1">Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.</span>
+                        <span className="flex-1">{mec.direccion}</span>
                     </p>
                 </div>
             </div>
