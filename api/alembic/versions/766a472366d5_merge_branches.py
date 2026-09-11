@@ -1,13 +1,13 @@
 """merge_branches
 
 Revision ID: 766a472366d5
-Revises: 3c59a2cbf559, a9b8c7d6e5f4, b2c3d4e5f6a7
+Revises: a9b8c7d6e5f4, b2c3d4e5f6a7
 Create Date: 2026-08-27
 
 """
 
 revision = '766a472366d5'
-down_revision = ('3c59a2cbf559', 'a9b8c7d6e5f4', 'b2c3d4e5f6a7')
+down_revision = ('a9b8c7d6e5f4', 'b2c3d4e5f6a7')
 branch_labels = None
 depends_on = None
 

@@ -10,7 +10,8 @@ out of sync with app/models/cuadernillos.py (e.g. guadalajara, zapopan
 were defined in the model but never added to the DB enum). This
 migration imports the model directly so it can never miss a value again.
 """
-from alembic import op, sa
+from alembic import op
+import sqlalchemy as sa
 
 MUNICIPIO_VALUES = (
     "acatic",
@@ -151,8 +152,9 @@ def upgrade() -> None:
     
     for value in MUNICIPIO_VALUES:
         op.execute(
-            sa.text("ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS :value"),
-            {"value": value},
+            sa.text("ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS :value").bindparams(
+                value=value
+            )
         )
 
 
