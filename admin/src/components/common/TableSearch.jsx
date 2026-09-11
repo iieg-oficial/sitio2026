@@ -38,9 +38,12 @@ export function useSearchFilter(data, searchFields) {
 export function useDebouncedSearch(fetchFn, delay = 400, deps = []) {
     const [searchText, setSearchText] = useState('');
     const timeoutRef = useRef(null);
-    const fetchFnRef = useRef(fetchFn);
-    fetchFnRef.current = fetchFn;
+    const fetchFnRef = useRef(fetchFn);    
     const isFirstRun = useRef(true);
+
+    useEffect(() => {
+        fetchFnRef.current = fetchFn;
+    }, [fetchFn]);
 
     useEffect(() => {
         if (isFirstRun.current) {
@@ -55,7 +58,7 @@ export function useDebouncedSearch(fetchFn, delay = 400, deps = []) {
         }, delay);
 
         return () => clearTimeout(timeoutRef.current);
-        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchText, delay, ...deps]);   
 
     const setSearchTextImmediate = useCallback((value) => {
