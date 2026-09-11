@@ -1,0 +1,23 @@
+{
+    "nombreCorto": "IIEG Jalisco",
+    "organismo": "Instituto de Información Estadística y Geográfica del Estado de Jalisco",
+    "descripcion": "Es el organismo responsable de gestionar, procesar y difundir datos e información relevante de la entidad.",
+    "direccion": "Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.",
+    "telefono": "33 3777 1770",
+    "coordenadas": "20.68443473644039,-103.44669185275052",
+    "zoom": 16,
+    "chips": [
+        { "texto": "Sede · Zapopan" },
+        { "texto": "8 direcciones" },
+        { "texto": "Organismo público descentralizado", "color": "naranja" }
+    ],
+    "cifras": {
+        "corte": "2026-09-11",
+        "items": [
+            { "valor": "2013", "etiqueta": "año de creación" },
+            { "valor": 53, "etiqueta": "personas en el instituto" },
+            { "valor": 4917690, "etiqueta": "registros geográficos en MapaLab" },
+            { "valor": 16994827, "etiqueta": "registros ingestados automáticamente" }
+        ]
+    }
+}
