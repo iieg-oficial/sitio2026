@@ -40,8 +40,14 @@ export function useDebouncedSearch(fetchFn, delay = 400, deps = []) {
     const timeoutRef = useRef(null);
     const fetchFnRef = useRef(fetchFn);
     fetchFnRef.current = fetchFn;
+    const isFirstRun = useRef(true);
 
     useEffect(() => {
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
+
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
         timeoutRef.current = setTimeout(() => {
@@ -50,7 +56,7 @@ export function useDebouncedSearch(fetchFn, delay = 400, deps = []) {
 
         return () => clearTimeout(timeoutRef.current);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchText, delay, ...deps]);
+    }, [searchText, delay, ...deps]);   // <- restaurar las dependencias reales
 
     const setSearchTextImmediate = useCallback((value) => {
         setSearchText(value);

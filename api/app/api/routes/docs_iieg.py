@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import select, func, or_
 from slugify import slugify
 from sqlalchemy.orm import Session
-
+from app.core.search import escape_like
 from app.api.deps import get_db, verify_csrf
 from app.models import DocsIIEG, Usuario
 from app.schemas.docs_iieg import DocsIIEGCreate, DocsIIEGOut, DocsIIEGResponse
@@ -23,8 +23,8 @@ def get_docs_iieg(
         like = f"%{search}%"
         query = query.where(
             or_(
-                DocsIIEG.nombre.ilike(like),
-                DocsIIEG.descripcion.ilike(like),
+                DocsIIEG.nombre.ilike(like, escape='\\'),
+                DocsIIEG.descripcion.ilike(like, escape='\\'),
             )
         )
 

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import select, func, or_
 from slugify import slugify
 from sqlalchemy.orm import Session
-
+from app.core.search import escape_like
 from app.api.deps import get_db, verify_csrf
 from app.models import Flashes, Subject, Usuario
 from app.models.flashes import MesEnum, PeriocidadEnum
@@ -32,9 +32,9 @@ def read_flashes(
         like = f"%{search}%"
         query = query.where(
             or_(
-                Flashes.titulo.ilike(like),
-                Flashes.desc_jal.ilike(like),
-                Flashes.desc_nac.ilike(like),
+                Flashes.titulo.ilike(like, escape='\\'),
+                Flashes.desc_jal.ilike(like, escape='\\'),
+                Flashes.desc_nac.ilike(like, escape='\\'),
             )
         )
     

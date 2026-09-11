@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import select, func, or_
 from slugify import slugify
 from sqlalchemy.orm import Session, joinedload
-
+from app.core.search import escape_like
 from app.api.deps import get_db, verify_csrf
 from app.models import Documentacion, Sistemas, Subject, Usuario
 from app.schemas import (
@@ -45,8 +45,8 @@ async def listar_documentaciones(
         like = f"%{search}%"
         query = query.where(
             or_(
-            Documentacion.titulo.ilike(like),
-            Documentacion.descripcion.ilike(like),
+            Documentacion.titulo.ilike(like, escape='\\'),
+            Documentacion.descripcion.ilike(like, escape='\\'),
             )
         )
 

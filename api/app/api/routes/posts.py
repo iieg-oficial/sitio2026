@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import select, func, or_
 from slugify import slugify
 from sqlalchemy.orm import Session
-
+from app.core.search import escape_like
 from app.api.deps import get_db, verify_csrf
 from app.models import Posts, Subject, Usuario
 from app.models.posts import GalleryImage
@@ -47,8 +47,8 @@ async def listar_posts(
         like = f"%{search}%"
         query = query.where(
             or_(
-                Posts.titulo.ilike(like),
-                Posts.resumen.ilike(like),
+                Posts.titulo.ilike(like, escape='\\'),
+                Posts.resumen.ilike(like, escape='\\'),
             )
         )
         

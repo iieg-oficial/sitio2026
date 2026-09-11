@@ -236,7 +236,7 @@ export default function Documentacion() {
                             pageSize: pagination.pageSize,
                             total: pagination.total,
                             showSizeChanger: true,
-                            showTotal: (total) => `Total ${total} reportes`
+                            showTotal: (total) => `Total ${total} documentacion`
                         }}
                     onChange={handleTableChange}
                 />

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import select, func, or_
 from slugify import slugify
 from sqlalchemy.orm import Session
-
+from app.core.search import escape_like
 from app.api.deps import get_db, verify_csrf
 from app.models import Cuadernillo, Usuario
 from app.models.cuadernillos import MunicipioEnum
@@ -21,10 +21,10 @@ def read_cuadernillos(
     query = select(Cuadernillo)
 
     if search:
-        like = f"%{search}%"
+        like = f"%{escape_like(search)}%"
         query = query.where(
             or_(
-                Cuadernillo.titulo.ilike(like),
+                Cuadernillo.titulo.ilike(like, escape='\\'),
             )
         )
 
