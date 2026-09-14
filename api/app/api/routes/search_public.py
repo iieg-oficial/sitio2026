@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import String, cast, or_
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-
+from app.core.search import escape_like
 import app.models as model_registry
 from app.api.deps import get_db
 from app.schemas.search import SearchResponse
@@ -239,14 +239,14 @@ def _build_row_description(row) -> str:
 
 
 @router.get("", response_model=SearchResponse)
-def global_search(
+async def global_search(
     q: str = Query(..., min_length=2, description="Termino de busqueda"),
     limit: int = Query(60, ge=1, le=200, description="Maximo total de resultados"),
     per_source: int = Query(30, ge=1, le=100, description="Maximo por modelo"),
     db: Session = Depends(get_db),
 ):
     query = q.strip()
-    like = f"%{query}%"
+    like = f"%{escape_like(query)}%"
 
     results = []
 
@@ -257,7 +257,7 @@ def global_search(
                 continue
             if column.primary_key:
                 continue
-            conditions.append(cast(column, String).ilike(like))
+            conditions.append(cast(column, String).ilike(like, escape='\\'))
 
         if not conditions:
             continue
