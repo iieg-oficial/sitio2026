@@ -1,9 +1,11 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy import select, func, or_
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
-from app.core.search import escape_like
+
 from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.core.slugs import make_unique_slug
 from app.models import Reportes, Subject, Usuario
 from app.models.reportes import MesEnum, PeriocidadEnum

@@ -1,10 +1,12 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy import select, func, or_
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, joinedload
-from app.core.search import escape_like
+
 from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.models import Documentacion, Sistemas, Subject, Usuario
 from app.schemas import (
     DocumentacionCreate,

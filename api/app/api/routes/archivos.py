@@ -1,11 +1,12 @@
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy import select, func, or_
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
-from app.core.search import escape_like
 
 from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.models import Archivos, Subject, Usuario
 from app.schemas.archivo import ArchivoCreate, ArchivoList, ArchivoOut, ArchivoResponse
 
@@ -29,7 +30,7 @@ async def listar_archivos(
     db: Session = Depends(get_db),
 ):
     query = select(Archivos)
-    
+
     if search:
         like = f"%{escape_like(search)}%"
         query = query.where(
@@ -37,7 +38,7 @@ async def listar_archivos(
                 Archivos.titulo.ilike(like, escape='\\'),
             )
         )
-    
+
     total = db.execute(
         select(func.count()).select_from(query.subquery())
     ).scalar_one()
