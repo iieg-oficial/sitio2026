@@ -39,7 +39,7 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 async def listar_posts(
     search: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
-    page_size: int = Query(10, ge=1, le=100),
+    page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
     query = select(Posts)
