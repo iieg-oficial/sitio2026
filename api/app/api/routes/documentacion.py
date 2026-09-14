@@ -6,6 +6,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.core.search import escape_like
 from app.models import Documentacion, Sistemas, Subject, Usuario
 from app.schemas import (
@@ -180,8 +181,13 @@ async def actualizar_documentacion(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Documentacion, update_data["slug"], exclude_id=documentacion_id
+            )
+        else:
+            del update_data["slug"]
 
     # Actualizar relacion many-to-many de sistemas
     if "sistema_ids" in update_data:

@@ -112,8 +112,13 @@ def update_sistemas(
         update_data["slug"] = make_unique_slug(
             db, Sistemas, update_data["titulo"], exclude_id=id
         )
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Sistemas, update_data["slug"], exclude_id=id
+            )
+        else:
+            del update_data["slug"]
 
     if "tema_ids" in update_data:
         db_sistemas.temas = _load_temas(db, update_data.pop("tema_ids") or [])

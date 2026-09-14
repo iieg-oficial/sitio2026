@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Preguntas, Subject, Usuario
 from app.schemas.preguntas import PreguntasCreate, PreguntasList, PreguntasOut, PreguntasResponse
 
@@ -88,8 +89,13 @@ def actualizar_pregunta(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Preguntas, update_data["slug"], exclude_id=pregunta_id
+            )
+        else:
+            del update_data["slug"]
 
     if "tema_ids" in update_data:
         pregunta.temas = _load_temas(db, update_data.pop("tema_ids") or [])

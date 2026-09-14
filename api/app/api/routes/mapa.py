@@ -6,6 +6,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.core.search import escape_like
 from app.models import Mapa, Usuario
 from app.models.mapa import TipoMapaEnum
@@ -104,8 +105,13 @@ def update_mapa(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Mapa, update_data["slug"], exclude_id=id
+            )
+        else:
+            del update_data["slug"]
 
     for campo, valor in update_data.items():
         setattr(db_mapa, campo, valor)

@@ -3,6 +3,7 @@ from slugify import slugify
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Instituciones, Usuario
 from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
 
@@ -72,8 +73,13 @@ async def actualizar_institucion(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Instituciones, update_data["slug"], exclude_id=institucion_id
+            )
+        else:
+            del update_data["slug"]
 
     for campo, valor in update_data.items():
         setattr(institucion, campo, valor)

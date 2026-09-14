@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Subject, Usuario
 from app.schemas.subject import SubjectCreate, SubjectFlat, SubjectOut
 
@@ -90,8 +91,13 @@ async def actualizar_subject(
             contador += 1
         update_data["slug"] = slug
 
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Subject, update_data["slug"], exclude_id=subject_id
+            )
+        else:
+            del update_data["slug"]
 
     for campo, valor in update_data.items():
         setattr(subject, campo, valor)

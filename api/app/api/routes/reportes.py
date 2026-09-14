@@ -146,8 +146,13 @@ async def actualizar_reporte(
         update_data["slug"] = make_unique_slug(
             db, Reportes, update_data["titulo"], exclude_id=reporte_id
         )
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Reportes, update_data["slug"], exclude_id=reporte_id
+            )
+        else:
+            del update_data["slug"]
 
     if "tema_ids" in update_data:
         reporte.temas = _load_temas(db, update_data.pop("tema_ids") or [])
