@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.models import Instituciones, Usuario
 from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
 
@@ -16,7 +17,7 @@ async def listar_instituciones(
 
 @router.get("/{institucion_id}", response_model=InstitucionesOut)
 async def obtener_institucion(
-    institucion_id: int, 
+    institucion_id: int,
     db: Session = Depends(get_db)
     ):
     institucion = db.query(Instituciones).filter(Instituciones.id == institucion_id).first()
@@ -38,7 +39,7 @@ async def crear_institucion(
     while db.query(Instituciones).filter(Instituciones.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     nuevo = Instituciones(
         nombre=institucion_in.nombre,
         descripcion=institucion_in.descripcion,
@@ -54,7 +55,7 @@ async def crear_institucion(
 async def actualizar_institucion(
     institucion_id: int,
     institucion_in: InstitucionesCreate,
-    db: Session = Depends(get_db),    
+    db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
     institucion = db.query(Instituciones).filter(Instituciones.id == institucion_id).first()
@@ -76,7 +77,7 @@ async def actualizar_institucion(
 
     for campo, valor in update_data.items():
         setattr(institucion, campo, valor)
-    
+
     db.commit()
     db.refresh(institucion)
     return institucion

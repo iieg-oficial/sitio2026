@@ -1,20 +1,31 @@
-from pydantic import BaseModel, field_validator
-from enum import Enum
 from typing import List, Optional
-from app.schemas.subject import SubjectFlat
+
+from pydantic import BaseModel, computed_field, field_validator
+
 from app.models.sistemas import TipoSistemaEnum
+from app.schemas.subject import SubjectFlat
+
 
 class SistemasCreate(BaseModel):
     titulo: str
     descripcion: Optional[str]
     link: Optional[str] = None
     tipo: TipoSistemaEnum
-    imagen: Optional[str] = None 
-    claves: Optional[str] = None    
+    imagen: Optional[str] = None
+    claves: Optional[str] = None
     slug: Optional[str] = None
     tema_ids: Optional[List[int]] = None
     destacado: Optional[bool] = False
+    slider: Optional[bool] = False
+    imagen_slider: Optional[str] = None
     orden: Optional[int] = None
+
+    @field_validator('tipo', mode='before')
+    @classmethod
+    def clean_tipo(cls, v):
+        if isinstance(v, str) and v == 'datos_recientes':
+            return 'datos-recientes'
+        return v
 
     @field_validator('tema_ids', mode='before')
     @classmethod
@@ -33,10 +44,12 @@ class SistemasOut(BaseModel):
     link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     slug: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
     destacado: Optional[bool] = False
+    slider: bool = False
+    imagen_slider: Optional[str] = None
     orden: Optional[int] = None
 
     class Config:
@@ -49,11 +62,18 @@ class SistemasResponse(BaseModel):
     link: Optional[str] = None
     tipo: TipoSistemaEnum
     imagen: Optional[str] = None
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     slug: Optional[str] = None
     destacado: bool = False
+    slider: bool = False
+    imagen_slider: Optional[str] = None
     orden: int
     temas: Optional[List[SubjectFlat]] = []
+
+    @computed_field
+    @property
+    def tipo_label(self) -> str:
+        return self.tipo.label if self.tipo else self.tipo
 
     class Config:
         from_attributes = True

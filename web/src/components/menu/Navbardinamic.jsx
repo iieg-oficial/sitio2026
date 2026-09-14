@@ -45,6 +45,7 @@ const Navbardinamic = () => {
     return () => { isMounted = false; };
   }, []);
 
+  
   // 2. Funciones para alternar menú y submenús
   const toggleMenu = (e) => {
     if (e) e.preventDefault();
@@ -76,10 +77,18 @@ const Navbardinamic = () => {
     navigate(`/busqueda?q=${encodeURIComponent(term)}`);
   };
 
+  // Helper para verificar si un slug corresponde a la ruta activa actual
+  const isPathActive = (slug) => {
+    if (!slug) return false;
+    const path = cleanSlug(slug);
+    if (path === '/') return location.pathname === '/';
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
   return (
     <div className="container-fluid bg-primary py-5">
-      <div className="menu-wrapper grid grid-cols-2 lg:grid-cols-12 container mx-auto">
-        <Link to="/" className="lg:col-span-3 content-center">
+      <div className="menu-wrapper grid grid-cols-2 xl:grid-cols-12 container mx-auto">
+        <Link to="/" className="lg:col-span-3 xl:col-span-2 content-center">
           <img src="/ico_IIEG_header.svg" alt="IIEG" className="h-12 w-auto" />
         </Link>
         
@@ -91,7 +100,7 @@ const Navbardinamic = () => {
           <span className="material-symbols--menu-rounded"></span>
         </a>
 
-        <nav id="menu" className={`navbar col-span-2 lg:col-span-9 ${isOpen ? 'active' : ''}`} role="navigation">
+        <nav id="menu" className={`navbar col-span-2 lg:col-span-9 xl:col-span-10 ${isOpen ? 'active' : ''}`} role="navigation">
           <div className="menu">
             <ul className="menu">
 
@@ -102,10 +111,17 @@ const Navbardinamic = () => {
                   const hasSubpages = Array.isArray(item.subpages) && item.subpages.length > 0;
                   const destination = cleanSlug(item.slug_custom);
 
+                  const isItemActive = isPathActive(item.slug_custom);
+                  const isChildActive = hasSubpages && item.subpages.some(
+                    (sub) => sub && sub.activar === true && isPathActive(sub.slug_custom)
+                  );
+                  const isCurrent = isItemActive || isChildActive;
+
                   return (
-                    <li key={item.id} className={`menu-link ${hasSubpages ? 'has-subnav' : ''}`}>
+                    <li key={item.id} className={`menu-link ${hasSubpages ? 'has-subnav' : ''} ${isCurrent ? 'current-menu-item active' : ''}`}>
                       <TrackedLink
                         to={destination}
+                        className={isCurrent ? 'active' : ''}
                         target={item.link_interno ? undefined : '_blank'}
                       >
                         {item.title}
@@ -125,17 +141,22 @@ const Navbardinamic = () => {
                           {item.subpages
                             .filter((subItem) => subItem && subItem.activar === true)
                             .sort(sortByOrder)
-                            .map((subItem) => (
-                              <li key={subItem.id}>
-                                <TrackedLink 
-                                  to={cleanSlug(subItem.slug_custom)}
-                                  className="nav-link" 
-                                  target={subItem.link_interno ? undefined : '_blank'}
-                                >
-                                  {subItem.title}
-                                </TrackedLink>
-                              </li>
-                            ))}
+                            .map((subItem) => {
+                              const subDestination = cleanSlug(subItem.slug_custom);
+                              const isSubActive = isPathActive(subItem.slug_custom);
+
+                              return (
+                                <li key={subItem.id} className={isSubActive ? 'active' : ''}>
+                                  <TrackedLink 
+                                    to={subDestination}
+                                    className={`nav-link ${isSubActive ? 'active' : ''}`} 
+                                    target={subItem.link_interno ? undefined : '_blank'}
+                                  >
+                                    {subItem.title}
+                                  </TrackedLink>
+                                </li>
+                              );
+                            })}
                         </ul>
                       )}
                     </li>
@@ -144,14 +165,7 @@ const Navbardinamic = () => {
             </ul>
           </div>
         </nav>    
-
-        <div className="col-span-2 mt-2 lg:col-span-12 lg:mt-1">
-          <HeaderSearch
-            initialValue=""
-            onSubmit={handleSearch}
-            placeholder="Buscar en todo el sitio..."
-          />
-        </div>  
+ 
       </div>
     </div>
   );

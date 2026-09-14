@@ -3,7 +3,12 @@ import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
 import Image from '@tiptap/extension-image'
-import { useEffect, useRef } from 'react'
+import Table from '@tiptap/extension-table'
+import TableRow from '@tiptap/extension-table-row'
+import TableHeader from '@tiptap/extension-table-header'
+import TableCell from '@tiptap/extension-table-cell'
+import Link from '@tiptap/extension-link'
+import { useCallback, useEffect, useRef } from 'react'
 
 const ToolbarButton = ({ onClick, active, title, children }) => (
   <button
@@ -37,6 +42,20 @@ export default function RichTextEditor({ value, onChange }) {
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Image.configure({
         allowBase64: true, // Permite imágenes locales en formato Base64
+      }),
+      Table.configure({
+        resizable: true,
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
+      Link.configure({ 
+        openOnClick: false, // Evita que se abra la pestaña al hacer clic mientras se edita
+        autolink: true,     // Detecta enlaces pegados automáticamente
+        HTMLAttributes: {
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        },
       }),
     ],
     content: value || '',
@@ -75,6 +94,25 @@ export default function RichTextEditor({ value, onChange }) {
     fileInputRef.current?.click();
   };
 
+  const setLink = useCallback(() => {
+    if (!editor) return
+
+    const previousUrl = editor.getAttributes('link').href
+    const url = window.prompt('URL del enlace:', previousUrl)
+
+    // Si se cancela el prompt
+    if (url === null) {
+      return
+    }
+
+    // Si está vacío, quita el enlace del texto seleccionado
+    if (url === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run()
+      return
+    }
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+  }, [editor])
+
   if (!editor) return null;
 
   // Sincroniza cuando el Form carga datos (edición)
@@ -111,6 +149,14 @@ export default function RichTextEditor({ value, onChange }) {
         <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Lista numerada">
           1. Lista
         </ToolbarButton>
+        <ToolbarButton onClick={setLink} active={editor.isActive('link')} title="Insertar Enlace">
+          🔗 Enlace
+        </ToolbarButton>
+        {editor.isActive('link') && (
+        <ToolbarButton onClick={() => editor.chain().focus().unsetLink().run()} title="Quitar Enlace">
+            ❌ Quitar Enlace
+        </ToolbarButton>
+        )}
         <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('left').run()} active={editor.isActive({ textAlign: 'left' })} title="Alinear izquierda">
           ←
         </ToolbarButton>
@@ -123,6 +169,50 @@ export default function RichTextEditor({ value, onChange }) {
         <ToolbarButton onClick={triggerLocalUpload} title="Insertar imagen">
           Imagen
         </ToolbarButton>
+        <span style={{ borderLeft: '1px solid #ccc', margin: '0 4px' }} />
+        
+        <ToolbarButton 
+          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} 
+          title="Insertar tabla 3x3"
+        >
+          田 Tabla
+        </ToolbarButton>
+        <ToolbarButton 
+          onClick={() => editor.chain().focus().addColumnAfter().run()} 
+          disabled={!editor.isActive('table')}
+          title="Agregar columna a la derecha"
+        >
+          + Columna
+        </ToolbarButton>
+        <ToolbarButton 
+          onClick={() => editor.chain().focus().addRowAfter().run()} 
+          disabled={!editor.isActive('table')}
+          title="Agregar fila abajo"
+        >
+          + Fila
+        </ToolbarButton>
+        <ToolbarButton 
+          onClick={() => editor.chain().focus().deleteColumn().run()} 
+          disabled={!editor.isActive('table')}
+          title="Eliminar columna"
+        >
+          - Columna
+        </ToolbarButton>
+        <ToolbarButton 
+          onClick={() => editor.chain().focus().deleteRow().run()} 
+          disabled={!editor.isActive('table')}
+          title="Eliminar fila"
+        >
+          - Fila
+        </ToolbarButton>
+        <ToolbarButton 
+          onClick={() => editor.chain().focus().deleteTable().run()} 
+          disabled={!editor.isActive('table')}
+          title="Eliminar tabla"
+        >
+          Eliminar Tabla
+        </ToolbarButton>
+        
         <input
           type="file"
           accept="image/*"

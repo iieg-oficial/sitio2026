@@ -1,6 +1,8 @@
 .mapa {
   position: relative;
   cursor: pointer;
+  overflow: hidden;
+  border-radius: 1.5rem;
 }
 
 .mapa .image-mapa {
@@ -21,6 +23,7 @@
   left: 0;
   right: 0;
   padding: 1rem;
+  padding-top: 5rem;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
   opacity: 0;
   transform: translateY(10px);

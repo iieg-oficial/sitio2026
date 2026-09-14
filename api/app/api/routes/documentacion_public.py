@@ -1,19 +1,23 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-from slugify import slugify
+from sqlalchemy.orm import Session
+
 from app.api.deps import get_db
-from app.models import Documentacion, Subject
-from app.schemas import DocumentacionOut, DocumentacionResponse, DocumentacionList
+from app.models import Documentacion
+from app.schemas import DocumentacionList, DocumentacionOut, DocumentacionResponse
+from app.services.documentacion import get_tipos as get_documentacion_tipos
 
 router = APIRouter(prefix="/documentacion", tags=["documentacion - public"])
+
+
+router.add_api_route("/tipos", get_documentacion_tipos, methods=["GET"])
 
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
     db: Session = Depends(get_db),
 ):
     documentaciones = db.execute(
-        select(Documentacion).order_by(Documentacion.titulo) 
+        select(Documentacion).order_by(Documentacion.titulo, Documentacion.id.desc())
     ).scalars().all()
     return {
         "documentaciones": documentaciones,

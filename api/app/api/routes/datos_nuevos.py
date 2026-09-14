@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import DatosNuevos, Usuario  
-from app.models.datos_nuevos import NuevoEnum   
-from app.schemas.datos_nuevos import DatosNuevosOut, DatosNuevosResponse, DatosNuevosCreate
+
+from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
+from app.models import DatosNuevos, Usuario
+from app.models.datos_nuevos import NuevoEnum
+from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosOut, DatosNuevosResponse
 
 router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos"])
 
@@ -25,13 +26,8 @@ def create_datos_nuevos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    slug = slugify(datos_nuevos.cifras)
-    base_slug = slug
-    contador = 1
-    while db.query(DatosNuevos).filter(DatosNuevos.slug == slug).first():
-        slug = slugify(f"{base_slug}-{contador}")
-        contador += 1
-    
+    slug = make_unique_slug(db, DatosNuevos, datos_nuevos.cifras)
+
     """Crear un nuevo dato"""
     db_datos_nuevos = DatosNuevos(
         cifras=datos_nuevos.cifras,
@@ -58,21 +54,17 @@ def update_datos_nuevos(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Dato no encontrado",
         )
-    
+
     update_data = datos_nuevos.dict(exclude_unset=True)
 
     if "cifras" in update_data and update_data["cifras"] != db_datos_nuevos.cifras:
-        slug = slugify(str(update_data["cifras"]))
-        base_slug = slug
-        contador = 1
-        while db.query(DatosNuevos).filter(DatosNuevos.slug == slug).first():
-            slug = f"{base_slug}-{contador}"
-            contador += 1
-        update_data["slug"] = slug
-    
+        update_data["slug"] = make_unique_slug(
+            db, DatosNuevos, str(update_data["cifras"]), exclude_id=id
+        )
+
     for campo, valor in update_data.items():
         setattr(db_datos_nuevos, campo, valor)
-    
+
     db.commit()
     db.refresh(db_datos_nuevos)
     return db_datos_nuevos

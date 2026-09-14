@@ -5,10 +5,8 @@ Revises: f3a8b2c1d9e7
 Create Date: 2026-06-08
 
 """
-from alembic import op
-import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
 
+from alembic import op
 
 revision = 'a1d2_add_datos_nuevos_table'
 down_revision = 'f3a8b2c1d9e7'

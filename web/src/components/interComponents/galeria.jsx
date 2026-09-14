@@ -55,7 +55,18 @@ export default function Galeria({ images }) {
             >
                 {images.map((imagen) => (
                     <SwiperSlide key={imagen.id}>
-                        <img src={imagen.url} alt={`Imagen ${imagen.id}`} />
+                        <img src={imagen.url} alt={`Imagen ${imagen.id}`} 
+                            onError={(e) => {
+                                    if (!e.target.dataset.triedFallback) {
+                                        e.target.dataset.triedFallback = 'true';
+                                        e.target.src = imagen.url
+                                            ? imagen.url
+                                            : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                    } else {                                        
+                                        e.target.onerror = null;
+                                        e.target.src = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                    }
+                                }}/>
                     </SwiperSlide>
                 ))}
             </Swiper>

@@ -1,2 +1,1 @@
 username,email,hashed_password,name,role,must_change_password,created_at
-editora_demo,editora.demo@iieg.gob.mx,$2b$12$abcdefghijklmnopqrstuv1234567890abcdefghijklmnopq,Editora Demo,editora,true,2026-01-10T09:00:00

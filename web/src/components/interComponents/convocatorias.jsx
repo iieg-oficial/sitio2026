@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
 import ConvocatoriasList from './convocatorias_list';
-import Backlink from '../pageComponents/Backlink';
+import BackLink from './../pageComponents/Backlink'
 import TrackedLink from '@components/blocks/boton'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 import ConvocatoriasInst from './convocatorias_inst';
+import { SafeHtml } from '@components/SafeHtml';
 
 dayjs.locale('es')
 
@@ -45,13 +46,15 @@ export default function Convocatorias() {
         return ahora > fecha;
     };
 
+    const portada = singleConvocatoria.img_portada || 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png';
+
     return (
         <>
             <Helmet>
-                <title>{singleConvocatoria.nombre}</title>                
-                <meta property="og:title" content={singleConvocatoria.nombre} />
-                <meta name="description" content={singleConvocatoria.resumen} />
-                <meta property="og:image" content={singleConvocatoria.postlink ? singleConvocatoria.postlink : "/demo.jpg"} />
+                <title>{singleConvocatoria.titulo}</title>
+                <meta property="og:title" content={singleConvocatoria.titulo} />
+                <meta name="description" content={singleConvocatoria.descripcion} />
+                <meta property="og:image" content={portada} />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 <meta name="keywords" content={singleConvocatoria.clave} />
@@ -59,91 +62,120 @@ export default function Convocatorias() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={singleConvocatoria.titulo} />
                 <meta name="twitter:description" content={singleConvocatoria.descripcion} />
-                <meta name="twitter:image" content={singleConvocatoria.postlink ? singleConvocatoria.postlink : "/demo.jpg"} />
+                <meta name="twitter:image" content={portada} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
-                <Backlink />
-                <main className='grid lg:grid-cols-6 mx-auto'>
-                    <div className='col-span-2'></div>
-                    <div className='col-span-4'>
-                        <h1 className='text-44 font-bold mb-4'>{singleConvocatoria.titulo}</h1>
-                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.descripcion}} className='mt-5 prose max-w-none diez' />
-                        <div className='mt-5 flex flex-wrap gap-5'>
-                            {singleConvocatoria.archivo && (
-                                <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.archivo} target="_blank" download>
-                                    <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Descarga el archivo informativo</span>
-                                </TrackedLink>
-                            )}
-                            {singleConvocatoria.formulario && !esFechaPasada(singleConvocatoria.fin) ? (
-                                <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.formulario} target="_blank">
-                                    <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Inscribete aquí</span>
-                                </TrackedLink>
-                            ): 
-                                <span className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Finalizado</span>
-                            }
+                <section className="page-header text-center pb-12">
+                    <div className="container mx-auto grid md:grid-cols-12 gap-1">  
+                        <div className='md:col-span-1 text-left'><BackLink /></div>
+                        <div className='md:col-span-11 w-full px-2 md:px-0 md:ml-auto md:mr-0 grid lg:grid-cols-12 mx-auto'>
+                            <div className='lg:col-span-3 px-5'>
+                                <img src={portada} alt={singleConvocatoria.titulo} />
+                            </div>
+                            <div className='lg:col-span-9 text-left'> 
+                                <h1 className='text-44 font-garet-extra mb-4'>{singleConvocatoria.titulo}</h1>
+                                
+                                <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none diez text-22!'/>
+                                <div className='mt-5 flex flex-wrap gap-5'>
+                                    {singleConvocatoria.archivo && (
+                                        <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.archivo} target="_blank" download>
+                                            <span className='rounded-2xl bg-etiqueta-ter text-primary border text-14 px-5 py-2 font-garet-bold'>Descarga el archivo informativo</span>
+                                        </TrackedLink>
+                                    )}
+                                    {singleConvocatoria.formulario && !esFechaPasada(singleConvocatoria.fin) ? (
+                                        <TrackedLink key={singleConvocatoria.id} to={singleConvocatoria.formulario} target="_blank">
+                                            <span className='rounded-2xl bg-etiqueta-ter text-primary border text-14 px-5 py-2 font-garet-bold'>Inscribete aquí</span>
+                                        </TrackedLink>
+                                    ): 
+                                        <span className='rounded-2xl bg-etiqueta-ter border-titulo border text-titulo text-14 px-5 py-2 mt-5 font-garet-bold'>Convocatoria cerrada</span>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </main>
-                <section className='lg:w-11/12 mx-auto flex flex-wrap gap-5 lg:justify-around mt-8'>
-                    <div className='lg:mt-8 lg:pt-4'>
-                        <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-bold text-26 px-5 py-2'>
-                            Inicio: {dayjs(singleConvocatoria.inicio).format('D [de] MMMM [de] YYYY')}                             
-                        </p>
-                    </div>
-                    <div className='lg:mt-8 lg:pt-4'>
-                        <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-bold px-5 py-2'>
-                            Formato: {singleConvocatoria.tipo_curso.formato}
-                        </p>
-                    </div>
-                    <div className='lg:mt-8 lg:pt-4'>
-                        <p className='rounded-2xl bg-etiqueta text-primary text-26 font-bold px-5 py-2'>
-                            Horario: {singleConvocatoria.Horario}
-                        </p>
-                    </div>
+                    </div>                    
                 </section>
-                <section className='lg:w-10/12 mx-auto my-15'>
-                    <div className='grid grid-cols-6 gap-5'>
+
+
+                <section className='lg:w-8/12 mx-auto mb-15'>
+                {singleConvocatoria.Objetivo && (
+                    <div className='grid grid-cols-12 sm:gap-1'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
-                        <div className='col-span-5'>
-                            <h2 className='text-primary text-36 font-extrabold'>Objetivo</h2>
-                            <div dangerouslySetInnerHTML={{__html: singleConvocatoria.Objetivo}} className='mt-5 prose max-w-none cursos' />
+                        <div className='col-span-11'>
+                            <div className="flex flex-wrap mb-12.5 gap-1">
+                                {singleConvocatoria.inicio && (
+                                    <div className='mb-3 lg:pt-4'>
+                                        <p className='rounded-2xl bg-etiqueta-sec text-tertiary font-garet-bold border text-26 px-5 py-2'>
+                                            Inicio: {dayjs(singleConvocatoria.inicio).format('D [de] MMMM [de] YYYY')}                             
+                                        </p>
+                                    </div>
+                                )}
+                                {singleConvocatoria.tipo_curso.formato && (
+                                    <div className='mb-3 lg:pt-4'>
+                                        <p className='rounded-2xl bg-etiqueta-ter text-titulo text-26 font-garet-bold border px-5 py-2'>
+                                            Formato: {singleConvocatoria.tipo_curso.formato}
+                                        </p>
+                                    </div>
+                                )}
+                                {singleConvocatoria.Horario && (
+                                    <div className='mb-3 lg:pt-4'>
+                                        <p className='rounded-2xl bg-etiqueta text-primary text-26 font-garet-bold border px-5 py-2'>
+                                            Horario: {singleConvocatoria.Horario}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                            <h2 className='text-primary text-36 font-garet-extra'>Objetivo</h2>
                         </div>
+                        <SafeHtml htmlContent={singleConvocatoria.Objetivo} className='mt-5 prose max-w-none cursos text-22! text-titulo! bg-card p-6 rounded-xl col-span-12'/>
                     </div>
-                    <div className='my-20 grid grid-cols-6 gap-5'>
+                )}
+                {singleConvocatoria.p_ingreso && (
+                    <div className='my-20 grid grid-cols-12 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
-                        <div className='col-span-5'>
-                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Ingreso</h2>
-                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_ingreso}} className='mt-5 prose max-w-none cursos' />
+                        <div className='col-span-11'>
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Ingreso</h2>                        
                         </div>
+                        <SafeHtml htmlContent={singleConvocatoria.descripcion} className='mt-5 prose max-w-none cursos text-22! text-titulo! bg-card p-6 rounded-xl col-span-12'/>
+                        
                     </div>
-                     <div className='grid grid-cols-6 gap-5'>
+                )}
+                {singleConvocatoria.p_egreso && (
+                    <div className='grid grid-cols-12 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
-                        <div className='col-span-5'>
-                            <h2 className='text-primary text-36 font-extrabold'>Perfil de Egreso</h2>
-                        <div dangerouslySetInnerHTML={{__html: singleConvocatoria.p_egreso}} className='mt-5 prose max-w-none cursos' />                        
+                        <div className='col-span-11'>
+                            <h2 className='text-primary text-36 font-garet-extra'>Perfil de Egreso</h2>
                         </div>
+                        <SafeHtml htmlContent={singleConvocatoria.p_egreso} className='mt-5 prose max-w-none cursos text-22! text-titulo! bg-card p-6 rounded-xl col-span-12'/>                        
                     </div>
+                )}
                 </section>
+
                 <ConvocatoriasList />
-                <section className='grid grid-cols-6 gap-4 lg:w-10/12 mx-auto mb-15'>
+
+                <section className='grid grid-cols-12 gap-4 lg:w-8/12 mx-auto mb-15'>
                     <div className='col-span-1'></div>
-                    <div className='col-span-5 grid lg:grid-cols-2 gap-5'>
-                        <div className='my-5'>
-                            <strong className='text-primary font-extrabold text-36 mb-10'>Vigencia</strong> 
-                            <p className='text-20 text-titulo pt-6'>{singleConvocatoria.vigencia}</p>
+                    <div className='col-span-11 grid lg:grid-cols-2 gap-5'>
+                        {singleConvocatoria.vigencia && (
+                        <div className='my-5 bg-card p-6 rounded-xl'>
+                            <strong className='text-primary font-garet-extra text-36 mb-10'>Vigencia</strong> 
+                            <p className='text-22! text-titulo! pt-6'>{singleConvocatoria.vigencia}</p>
                         </div>
-                        <div className='my-5'>
-                            <strong className='text-primary font-extrabold text-36'>Contacto</strong> 
-                        <p className='text-20 text-titulo pt-6'>{singleConvocatoria.contacto}</p>
+                        )}
+                        {singleConvocatoria.contacto && (
+                        <div className='my-5 bg-card p-6 rounded-xl'>
+                            <strong className='text-primary font-garet-extra text-36'>Contacto</strong> 
+                        <p className='text-22! text-titulo! pt-6'>{singleConvocatoria.contacto}</p>
                         </div>
+                        )}
                     </div>                
                 </section>
+
                 <ConvocatoriasInst />
             </article>
         </>

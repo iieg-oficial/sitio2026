@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import TrackedLink from '@components/blocks/boton'
 import ConditionalLink from '../pageComponents/ConditionalLink'
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Flashes() {
     const [flashes, setFlashes] = useState([])
@@ -148,26 +149,35 @@ export default function Flashes() {
     return (
         <div className='px-2'>
             {lastFlash && !hasActiveFilters && (
-                <div className='rounded-2xl p-5 lg:p-14 mb-4 mx-auto container bg-[#F5F5F5] mt-5 mb-15'>
-                    <h3 className='text-28 text-tertiary'>{lastFlash.titulo}</h3>
+                <div className='rounded-2xl p-5 lg:p-8 mb-4 mx-auto container  bg-[#F9FBFF] mb-15'>
+                    <h3 className='text-36 text-tertiary font-garet-extra'>{lastFlash.titulo}</h3>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
                         <div className='bg-white rounded-2xl p-8'>
-                            <h4>Jalisco</h4>
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_jal}} className='mt-5 prose max-w-none' />
+
+                            <div className="flex gap-4 items-center">
+                                <img src="/ico_jalisco.svg" alt="Jalisco" className="w-16 h-16 object-contain" />
+                                <h4 className="text-primary"> Jalisco</h4>
+                            </div>
+                            <SafeHtml htmlContent={lastFlash.desc_jal} className='mt-5 prose max-w-none'/>
                         </div>
                         <div className='bg-white rounded-2xl p-6'>
-                            <h4>Nacional</h4>
-                            <div dangerouslySetInnerHTML={{__html: lastFlash.desc_nac}} className='mt-5 prose max-w-none' />
+                            <div className="flex gap-4 items-center">
+                                <img src="/ico_Nacional.svg" alt="Nacional" className="w-16 h-16 object-contain" /> 
+                                <h4 className="text-primary">Nacional</h4>
+                            </div>
+                            <SafeHtml htmlContent={lastFlash.desc_nac} className='mt-5 prose max-w-none text-14!' />                            
+
                         </div>
+
                         <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                             {lastFlash.periocidad && (
-                                <p className='bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{lastFlash.periocidad}</p>
+                                <p className='font-garet-bold text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{lastFlash.periocidad}</p>
                             )}
                             {lastFlash.fecha_publicacion && (
-                                <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                <p className='font-garet-bold text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{format(new Date(lastFlash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                             )}
                             {lastFlash.fuente && (
-                                <p className='bg-etiqueta border-[#5C24724D] text-primary rounded-2xl px-4 py-2 text-14'>{lastFlash.fuente}</p>                            
+                                <p className='font-garet-bold text-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>{lastFlash.fuente}</p>                            
                             )}                            
                         </div>
                         {lastFlash.link && (
@@ -183,7 +193,7 @@ export default function Flashes() {
                 </div>
             )}
 
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder='¿qué quieres buscas?' />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
 
             <div className='mx-auto container flex flex-col lg:flex-wrap lg:flex-row gap-5 mt-15'>
                 <div>
@@ -261,31 +271,30 @@ export default function Flashes() {
             </div>
 
             
-
-            <div className='grid lg:grid-cols-3 container mx-auto gap-4'>
+<div className='grid lg:grid-cols-3 container mx-auto gap-4'>
                 {currentFlashes.length > 0 ? currentFlashes.map(flash => (
                     
                     <ConditionalLink
                         key={flash.id}
-                        link={`/flashes/${flash.slug}`}
+                        link={`/datos-expres/${flash.slug}`}
                         rel="noopener noreferrer"
                     >
                         
-                        <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mb-4 mx-auto container bg-white mt-8 hover:border hover:border-tertiary group'>
+                        <div key={flash.id} className='rounded-2xl p-5 lg:p-8 mx-auto container bg-white mt-8 hover:border hover:border-tertiary group'>
                             <h3 className='text-18 text-titulos'>{flash.titulo}</h3>
-                            <div className='grid grid-cols-1 grid-cols-6 gap-6 mt-8'>
+                            <div className='grid grid-cols-1 grid-cols-6 gap-6 mt-2'>
                                 <div className='col-span-4 flex gap-4 flex-wrap mt-5'>
                                     {flash.periocidad && (
-                                        <p className='bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
+                                        <p className='text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{flash.periocidad}</p>
                                     )}
                                     {flash.fecha_publicacion && (
-                                        <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                        <p className='text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                     )}
                                 </div>
                                 { flash.slug ?
                                     <div className='col-span-2 mt-6'>
                                         
-                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-tertiary'>
                                                 <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                             </div>
                                         
@@ -302,23 +311,19 @@ export default function Flashes() {
             </div>
 
             {pageCount > 1 && (
-                <ReactPaginate
-                    previousLabel={'Ant'}
-                    nextLabel={'Sig'}
-                    breakLabel={'...'}
-                    pageCount={pageCount}
-                    marginPagesDisplayed={1}
-                    pageRangeDisplayed={2}
-                    onPageChange={handlePageClick}
-                    containerClassName='flex justify-center gap-2 mt-8 mb-10'
-                    pageClassName='rounded-full border border-primary px-3 py-2 text-sm'
-                    activeClassName='bg-primary text-white'
-                    previousClassName='rounded-full border border-primary px-3 py-2 text-sm'
-                    nextClassName='rounded-full border border-primary px-3 py-2 text-sm'
-                    breakClassName='px-3 py-2 text-sm'
-                    forcePage={Math.floor(itemOffset / itemsPerPage)}
-                />
-            )}
+                        <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            breakLabel={'...'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                            forcePage={Math.floor(itemOffset / itemsPerPage)}
+                        />
+                    )}
         </div>
     )
 }

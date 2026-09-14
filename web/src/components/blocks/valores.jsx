@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '@services/apiService';
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Valores() {
     const [valores, setValores] = useState([]);
@@ -52,17 +53,14 @@ export default function Valores() {
                     <div key={valor?.id} className="bg-card rounded-3xl px-4 py-6 my-4 grid grid-cols-12 gap-4">
                         <div className="col-span-2">
                             <img 
-                                src={valor?.imagen ? valor.imagen : "/default.png"} 
+                                src={valor?.imagen ? valor.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} 
                                 alt={valor?.nombre || "Valor"} 
                                 className="w-[50px] h-auto float-right"
                             />
                         </div>
                         <div className="col-span-10">
                             <h5 className="col-span-12 text-primary">{valor?.nombre}</h5>
-                            <div 
-                                className="col-span-12 mt-5 diez" 
-                                dangerouslySetInnerHTML={{ __html: String(valor?.descripcion || '') }}
-                            />
+                            <SafeHtml htmlContent={String(valor?.descripcion || '')} className='col-span-12 mt-5 diez'/>
                         </div>
                     </div>
                 ))}

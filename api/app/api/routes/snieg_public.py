@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from slugify import slugify
-from app.schemas.snieg import SniegResponse, SniegOut
-from app.models import Snieg
+
 from app.api.deps import get_db
+from app.models import Snieg
+from app.schemas.snieg import SniegResponse
 
 router = APIRouter(prefix="/snieg", tags=["snieg - public"])
 
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/snieg", tags=["snieg - public"])
 def read_snieg(
     db: Session = Depends(get_db),
     ):
-    snieg = db.query(Snieg).all()
+    snieg = db.query(Snieg).order_by(Snieg.id.asc()).all()
     return {
         "snieg": snieg,
         "total": len(snieg),

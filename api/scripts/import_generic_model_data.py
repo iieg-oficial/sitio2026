@@ -1,4 +1,3 @@
-from typing import Optional
 import argparse
 import csv
 import json
@@ -8,14 +7,13 @@ from pathlib import Path
 from typing import Any, Callable, Optional
 
 from slugify import slugify
-from sqlalchemy import select, inspect
-from sqlalchemy.sql.sqltypes import Boolean, Date, DateTime, Enum, Integer, JSON
+from sqlalchemy import inspect, select
+from sqlalchemy.sql.sqltypes import JSON, Boolean, Date, DateTime, Enum, Integer
 
 sys.path.append(str(Path(__file__).parent.parent))
 
 from app.core.database import SessionLocal
 from app.models import Base
-
 
 DEFAULT_KEY_CANDIDATES = [
     "slug",
@@ -216,37 +214,55 @@ def split_values(value: object) -> list[str]:
 def resolve_relationships(db, model_cls, row: dict[str, Any]) -> dict[str, Any]:
     relationships_payload = {}
     mapper = inspect(model_cls)
-    
+
+    def build_aliases(rel_name: str) -> list[str]:
+        aliases = [rel_name]
+        if rel_name.endswith("es"):
+            aliases.append(rel_name[:-2])
+        elif rel_name.endswith("s"):
+            aliases.append(rel_name[:-1])
+
+        if rel_name == "temas":
+            aliases = ["temas", "tema", "subtemas", "subtema"]
+        elif rel_name == "sistemas":
+            aliases = ["sistemas", "sistema"]
+
+        ordered = []
+        for alias in aliases:
+            if alias not in ordered:
+                ordered.append(alias)
+        return ordered
+
     for rel in mapper.relationships:
         rel_name = rel.key
         target_cls = rel.mapper.class_
-        
-        candidates_slugs = [f"{rel_name}_slugs", f"{rel_name}_slug"]
-        if rel_name.endswith("es"):
-            candidates_slugs.extend([f"{rel_name[:-2]}_slugs", f"{rel_name[:-2]}_slug"])
-        if rel_name.endswith("s"):
-            candidates_slugs.extend([f"{rel_name[:-1]}_slugs", f"{rel_name[:-1]}_slug"])
-            
-        candidates_ids = [c.replace("_slugs", "_ids").replace("_slug", "_id") for c in candidates_slugs]
-        
-        slugs_val = None
-        for c in candidates_slugs:
-            slugs_val = find_row_value(row, c)
-            if slugs_val is not None:
-                break
-                
-        ids_val = None
-        for c in candidates_ids:
-            ids_val = find_row_value(row, c)
-            if ids_val is not None:
-                break
-                
-        if slugs_val is None and ids_val is None:
+
+        aliases = build_aliases(rel_name)
+        candidates_slugs = []
+        candidates_ids = []
+
+        for alias in aliases:
+            candidates_slugs.extend([f"{alias}_slugs", f"{alias}_slug"])
+            candidates_ids.extend([f"{alias}_ids", f"{alias}_id"])
+
+        slug_values = []
+        for candidate in candidates_slugs:
+            value = find_row_value(row, candidate)
+            if value is not None:
+                slug_values.extend(split_values(value))
+
+        id_values = []
+        for candidate in candidates_ids:
+            value = find_row_value(row, candidate)
+            if value is not None:
+                id_values.extend(split_values(value))
+
+        if not slug_values and not id_values:
             continue
-            
-        slugs = split_values(slugs_val)
-        ids = [int(i) for i in split_values(ids_val) if str(i).isdigit()]
-        
+
+        slugs = list(dict.fromkeys(str(v).strip() for v in slug_values if str(v).strip()))
+        ids = [int(i) for i in id_values if str(i).isdigit()]
+
         items = []
         if ids:
             items_by_id = db.execute(select(target_cls).where(target_cls.id.in_(ids))).scalars().all()
@@ -255,7 +271,7 @@ def resolve_relationships(db, model_cls, row: dict[str, Any]) -> dict[str, Any]:
             if missing_ids:
                 print(f"ADVERTENCIA: No existen {rel_name} con id: {missing_ids}")
             items.extend(items_by_id)
-            
+
         if slugs:
             if hasattr(target_cls, "slug"):
                 items_by_slug = db.execute(select(target_cls).where(target_cls.slug.in_(slugs))).scalars().all()
@@ -263,17 +279,17 @@ def resolve_relationships(db, model_cls, row: dict[str, Any]) -> dict[str, Any]:
                 missing_slugs = [s for s in slugs if s not in found_slugs]
                 if missing_slugs:
                     print(f"ADVERTENCIA: No existen {rel_name} con slug: {missing_slugs}")
-                
+
                 existing_ids = {item.id for item in items}
                 items.extend([item for item in items_by_slug if item.id not in existing_ids])
             else:
                 print(f"ADVERTENCIA: {target_cls.__name__} no tiene campo 'slug' para resolver {rel_name}")
-                
+
         if not rel.uselist:
             relationships_payload[rel_name] = items[0] if items else None
         else:
             relationships_payload[rel_name] = items
-            
+
     return relationships_payload
 
 
@@ -284,8 +300,6 @@ def resolve_fk_slugs(db, model_cls, row: dict[str, Any], payload: dict[str, Any]
     y el CSV contiene `parent_slug`, busca el registro por slug y asigna el ID.
     Esto permite usar slugs legibles en los CSV en lugar de IDs numéricos.
     """
-    columns = {col.name: col for col in model_cls.__table__.columns}
-    mapper = inspect(model_cls)
     fk_map: dict[str, Any] = {}  # fk_col_name -> target ORM class
 
     for column in model_cls.__table__.columns:

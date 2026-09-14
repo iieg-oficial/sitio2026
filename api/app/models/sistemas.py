@@ -1,6 +1,8 @@
 import enum
-from sqlalchemy import Column, Integer, String, Text, Enum, Table, ForeignKey, Boolean
+
+from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, String, Table, Text
 from sqlalchemy.orm import relationship
+
 from app.core.database import Base
 
 sistema_temas = Table(
@@ -15,17 +17,26 @@ class TipoSistemaEnum(str, enum.Enum):
     datos_recientes = "datos-recientes"
     estadistica = "estadistica"
 
+    @property
+    def label(self) -> str:
+        labels = {
+            TipoSistemaEnum.plataforma: "Plataforma interactiva",
+            TipoSistemaEnum.datos_recientes: "Los datos más nuevos",
+            TipoSistemaEnum.estadistica: "Estadística experimental",
+        }
+        return labels.get(self, self.value)
+
 class Sistemas(Base):
     __tablename__ = "sistemas"
 
-    id = Column(Integer, primary_key=True, index=True)  
+    id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String, nullable=False)
     descripcion = Column(Text, nullable=False)
     link = Column(String, nullable=True)
     tipo = Column(
         Enum(
             TipoSistemaEnum,
-            values_callable=lambda enum: [e.value for e in enum],
+            values_callable=lambda obj: [e.value for e in obj],
             name="tiposistemaenum",
         ),
         nullable=False,
@@ -34,6 +45,8 @@ class Sistemas(Base):
     claves = Column(String(200), nullable=True)
     slug = Column(String(200), nullable=True)
     destacado = Column(Boolean, default=False, nullable=True)
+    slider = Column(Boolean, default=False, nullable=True)
+    imagen_slider = Column(String, nullable=True)
     orden = Column(Integer, default=0, nullable=True)
 
     temas = relationship(
@@ -44,4 +57,3 @@ class Sistemas(Base):
     )
 
     documentacion = relationship("Documentacion", secondary="documentacion_sistemas", back_populates="sistemas")
-    

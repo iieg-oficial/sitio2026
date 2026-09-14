@@ -1,11 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import select
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Documentacion, Usuario, Subject, Sistemas
-from app.models.documentacion import TipoEnum
-from app.schemas import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
+from sqlalchemy import func, or_, select
+from sqlalchemy.orm import Session, joinedload
+
+from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
+from app.models import Documentacion, Sistemas, Subject, Usuario
+from app.schemas import (
+    DocumentacionCreate,
+    DocumentacionList,
+    DocumentacionOut,
+    DocumentacionResponse,
+)
+from app.services.documentacion import get_tipos as get_documentacion_tipos
 
 router = APIRouter(prefix="/documentacion", tags=["documentacion"])
 
@@ -27,17 +36,36 @@ def _load_sistemas(db: Session, sistema_ids: list[int]) -> list[Sistemas]:
 
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
-    documentaciones = (
-        db.query(Documentacion)
-        .options(
-            joinedload(Documentacion.temas), 
-            joinedload(Documentacion.sistemas)
+    query = select(Documentacion)
+
+    if search:
+        like = f"%{escape_like(search)}%"
+        query = query.where(
+            or_(
+            Documentacion.titulo.ilike(like, escape='\\'),
+            Documentacion.descripcion.ilike(like, escape='\\'),
+            )
         )
-        .all()
-    )
-    return {"documentaciones": documentaciones, "total": len(documentaciones)}
+
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    documentaciones = db.execute(
+        query.order_by(
+            Documentacion.anyo.desc().nulls_last(),
+            Documentacion.id.desc(),
+        )
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+    ).scalars().all()
+
+    return {"documentaciones": documentaciones, "total": total}
 
 @router.post("/create", response_model=DocumentacionOut, status_code=status.HTTP_201_CREATED)
 async def crear_documentacion(
@@ -45,7 +73,7 @@ async def crear_documentacion(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
-    
+
     slug = slugify(documentacion_in.titulo)
     base_slug = slug
     contador = 1
@@ -54,7 +82,7 @@ async def crear_documentacion(
     ).scalars().first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     nuevo = Documentacion(
         titulo=documentacion_in.titulo,
         descripcion=documentacion_in.descripcion,
@@ -67,7 +95,7 @@ async def crear_documentacion(
 
     nuevo.sistemas = _load_sistemas(db, documentacion_in.sistema_ids or [])
     nuevo.temas = _load_temas(db, documentacion_in.tema_ids or [])
-    
+
     db.add(nuevo)
     db.flush()
 
@@ -85,13 +113,7 @@ async def crear_documentacion(
     )
     return nuevo
 
-@router.get("/tipos")
-def get_tipos():
-    return {
-        "tipos":{
-            tipo.name: tipo.value for tipo in TipoEnum
-        }
-    }
+router.add_api_route("/tipos", get_documentacion_tipos, methods=["GET"])
 
 @router.get("/slug/{slug}", response_model=DocumentacionOut)
 def get_documentacion_slug(
@@ -145,7 +167,7 @@ async def actualizar_documentacion(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
         )
-    
+
     update_data = dict(documentacion_in)
 
     if "titulo" in update_data and update_data["titulo"] and update_data["titulo"] != documentacion.titulo:
@@ -184,7 +206,7 @@ async def actualizar_documentacion(
 
     if "slug" in update_data:
         documentacion.slug = update_data["slug"]
-        
+
 
     db.commit()
     db.refresh(documentacion)
@@ -198,7 +220,7 @@ async def actualizar_documentacion(
         .filter(Documentacion.id == documentacion_id)
         .first()
     )
-    
+
     return documentacion
 
 

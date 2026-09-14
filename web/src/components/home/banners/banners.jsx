@@ -6,6 +6,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import './banners.css';
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Banners() {
     const [banners, setBanners] = useState([])
@@ -13,7 +14,7 @@ export default function Banners() {
 
     useEffect(() => {
         const fetchBanners = async () => {
-            const response = await api.get('/banner/', { params: { activo: true } })
+            const response = await api.get('/banner', { params: { activo: true } })
             setBanners(response.data)
         }
         fetchBanners()
@@ -39,7 +40,7 @@ export default function Banners() {
             }}
       >
         {banners.map(banner => (
-            <SwiperSlide key={banner.id} className="relative w-full h-full content-center " style={{ backgroundColor: banner.color_fondo}}>
+            <SwiperSlide key={banner.id} className="relative w-full h-full content-center lg:content-normal " style={{ backgroundColor: banner.color_fondo}}>
               {banner.full_screen ? (
                     <>
                         <a href={banner.link} target="_blank" rel="noopener noreferrer">
@@ -48,14 +49,16 @@ export default function Banners() {
                         </a>
                     </>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto px-5 xl:px-5 2xl:px-0">
-                        <div>
-                            <h2 className='text-white'>{banner.titulo}</h2>                            
-                            <div dangerouslySetInnerHTML={{__html: banner.descripcion}} className='mt-5 prose max-w-none text-banner mb-5' />
-                            <Link to={banner.link} className="button block font-base float-left bg-medio hover:bg-tertiary">{banner.boton}</Link>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto px-5 xl:px-5 2xl:px-0 my-[15px] lg:my-[50px]">
+                        <div class="grid xl:grid-cols-6">
+                            <div class="xl:col-span-5 xl:col-start-2">
+                                <h2 className='text-white'>{banner.titulo}</h2>          
+                                <SafeHtml htmlContent={banner.descripcion} className='mt-10 prose max-w-none banner !text-white mb-15'/>
+                                <Link to={banner.link} className="button block font-base float-left bg-tertiary hover:bg-medio">{banner.boton}</Link>
+                            </div>
                         </div>
                         <div>
-                            <img src={banner.imagen} alt={banner.titulo} className="w-full object-cover"/>
+                            <img src={banner.imagen} alt={banner.titulo} className="w-full h-auto object-cover xl:w-[460px] mx-auto"/>
                         </div>
                     </div>
                 )}

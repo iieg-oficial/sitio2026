@@ -1,37 +1,54 @@
+from app.schemas.archivo import ArchivoCreate, ArchivoList, ArchivoOut, ArchivoResponse
+from app.schemas.banner import BannerCreate, BannerOut, BannerResponse
+from app.schemas.contacto import ContactoCreate, ContactoOut, ContactoResponse
+from app.schemas.cuadernillos import CuadernilloCreate, CuadernilloOut, CuadernilloResponse
+from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
+from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosOut, DatosNuevosResponse
+from app.schemas.directorio import DirectorioCreate, DirectorioOut, DirectorioResponse
+from app.schemas.docs_iieg import DocsIIEGCreate, DocsIIEGOut, DocsIIEGResponse
+from app.schemas.documentacion import (
+    DocumentacionCreate,
+    DocumentacionList,
+    DocumentacionOut,
+    DocumentacionResponse,
+)
+from app.schemas.flashes import FlashesCreate, FlashesList, FlashesOut, FlashesResponse
+from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
+from app.schemas.mapa import MapaCreate, MapaOut, MapaResponse
 from app.schemas.menu_item import (
     MenuItemCreate,
     MenuItemResponse,
     MenuItemTree,
     MenuItemUpdate,
 )
-from app.schemas.page import PageCreate, PageUpdate, PageResponse, PageResponseList, PageTreeOut, PageFlat
-from app.schemas.user import LoginRequest, LoginResponse, UsuarioCreate, UsuarioResponse, UsuarioUpdate
-from app.schemas.posts import PostCreate, PostOut, PostResponse, GalleryImageCreate, GalleryImageOut
-from app.schemas.subject import SubjectCreate, SubjectOut, SubjectResponse, SubjectFlat
-from app.schemas.datos_nuevos import DatosNuevosCreate, DatosNuevosResponse, DatosNuevosOut
-from app.schemas.flashes import FlashesCreate, FlashesOut, FlashesResponse, FlashesList
-from app.schemas.mapa import MapaResponse, MapaCreate, MapaOut
-from app.schemas.directorio import DirectorioCreate, DirectorioOut, DirectorioResponse
-from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
-from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse, ArchivoList
-from app.schemas.snieg import SniegCreate, SniegOut, SniegResponse
-from app.schemas.preguntas import PreguntasCreate, PreguntasOut, PreguntasResponse, PreguntasList
-from app.schemas.sistemas import SistemasCreate, SistemasOut, SistemasResponse, SistemasList
-from app.schemas.reportes import ReporteCreate, ReporteOut, ReporteResponse, ReporteList
-from app.schemas.documentacion import DocumentacionCreate, DocumentacionOut, DocumentacionResponse, DocumentacionList
-from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresResponse
-from app.schemas.instituciones import InstitucionesCreate, InstitucionesOut, InstitucionesResponse
 from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
+from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
+from app.schemas.page import (
+    PageCreate,
+    PageFlat,
+    PageResponse,
+    PageResponseList,
+    PageTreeOut,
+    PageUpdate,
+)
 from app.schemas.perfiles import PerfilesCreate, PerfilesOut, PerfilesResponse
-from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
-from app.schemas.docs_iieg import DocsIIEGCreate, DocsIIEGOut, DocsIIEGResponse
-from app.schemas.banner import BannerCreate, BannerOut, BannerResponse
-from app.schemas.contacto import ContactoCreate, ContactoOut, ContactoResponse
-from app.schemas.cuadernillos import CuadernilloCreate, CuadernilloOut, CuadernilloResponse
-from app.schemas.search import SearchResultItem, SearchResponse
+from app.schemas.posts import GalleryImageCreate, GalleryImageOut, PostCreate, PostOut, PostResponse
+from app.schemas.preguntas import PreguntasCreate, PreguntasList, PreguntasOut, PreguntasResponse
+from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresResponse
+from app.schemas.reportes import ReporteCreate, ReporteList, ReporteOut, ReporteResponse
+from app.schemas.search import SearchResponse, SearchResultItem
+from app.schemas.sistemas import SistemasCreate, SistemasList, SistemasOut, SistemasResponse
+from app.schemas.snieg import SniegCreate, SniegOut, SniegResponse
+from app.schemas.subject import SubjectCreate, SubjectFlat, SubjectOut, SubjectResponse
+from app.schemas.user import (
+    LoginRequest,
+    LoginResponse,
+    UsuarioCreate,
+    UsuarioResponse,
+    UsuarioUpdate,
+)
 
-
-__all__ = [ 
+__all__ = [
     "UsuarioCreate",
     "UsuarioUpdate",
     "UsuarioResponse",

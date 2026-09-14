@@ -4,8 +4,9 @@ Revision ID: zz_add_datos_recientes
 Revises: a7c9e22b8f4b
 Create Date: 2026-06-17
 """
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 revision = 'zz_add_datos_recientes'
 down_revision = 'a7c9e22b8f4b'

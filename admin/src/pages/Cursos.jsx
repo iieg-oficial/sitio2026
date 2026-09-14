@@ -4,6 +4,8 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { CamposCapacitaciones, CamposConvocatorias, CamposComunes } from '@components/campos/cursos';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
+import { TableSearch } from '@components/common/TableSearch';
+import { useSearchFilter } from '@components/common/searchHooks';
 
 
 const { Title } = Typography;
@@ -22,6 +24,7 @@ export default function Cursos() {
   const [temas, setTemas] = useState([]);
   const [selectedTemas, setSelectedTemas] = useState([]);
   const [tipoCurso, setTipoCurso] = useState(null);
+  const { searchText, setSearchText, filteredData } = useSearchFilter(cursos, ['titulo']);
 
   useEffect(() => {
     fetchCursos();
@@ -227,9 +230,15 @@ export default function Cursos() {
       </div>
 
       <Card>
+        <TableSearch
+            value={searchText}
+            onChange={setSearchText}
+            placeholder="Buscar por título..."
+            loading={loading}
+        />
         <Table
           columns={columns}
-          dataSource={cursos}
+          dataSource={filteredData}
           rowKey="id"
           loading={loading}
           pagination={{
@@ -281,7 +290,7 @@ export default function Cursos() {
           <Form.Item
             name="vigencia"
             label="Vigencia"
-            rules={[{ required: true, message: 'Por favor seleccione una vigencia' }]}
+            rules={[{ required: false, message: 'Por favor seleccione una vigencia' }]}
         >
             <Input />
         </Form.Item>
@@ -289,7 +298,7 @@ export default function Cursos() {
           <Form.Item
             name="contacto"
             label="Contacto"
-            rules={[{ required: true, message: 'Por favor seleccione un contacto' }]}
+            rules={[{ required: false, message: 'Por favor seleccione un contacto' }]}
           >
             <Input />
           </Form.Item>

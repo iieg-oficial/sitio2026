@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.models import Organos, Usuario
-from app.api.deps import get_current_user, get_db, verify_csrf
+from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 
 router = APIRouter(prefix="/organos", tags=["organos"])
 
@@ -13,7 +14,7 @@ def read_organos(
     ):
     organos = db.query(Organos).all()
     return {"organos": organos, "total": len(organos)}
-    
+
 
 @router.post("/create", response_model=OrganosOut)
 def create_organos(
@@ -27,7 +28,7 @@ def create_organos(
     while db.query(Organos).filter(Organos.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     db_organos = Organos(
         titulo=organos.titulo,
         descripcion=organos.descripcion,

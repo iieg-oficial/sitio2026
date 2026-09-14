@@ -1,7 +1,10 @@
+{% ckan_extends %}
 
-{% set url = h.url_for(organization.type ~ '.read', id=organization.name) %}
+
 {% block item %}
     <li class="media-item">
+    {% set url = h.url_for(organization.type ~ '.read', id=organization.name) %}
+    <a href="{{ url }}" class="media-item-link" title="{{ organization.display_name }}">
     {% block item_inner %}
         {% block image %}
             <img src="{{ organization.image_display_url or h.url_for_static('/base/images/placeholder-organization.png') }}" alt="{{ organization.name }}" class="img-fluid media-image">
@@ -24,5 +27,6 @@
         {% set view_label = _('Open details page for {name}').format(name=organization.display_name) %}
         {% endblock %}
     {% endblock %}
+    </a>
     </li>
 {% endblock %}

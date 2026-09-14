@@ -1,5 +1,7 @@
 import enum
-from sqlalchemy import Column, Integer, String, Enum
+
+from sqlalchemy import Column, Enum, Integer, String
+
 from app.core.database import Base
 
 
@@ -7,10 +9,11 @@ class MunicipioEnum(str, enum.Enum):
     acatic = "Acatic"
     acatlan_de_juarez = "Acatlán de Juárez"
     ahualulco_de_mercado = "Ahualulco de Mercado"
-    amacoeca = "Amacueca"
+    amacueca = "Amacueca"
     amatitan = "Amatitán"
     ameca = "Ameca"
     arandas = "Arandas"
+    atemajac_de_brizuela = "Atemajac de Brizuela"
     atengo = "Atengo"
     atenguillo = "Atenguillo"
     atotonilco_el_alto = "Atotonilco el Alto"
@@ -20,6 +23,7 @@ class MunicipioEnum(str, enum.Enum):
     ayutla = "Ayutla"
     bolanos = "Bolaños"
     cabo_corrientes = "Cabo Corrientes"
+    canadas_de_obregon = "Cañadas de Obregón"
     casimiro_castillo = "Casimiro Castillo"
     chapala = "Chapala"
     chimaltitan = "Chimaltitán"
@@ -30,7 +34,7 @@ class MunicipioEnum(str, enum.Enum):
     concepcion_de_buenos_aires = "Concepción de Buenos Aires"
     cuautitlan_de_garcia_barragan = "Cuautitlán de García Barragán"
     cuautla = "Cuautla"
-    quiquio = "Cuquío"
+    cuquio = "Cuquío"
     degollado = "Degollado"
     ejutla = "Ejutla"
     el_arenal = "El Arenal"
@@ -38,15 +42,25 @@ class MunicipioEnum(str, enum.Enum):
     el_limon = "El Limón"
     el_salto = "El Salto"
     encarnacion_de_diaz = "Encarnación de Díaz"
+    etzatlan = "Etzatlán"
     gomez_farias = "Gómez Farías"
     guachinango = "Guachinango"
     guadalajara = "Guadalajara"
     hostotipaquillo = "Hostotipaquillo"
     huejucar = "Huejúcar"
     huejuquilla_el_alto = "Huejuquilla el Alto"
+    ixtlahuacan_de_los_membrillos = "Ixtlahuacán de los Membrillos"
+    ixtlahuacan_del_rio = "Ixtlahuacán del Río"
+    jalostotitlan = "Jalostotitlán"
+    jamay = "Jamay"
+    jesus_maria = "Jesús María"
+    jilotlan_de_los_dolores = "Jilotlán de los Dolores"
+    jocotepec = "Jocotepec"
+    juanacatlan = "Juanacatlán"
+    juchitlan = "Juchitlán"
     la_barca = "La Barca"
-    la_manzanilla_de_la_paz = "La Manzanilla de la Paz"
     la_huerta = "La Huerta"
+    la_manzanilla_de_la_paz = "La Manzanilla de la Paz"
     lagos_de_moreno = "Lagos de Moreno"
     magdalena = "Magdalena"
     mascota = "Mascota"
@@ -59,10 +73,11 @@ class MunicipioEnum(str, enum.Enum):
     pihuamo = "Pihuamo"
     poncitlan = "Poncitlán"
     puerto_vallarta = "Puerto Vallarta"
-    villa_purificacion = "Villa Purificación"
     quitupan = "Quitupan"
     san_cristobal_de_la_barranca = "San Cristóbal de la Barranca"
     san_diego_de_alejandria = "San Diego de Alejandría"
+    san_gabriel = "San Gabriel"
+    san_ignacio_cerro_gordo = "San Ignacio Cerro Gordo"
     san_juan_de_los_lagos = "San Juan de los Lagos"
     san_juanito_de_escobedo = "San Juanito de Escobedo"
     san_julian = "San Julián"
@@ -70,8 +85,8 @@ class MunicipioEnum(str, enum.Enum):
     san_martin_de_bolanos = "San Martín de Bolaños"
     san_martin_hidalgo = "San Martín Hidalgo"
     san_miguel_el_alto = "San Miguel el Alto"
-    san_patricio_melaque = "Cihuatlán" # (Nota: Melaque pertenece a Cihuatlán)
-    san_sebastian_el_oeste = "San Sebastián del Oeste"
+    san_pedro_tlaquepaque = "San Pedro Tlaquepaque"
+    san_sebastian_del_oeste = "San Sebastián del Oeste"
     santa_maria_de_los_angeles = "Santa María de los Ángeles"
     santa_maria_del_oro = "Santa María del Oro"
     sayula = "Sayula"
@@ -89,8 +104,10 @@ class MunicipioEnum(str, enum.Enum):
     tequila = "Tequila"
     teuchitlan = "Teuchitlán"
     tizapan_el_alto = "Tizapán el Alto"
+    tlajomulco_de_zuniga = "Tlajomulco de Zúñiga"
     toliman = "Tolimán"
     tomatlan = "Tomatlán"
+    tonala = "Tonalá"
     tonaya = "Tonaya"
     tonila = "Tonila"
     totatiche = "Totatiche"
@@ -105,19 +122,17 @@ class MunicipioEnum(str, enum.Enum):
     villa_corona = "Villa Corona"
     villa_guerrero = "Villa Guerrero"
     villa_hidalgo = "Villa Hidalgo"
-    cañadas_de_obregon = "Cañadas de Obregón"
+    villa_purificacion = "Villa Purificación"
     yahualica_de_gonzalez_gallo = "Yahualica de González Gallo"
     zacoalco_de_torres = "Zacoalco de Torres"
-    zafiro = "Cuautitlán" # (Nota: El Zapote / Zafiro se integran en sus respectivos municipios)
     zapotiltic = "Zapotiltic"
     zapotitlan_de_vadillo = "Zapotitlán de Vadillo"
     zapotlan_del_rey = "Zapotlán del Rey"
-    zapotlanejo = "Zapotlanejo"
-    san_gabriel = "San Gabriel"
     zapotlan_el_grande = "Zapotlán el Grande"
+    zapotlanejo = "Zapotlanejo"
     zapopan = "Zapopan"
 
-    
+
 class Cuadernillo(Base):
     __tablename__ = "cuadernillos"
 

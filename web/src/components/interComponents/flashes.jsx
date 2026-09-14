@@ -6,6 +6,7 @@ import BackLink from './../pageComponents/Backlink'
 import TrackedLink from '@components/blocks/boton'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { SafeHtml } from '@components/SafeHtml';
 
 
 export default function Flashes() {
@@ -41,7 +42,7 @@ export default function Flashes() {
                 <title>{flash.titulo}</title>                
                 <meta property="og:title" content={flash.titulo} />
                 <meta name="description" content={flash.desc_jal} />
-                <meta property="og:image" content={flash.postlink ? flash.postlink : "/demo.jpg"} />
+                <meta property="og:image" content={flash.postlink ? flash.postlink : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 <meta name="keywords" content={flash.claves} />
@@ -49,16 +50,16 @@ export default function Flashes() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={flash.titulo} />
                 <meta name="twitter:description" content={flash.desc_jal} />
-                <meta name="twitter:image" content={flash.postlink ? flash.postlink : "/demo.jpg"} />
+                <meta name="twitter:image" content={flash.postlink ? flash.postlink : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
             </Helmet>
             <article className='mt-8 relative px-5 xl:px-5 2xl:px-0 extra:max-w-[1980px] extra:mx-auto'>
                 <section className="page-header text-center py-12">
                     <div className="container mx-auto grid md:grid-cols-12 gap-1">  
                         <div className='md:col-span-1'><BackLink /></div>
-                        <div className='md:col-span-11 w-full px-2 md:px-0 md:w-3/6 mx-auto'>
-                            <h1 className='text-titulos text-center'>Flashes</h1>
+                        <div className='md:col-span-11 w-11/12 prose mt-5 mx-auto text-18'>
+                            <h1 className='text-titulo text-center'>Datos exprés</h1>
                             <div className='prose diez mt-5'>
-                                <p>descripcion</p>
+                                <p>Datos puntuales de interés público estatal procedentes de fuentes oficiales y seleccionados estratégicamente por su relevancia para el contexto actual.</p>
                             </div>
                         </div>
                     </div>
@@ -67,22 +68,22 @@ export default function Flashes() {
                     <h3 className='text-28 text-tertiary'>{flash.titulo}</h3>
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
                             <div className='bg-white rounded-2xl p-8'>
-                                <h4>Jalisco</h4>
-                                <div dangerouslySetInnerHTML={{__html: flash.desc_jal}} className='mt-5 prose max-w-none' />
+                                <h4>Jalisco</h4>                                
+                                <SafeHtml htmlContent={flash.desc_jal} className='mt-5 prose max-w-none'/>
                             </div>
                             <div className='bg-white rounded-2xl p-6'>
-                                <h4>Nacional</h4>
-                                <div dangerouslySetInnerHTML={{__html: flash.desc_nac}} className='mt-5 prose max-w-none' />
+                                <h4>Nacional</h4>                                
+                                <SafeHtml htmlContent={flash.desc_nac} className='mt-5 prose max-w-none'/>
                             </div>
                             <div className='flex gap-4 flex-wrap mt-5 md:mt-0'>
                                 {flash.periocidad && (
-                                    <p className='bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
+                                    <p className='font-garet-bold bg-etiqueta-ter border-[#162A554D] text-titulo rounded-2xl px-4 py-2 text-14'>{flash.periocidad}</p>
                                 )}
                                 {flash.fecha_publicacion && (
-                                    <p className='bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                    <p className='font-garet-bold bg-etiqueta-sec border-[#FF83004D] text-tertiary rounded-2xl px-4 py-2 text-14'>{format(new Date(flash.fecha_publicacion), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                                 )}
                                 {flash.fuente && (
-                                    <p className='bg-etiqueta border-[#5C24724D] text-primary rounded-2xl px-4 py-2 text-14'>{flash.fuente}</p>                            
+                                    <p className='font-garet-bold bg-etiqueta border-[#5C24724D] text-primary rounded-2xl px-4 py-2 text-14'>{flash.fuente}</p>                            
                                 )}                            
                             </div>
                             {flash.link && (

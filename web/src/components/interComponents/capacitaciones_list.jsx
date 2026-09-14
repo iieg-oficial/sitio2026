@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function CapacitacionesList({ curso }) {
     const [singleCapacitacion, setSingleCapacitacion] = useState(curso ?? null);
@@ -27,66 +28,79 @@ export default function CapacitacionesList({ curso }) {
 
     return (
         <>
-        <section className='lg:w-10/12 mx-auto'>
+        <section className='lg:w-8/12 mx-auto'>
+            {Array.isArray(singleCapacitacion.modulos) && singleCapacitacion.modulos.length > 0 && (
             <section className='my-15'>
-                    <div className='grid grid-cols-6 gap-5'>
+                    <div className='grid grid-cols-12 gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
-                        <div className='col-span-5'>
-                            <h2 className='text-primary text-36 font-extrabold'>Módulos del programa</h2>
+                        <div className='col-span-11'>
+                            <h2 className='text-primary text-36 font-garet-extra'>Módulos del programa</h2>
                         </div>
+                    </div>
+                    <div className=''>
+                            <div className='relative'>
+                                <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 xl:hidden!"></span>
+                                <div className='flex justify-left mt-8 gap-4 mx-auto w-full overflow-x-auto pb-2'>
+                                    {modulosReversed.map((modulo) => (
+                                        <button 
+                                        key={modulo.id}
+                                        onClick={() => setActiveTab(modulo.nombre)}
+                                        className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-3xl font-garet-bold text-28 transition-colors ${activeTab === modulo.nombre
+                                            ? 'bg-[#FFF2E5] text-tertiary border-tertiary border-1'
+                                            : 'bg-white text-titulo! hover:bg-etiqueta-ter hover:text-tertiary hover:border-1'}`
+                                        }
+                                        >
+                                            {modulo.nombre}
+                                        </button>
+                                    ))}
+                                </div>
+                                <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 xl:hidden!"></span>
+                            </div>
+                            <div className='p-5 my-5 md:mx-auto bg-card rounded-xl p-6'>
+                                {modulosReversed.map((modulo) => {
+                                    if (activeTab === modulo.nombre) {
+                                        return (
+                                            <div key={modulo.id}>
+                                                <SafeHtml htmlContent={modulo.descripcion} className='mt-5 prose max-w-none cursos text-titlo! text-22!'/>                        
+                                                
+                                            </div>
+                                        )}
+                                    } 
+                                )}
+                            </div>
                     </div>
                     
-                    <div className='flex justify-left mt-8 gap-4 mx-auto w-8/12 '>
-                        {modulosReversed.map((modulo) => (
-                            <button 
-                            key={modulo.id}
-                            onClick={() => setActiveTab(modulo.nombre)}
-                            className={`px-4 py-2 rounded-lg font-extrabold text-28 transition-colors ${activeTab === modulo.nombre
-                                ? 'bg-etiqueta-sec text-tertiary border-tertiary border-1'
-                                : 'bg-white text-titulo hover:bg-etiqueta-sec hover:text-tertiary hover:border-1'}`
-                            }
-                            >
-                                {modulo.nombre}
-                            </button>
-                        ))}
-                    </div>
-                    <div className='p-5 my-5 mx-auto md:px-10 xl:px-25 w-8/12 '>
-                        {modulosReversed.map((modulo) => {
-                            if (activeTab === modulo.nombre) {
-                                return (
-                                    <div key={modulo.id}>
-                                        <div dangerouslySetInnerHTML={{__html: modulo.descripcion}} className='mt-5 prose max-w-none cursos' />                        
-                                    </div>
-                                )}
-                            } 
-                        )}
-                    </div>
                 </section>
-
+            )}
+            {Array.isArray(singleCapacitacion.profesores) && singleCapacitacion.profesores.length > 0 && (
                 <section className=''>
-                    <div className='grid grid-cols-6 gap-5'>
+                    <div className='grid grid-cols-12 gap-2 md:gap-5'>
                         <div className='col-span-1'>
                             <img src="" alt="" />
                         </div>
-                        <div className='col-span-5'>
-                            <h2 className='text-primary text-36 font-extrabold'>Conoce a los profesores</h2>
+                        <div className='col-span-11'>
+                            <h2 className='text-primary text-36 font-garet-extra'>Conoce a los profesores</h2>
                         </div>
                     </div>
-                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 mx-auto lg:w-8/12'>
+                    <div className='grid grid-cols-1 xl:grid-cols-2 gap-2 md:gap-4'>
                         {profesoresReversed.map((profesor) => (
-                           <div key={profesor.id} className='bg-card p-5 my-5 grid lg:grid-cols-6 rounded-3xl gap-4'>
-                            <div className='col-span-2'></div>
-                            <div className='col-span-4'>
-                                <p className='text-tertiary font-bold text-22 mb-5'>{profesor.nombre}</p>
-                                <p className='text-titulo font-bold text-18'>{profesor.puesto}</p>
-                                <div dangerouslySetInnerHTML={{__html: profesor.descripcion}} className='mt-5 prose max-w-none diez mt-5' />
+                           <div key={profesor.id} className='bg-card p-5 my-5 grid sm:grid-cols-12 rounded-3xl gap-4'>
+                            <div className='sm:col-span-2 2xl:col-span-3'>
+                                <img src={profesor.foto} alt={profesor.nombre} className='object-cover mx-auto' />
+                            </div>
+                            <div className='sm:col-span-10 2xl:col-span-9'>
+                                <p className='text-tertiary font-garet-bold text-22 mb-5'>{profesor.nombre}</p>
+                                <p className='text-titulo! font-garet-bold text-18'>{profesor.puesto}</p>
+                                <SafeHtml htmlContent={profesor.descripcion} className='mt-5 prose max-w-none diez mt-5' />
+                                
                             </div>
                            </div>
                         ))}
                     </div>                    
                 </section>
+            )}
         </section>
         </>
     )

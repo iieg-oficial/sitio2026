@@ -1,12 +1,15 @@
-from pydantic import BaseModel, field_validator
 from datetime import datetime
-from typing import Optional, List
+from typing import List, Optional
+
+from pydantic import BaseModel, field_validator
+
 from app.schemas.subject import SubjectFlat
+
 
 class GalleryImageCreate(BaseModel):
     url: str
     order: int
-    
+
 class GalleryImageOut(BaseModel):
     id: int
     url: str
@@ -21,7 +24,7 @@ class PostCreate(BaseModel):
     gallery_urls: list[str] = []
     autor: str = "IIEG"
     fecha: Optional[datetime] = None
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     tema_ids: Optional[List[int]] = None
     slug: Optional[str] = None
     video: Optional[str] = None
@@ -43,7 +46,7 @@ class PostOut(BaseModel):
     gallery_images: list[GalleryImageOut]
     autor: Optional[str]
     fecha: Optional[datetime]
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
     video: Optional[str] = None
@@ -60,14 +63,14 @@ class PostResponse(BaseModel):
     gallery_images: list[GalleryImageOut]
     autor: Optional[str]
     fecha: Optional[datetime]
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     temas: Optional[List[SubjectFlat]] = []
     slug: Optional[str] = None
     video: Optional[str] = None
 
-    class Config:                              
+    class Config:
         from_attributes = True
-    
+
 class PostList(BaseModel):
     posts: List[PostResponse]
     total: int

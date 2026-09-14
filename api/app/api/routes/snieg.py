@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.schemas.snieg import SniegResponse, SniegCreate, SniegOut
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.models import Snieg, Usuario
-from app.api.deps import get_db, get_current_user, verify_csrf
+from app.schemas.snieg import SniegCreate, SniegOut, SniegResponse
 
 router = APIRouter(prefix="/snieg", tags=["snieg"])
 
@@ -29,7 +30,7 @@ def create_snieg(
     while db.query(Snieg).filter(Snieg.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     db_snieg = Snieg(
         titulo=snieg.titulo,
         descripcion=snieg.descripcion,
@@ -69,10 +70,10 @@ def update_snieg(
         update_data["slug"] = slug
     elif "slug" in update_data and not update_data["slug"]:
         del update_data["slug"]
-    
+
     for campo, valor in update_data.items():
         setattr(db_snieg, campo, valor)
-    
+
     db.commit()
     db.refresh(db_snieg)
     return db_snieg

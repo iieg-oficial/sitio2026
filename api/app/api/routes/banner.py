@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
 from app.models import Banner, Usuario
 from app.schemas.banner import BannerCreate, BannerOut, BannerResponse
 
@@ -30,7 +31,7 @@ def create_banner(
     while db.query(Banner).filter(Banner.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     """Crear un nuevo banner"""
     db_banner = Banner(
         titulo=banner.titulo,

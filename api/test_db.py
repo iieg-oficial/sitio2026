@@ -1,4 +1,3 @@
-import sys
 from app.api.deps import SessionLocal
 from app.models.page import Page
 

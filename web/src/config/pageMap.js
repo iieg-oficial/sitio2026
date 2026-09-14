@@ -1,7 +1,7 @@
 export const pageMap = {
     "conocenos": ['informacion', 'mision_vision','valores', 'plan_institucional', 'plan_trabajo','normatividad'],
     "organigrama": ['organigrama','director'],
-    "organos-de-gobierno": ['organos'],
+    "organos-colegiados": ['organos'],
     "sistema-institucional-de-archivo": ['archivo'],
     "contabilidad-gubernamental": ['contabilidad'],
     "snieg": ['snieg'], 
@@ -9,7 +9,7 @@ export const pageMap = {
     "nuestros-productos": ['sistemas'],
     "datos-expres": ['flashes'],
     "reportes": ['reportes'],
-    "mapas-historicos": ['mapas'],
+    "galeria-de-mapas": ['mapas'],
     "documentacion": ['documentacion'],
     "educacion-continua": ['capacitaciones'],
     "convocatorias": ['convocatorias'],

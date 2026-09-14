@@ -5,9 +5,9 @@ Revises: 4cc71a6d42e6
 Create Date: 2026-05-27 19:00:00.000000
 
 """
-from alembic import op
 import sqlalchemy as sa
 
+from alembic import op
 
 revision = 'c9f1a2b3d4e5'
 down_revision = '4cc71a6d42e6'
@@ -16,7 +16,10 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
+    inspector = sa.inspect(op.get_bind())
+    columns = {column['name'] for column in inspector.get_columns('pages')}
+    if 'order' not in columns:
+        op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
 
     # Assign a stable order inside each sibling group.
     op.execute(

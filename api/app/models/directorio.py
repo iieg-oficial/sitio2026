@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean
+from sqlalchemy import Boolean, Column, Integer, String
+
 from app.core.database import Base
+
 
 class Directorio(Base):
     __tablename__ = "directorio"

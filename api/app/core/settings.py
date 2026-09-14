@@ -1,6 +1,7 @@
 import json
 from functools import lru_cache
-from pydantic import Field, field_validator
+
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,6 +9,9 @@ class Settings(BaseSettings):
     project_name: str
     version: str
     database_url: str
+    database_pool_size: int = 10
+    database_max_overflow: int = 20
+    database_pool_timeout: int = 10
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int

@@ -9,7 +9,7 @@
   {# The content block allows you to replace the content of the page if needed #}
   {%- block content %}
 
-    {% snippet "title.html", page=page %}
+    {# % snippet "title.html", page=page % #}
 
     {% block maintag %}<div class="main">{% endblock %}
       <div id="content" class="container">
@@ -66,7 +66,7 @@
             {% endblock %}
 
             {% block primary %}
-              <div class="primary col-md-9 col-xs-12" role="main">
+              <div class="primary col-md-9 col-xs-12 pb-8" role="main">
                 {#
                 The primary_content block can be used to add content to the page.
                 This is the main block that is likely to be used within a template.

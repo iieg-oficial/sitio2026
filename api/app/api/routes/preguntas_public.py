@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-from slugify import slugify
+from sqlalchemy.orm import Session
+
 from app.api.deps import get_db
-from app.models import Preguntas, Subject
-from app.schemas import PreguntasOut, PreguntasList
+from app.models import Preguntas
+from app.schemas import PreguntasList, PreguntasOut
 
 router = APIRouter(prefix="/preguntas", tags=["preguntas-public"])
 

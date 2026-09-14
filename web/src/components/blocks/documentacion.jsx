@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from 'react'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
+import Searcher from '../pageComponents/searcher';
 
 export default function Documentacion() {
     const [documentaciones, setDocumentaciones] = useState([])
+    const [currentPage, setCurrentPage] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedTemaId, setSelectedTemaId] = useState("");
     const [selectedSubtemaId, setSelectedSubtemaId] = useState("");
@@ -20,6 +22,14 @@ export default function Documentacion() {
     useEffect(() => {
         fetchDocumentaciones()
     }, []);
+
+    const tipos = useMemo(() => (
+        [...new Set(
+            documentaciones
+                .map(documentacion => documentacion.tipo)
+                .filter(Boolean)
+        )]
+    ), [documentaciones]);
 
     const proyectos = useMemo(() => {
         const map = new Map();
@@ -93,18 +103,27 @@ export default function Documentacion() {
         })
     }, [documentaciones, searchTerm, selectedTemaId, selectedSubtemaId, selectedTipo, selectedProyecto]);
 
-    const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
+    const itemOffset = currentPage * itemsPerPage;
     const pageCount = Math.ceil(filteredDocumentaciones.length / itemsPerPage);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % Math.max(filteredDocumentaciones.length, 1);
-        setItemOffset(newOffset);
+         setCurrentPage(event.selected);
     };
 
     useEffect(() => {
-        setItemOffset(0);
+    if (currentPage > 0 && currentPage >= pageCount) {
+        setCurrentPage(0);
+    }
+    }, [pageCount, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(0);
     }, [searchTerm, selectedTemaId, selectedSubtemaId, selectedTipo, selectedProyecto]);
+
+    const currentItems = useMemo(() => (
+        filteredDocumentaciones.slice(itemOffset, itemOffset + itemsPerPage)
+    ), [filteredDocumentaciones, itemOffset]);
 
     const resetFilters = () => {
         setSelectedTemaId("")
@@ -118,15 +137,9 @@ export default function Documentacion() {
     return (
         <div>
 
-            <div className='mx-auto container md:w-6/12'>
-                        <input
-                            type="search"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Busca por ..."
-                            className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
-                        />
-            </div>
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
+            
+
             <div className='mx-auto px-2 container my-15'>
                 <div className='flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5'>
                     
@@ -171,16 +184,9 @@ export default function Documentacion() {
                                 className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                             >
                                 <option value='' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
-                                <option value='Informes' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Informes</option>
-                                <option value='Análisis estadísticos' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Análisis estadísticos</option>
-                                <option value='Publicaciones institucionales' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Publicaciones institucionales</option>
-                                <option value='Documentación de censos' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Documentación de censos</option>
-                                <option value='Documentos normativos' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Documentos normativos</option>
-                                <option value='Metodologia' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Metodología</option>
-                                <option value='Código' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Código</option>
-                                <option value='Manuales' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Manuales</option>
-                                <option value='Guías' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Guías</option>
-                                <option value='FAQs' className='w-full rounded-lg bg-card text-titulo px-4 py-2'>FAQs</option>
+                                {tipos.map(tipo => (
+                                    <option key={tipo} value={tipo} className='w-full rounded-lg bg-card text-titulo px-4 py-2'>{tipo}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -214,16 +220,16 @@ export default function Documentacion() {
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mx-auto px-2 container my-15'>
-                {filteredDocumentaciones.map(documentacion => (
-                    <TrackedLink to={documentacion.archivo} className="" target="_blank" download>
-                        <div className='rounded-2xl bg-card p-8 hover:border hover:border-tertiary' key={documentacion.id}>   
+                {currentItems.map(documentacion => (
+                    <TrackedLink to={documentacion.archivo} className="" target="_blank" download key={documentacion.id}> 
+                        <div className='rounded-2xl bg-card p-8 hover:border hover:border-tertiary group'>   
                             {documentacion.temas
                                 .filter(tema => !tema.parent_id)
                                 .map(tema => (
                                     <div key={tema.id}>
-                                        <span className='text-18'>{tema.titulo}</span>
+                                       {/* <span className='text-18'>{tema.titulo}</span>
 
-                                        {/*documentacion.temas
+                                        documentacion.temas
                                             .filter(subtema => subtema.parent_id === tema.id)
                                             .map(subtema => (
                                                 <span key={subtema.id} className='text-16'> | {subtema.titulo}</span>
@@ -233,15 +239,17 @@ export default function Documentacion() {
                                 ))
                             }
                             <div className='flex justify-between'>
-                                <h3 className='text-primary'>{documentacion.titulo}</h3>               
-                                <span className="material-symbols--download text-tertiary"></span> 
+                                <h3 className='text-titulos font-garet-bold text-18'>{documentacion.titulo}</h3>               
+                                <div className="group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1">
+                                    <span className="material-symbols--download group-hover:bg-white!"></span>
+                                </div> 
                             </div>                                                        
                             <div className='flex flex-wrap gap-4 mt-10'>
                                 {documentacion.tipo && (
-                                    <span className='rounded-2xl bg-etiqueta-ter border-[#162A554D] border-1 text-primary text-14 px-5 py-2'>{documentacion.tipo}</span>
+                                    <span className='font-garet-bold text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{documentacion.tipo}</span>
                                 )}
                                 {documentacion.anyo && (
-                                    <span className='rounded-2xl bg-etiqueta-ter text-tertiary border-[#FF83004D] border-1 text-14 px-5 py-2'>{documentacion.anyo}</span>
+                                    <span className='font-garet-boldtext-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>{documentacion.anyo}</span>
                                 )}
                             </div>
                         </div>
@@ -249,19 +257,20 @@ export default function Documentacion() {
                 ))}
             </div>
 
-            <ReactPaginate
-                previousLabel={"Ant"}
-                nextLabel={"Sig"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / itemsPerPage)}
-            />
+            {pageCount > 1 && (
+                        <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            breakLabel={'...'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                            forcePage={currentPage}
+                        />
+                    )}
         </div>
     )
 }

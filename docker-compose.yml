@@ -15,6 +15,9 @@ services:
         VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:?VITE_GOOGLE_ANALYTICS_ID is required}
         VITE_WEB_API_URL: ${VITE_WEB_API_URL:?VITE_WEB_API_URL is required}
         VITE_ADMIN_API_URL: ${VITE_ADMIN_API_URL:?VITE_ADMIN_API_URL is required}
+        VITE_MEDIA_BASE_URL: ${VITE_MEDIA_BASE_URL:?VITE_MEDIA_BASE_URL is required}
+        VITE_MAPALAB_BASE_URL: ${VITE_MAPALAB_BASE_URL:?VITE_MAPALAB_BASE_URL is required}
+        VITE_MAPALAB_API_KEY: ${VITE_MAPALAB_API_KEY:?VITE_MAPALAB_API_KEY is required}
     container_name: portal-nginx
     restart: unless-stopped
     ports:
@@ -28,6 +31,7 @@ services:
       - ckan
     networks:
       portal_network:
+        ipv4_address: ${NGINX_CONTAINER_IP:?NGINX_CONTAINER_IP is required}
 
   postgres:
     image: postgres:18-alpine
@@ -133,30 +137,26 @@ services:
       CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
       CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg_theme stats
       CKAN__ROOT_PATH: /datos-abiertos/{{LANG}}
+      CKAN___FAVICON: /images/iieg_logo-32x32.png
+      CKAN___SITE_TITLE: "Datos Abiertos - IIEG"
       CKAN_TRACKING_ENABLED: "True"
       CKAN___SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CKANEXT__S3FILESTORE__SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
-      # HOST_NAME = endpoint_url de boto3. Con path-style, boto3 construye:
-      # HOST_NAME / BUCKET / STORAGE_PATH / archivo
-      # => https://iieg.jalisco.gob.mx/acervo / portal / datos-abiertos / file  ✅
-      # Por eso HOST_NAME debe incluir /acervo (usar ACERVO_S3_URL, no ACERVO_S3_HOST)
       CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
       CKANEXT__S3FILESTORE__REGION_NAME: us-east-1
       CKANEXT__S3FILESTORE__AWS_ACCESS_KEY_ID: ${ACERVO_ACCESS_KEY:?ACERVO_ACCESS_KEY is required}
       CKANEXT__S3FILESTORE__AWS_SECRET_ACCESS_KEY: ${ACERVO_SECRET_KEY:?ACERVO_SECRET_KEY is required}
       CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
-      # AWS_STORAGE_PATH = prefijo de carpeta dentro del bucket (sin /acervo, ya está en HOST_NAME)
-      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:-datos-abiertos}
+      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:?CKAN_S3_STORAGE_PATH is required}
       CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
-      # Evita que CKAN verifique el bucket al arrancar (HeadBucket → 403 → crash loop)
-      # El error de autenticación aparecerá al subir un archivo, no al iniciar
       CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
-      # DOWNLOAD_PROXY = URL pública base para los links de descarga
-      # Apunta a /acervo/ en tu propio Nginx para que éste lo proxee al acervo externo
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
+      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?file:///srv/app/licenses.json}
     volumes:
       - ckan_storage:/var/lib/ckan
+      - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme
+      - ./ckan/licenses.json:/srv/app/licenses.json
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:5000/api/3/action/status_show"]
       interval: 30s
@@ -181,17 +181,18 @@ services:
       redis:
         condition: service_healthy
     environment:
+      FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS:?FORWARDED_ALLOW_IPS is required}
       PROJECT_NAME: Portal IIEG
       VERSION: "1.9.0"
       ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: "30"
       CSRF_TOKEN_EXPIRE_MINUTES: "60"
-      COOKIE_NAME: access_token
+      COOKIE_NAME: sitio_access_token
       COOKIE_MAX_AGE: "1800"
       COOKIE_HTTPONLY: "true"
       COOKIE_SAMESITE: lax
-      ADMIN_PREFIX: /api/portal-admin
-      WEB_PREFIX: /api/portal
+      ADMIN_PREFIX: /api/sitio-admin
+      WEB_PREFIX: /api/sitio
       OPENAPI_URL: /api/openapi.json
       DOCS_URL: /docs
       REDOC_URL: /redoc
@@ -217,8 +218,11 @@ services:
       ACERVO_IIEG_SECRET_KEY: ${ACERVO_IIEG_SECRET_KEY:?ACERVO_IIEG_SECRET_KEY is required}
       ACERVO_IIEG_BUCKET_NAME: ${ACERVO_IIEG_BUCKET_NAME:?ACERVO_IIEG_BUCKET_NAME is required}
       ACERVO_API_KEY: ${ACERVO_API_KEY}
-      ACERVO_API_KEY_HEADER: ${ACERVO_API_KEY_HEADER:-x-api-key}
-      SEED_EXAMPLES: ${SEED_EXAMPLES:-false}
+      ACERVO_API_KEY_HEADER: ${ACERVO_API_KEY_HEADER:?ACERVO_API_KEY_HEADER is required}
+      SEED_EXAMPLES: ${SEED_EXAMPLES:?SEED_EXAMPLES is required}
+      SMTP_USER: ${SMTP_USER:?SMTP_USER is required}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?SMTP_PASSWORD is required}
+      CONTACT_DEST_EMAIL: ${CONTACT_DEST_EMAIL:?CONTACT_DEST_EMAIL is required}
     networks:
       portal_network:
         aliases:
@@ -234,5 +238,8 @@ volumes:
 networks:
   portal_network:
     driver: bridge
+    ipam:
+      config:
+        - subnet: ${PORTAL_SUBNET:?PORTAL_SUBNET is required}
   ckan_network:
     driver: bridge

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
 from app.api.deps import get_db
 from app.models import Cuadernillo
 from app.schemas import CuadernilloOut, CuadernilloResponse
@@ -9,11 +10,11 @@ router = APIRouter(prefix="/cuadernillos", tags=["public - cuadernillos"])
 @router.get("", response_model=CuadernilloResponse)
 def read_cuadernillos(
     db: Session = Depends(get_db),
-    limit: int = 125,
+    order_by: str = "anyo",
     skip: int = 0,
 ):
     """Obtener todos los cuadernillos"""
-    cuadernillos = db.query(Cuadernillo).offset(skip).limit(limit).all()
+    cuadernillos = db.query(Cuadernillo).order_by(Cuadernillo.anyo.desc(), Cuadernillo.id.desc()).offset(skip).all()
 
     return {
         "cuadernillos": cuadernillos,

@@ -5,11 +5,30 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Upload
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.core.settings import get_settings
 from app.models.media import Media, MediaFolder
 from app.models.user import Usuario
 from app.schemas.media import FolderCreate, FolderResponse
 from app.services.acervo import IIEG_BUCKET, PORTAL_BUCKET, get_acervo_service
+
+MAX_FILE_SIZE = 100 * 1024 * 1024 # 100 MB
+ALLOWED_EXTENSIONS = {
+    "jpg":  {"mime": "image/jpeg",      "bytes": b"\xFF\xD8\xFF"},
+    "jpeg": {"mime": "image/jpeg",      "bytes": b"\xFF\xD8\xFF"},
+    "png":  {"mime": "image/png",       "bytes": b"\x89PNG\r\n\x1a\n"},
+    "gif":  {"mime": "image/gif",       "bytes": b"GIF8"},
+    "pdf":  {"mime": "application/pdf", "bytes": b"%PDF"},
+    "zip":  {"mime": "application/zip", "bytes": b"PK\x03\x04"},
+    "doc":  {"mime": "application/msword", "bytes": b"\xD0\xCF\x11\xE0"},
+    "docx": {"mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "bytes": b"PK\x03\x04"},
+    "xls":  {"mime": "application/vnd.ms-excel", "bytes": b"\xD0\xCF\x11\xE0"},
+    "xlsx": {"mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "bytes": b"PK\x03\x04"},
+    # Archivos de texto/estructurados (sin comprobación binaria estricta)
+    "xml":  {"mime": "application/xml", "text": True},
+    "json": {"mime": "application/json", "text": True},
+    "csv":  {"mime": "text/csv",        "text": True},
+}
 
 router = APIRouter(prefix="/multimedia", tags=["media"])
 
@@ -109,6 +128,7 @@ async def listar_media(
     folder: str | None = Query(None),
     type: str | None = Query(None),
     search: str | None = Query(None),
+    limit: int = Query(100, ge=1, le=1000),
     bucket: str = Query(PORTAL_BUCKET),
 ):
     bucket = _validate_bucket(bucket)
@@ -123,12 +143,13 @@ async def listar_media(
             query = query.filter(Media.type.startswith(type))
 
         if search:
-            search_lower = f"%{search.lower()}%"
+            search_lower = f"%{escape_like(search.lower())}%"
             query = query.filter(
-                Media.name.ilike(search_lower) | Media.original_name.ilike(search_lower)
+                Media.name.ilike(search_lower, escape='\\')
+                | Media.original_name.ilike(search_lower, escape='\\')
             )
 
-        items = query.order_by(Media.uploaded_at.desc()).all()
+        items = query.order_by(Media.uploaded_at.desc()).limit(limit).all()
         return [_serialize_media(item) for item in items]
 
     acervo_service = get_acervo_service()
@@ -148,7 +169,7 @@ async def listar_media(
         items = [i for i in items if i["folder"] == folder]
 
     items.sort(key=lambda i: i["uploadedAt"], reverse=True)
-    return items
+    return items[:limit]
 
 
 @router.get("/carpetas", response_model=list[dict])
@@ -169,6 +190,38 @@ async def subir_archivo(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
+    # 1. Validar Tamaño del Archivo (100 MB Máximo)
+    if file.size and file.size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El archivo excede el tamaño máximo permitido de 100MB."
+        )
+
+    # 2. Validar Extensión (Allowlist)
+    file_extension = file.filename.split(".")[-1].lower() if "." in file.filename else ""
+    if file_extension not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"La extensión .{file_extension} no está permitida."
+        )
+
+    config = ALLOWED_EXTENSIONS[file_extension]
+
+    # 3. Validar Magic Bytes (Si no es un archivo puramente de texto)
+    if not config.get("text"):
+        header_bytes = await file.read(8)
+        await file.seek(0)  # REINICIAR PUNTERO para que el servicio guarde el archivo completo
+
+        expected_bytes = config["bytes"]
+        if not header_bytes.startswith(expected_bytes):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El contenido del archivo no coincide con su extensión."
+            )
+
+    # Usar el MIME real validado internamente, no el que envía el cliente
+    validated_content_type = config["mime"]
+
     bucket = _validate_bucket(bucket)
     folder = _normalize_folder_path(folder)
 
@@ -185,7 +238,7 @@ async def subir_archivo(
             nuevo_media = Media(
                 name=unique_name,
                 original_name=file.filename,
-                type=file.content_type or "application/octet-stream",
+                type=validated_content_type,  # MIME seguro
                 size=file.size or 0,
                 url=url,
                 thumbnail=url if file.content_type and file.content_type.startswith("image/") else None,
@@ -203,7 +256,7 @@ async def subir_archivo(
             "id": f"{bucket}:{unique_name}",
             "name": unique_name,
             "originalName": file.filename,
-            "type": file.content_type or "application/octet-stream",
+            "type": validated_content_type,  # MIME seguro
             "size": file.size or 0,
             "url": url,
             "thumbnail": url if file.content_type and file.content_type.startswith("image/") else None,

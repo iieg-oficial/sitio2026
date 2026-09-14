@@ -32,10 +32,12 @@
   color: #ff8300;
 }
 .menu-wrapper .menu > .current-menu-item > a,
-.menu-wrapper .menu > .current-menu-ancestor > a {
+.menu-wrapper .menu > .current-menu-ancestor > a,
+.menu-wrapper .menu > li.active > a,
+.menu-wrapper .menu a.active {
   position: relative;
   z-index: 12;
-  color: #ffffff;
+  color: #ff8300;
   border-bottom: none;
 }
 .menu-wrapper .menu > .current-menu-item > a:hover,
@@ -65,12 +67,15 @@
   white-space: nowrap;
   line-height: 1.8em;
   border: none;
-  color: #5c2472;
+  color: var(--color-primary);
   padding: 5px 25px;
 }
-.menu-wrapper .sub-menu a:hover {
-  background: #f4d8ff;
+.menu-wrapper .sub-menu a:hover,
+.menu-wrapper .sub-menu a.active,
+.menu-wrapper .sub-menu li.active > a {
+  background: #FFEFDE;
   color: #ff8300;
+  font-weight: 600;
 }
 
 .menu-wrapper .sub-menu li:last-child a {
@@ -84,7 +89,7 @@
 
 
 /* Responsive Menu */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1279px) {
   body .menu-wrapper nav[role=navigation] {
     overflow: hidden;
     max-height: 0em;
@@ -108,6 +113,10 @@
     padding-left: 10px;
     border: none;
     margin: 0;
+  }
+  .menu-wrapper .sub-menu a {
+    text-align: center;
+    color: white;
   }
   .menu-wrapper a.menu-link:hover {
     background: #6618a2;
@@ -219,7 +228,7 @@
     top: 5px;
     margin-top:0px;
     right: 4px;
-    color: #6618a2;
+    color: white;
     font-size: 28px;
     padding-bottom: 5px;
   }

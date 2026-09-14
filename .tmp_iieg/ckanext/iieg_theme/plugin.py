@@ -1,5 +1,6 @@
-import ckan.plugins as plugins
-import ckan.plugins.toolkit as toolkit
+from ckan.plugins import toolkit
+
+from ckan import plugins
 
 
 class IiegThemePlugin(plugins.SingletonPlugin):

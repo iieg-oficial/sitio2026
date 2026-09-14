@@ -96,7 +96,7 @@ export default function PlanTrabajo() {
                     <div className="mx-auto bg-card px-2 pt-2 container-fluid">
                         <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 container">
                             {postsByYear.map((item, idx) => (
-                                <div key={item?.id || idx} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-3xl group bg-white hover:border-tertiary">
+                                <div key={item?.id || idx} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-3xl group bg-white hover:border-tertiary group">
                                     <a 
                                         href={item?.documento || '#'} 
                                         target="_blank" 
@@ -104,7 +104,9 @@ export default function PlanTrabajo() {
                                         download 
                                         className='flex gap-4'
                                     >
-                                        <span className="material-symbols--download"></span> 
+                                        <div className="group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1">
+                                            <span className="material-symbols--download group-hover:bg-white!"></span>
+                                        </div>
                                         <p className='text-22 text-titulo group-hover:text-tertiary'>
                                             {item?.nombre || 'Documento sin título'}
                                         </p>

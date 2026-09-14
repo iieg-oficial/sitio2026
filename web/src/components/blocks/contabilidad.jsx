@@ -65,8 +65,27 @@ export default function Contabilidad() {
         return grupos;
     }, {});   
 
-    const subjects = Object.keys(groupedBySubject).sort();
+    const normalizeTema = (tema) =>
+        tema
+            ?.normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase() ?? '';
 
+    const subjectOrder = {
+        'informacion contable': 0,
+        'informacion presupuestal': 1,
+        'informacion programatica': 2,
+        'anexos': 3,
+        'ley de disciplina': 4,
+    };
+
+    const subjects = Object.keys(groupedBySubject).sort((a, b) => {
+        const orderA = subjectOrder[normalizeTema(a)] ?? 999;
+        const orderB = subjectOrder[normalizeTema(b)] ?? 999;
+
+        if (orderA !== orderB) return orderA - orderB;
+        return a.localeCompare(b, undefined, { sensitivity: 'base' });
+    });
 
     const endOffset = itemOffset + itemsPerPage;
     const currentSubjects = subjects.slice(itemOffset, endOffset);
@@ -89,7 +108,7 @@ export default function Contabilidad() {
         <div>
             <div>
            
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo buscas?" />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo quieres buscar?" />
             
             <div className='mx-auto px-2 container my-15'>
                 <div className="flex gap-2 mb-5">
@@ -97,7 +116,7 @@ export default function Contabilidad() {
                         <button
                             key={year}
                             onClick={() => { setActiveTab(year); setItemOffset(0); } }
-                                className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
+                                className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-bold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
                                         ? 'bg-etiqueta-sec text-tertiary border-tertiary'
                                         : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
                         >
@@ -113,27 +132,16 @@ export default function Contabilidad() {
 
                     {currentSubjects.map((tema) => {
                         const items = groupedBySubject[tema];
-                        const isOpen = openSubjects[tema] ?? false; // abierto por defecto
-                        const groupedBySubtema = items.reduce((grupos, contabilidad) => {
-                            const subtema = getSubtema(contabilidad) ?? 'Sin subtema';
-                            if (!grupos[subtema]) grupos[subtema] = [];
-                            grupos[subtema].push(contabilidad);
-                            return grupos;
-                        }, {});
-                        const subtemas = Object.keys(groupedBySubtema).sort((a, b) => a.localeCompare(b));
-
+                        const isOpen = openSubjects[tema] ?? false;
 
                         return (
                             <div key={tema} className='bg-card rounded-2xl mb-4 p-4'>
-
-                                
                                 <button
                                     onClick={() => toggleSubject(tema)}
-                                    className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-extrabold"
+                                    className="w-full flex justify-between items-center px-4 py-3 text-left text-28 text-primary font-garet-extra cursor-pointer"
                                 >
-                                    <span>{tema}</span>
+                                    <span className="">{tema}</span>
                                     <span className="flex items-center gap-8">
-                                        
                                         <span className="bg-etiqueta-sec text-tertiary border border-tertiary font-bold px-5 py-2 rounded-2xl text-22">
                                             {items.length}
                                         </span>
@@ -142,41 +150,31 @@ export default function Contabilidad() {
                                         </div>
                                     </span>
                                 </button>
-                         
+
                                 {isOpen && (
                                     <div className="px-4 pb-3 space-y-4">
-                                        {subtemas.map((subtema) => {
-                                            const showHeading = subtema !== 'Sin subtema' || subtemas.length > 1;
-                                                return (
-                                                    <div key={subtema}>
-                                                        {showHeading && (
-                                                            <div className='mb-3 text-20 font-bold text-primary'>
-                                                                 {subtema}
-                                                            </div>
-                                                        )}
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            {groupedBySubtema[subtema].map((contabilidad) => (
-                                                                <div key={contabilidad.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
-                                                                    <div className='flex'>
-                                                                        <TrackedLink to={contabilidad.archivo} className="" target="_blank" rel="noopener noreferrer">
-                                                                            <div className='col-span-1 bg-[#FF83004D] h-[40px] w-[40px] rounded-full flex items-center justify-center'>
-                                                                                <span className="material-symbols--download text-tertiary"></span> 
-                                                                            </div>
-                                                                        </TrackedLink>
-                               
-                                                                        <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{contabilidad.titulo}</p>
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {items.map((contabilidad) => (
+                                                <TrackedLink to={contabilidad.archivo} className="" target="_blank" rel="noopener noreferrer">
+                                                <div key={contabilidad.id} className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary group'>
+                                                    <div className='flex'>
+                                                        
+                                                            <div className="col-span-1  group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
+                                                                <span className="material-symbols--download group-hover:bg-white!"></span>
+                                                            </div> 
+                                                        
+
+                                                        <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{contabilidad.titulo}</p>
                                                     </div>
-                                                )
-                                            })}
+                                                </div>
+                                                </TrackedLink>
+                                            ))}
                                         </div>
-                                     )}
-                                </div>
-                            )
-                        })}
+                                    </div>
+                                )}
+                            </div>
+                        )
+                    })}
                     </div>
                 </div>
                                           

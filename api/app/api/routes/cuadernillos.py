@@ -1,7 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy import func, or_, select
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.models import Cuadernillo, Usuario
 from app.models.cuadernillos import MunicipioEnum
 from app.schemas import CuadernilloCreate, CuadernilloOut, CuadernilloResponse
@@ -10,14 +15,32 @@ router = APIRouter(prefix="/cuadernillos", tags=["cuadernillos"])
 
 @router.get("/", response_model=CuadernilloResponse)
 def read_cuadernillos(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los cuadernillos"""
-    cuadernillos = db.query(Cuadernillo).all()
-    return {
-        "cuadernillos": cuadernillos,
-        "total": len(cuadernillos),
-    }
+    query = select(Cuadernillo)
+
+    if search:
+        like = f"%{escape_like(search)}%"
+        query = query.where(
+            or_(
+                Cuadernillo.titulo.ilike(like, escape='\\'),
+            )
+        )
+
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    cuadernillos = db.execute(
+        query.order_by(Cuadernillo.anyo.desc(), Cuadernillo.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+    ).scalars().all()
+
+    return {"cuadernillos": cuadernillos, "total": total}
 
 
 @router.post("/", response_model=CuadernilloOut, status_code=status.HTTP_201_CREATED)
@@ -32,7 +55,7 @@ def create_cuadernillo(
     while db.query(Cuadernillo).filter(Cuadernillo.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     """Crear un nuevo cuadernillo"""
     db_cuadernillo = Cuadernillo(
         titulo=cuadernillo.titulo,

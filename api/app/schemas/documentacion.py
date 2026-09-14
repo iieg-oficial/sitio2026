@@ -1,9 +1,11 @@
-from typing import Optional, List
-from app.schemas.subject import SubjectFlat
-from app.schemas.sistemas import SistemasOut
+from typing import List, Optional
+
 from pydantic import BaseModel, field_validator
-from enum import Enum
+
 from app.models.documentacion import TipoEnum
+from app.schemas.sistemas import SistemasOut
+from app.schemas.subject import SubjectFlat
+
 
 class DocumentacionCreate(BaseModel):
     titulo: str
@@ -11,7 +13,7 @@ class DocumentacionCreate(BaseModel):
     anyo: Optional[int] = None
     archivo: Optional[str] = None
     tipo : Optional[TipoEnum] = None
-    claves: Optional[str] = None    
+    claves: Optional[str] = None
     slug: Optional[str] = None
     tema_ids: Optional[List[int]] = None
     sistema_ids: Optional[List[int]] = None

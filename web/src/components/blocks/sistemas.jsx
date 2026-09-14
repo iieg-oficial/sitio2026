@@ -3,6 +3,7 @@ import api from '@services/apiService'
 import ReactPaginate from 'react-paginate'
 import { useLocation } from 'react-router'
 import Searcher from '../pageComponents/searcher';
+import { SafeHtml } from '@components/SafeHtml';
 
 const ITEMS_PER_PAGE = 12
 
@@ -87,9 +88,9 @@ export default function Sistemas() {
         <button
             type="button"
             {...props}
-            className={`px-10 py-3 cursor-pointer rounded-3xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${active
-                ? 'bg-etiqueta-sec text-tertiary border-tertiary'
-                : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
+            className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-bold text-18 transition-colors flex-shrink-0 snap-start min-w-[120px] ${active
+                ? 'bg-etiqueta-sec text-tertiary border-tertiary font-garet-extrabold'
+                : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec font-garet-extrabold'}`}
         >
             {children}
         </button>
@@ -98,13 +99,13 @@ export default function Sistemas() {
 
     return (
         <div className='container mx-auto px-2'>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo buscas?" />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
 
             <div className="relative container mx-auto px-2 mt-15">
                     <span class="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
                     <div
-                        className="flex gap-5 mb-10 lg:ml-15 overflow-x-auto sm:overflow-visible snap-x snap-mandatory"
-                        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
+                        className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto snap-x snap-mandatory"
+                        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: '5px' }}
                     >
                         {tabs.map((tab, index) => (
                             <TabButton
@@ -123,43 +124,65 @@ export default function Sistemas() {
                     {filteredByTab.length === 0 && <p>No hay sistemas</p>}
 
                     {filteredByTab.length > 0 && (
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                             {currentSystems.map((sistema) => {
-
-                                const original = sistema.imagen
+                                const original = sistema.imagen;
                                 const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
                                 
-
-                                return (
-                                    <a href={sistema.link} target="_blank" rel="noopener noreferrer" key={sistema.id}>
-                                    <div key={sistema.id} className='mb-5 w-full rounded-2xl bg-card p-8 my-5 grid md:grid-cols-6 gap-4 cursor-pointer hover:border-primary hover:border group'>
-                                        <div className='md:col-span-2'>
+                                const hasLink = Boolean(sistema.link);
+                                const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);
+                                const content = (
+                                    <div 
+                                        className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 md:min-h-[640px] lg:min-h-[485px] xl:min-h-[445px] ${
+                                            hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
+                                        }`}
+                                    >
+                                        <div className='sm:w-[150px] md:h-[115px] lg:h-auto lg:w-full lg:col-span-2'>
                                             <img
-                                                src={sistema.imagen ? sistema.imagen : '/demo.jpg'}                                                
+                                                src={sistema.imagen ? sistema.imagen : 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png'}                                                
                                                 alt={sistema.titulo}
-                                                className="mb-3 h-auto w-full rounded-lg object-cover"
+                                                className="mb-3 h-auto w-full rounded-lg object-cover md:h-full lg:h-auto md:w-auto lg:w-full"
                                             />
-                                            {/* src={sistema.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/sistemas/${thumb}?w=400` : '/demo.jpg'} */}
                                         </div>
-                                        <div className='md:col-span-4'>
-                                            <h3 className="mb-3 text-primary">
+                                        <div className='lg:col-span-4'>
+                                            <h3 className="mb-3 text-primary text-28 font-garet-extrabold">
                                                 {sistema.titulo}
                                             </h3>
-                                            <div className="diez" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
+                                            <SafeHtml htmlContent={sistema.descripcion || ''} className='diez text-18 font-garet' />
                                         </div>
-                                        <div className='md:col-span-6'>
+                                        <div className='lg:col-span-6 mt-5'>
                                             {sistema.tipo && (
-                                                <span className={`e${sistema.tipo} text-titulo rounded-2xl px-4 py-2 text-14`}>
-                                                    {sistema.tipo.replace('-', ' ')}
+                                                <span className={`e${sistema.tipo} rounded-xl px-4 py-2 text-14 font-garet-bold`}>
+                                                    {sistema.tipo_label || sistema.tipo.replace('-', ' ')}
                                                 </span>
                                             )}
                                             
-                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
-                                                <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
-                                            </div>
+                                            {hasLink && (
+                                                <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                                    <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                    </a>
+                                );
+
+                                if (hasLink) {
+                                    return (
+                                        <a 
+                                            key={sistema.id}
+                                            href={sistema.link} 
+                                            target={isExternal ? "_blank" : "_self"}
+                                            rel={isExternal ? "noopener noreferrer" : undefined}
+                                        >
+                                            {content}
+                                        </a>
+                                    );
+                                }
+
+                                return (
+                                    <div key={sistema.id}>
+                                        {content}
+                                    </div>
                                 );
                             })}
                         </div>

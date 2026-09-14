@@ -1,12 +1,13 @@
-import os
+import logging
+
 import boto3
 from botocore.client import Config
-import sys
-import logging
+from botocore.exceptions import BotoCoreError, ClientError
 
 boto3.set_stream_logger('botocore', logging.DEBUG)
 
 from app.core.settings import get_settings
+
 settings = get_settings()
 
 config = Config(signature_version="s3v4", s3={"addressing_style": "path"})
@@ -29,5 +30,5 @@ if getattr(settings, "acervo_api_key", None):
 try:
     response = client.put_object(Bucket=settings.acervo_bucket_name, Key="test.txt", Body=b"hello")
     print("SUCCESS!")
-except Exception as e:
+except (BotoCoreError, ClientError) as e:
     print(f"FAILED: {e}")

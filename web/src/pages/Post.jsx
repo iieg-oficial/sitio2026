@@ -5,13 +5,15 @@ import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import { Helmet } from 'react-helmet-async'
 import { format } from 'date-fns';
+import { SafeHtml } from '@components/SafeHtml';
 
 function Post() {
     const defaultPage = {
-        title: 'Comunidad',
-        description: '<p>Bienvenido a la comunidad. Aquí encontrarás las últimas publicaciones y novedades.</p><p>Usa el buscador para filtrar los posts según tus intereses y términos de búsqueda.</p>',
-        description_meta: 'Encuentra publicaciones de la comunidad con el buscador y accede a las novedades del portal.',
-        keywords_meta: 'comunidad,posts,búsqueda,noticias'
+        title: 'Comunidación institucional',
+        description: '',
+        description_meta: 'Comunicación institucional',
+        keywords_meta: 'comunidad,posts,búsqueda,noticias',
+        postlink: 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png'
     };
 
     const [posts, setPosts] = useState([]);
@@ -27,23 +29,40 @@ function Post() {
 
     const fetchPageHome = async () => {
         try {
-            const res = await api.get('/paginas/slug/comunidad');
-            setPage(res.data);
+            const res = await api.get('/paginas/slug/comunicacion-institucional');
+            const responseData = res?.data;
+            if (!responseData || typeof responseData !== 'object') {
+                setPage(defaultPage);
+                return;
+            }
+
+            const safePage = {
+                ...defaultPage,
+                ...responseData,
+                title: responseData.title || defaultPage.title,
+                description: responseData.description || defaultPage.description,
+                description_meta: responseData.description_meta || defaultPage.description_meta,
+                keywords_meta: responseData.keywords_meta || defaultPage.keywords_meta,
+                postlink: responseData.postlink || defaultPage.postlink,
+            };
+
+            setPage(safePage);
         } catch (err) {
             if (err.response?.status !== 404) {
                 console.error("Error fetching page community:", err);
             }
+            setPage(defaultPage);
         }
     }
 
     const showData = async () => {
-        const response = await api.get('/posts');
-    console.log('RAW response.data:', response.data);
+    const response = await api.get('/posts');
+    
     const payload = response.data;
     const postsData = Array.isArray(payload)
         ? payload
         : payload?.posts ?? payload?.items ?? payload?.data ?? [];
-    console.log('postsData resultante:', postsData);
+    
 
     setPosts(postsData);
     }
@@ -105,29 +124,31 @@ const filteredPosts = useMemo(() => (
     return (
         <>
     <Helmet>
-        <title>{page?.title }</title>
+        <title>{page?.title || defaultPage.title}</title>
         {page?.description_meta && <meta name="description" content={page.description_meta} />}
         {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
-        <meta property="og:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
+        <meta property="og:image" content={page?.postlink ? page.postlink : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:type" content="article" />
         {/* Twitter Cards (Específico para X / Twitter) */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={page?.title } />
-        <meta name="twitter:description" content={page?.description_meta || 'Comunicación institucional'} />
-        <meta name="twitter:image" content={page.postlink ? page.postlink : "/demo.jpg"} />
+        <meta name="twitter:title" content={page?.title || defaultPage.title} />
+        <meta name="twitter:description" content={page?.description_meta || defaultPage.description_meta || 'Comunicación institucional'} />
+        <meta name="twitter:image" content={page?.postlink ? page.postlink : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} />
     </Helmet>
         <article className="px-5 xl:px-5 2xl:px-0 ">
             <div className='page-header text-center py-12'>
                 <div className="container mx-auto">                
-                <h1 className="text-titulos text-center">{page.title}</h1>
+                <h1 className="text-titulos text-center">{page?.title || defaultPage.title}</h1>
                 </div>
-                { page.description && (
-                    <div dangerouslySetInnerHTML={{__html: page.description}} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto' />
+                {page?.description ? (
+                    <SafeHtml htmlContent={page.description || defaultPage.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
+                ) : (
+                    <SafeHtml htmlContent={defaultPage.description} className='prose diez mt-5 w-full px-2 md:px-0 md:w-3/6 mx-auto'/>
                 )}
                 </div>
 
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />            
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />            
 
             <PostList 
                 results={currentItems} 

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-from slugify import slugify
+
 from app.api.deps import get_db
 from app.models import Reportes
-from app.schemas import ReporteOut, ReporteResponse, ReporteList
+from app.schemas import ReporteList, ReporteOut, ReporteResponse
 
 router = APIRouter(prefix="/reportes", tags=["reportes - public"])
 
@@ -19,7 +19,7 @@ async def listar_reportes(
 
 @router.get("/{reporte_id}", response_model=ReporteResponse)
 async def obtener_reporte(
-    reporte_id: int, 
+    reporte_id: int,
     db: Session = Depends(get_db),
 ):
     reporte = db.query(Reportes).options(joinedload(Reportes.temas)).filter(Reportes.id == reporte_id).first()

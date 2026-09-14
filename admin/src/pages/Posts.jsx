@@ -5,6 +5,8 @@ import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervoMultiple } from '@components/UploadAcervoMultiple';
+import { TableSearch } from '@components/common/TableSearch';
+import { useDebouncedSearch } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 
@@ -17,6 +19,7 @@ export default function Posts() {
     const [subjects, setSubjects] = useState([]);  
     const [selectedSubjects, setSelectedSubjects] = useState([]);    
     const [galleryImages, setGalleryImages] = useState([]);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
     useEffect(() => {
         fetchPosts();
@@ -38,16 +41,36 @@ export default function Posts() {
         } 
     };
     
-    const fetchPosts = async () => {
+    const fetchPosts = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
-            const response = await api.get('/posts');
+            const response = await api.get('/posts', {
+                params: {
+                    ...(search ? { search } : {}),
+                    page,
+                    pageSize
+                }
+            });
             setPosts(response.data.posts);
+            setPagination((prev) => ({
+                ...prev,
+                current: page,
+                pageSize,
+                total: response.data.total
+            }));
         } catch {
             message.error('Error al cargar');
         } finally {
             setLoading(false);
         }
+    };
+
+    const { searchText, setSearchText } = useDebouncedSearch((text) => {
+        fetchPosts(text, 1, pagination.pageSize);
+    });
+
+    const handleTableChange = (newPagination) => {
+        fetchPosts(searchText, newPagination.current, newPagination.pageSize);
     };
 
     const handleCreate = () => {
@@ -79,7 +102,7 @@ export default function Posts() {
                 try {
                     await api.delete(`/posts/${record.id}`);
                     message.success('eliminado exitosamente');
-                    fetchPosts();
+                    fetchPosts(searchText, pagination.current, pagination.pageSize);
                 } catch {
                     message.error('Error al eliminar');
                 }
@@ -103,7 +126,7 @@ export default function Posts() {
                 message.success('creado exitosamente');
             }
             setModalVisible(false);
-            fetchPosts();
+            fetchPosts(searchText, pagination.current, pagination.pageSize);
         } catch {
             message.error(editingPost ? 'Error al actualizar' : 'Error al crear');
         }
@@ -187,16 +210,25 @@ export default function Posts() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
                     dataSource={posts}
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                        pageSize: 10,
-                        showSizeChanger: true,
-                        showTotal: (total) => `Total ${total}`
-                    }}
+                            current: pagination.current,
+                            pageSize: pagination.pageSize,
+                            total: pagination.total,
+                            showSizeChanger: true,
+                            showTotal: (total) => `Total ${total} entradas`
+                        }}
+                    onChange={handleTableChange}
                 />
             </Card>
 

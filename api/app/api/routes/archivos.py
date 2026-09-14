@@ -1,10 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from sqlalchemy import select
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Archivos, Usuario, Subject
-from app.schemas.archivo import ArchivoCreate, ArchivoOut, ArchivoResponse, ArchivoList
+from sqlalchemy import func, or_, select
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
+from app.models import Archivos, Subject, Usuario
+from app.schemas.archivo import ArchivoCreate, ArchivoList, ArchivoOut, ArchivoResponse
 
 router = APIRouter(prefix="/archivos", tags=["archivos"])
 
@@ -20,13 +24,32 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 
 @router.get("", response_model=ArchivoList)
 async def listar_archivos(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
-    archivos = db.execute(select(Archivos)).scalars().all()
-    return {
-        "archivos": archivos,
-        "total": len(archivos),
-    }
+    query = select(Archivos)
+
+    if search:
+        like = f"%{escape_like(search)}%"
+        query = query.where(
+            or_(
+                Archivos.titulo.ilike(like, escape='\\'),
+            )
+        )
+
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    archivos = db.execute(
+        query.order_by(Archivos.fecha.desc(), Archivos.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+    ).scalars().all()
+
+    return {"archivos": archivos, "total": total}
 
 
 @router.post("/create", response_model=ArchivoOut, status_code=status.HTTP_201_CREATED)
