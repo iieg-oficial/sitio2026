@@ -1,11 +1,13 @@
 from pathlib import Path
+from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
-from sqlalchemy import select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.models import Posts, Subject, Usuario
 from app.models.posts import GalleryImage
 from app.schemas.posts import PostCreate, PostList, PostOut, PostResponse
@@ -35,13 +37,33 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 
 @router.get("", response_model=PostList)
 async def listar_posts(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
-    posts = db.execute(select(Posts)).scalars().all()
-    return {
-        "posts": posts,
-        "total": len(posts),
-    }
+    query = select(Posts)
+
+    if search:
+        like = f"%{escape_like(search)}%"
+        query = query.where(
+            or_(
+                Posts.titulo.ilike(like, escape='\\'),
+                Posts.resumen.ilike(like, escape='\\'),
+            )
+        )
+
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    posts = db.execute(
+        query.order_by(Posts.fecha.desc(), Posts.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+    ).scalars().all()
+
+    return {"posts": posts, "total": total}
 
 
 @router.get("/{post_id}", response_model=PostResponse)

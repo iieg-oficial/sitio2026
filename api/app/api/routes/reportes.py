@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.core.slugs import make_unique_slug
 from app.models import Reportes, Subject, Usuario
 from app.models.reportes import MesEnum, PeriocidadEnum
@@ -20,14 +23,36 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 
 @router.get("", response_model=ReporteList)
 async def listar_reportes(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
+    query = select(Reportes)
+
+    if search:
+        like = f"%{escape_like(search)}%"
+        query = query.where(
+            or_(
+                Reportes.titulo.ilike(like, escape='\\'),
+                Reportes.claves.ilike(like, escape='\\'),
+            )
+        )
+
+    # total antes de paginar
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
     reportes = db.execute(
-        select(Reportes).order_by(Reportes.titulo)
+        query.order_by(Reportes.titulo, Reportes.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
     ).scalars().all()
+
     return {
         "reportes": reportes,
-        "total": len(reportes),
+        "total": total,
     }
 
 @router.post("/create", response_model=ReporteOut, status_code=status.HTTP_201_CREATED)

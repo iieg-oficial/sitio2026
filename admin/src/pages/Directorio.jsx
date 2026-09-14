@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
+import { TableSearch } from '@components/common/TableSearch';
+import { useSearchFilter } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 
@@ -11,6 +13,7 @@ export default function Directorio() {
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const [editingDirectorio, setEditingDirectorio] = useState(null);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(directorio, ['nombre']);
 
     useEffect(() => {
         fetchDirectorio();
@@ -128,9 +131,15 @@ export default function Directorio() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
-                    dataSource={directorio}
+                    dataSource={filteredData}
                     rowKey="id"
                     loading={loading}
                     pagination={{

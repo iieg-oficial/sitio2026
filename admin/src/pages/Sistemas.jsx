@@ -5,6 +5,8 @@ import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { TableSearch } from '@components/common/TableSearch';
+import { useSearchFilter } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -18,6 +20,7 @@ export default function Sistemas() {
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [tipos, setTipos] = useState([]);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(sistemas, ['titulo']);
 
     useEffect(() => {
         fetchSistemas();
@@ -169,9 +172,15 @@ export default function Sistemas() {
                 </Button>
             </div>
         <Card>
+            <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+            />
             <Table 
             columns={columns} 
-            dataSource={sistemas} 
+            dataSource={filteredData} 
             loading={loading} 
             rowKey="id"
             pagination={{ 

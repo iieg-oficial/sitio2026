@@ -82,7 +82,7 @@ function Footer() {
                                 <a href='' target='_blank' className='linkfooter'>Transparencia</a>
                             </li>
                             <li className='mb-8'>
-                                <a href='https://iieg.gob.mx/' target='_blank' className='linkfooter'>Sitio anterior</a>
+                                <a href='https://iieg.gob.mx/' target='_blank' className='linkfooter'>Sitio histórico</a>
                             </li>
                             <li className='mb-8'>
                                 <Link to='/aviso-de-privacidad' className='linkfooter'>Aviso de privacidad</Link> | <a href="https://info.jalisco.gob.mx/politicas/?remote=true" target="_blank" className='linkfooter'>Políticas de uso y privacidad</a>

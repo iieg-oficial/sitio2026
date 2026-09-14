@@ -6,6 +6,7 @@ import Searcher from '../pageComponents/searcher';
 
 export default function Documentacion() {
     const [documentaciones, setDocumentaciones] = useState([])
+    const [currentPage, setCurrentPage] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedTemaId, setSelectedTemaId] = useState("");
     const [selectedSubtemaId, setSelectedSubtemaId] = useState("");
@@ -102,18 +103,27 @@ export default function Documentacion() {
         })
     }, [documentaciones, searchTerm, selectedTemaId, selectedSubtemaId, selectedTipo, selectedProyecto]);
 
-    const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
+    const itemOffset = currentPage * itemsPerPage;
     const pageCount = Math.ceil(filteredDocumentaciones.length / itemsPerPage);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * itemsPerPage) % Math.max(filteredDocumentaciones.length, 1);
-        setItemOffset(newOffset);
+         setCurrentPage(event.selected);
     };
 
     useEffect(() => {
-        setItemOffset(0);
+    if (currentPage > 0 && currentPage >= pageCount) {
+        setCurrentPage(0);
+    }
+    }, [pageCount, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(0);
     }, [searchTerm, selectedTemaId, selectedSubtemaId, selectedTipo, selectedProyecto]);
+
+    const currentItems = useMemo(() => (
+        filteredDocumentaciones.slice(itemOffset, itemOffset + itemsPerPage)
+    ), [filteredDocumentaciones, itemOffset]);
 
     const resetFilters = () => {
         setSelectedTemaId("")
@@ -210,9 +220,9 @@ export default function Documentacion() {
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mx-auto px-2 container my-15'>
-                {filteredDocumentaciones.map(documentacion => (
-                    <TrackedLink to={documentacion.archivo} className="" target="_blank" download>
-                        <div className='rounded-2xl bg-card p-8 hover:border hover:border-tertiary group' key={documentacion.id}>   
+                {currentItems.map(documentacion => (
+                    <TrackedLink to={documentacion.archivo} className="" target="_blank" download key={documentacion.id}> 
+                        <div className='rounded-2xl bg-card p-8 hover:border hover:border-tertiary group'>   
                             {documentacion.temas
                                 .filter(tema => !tema.parent_id)
                                 .map(tema => (
@@ -258,7 +268,7 @@ export default function Documentacion() {
                             onPageChange={handlePageClick}
                             containerClassName={'pagination'}
                             activeClassName={'active'}
-                            forcePage={Math.floor(itemOffset / itemsPerPage)}
+                            forcePage={currentPage}
                         />
                     )}
         </div>

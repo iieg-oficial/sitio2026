@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 import app.models as model_registry
 from app.api.deps import get_db
+from app.core.search import escape_like
 from app.schemas.search import SearchResponse
 
 router = APIRouter(prefix="/search", tags=["portal - search"])
@@ -246,7 +247,7 @@ def global_search(
     db: Session = Depends(get_db),
 ):
     query = q.strip()
-    like = f"%{query}%"
+    like = f"%{escape_like(query)}%"
 
     results = []
 
@@ -257,7 +258,7 @@ def global_search(
                 continue
             if column.primary_key:
                 continue
-            conditions.append(cast(column, String).ilike(like))
+            conditions.append(cast(column, String).ilike(like, escape='\\'))
 
         if not conditions:
             continue

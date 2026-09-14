@@ -40,8 +40,7 @@ export default function Mapas() {
 
     // ── Debounce del campo de texto ───────────────────────────────────────────
     const debounceTimer = useRef(null)
-    const handleKeywordChange = (e) => {
-        const value = e.target.value
+    const handleKeywordChange = (value) => {
         setKeyword(value)
         clearTimeout(debounceTimer.current)
         debounceTimer.current = setTimeout(() => setDebouncedKeyword(value), DEBOUNCE_MS)

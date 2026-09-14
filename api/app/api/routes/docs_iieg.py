@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.models import DocsIIEG, Usuario
 from app.schemas.docs_iieg import DocsIIEGCreate, DocsIIEGOut, DocsIIEGResponse
 
@@ -10,11 +14,33 @@ router = APIRouter(prefix="/docs_iieg", tags=["docs_iieg"])
 
 @router.get("/", response_model=DocsIIEGResponse)
 def get_docs_iieg(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los documentos del IIEG"""
-    docs_iieg = db.query(DocsIIEG).all()
-    return {"docs_iieg": docs_iieg, "total": len(docs_iieg)}
+    query = select(DocsIIEG)
+
+    if search:
+        like = f"%{escape_like(search)}%"
+        query = query.where(
+            or_(
+                DocsIIEG.nombre.ilike(like, escape='\\'),
+                DocsIIEG.descripcion.ilike(like, escape='\\'),
+            )
+        )
+
+    total = db.execute(
+            select(func.count()).select_from(query.subquery())
+        ).scalar_one()
+
+    docs_iieg = db.execute(
+        query.order_by(DocsIIEG.fecha.desc(), DocsIIEG.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+    ).scalars().all()
+
+    return {"docs_iieg": docs_iieg, "total": total}
 
 @router.post("/create", response_model=DocsIIEGOut)
 def create_docs_iieg(

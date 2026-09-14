@@ -14,7 +14,7 @@ def read_cuadernillos(
     skip: int = 0,
 ):
     """Obtener todos los cuadernillos"""
-    cuadernillos = db.query(Cuadernillo).order_by(Cuadernillo.anyo.desc()).offset(skip).all()
+    cuadernillos = db.query(Cuadernillo).order_by(Cuadernillo.anyo.desc(), Cuadernillo.id.desc()).offset(skip).all()
 
     return {
         "cuadernillos": cuadernillos,

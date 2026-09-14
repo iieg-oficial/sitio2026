@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import os
 from cmath import log
 from collections.abc import Callable
 from typing import Any
-import os
+
 import ckan.lib.helpers as h
 from ckan.common import CKANConfig, config
 from ckan.config.declaration import Declaration, Key

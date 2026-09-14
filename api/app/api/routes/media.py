@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Upload
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.core.settings import get_settings
 from app.models.media import Media, MediaFolder
 from app.models.user import Usuario
@@ -127,6 +128,7 @@ async def listar_media(
     folder: str | None = Query(None),
     type: str | None = Query(None),
     search: str | None = Query(None),
+    limit: int = Query(100, ge=1, le=1000),
     bucket: str = Query(PORTAL_BUCKET),
 ):
     bucket = _validate_bucket(bucket)
@@ -141,12 +143,13 @@ async def listar_media(
             query = query.filter(Media.type.startswith(type))
 
         if search:
-            search_lower = f"%{search.lower()}%"
+            search_lower = f"%{escape_like(search.lower())}%"
             query = query.filter(
-                Media.name.ilike(search_lower) | Media.original_name.ilike(search_lower)
+                Media.name.ilike(search_lower, escape='\\')
+                | Media.original_name.ilike(search_lower, escape='\\')
             )
 
-        items = query.order_by(Media.uploaded_at.desc()).all()
+        items = query.order_by(Media.uploaded_at.desc()).limit(limit).all()
         return [_serialize_media(item) for item in items]
 
     acervo_service = get_acervo_service()
@@ -166,7 +169,7 @@ async def listar_media(
         items = [i for i in items if i["folder"] == folder]
 
     items.sort(key=lambda i: i["uploadedAt"], reverse=True)
-    return items
+    return items[:limit]
 
 
 @router.get("/carpetas", response_model=list[dict])
