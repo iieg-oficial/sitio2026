@@ -35,7 +35,7 @@ def read_cuadernillos(
     ).scalar_one()
 
     cuadernillos = db.execute(
-        query.order_by(Cuadernillo.anyo.desc())
+        query.order_by(Cuadernillo.anyo.desc(), Cuadernillo.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()

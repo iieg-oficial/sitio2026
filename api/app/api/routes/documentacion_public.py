@@ -17,7 +17,7 @@ async def listar_documentaciones(
     db: Session = Depends(get_db),
 ):
     documentaciones = db.execute(
-        select(Documentacion).order_by(Documentacion.titulo)
+        select(Documentacion).order_by(Documentacion.titulo, Documentacion.id.desc())
     ).scalars().all()
     return {
         "documentaciones": documentaciones,

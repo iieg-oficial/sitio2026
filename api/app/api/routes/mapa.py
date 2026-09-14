@@ -36,7 +36,7 @@ def read_mapa(
     ).scalar_one()
 
     mapas = db.execute(
-        query.order_by(Mapa.anyo.desc())
+        query.order_by(Mapa.anyo.desc(), Mapa.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()

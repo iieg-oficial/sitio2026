@@ -45,7 +45,7 @@ async def listar_reportes(
     ).scalar_one()
 
     reportes = db.execute(
-        query.order_by(Reportes.titulo)
+        query.order_by(Reportes.titulo, Reportes.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()

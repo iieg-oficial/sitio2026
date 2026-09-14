@@ -45,7 +45,7 @@ def read_flashes(
     ).scalar_one()
 
     flashes = db.execute(
-        query.order_by(Flashes.anyo.desc())
+        query.order_by(Flashes.anyo.desc(), Flashes.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()

@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
-from sqlalchemy import func, or_, select
+from sqlalchemy import Integer, cast, func, or_, select
 from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db, verify_csrf
@@ -57,7 +57,10 @@ async def listar_documentaciones(
     ).scalar_one()
 
     documentaciones = db.execute(
-        query.order_by(Documentacion.anyo.desc())
+        query.order_by(
+            cast(Documentacion.anyo, Integer).desc().nulls_last(),
+            Documentacion.id.desc(),
+        )
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()

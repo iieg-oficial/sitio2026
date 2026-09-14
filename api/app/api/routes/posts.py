@@ -58,7 +58,7 @@ async def listar_posts(
     ).scalar_one()
 
     posts = db.execute(
-        query.order_by(Posts.fecha.desc())
+        query.order_by(Posts.fecha.desc(), Posts.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()
