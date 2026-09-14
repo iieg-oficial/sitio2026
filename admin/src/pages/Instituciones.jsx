@@ -4,7 +4,8 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
-import { useSearchFilter, TableSearch } from '@components/common/TableSearch';
+import { TableSearch } from '@components/common/TableSearch';
+import { useSearchFilter } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 

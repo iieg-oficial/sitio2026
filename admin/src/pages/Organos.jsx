@@ -3,7 +3,8 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } f
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
-import { useSearchFilter, TableSearch } from '@components/common/TableSearch';
+import { TableSearch } from '@components/common/TableSearch';
+import { useSearchFilter } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 

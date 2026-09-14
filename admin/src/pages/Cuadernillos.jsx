@@ -3,7 +3,8 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { UploadAcervo } from '@components/UploadAcervo';
-import { useDebouncedSearch, TableSearch } from '@components/common/TableSearch';
+import { TableSearch } from '@components/common/TableSearch';
+import { useDebouncedSearch } from '@components/common/searchHooks';
 const { Title } = Typography;
 
 export default function Cuadernillos() {

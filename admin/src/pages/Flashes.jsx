@@ -5,7 +5,8 @@ import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
-import { useDebouncedSearch, TableSearch } from '@components/common/TableSearch';
+import { TableSearch } from '@components/common/TableSearch';
+import { useDebouncedSearch } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 
