@@ -38,7 +38,7 @@ def _load_sistemas(db: Session, sistema_ids: list[int]) -> list[Sistemas]:
 async def listar_documentaciones(
     search: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
-    pageSize: int = Query(10, ge=1, le=100),
+    page_size: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
     query = select(Documentacion)
@@ -58,8 +58,8 @@ async def listar_documentaciones(
 
     documentaciones = db.execute(
         query.order_by(Documentacion.anyo.desc())
-        .offset((page - 1) * pageSize)
-        .limit(pageSize)
+        .offset((page - 1) * page_size)
+        .limit(page_size)
     ).scalars().all()
 
     return {"documentaciones": documentaciones, "total": total}

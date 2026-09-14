@@ -17,7 +17,7 @@ router = APIRouter(prefix="/cuadernillos", tags=["cuadernillos"])
 def read_cuadernillos(
     search: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
-    pageSize: int = Query(10, ge=1, le=100),
+    page_size: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
     query = select(Cuadernillo)
@@ -36,8 +36,8 @@ def read_cuadernillos(
 
     cuadernillos = db.execute(
         query.order_by(Cuadernillo.anyo.desc())
-        .offset((page - 1) * pageSize)
-        .limit(pageSize)
+        .offset((page - 1) * page_size)
+        .limit(page_size)
     ).scalars().all()
 
     return {"cuadernillos": cuadernillos, "total": total}

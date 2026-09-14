@@ -17,7 +17,7 @@ router = APIRouter(prefix="/mapas", tags=["mapa"])
 def read_mapa(
     search: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
-    pageSize: int = Query(10, ge=1, le=100),
+    page_size: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
     query = select(Mapa)
@@ -37,8 +37,8 @@ def read_mapa(
 
     mapas = db.execute(
         query.order_by(Mapa.anyo.desc())
-        .offset((page - 1) * pageSize)
-        .limit(pageSize)
+        .offset((page - 1) * page_size)
+        .limit(page_size)
     ).scalars().all()
 
     return {"mapas": mapas, "total": total}
