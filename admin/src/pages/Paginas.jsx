@@ -310,6 +310,14 @@ export default function Paginas() {
                     </Form.Item>
 
                     <Form.Item
+                        label="slug"
+                        name="slug"
+                        rules={[{ required: false, message: 'Por favor slug interno' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
                         label="Meta Descripción"
                         name="description_meta"
                         rules={[{ required: false, message: 'Por favor ingrese la descripción' }]}
