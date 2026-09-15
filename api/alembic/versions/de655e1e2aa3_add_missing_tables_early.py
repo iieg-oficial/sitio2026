@@ -62,7 +62,7 @@ MUNICIPIOS = (
 
 def _enum_type(conn, name, values):
     if conn.dialect.name != 'postgresql':
-        return sa.Enum(*values, name=name)
+        return sa.Enum(*values, name=name, create_type=False)
 
     exists = conn.execute(
         sa.text("SELECT 1 FROM pg_type WHERE typname = :name"),
