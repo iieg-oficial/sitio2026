@@ -13,9 +13,7 @@ down_revision = '3c59a2cbf559'
 branch_labels = None
 depends_on = None
 
-
 NEW_MUNICIPIO_VALUES = [
-    # Values added to the original enum from the initial migration
     'atemajac_de_brizuela',
     'amacueca',
     'canadas_de_obregon',
@@ -38,32 +36,34 @@ NEW_MUNICIPIO_VALUES = [
 ]
 
 
-def _enum_exists(conn: sa.engine.Connection, enum_name: str) -> bool:
-    return bool(
-        conn.execute(
-            sa.text("SELECT 1 FROM pg_type WHERE typname = :enum_name"),
-            {"enum_name": enum_name},
-        ).scalar()
-    )
-
-
 def upgrade() -> None:
     bind = op.get_bind()
     inspector = sa.inspect(bind)
 
-    # 1. Modificar columna 'descripcion' solo si la tabla 'documentacion' existe
     if inspector.has_table('documentacion'):
         columns = {col['name']: col for col in inspector.get_columns('documentacion')}
         if 'descripcion' in columns and not columns['descripcion']['nullable']:
-            op.alter_column('documentacion', 'descripcion',
-                           existing_type=sa.Text(),
-                           nullable=True)
+            op.alter_column(
+                'documentacion',
+                'descripcion',
+                existing_type=sa.Text(),
+                nullable=True,
+            )
 
-    # 2. Agregar nuevos valores al ENUM fuera de bloques de transacción explícitos
-    if _enum_exists(bind, "municipioenum"):
-        with op.get_context().autocommit_block():
+    with op.get_context().autocommit_block():
+        # Validar la existencia del Enum directamente dentro del bloque autocommit
+        enum_exists = bool(
+            bind.execute(
+                sa.text("SELECT 1 FROM pg_type WHERE typname = 'municipioenum'")
+            ).scalar()
+        )
+        if enum_exists:
             for value in NEW_MUNICIPIO_VALUES:
-                op.execute(sa.text(f"ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS '{value}'"))
+                op.execute(
+                    sa.text(
+                        f"ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS '{value}'"
+                    )
+                )
 
 
 def downgrade() -> None:
@@ -73,6 +73,9 @@ def downgrade() -> None:
     if inspector.has_table('documentacion'):
         columns = {col['name']: col for col in inspector.get_columns('documentacion')}
         if 'descripcion' in columns:
-            op.alter_column('documentacion', 'descripcion',
-                           existing_type=sa.Text(),
-                           nullable=False)
+            op.alter_column(
+                'documentacion',
+                'descripcion',
+                existing_type=sa.Text(),
+                nullable=False,
+            )
