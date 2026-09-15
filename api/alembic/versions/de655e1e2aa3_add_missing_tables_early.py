@@ -64,13 +64,16 @@ def _enum_type(conn, name, values):
     if conn.dialect.name != 'postgresql':
         return sa.Enum(*values, name=name, create_type=False)
 
-    quoted_values = ', '.join("'%s'" % value.replace("'", "''") for value in values)
-    try:
-        with conn.begin_nested():
-            conn.execute(sa.text(f'CREATE TYPE {name} AS ENUM ({quoted_values})'))
-    except Exception:
-        # El tipo ya existe o fue creado concurrentemente; se ignora con seguridad
-        pass
+    # Verificación estricta previa para evitar conflictos en migraciones paralelas
+    exists = conn.execute(
+        sa.text("SELECT 1 FROM pg_type WHERE typname = :name"),
+        {'name': name},
+    ).scalar()
+
+    if not exists:
+        quoted_values = ', '.join("'%s'" % value.replace("'", "''") for value in values)
+        conn.execute(sa.text(f'CREATE TYPE {name} AS ENUM ({quoted_values})'))
+
     return sa.Enum(*values, name=name, create_type=False)
 
 
@@ -160,28 +163,23 @@ def upgrade() -> None:
         )
 
     if 'perfiles' not in existing_tables:
-        try:
-            with conn.begin_nested():
-                op.create_table(
-                    'perfiles',
-                    sa.Column('id', sa.Integer(), primary_key=True, index=True),
-                    sa.Column('nombre', sa.String(length=200), nullable=False),
-                    sa.Column('descripcion', sa.Text(), nullable=True),
-                    sa.Column(
-                        'area',
-                        _enum_type(
-                            conn,
-                            'areaenum',
-                            ('desarrollo', 'analisis', 'geoespacial', 'grafico',
-                             'juridico', 'administracion', 'soporte'),
-                        ),
-                        nullable=True,
-                    ),
-                    sa.Column('slug', sa.String(length=200), nullable=False),
-                )
-        except Exception as e:
-            if "already exists" not in str(e):
-                raise
+        op.create_table(
+            'perfiles',
+            sa.Column('id', sa.Integer(), primary_key=True, index=True),
+            sa.Column('nombre', sa.String(length=200), nullable=False),
+            sa.Column('descripcion', sa.Text(), nullable=True),
+            sa.Column(
+                'area',
+                _enum_type(
+                    conn,
+                    'areaenum',
+                    ('desarrollo', 'analisis', 'geoespacial', 'grafico',
+                     'juridico', 'administracion', 'soporte'),
+                ),
+                nullable=True,
+            ),
+            sa.Column('slug', sa.String(length=200), nullable=False),
+        )
 
     if 'profesores' not in existing_tables:
         op.create_table(
@@ -206,78 +204,63 @@ def upgrade() -> None:
         )
 
     if 'cursos' not in existing_tables:
-        try:
-            with conn.begin_nested():
-                op.create_table(
-                    'cursos',
-                    sa.Column('id', sa.Integer(), primary_key=True, index=True),
-                    sa.Column('titulo', sa.String(length=200), nullable=False),
-                    sa.Column('descripcion', sa.Text(), nullable=True),
-                    sa.Column('img_portada', sa.String(), nullable=True),
-                    sa.Column('inicio', sa.DateTime(), nullable=True),
-                    sa.Column('fin', sa.DateTime(), nullable=True),
-                    sa.Column('formato', sa.String(length=100), nullable=True),
-                    sa.Column('Horario', sa.String(length=100), nullable=True),
-                    sa.Column('Objetivo', sa.Text(), nullable=True),
-                    sa.Column('p_ingreso', sa.Text(), nullable=True),
-                    sa.Column('p_egreso', sa.Text(), nullable=True),
-                    sa.Column(
-                        'tipo_curso',
-                        _enum_type(conn, 'tipocurso', ('capacitacion', 'convocatoria')),
-                        nullable=False,
-                    ),
-                    sa.Column('destacado', sa.Boolean(), nullable=True),
-                    sa.Column('inscripcion', sa.Text(), nullable=True),
-                    sa.Column('acreditacion', sa.Text(), nullable=True),
-                    sa.Column('vigencia', sa.String(length=200), nullable=True),
-                    sa.Column('contacto', sa.String(length=200), nullable=True),
-                    sa.Column('clave', sa.String(length=200), nullable=True),
-                    sa.Column('archivo', sa.String(), nullable=True),
-                    sa.Column('formulario', sa.String(), nullable=True),
-                    sa.Column('slug', sa.String(length=200), nullable=False),
-                )
-        except Exception as e:
-            if "already exists" not in str(e):
-                raise
+        op.create_table(
+            'cursos',
+            sa.Column('id', sa.Integer(), primary_key=True, index=True),
+            sa.Column('titulo', sa.String(length=200), nullable=False),
+            sa.Column('descripcion', sa.Text(), nullable=True),
+            sa.Column('img_portada', sa.String(), nullable=True),
+            sa.Column('inicio', sa.DateTime(), nullable=True),
+            sa.Column('fin', sa.DateTime(), nullable=True),
+            sa.Column('formato', sa.String(length=100), nullable=True),
+            sa.Column('Horario', sa.String(length=100), nullable=True),
+            sa.Column('Objetivo', sa.Text(), nullable=True),
+            sa.Column('p_ingreso', sa.Text(), nullable=True),
+            sa.Column('p_egreso', sa.Text(), nullable=True),
+            sa.Column(
+                'tipo_curso',
+                _enum_type(conn, 'tipocurso', ('capacitacion', 'convocatoria')),
+                nullable=False,
+            ),
+            sa.Column('destacado', sa.Boolean(), nullable=True),
+            sa.Column('inscripcion', sa.Text(), nullable=True),
+            sa.Column('acreditacion', sa.Text(), nullable=True),
+            sa.Column('vigencia', sa.String(length=200), nullable=True),
+            sa.Column('contacto', sa.String(length=200), nullable=True),
+            sa.Column('clave', sa.String(length=200), nullable=True),
+            sa.Column('archivo', sa.String(), nullable=True),
+            sa.Column('formulario', sa.String(), nullable=True),
+            sa.Column('slug', sa.String(length=200), nullable=False),
+        )
 
     if 'cuadernillos' not in existing_tables:
-        try:
-            with conn.begin_nested():
-                op.create_table(
-                    'cuadernillos',
-                    sa.Column('id', sa.Integer(), primary_key=True, index=True),
-                    sa.Column('titulo', sa.String(length=200), nullable=False),
-                    sa.Column('archivo', sa.String(length=200), nullable=True),
-                    sa.Column('municipio', _enum_type(conn, 'municipioenum', MUNICIPIOS), nullable=True),
-                    sa.Column('anyo', sa.Integer(), nullable=True),
-                    sa.Column('slug', sa.String(length=200), nullable=True),
-                )
-        except Exception as e:
-            if "already exists" not in str(e):
-                raise
+        op.create_table(
+            'cuadernillos',
+            sa.Column('id', sa.Integer(), primary_key=True, index=True),
+            sa.Column('titulo', sa.String(length=200), nullable=False),
+            sa.Column('archivo', sa.String(length=200), nullable=True),
+            sa.Column('municipio', _enum_type(conn, 'municipioenum', MUNICIPIOS), nullable=True),
+            sa.Column('anyo', sa.Integer(), nullable=True),
+            sa.Column('slug', sa.String(length=200), nullable=True),
+        )
 
     if 'reportes' not in existing_tables:
-        try:
-            with conn.begin_nested():
-                op.create_table(
-                    'reportes',
-                    sa.Column('id', sa.Integer(), primary_key=True, index=True),
-                    sa.Column('titulo', sa.Text(), nullable=False),
-                    sa.Column('fecha', sa.DateTime(), nullable=True),
-                    sa.Column(
-                        'periocidad',
-                        _enum_type(conn, 'periocidadenum', PERIOCIDADES),
-                        nullable=True,
-                    ),
-                    sa.Column('mes', _enum_type(conn, 'mesenum', MESES), nullable=True),
-                    sa.Column('anyo', sa.Integer(), nullable=True),
-                    sa.Column('archivo', sa.String(length=200), nullable=True),
-                    sa.Column('claves', sa.String(length=200), nullable=True),
-                    sa.Column('slug', sa.String(length=200), nullable=False),
-                )
-        except Exception as e:
-            if "already exists" not in str(e):
-                raise
+        op.create_table(
+            'reportes',
+            sa.Column('id', sa.Integer(), primary_key=True, index=True),
+            sa.Column('titulo', sa.Text(), nullable=False),
+            sa.Column('fecha', sa.DateTime(), nullable=True),
+            sa.Column(
+                'periocidad',
+                _enum_type(conn, 'periocidadenum', PERIOCIDADES),
+                nullable=True,
+            ),
+            sa.Column('mes', _enum_type(conn, 'mesenum', MESES), nullable=True),
+            sa.Column('anyo', sa.Integer(), nullable=True),
+            sa.Column('archivo', sa.String(length=200), nullable=True),
+            sa.Column('claves', sa.String(length=200), nullable=True),
+            sa.Column('slug', sa.String(length=200), nullable=False),
+        )
 
     if 'reporte_temas' not in existing_tables:
         op.create_table(
