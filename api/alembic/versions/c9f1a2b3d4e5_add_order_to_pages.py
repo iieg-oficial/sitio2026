@@ -20,13 +20,13 @@ def upgrade() -> None:
     columns = [col['name'] for col in inspector.get_columns('pages')]
     
     parent_id_exists = 'parent_id' in columns
-    partition_sql = "PARTITION BY parent_id" if parent_id_exists else ""
+    partition_sql = "PARTITION BY parent_id " if parent_id_exists else ""
     
     op.execute(
         f"""
         WITH ranked_pages AS (
             SELECT id,
-                   ROW_NUMBER() OVER ({partition_sql} ORDER BY id) - 1 AS order_index
+                ROW_NUMBER() OVER ({partition_sql}ORDER BY id) - 1 AS order_index
             FROM pages
         )
         UPDATE pages
