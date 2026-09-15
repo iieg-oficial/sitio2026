@@ -6,6 +6,7 @@ Create Date: 2026-08-28 00:00:00.000000
 
 """
 
+import sqlalchemy as sa
 from alembic import op
 
 revision = '936e99a3acdf'
@@ -15,11 +16,21 @@ depends_on = None
 
 
 def upgrade():
-    # En PostgreSQL, ALTER TYPE ADD VALUE no se puede ejecutar dentro de un bloque de transacción explícito
+    bind = op.get_bind()
+
     with op.get_context().autocommit_block():
-        op.execute("ALTER TYPE areaenum ADD VALUE IF NOT EXISTS 'soporte';")
+        # Verificar si el enum existe
+        enum_exists = bool(
+            bind.execute(
+                sa.text("SELECT 1 FROM pg_type WHERE typname = 'areaenum'")
+            ).scalar()
+        )
+
+        if enum_exists:
+            op.execute("ALTER TYPE areaenum ADD VALUE IF NOT EXISTS 'soporte'")
+        else:
+            op.execute("CREATE TYPE areaenum AS ENUM ('soporte')")
 
 
 def downgrade():
-    # Eliminar valores de un tipo ENUM no es directo ni seguro en PostgreSQL si hay registros usándolo.
     pass
