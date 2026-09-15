@@ -6,7 +6,6 @@ Create Date: 2026-08-24 18:40:00.000000
 
 """
 import sqlalchemy as sa
-
 from alembic import op
 
 revision = 'a9b8c7d6e5f4'
@@ -16,12 +15,21 @@ depends_on = None
 
 
 def upgrade() -> None:
-    inspector = sa.inspect(op.get_bind())
-    columns = {column['name'] for column in inspector.get_columns('cursos')}
-    if 'img_portada' not in columns:
-        op.add_column('cursos', sa.Column('img_portada', sa.String(), nullable=True))
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+
+    # Validar que la tabla exista antes de obtener sus columnas
+    if inspector.has_table('cursos'):
+        columns = {column['name'] for column in inspector.get_columns('cursos')}
+        if 'img_portada' not in columns:
+            op.add_column('cursos', sa.Column('img_portada', sa.String(255), nullable=True))
 
 
 def downgrade() -> None:
-    # remove img_portada column from cursos
-    op.drop_column('cursos', 'img_portada')
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+
+    if inspector.has_table('cursos'):
+        columns = {column['name'] for column in inspector.get_columns('cursos')}
+        if 'img_portada' in columns:
+            op.drop_column('cursos', 'img_portada')
