@@ -112,8 +112,6 @@ services:
         CKAN_BASE_IMAGE: ckan/ckan-base:2.11.5
     container_name: portal-ckan
     restart: unless-stopped
-    command: ckan -c /srv/app/ckan.ini run -H 0.0.0.0 -p 5000
-    entrypoint: ["/bin/sh", "-c", "python3 /srv/app/prerun.py && ckan -c /srv/app/ckan.ini run -H 0.0.0.0"]
     depends_on:
       ckan-db:
         condition: service_healthy
@@ -123,9 +121,8 @@ services:
         condition: service_healthy
     environment:
       CKAN_SITE_URL: ${CKAN_SITE_URL:?CKAN_SITE_URL is required}
-      CKAN_SQLALCHEMY_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/ckan_default
-      CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/datastore_default
-      CKAN_DATASTORE_READ_URL: postgresql://datastore_default:${DATASTORE_RO_PASSWORD}@ckan-db:5432/datastore_default
+      CKAN_DB_PASSWORD: ${CKAN_DB_PASSWORD:?CKAN_DB_PASSWORD is required}
+      DATASTORE_RO_PASSWORD: ${DATASTORE_RO_PASSWORD:?DATASTORE_RO_PASSWORD is required}
       CKAN_SOLR_URL: http://ckan-solr:8983/solr/ckan
       CKAN_REDIS_URL: redis://redis:6379/1
       CKAN___DEBUG: "False"
