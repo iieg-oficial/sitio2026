@@ -1,9 +1,10 @@
 import json
 from functools import lru_cache
+from typing import Annotated
 from urllib.parse import quote_plus
 
 from pydantic import field_validator, model_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -57,7 +58,10 @@ class Settings(BaseSettings):
     @classmethod
     def parse_cors_origins(cls, v):
         if isinstance(v, str):
-            return json.loads(v)
+            v = v.strip()
+            if v.startswith("["):
+                return json.loads(v)
+            return [origin.strip() for origin in v.split(",") if origin.strip()]
         return v
 
     @model_validator(mode="after")
