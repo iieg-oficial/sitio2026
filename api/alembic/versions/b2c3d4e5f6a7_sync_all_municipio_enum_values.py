@@ -11,7 +11,6 @@ were defined in the model but never added to the DB enum). This
 migration imports the model directly so it can never miss a value again.
 """
 import sqlalchemy as sa
-
 from alembic import op
 
 MUNICIPIO_VALUES = (
@@ -148,17 +147,25 @@ branch_labels = None
 depends_on = None
 
 
-def upgrade() -> None:
-    # ALTER TYPE cannot run inside a transaction in PostgreSQL
+def _enum_exists(conn: sa.engine.Connection, enum_name: str) -> bool:
+    return bool(
+        conn.execute(
+            sa.text("SELECT 1 FROM pg_type WHERE typname = :enum_name"),
+            {"enum_name": enum_name},
+        ).scalar()
+    )
 
-    for value in MUNICIPIO_VALUES:
-        op.execute(
-            sa.text("ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS :value").bindparams(
-                value=value
-            )
-        )
+
+def upgrade() -> None:
+    bind = op.get_bind()
+
+    # Ejecutar ALTER TYPE fuera del bloque transaccional explícito
+    if _enum_exists(bind, "municipioenum"):
+        with op.get_context().autocommit_block():
+            for value in MUNICIPIO_VALUES:
+                op.execute(sa.text(f"ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS '{value}'"))
 
 
 def downgrade() -> None:
-    # Postgres does not support removing enum values; no-op.
+    # Postgres no soporta remover valores de un tipo ENUM directamente; no-op.
     pass

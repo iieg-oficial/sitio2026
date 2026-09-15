@@ -5,7 +5,6 @@ Revises: f3a8b2c1d9e7
 Create Date: 2026-06-08
 
 """
-
 from alembic import op
 
 revision = 'a1d2_add_datos_nuevos_table'
@@ -15,16 +14,19 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.execute(
-        """
-        DO $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'nuevoenum') THEN
-                CREATE TYPE nuevoenum AS ENUM ('sube', 'baja', 'igual');
-            END IF;
-        END$$;
-        """
-    )
+    # Ejecutar la creación del tipo ENUM fuera de transacciones explícitas si PostgreSQL lo requiere
+    with op.get_context().autocommit_block():
+        op.execute(
+            """
+            DO $$
+            BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'nuevoenum') THEN
+                    CREATE TYPE nuevoenum AS ENUM ('sube', 'baja', 'igual');
+                END IF;
+            END$$;
+            """
+        )
+
     op.execute(
         """
         CREATE TABLE IF NOT EXISTS datos_nuevos (
@@ -43,4 +45,6 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.execute("DROP INDEX IF EXISTS ix_datos_nuevos_id;")
     op.execute("DROP TABLE IF EXISTS datos_nuevos;")
-    op.execute("DROP TYPE IF EXISTS nuevoenum;")
+    
+    with op.get_context().autocommit_block():
+        op.execute("DROP TYPE IF EXISTS nuevoenum;")

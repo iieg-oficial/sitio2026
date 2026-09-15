@@ -6,7 +6,6 @@ Create Date: 2026-05-22
 
 """
 import sqlalchemy as sa
-
 from alembic import op
 
 revision = 'a1b2c3d4e5f6'
@@ -44,10 +43,11 @@ municipio_enum = sa.Enum(
 
 
 def upgrade() -> None:
-    inspector = sa.inspect(op.get_bind())
-    tables = set(inspector.get_table_names())
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
 
-    if 'directorio' not in tables:
+    # 1. Crear la tabla 'directorio' si no existe
+    if not inspector.has_table('directorio'):
         op.create_table(
             'directorio',
             sa.Column('id', sa.Integer(), nullable=False),
@@ -59,31 +59,49 @@ def upgrade() -> None:
         )
     op.execute('CREATE INDEX IF NOT EXISTS ix_directorio_id ON directorio (id)')
 
-    if 'cuadernillos' not in tables:
+    # 2. Crear la tabla 'cuadernillos' si no existe
+    if not inspector.has_table('cuadernillos'):
+        # Validar la existencia del enum antes de pasarlo con create_type=False
+        municipio_enum.create(bind, checkfirst=True)
         op.create_table(
             'cuadernillos',
             sa.Column('id', sa.Integer(), nullable=False),
             sa.Column('titulo', sa.String(200), nullable=False),
             sa.Column('archivo', sa.String(200), nullable=True),
-            sa.Column('municipio', municipio_enum, nullable=True),
+            sa.Column('municipio', sa.Enum(*municipio_enum.enums, name='municipioenum', create_type=False), nullable=True),
             sa.Column('anyo', sa.Integer(), nullable=True),
             sa.Column('slug', sa.String(200), nullable=True),
             sa.PrimaryKeyConstraint('id'),
         )
     op.execute('CREATE INDEX IF NOT EXISTS ix_cuadernillos_id ON cuadernillos (id)')
 
-    directorio_columns = {column['name'] for column in inspector.get_columns('directorio')}
-    if 'telefono' not in directorio_columns:
-        op.add_column('directorio', sa.Column('telefono', sa.String(50), nullable=True))
-    if 'email' not in directorio_columns:
-        op.add_column('directorio', sa.Column('email', sa.String(255), nullable=True))
+    # 3. Re-inspeccionar la tabla directorio para verificar columnas faltantes de forma segura
+    inspector = sa.inspect(bind)
+    if inspector.has_table('directorio'):
+        directorio_columns = {column['name'] for column in inspector.get_columns('directorio')}
+        if 'telefono' not in directorio_columns:
+            op.add_column('directorio', sa.Column('telefono', sa.String(50), nullable=True))
+        if 'email' not in directorio_columns:
+            op.add_column('directorio', sa.Column('email', sa.String(255), nullable=True))
 
 
 def downgrade() -> None:
-    op.drop_column('directorio', 'email')
-    op.drop_column('directorio', 'telefono')
-    op.drop_index(op.f('ix_cuadernillos_id'), table_name='cuadernillos')
-    op.drop_table('cuadernillos')
-    op.drop_index(op.f('ix_directorio_id'), table_name='directorio')
-    op.drop_table('directorio')
-    municipio_enum.drop(op.get_bind(), checkfirst=True)
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+
+    if inspector.has_table('directorio'):
+        directorio_columns = {column['name'] for column in inspector.get_columns('directorio')}
+        if 'email' in directorio_columns:
+            op.drop_column('directorio', 'email')
+        if 'telefono' in directorio_columns:
+            op.drop_column('directorio', 'telefono')
+
+    if inspector.has_table('cuadernillos'):
+        op.execute('DROP INDEX IF EXISTS ix_cuadernillos_id')
+        op.drop_table('cuadernillos')
+
+    if inspector.has_table('directorio'):
+        op.execute('DROP INDEX IF EXISTS ix_directorio_id')
+        op.drop_table('directorio')
+
+    municipio_enum.drop(bind, checkfirst=True)

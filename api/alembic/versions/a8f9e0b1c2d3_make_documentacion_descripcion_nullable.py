@@ -6,7 +6,6 @@ Create Date: 2026-08-20
 
 """
 import sqlalchemy as sa
-
 from alembic import op
 
 revision = 'a8f9e0b1c2d3'
@@ -39,17 +38,41 @@ NEW_MUNICIPIO_VALUES = [
 ]
 
 
-def upgrade() -> None:
-    op.alter_column('documentacion', 'descripcion',
-               existing_type=sa.Text(),
-               nullable=True)
-    # ALTER TYPE cannot run inside a transaction in PostgreSQL
+def _enum_exists(conn: sa.engine.Connection, enum_name: str) -> bool:
+    return bool(
+        conn.execute(
+            sa.text("SELECT 1 FROM pg_type WHERE typname = :enum_name"),
+            {"enum_name": enum_name},
+        ).scalar()
+    )
 
-    for value in NEW_MUNICIPIO_VALUES:
-        op.execute(f"ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS '{value}'")
+
+def upgrade() -> None:
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+
+    # 1. Modificar columna 'descripcion' solo si la tabla 'documentacion' existe
+    if inspector.has_table('documentacion'):
+        columns = {col['name']: col for col in inspector.get_columns('documentacion')}
+        if 'descripcion' in columns and not columns['descripcion']['nullable']:
+            op.alter_column('documentacion', 'descripcion',
+                           existing_type=sa.Text(),
+                           nullable=True)
+
+    # 2. Agregar nuevos valores al ENUM fuera de bloques de transacción explícitos
+    if _enum_exists(bind, "municipioenum"):
+        with op.get_context().autocommit_block():
+            for value in NEW_MUNICIPIO_VALUES:
+                op.execute(sa.text(f"ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS '{value}'"))
 
 
 def downgrade() -> None:
-    op.alter_column('documentacion', 'descripcion',
-               existing_type=sa.Text(),
-               nullable=False)
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+
+    if inspector.has_table('documentacion'):
+        columns = {col['name']: col for col in inspector.get_columns('documentacion')}
+        if 'descripcion' in columns:
+            op.alter_column('documentacion', 'descripcion',
+                           existing_type=sa.Text(),
+                           nullable=False)

@@ -15,10 +15,11 @@ depends_on = None
 
 
 def upgrade():
-    op.execute("ALTER TYPE areaenum ADD VALUE IF NOT EXISTS 'soporte';")
+    # En PostgreSQL, ALTER TYPE ADD VALUE no se puede ejecutar dentro de un bloque de transacción explícito
+    with op.get_context().autocommit_block():
+        op.execute("ALTER TYPE areaenum ADD VALUE IF NOT EXISTS 'soporte';")
 
 
 def downgrade():
-    # Downgrading an enum value is not straightforward in Postgres and
-    # may not be safe if rows use the value. No-op here.
+    # Eliminar valores de un tipo ENUM no es directo ni seguro en PostgreSQL si hay registros usándolo.
     pass
