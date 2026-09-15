@@ -1,14 +1,18 @@
 import json
 from functools import lru_cache
+from urllib.parse import quote_plus
 
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     project_name: str
     version: str
-    database_url: str
+    database_url: str = ""
+    postgres_user: str | None = None
+    postgres_password: str | None = None
+    postgres_db: str | None = None
     database_pool_size: int = 10
     database_max_overflow: int = 20
     database_pool_timeout: int = 10
@@ -55,6 +59,21 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return json.loads(v)
         return v
+
+    @model_validator(mode="after")
+    def build_database_url(self):
+        if not self.database_url:
+            if not all((self.postgres_user, self.postgres_password, self.postgres_db)):
+                raise ValueError(
+                    "DATABASE_URL or POSTGRES_USER, POSTGRES_PASSWORD and POSTGRES_DB is required"
+                )
+            self.database_url = (
+                "postgresql://"
+                f"{quote_plus(self.postgres_user)}:"
+                f"{quote_plus(self.postgres_password)}"
+                f"@postgres:5432/{quote_plus(self.postgres_db)}"
+            )
+        return self
 
     model_config = SettingsConfigDict(
         extra="ignore"
