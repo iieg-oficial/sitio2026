@@ -21,31 +21,30 @@ def upgrade() -> None:
     inspector = sa.inspect(bind)
     columns = [col['name'] for col in inspector.get_columns('pages')]
 
-    # 1. Crear la columna 'order' solo si no existe
+    # 1. Crear la columna 'order' si no existe
     if 'order' not in columns:
         op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
 
-    # 2. Verificar si parent_id existe físicamente en PostgreSQL
+    # 2. Evaluar si parent_id existe físicamente para incluir o omitir la cláusula
     has_parent_id = 'parent_id' in columns
-    partition_clause = "PARTITION BY parent_id" if has_parent_id else ""
+    partition_sql = "PARTITION BY parent_id " if has_parent_id else ""
 
-    # 3. Executar UPDATE ordenando con o sin partición según la presencia de parent_id
-    op.execute(
-        f"""
+    # 3. Formatear la consulta sin dejar espacios vacíos en OVER()
+    query = f"""
         WITH ranked_pages AS (
             SELECT 
                 id,
-                (ROW_NUMBER() OVER ({partition_clause} ORDER BY id) - 1)::integer AS order_index
+                (ROW_NUMBER() OVER ({partition_sql}ORDER BY id) - 1)::integer AS order_index
             FROM pages
         )
         UPDATE pages
         SET "order" = ranked_pages.order_index
         FROM ranked_pages
         WHERE pages.id = ranked_pages.id
-        """
-    )
+    """
+    op.execute(query)
 
-    # 4. Ajustar la columna a NOT NULL
+    # 4. Establecer la restricción NOT NULL
     op.alter_column('pages', 'order', nullable=False, server_default='0')
 
 
