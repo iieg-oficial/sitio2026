@@ -17,10 +17,15 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # 1. Crear la columna 'order' permitiendo nulos temporalmente
-    op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
+    # 1. Verificar e ignorar si la columna 'order' ya existe en la base de datos
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    columns = [col['name'] for col in inspector.get_columns('pages')]
 
-    # 2. Calcular e insertar los índices por grupo (padres por un lado, subpáginas agrupadas por cada parent_id)
+    if 'order' not in columns:
+        op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
+
+    # 2. Poblar los valores de la columna 'order'
     op.execute(
         """
         WITH ranked_pages AS (
@@ -32,14 +37,18 @@ def upgrade() -> None:
         UPDATE pages
         SET "order" = ranked_pages.order_index
         FROM ranked_pages
-        WHERE pages.id = ranked_pages.id;
+        WHERE pages.id = ranked_pages.id
         """
     )
 
-    # 3. Ajustar la columna a NOT NULL con default 0 como especifica tu modelo
+    # 3. Asegurar restricción NOT NULL
     op.alter_column('pages', 'order', nullable=False, server_default='0')
 
 
 def downgrade() -> None:
-    # Eliminar la columna 'order' al hacer rollback
-    op.drop_column('pages', 'order')
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    columns = [col['name'] for col in inspector.get_columns('pages')]
+
+    if 'order' in columns:
+        op.drop_column('pages', 'order')
