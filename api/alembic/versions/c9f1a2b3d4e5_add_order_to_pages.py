@@ -24,19 +24,19 @@ def upgrade() -> None:
         op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
 
     # 2. Evaluar dinámicamente si existe parent_id para el PARTITION BY
-    partition_sql = "PARTITION BY parent_id" if "parent_id" in columns else ""
+    partition_sql = "PARTITION BY parent_id" if parent_id_exists else ""
 
     op.execute(
         f"""
         WITH ranked_pages AS (
             SELECT id,
-                   ROW_NUMBER() OVER ({partition_sql} ORDER BY id) - 1 AS order_index
+                ROW_NUMBER() OVER ({partition_sql} ORDER BY id) - 1 AS order_index
             FROM pages
         )
         UPDATE pages
         SET "order" = ranked_pages.order_index
         FROM ranked_pages
-        WHERE pages.id = ranked_pages.id
+        WHERE pages.id = ranked_pages.id;
         """
     )
 
