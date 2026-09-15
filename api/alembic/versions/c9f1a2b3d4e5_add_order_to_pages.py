@@ -17,26 +17,22 @@ depends_on = None
 def upgrade() -> None:
     bind = op.get_bind()
     inspector = sa.inspect(bind)
-    columns = {column['name'] for column in inspector.get_columns('pages')}
-
-    # 1. Crear columna 'order' si no existe
-    if 'order' not in columns:
-        op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
-
-    # 2. Evaluar dinámicamente si existe parent_id para el PARTITION BY
+    columns = [col['name'] for col in inspector.get_columns('pages')]
+    
+    parent_id_exists = 'parent_id' in columns
     partition_sql = "PARTITION BY parent_id" if parent_id_exists else ""
-
+    
     op.execute(
         f"""
         WITH ranked_pages AS (
             SELECT id,
-                ROW_NUMBER() OVER ({partition_sql} ORDER BY id) - 1 AS order_index
+                   ROW_NUMBER() OVER ({partition_sql} ORDER BY id) - 1 AS order_index
             FROM pages
         )
         UPDATE pages
         SET "order" = ranked_pages.order_index
         FROM ranked_pages
-        WHERE pages.id = ranked_pages.id;
+        WHERE pages.id = ranked_pages.id
         """
     )
 
