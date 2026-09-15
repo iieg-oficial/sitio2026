@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models.menu_item import MenuItem
 from app.models.page import Page
 from app.models.user import Usuario
@@ -177,8 +178,13 @@ def update_page(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Page, update_data["slug"], exclude_id=page_id
+            )
+        else:
+            del update_data["slug"]
 
     for key, val in update_data.items():
         setattr(page, key, val)

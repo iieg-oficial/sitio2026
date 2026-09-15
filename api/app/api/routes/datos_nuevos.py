@@ -61,6 +61,10 @@ def update_datos_nuevos(
         update_data["slug"] = make_unique_slug(
             db, DatosNuevos, str(update_data["cifras"]), exclude_id=id
         )
+    elif "slug" in update_data and update_data["slug"]:
+        update_data["slug"] = make_unique_slug(
+            db, DatosNuevos, update_data["slug"], exclude_id=id
+        )
 
     for campo, valor in update_data.items():
         setattr(db_datos_nuevos, campo, valor)
