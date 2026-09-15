@@ -6,6 +6,7 @@ Create Date: 2026-05-22
 
 """
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 from alembic import op
 
 revision = 'a1b2c3d4e5f6'
@@ -68,7 +69,7 @@ def upgrade() -> None:
         )
     op.execute('CREATE INDEX IF NOT EXISTS ix_directorio_id ON directorio (id)')
 
-    # 3. Crear tabla 'cuadernillos' referenciando el ENUM existente mediante Postgres postgresql.ENUM
+    # 3. Crear tabla 'cuadernillos' referenciando el ENUM
     if not inspector.has_table('cuadernillos'):
         op.create_table(
             'cuadernillos',
@@ -77,7 +78,7 @@ def upgrade() -> None:
             sa.Column('archivo', sa.String(200), nullable=True),
             sa.Column(
                 'municipio',
-                sa.postgresql.ENUM(name='municipioenum', create_type=False),
+                postgresql.ENUM(name='municipioenum', create_type=False),
                 nullable=True,
             ),
             sa.Column('anyo', sa.Integer(), nullable=True),
