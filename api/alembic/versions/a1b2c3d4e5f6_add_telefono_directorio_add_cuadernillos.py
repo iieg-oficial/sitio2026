@@ -14,39 +14,48 @@ branch_labels = None
 depends_on = None
 
 
-municipio_enum = sa.Enum(
-    'acatic', 'acatlan_de_juarez', 'ahualulco_de_mercado', 'amacoeca', 'amatitan',
-    'ameca', 'arandas', 'atengo', 'atenguillo', 'atotonilco_el_alto', 'atoyac',
-    'autlan_de_navarro', 'ayotlan', 'ayutla', 'bolanos', 'cabo_corrientes',
-    'casimiro_castillo', 'chapala', 'chimaltitan', 'chiquilistlan', 'cihuatlan',
-    'cocula', 'colotlan', 'concepcion_de_buenos_aires', 'cuautitlan_de_garcia_barragan',
-    'cuautla', 'quiquio', 'degollado', 'ejutla', 'el_arenal', 'el_grullo', 'el_limon',
-    'el_salto', 'encarnacion_de_diaz', 'gomez_farias', 'guachinango', 'hostotipaquillo',
-    'huejucar', 'huejuquilla_el_alto', 'la_barca', 'la_manzanilla_de_la_paz', 'la_huerta',
-    'lagos_de_moreno', 'magdalena', 'mascota', 'mazamitla', 'mexticacan', 'mezquitic',
-    'mixtlan', 'ocotlan', 'ojuelos_de_jalisco', 'pihuamo', 'poncitlan', 'puerto_vallarta',
-    'villa_purificacion', 'quitupan', 'san_cristobal_de_la_barranca', 'san_diego_de_alejandria',
-    'san_juan_de_los_lagos', 'san_juanito_de_escobedo', 'san_julian', 'san_marcos',
-    'san_martin_de_bolanos', 'san_martin_hidalgo', 'san_miguel_el_alto', 'san_patricio_melaque',
-    'san_sebastian_el_oeste', 'santa_maria_de_los_angeles', 'santa_maria_del_oro', 'sayula',
-    'tala', 'talpa_de_allende', 'tamazula_de_gordiano', 'tapalpa', 'tecalitlan',
-    'techaluta_de_montenegro', 'tecolotlan', 'tenamaxtlan', 'teocaltiche',
-    'teocuitatlan_de_corona', 'tepatitlan_de_morelos', 'tequila', 'teuchitlan',
-    'tizapan_el_alto', 'toliman', 'tomatlan', 'tonaya', 'tonila', 'totatiche', 'tototlan',
-    'tuxcacuesco', 'tuxcueca', 'tuxpan', 'union_de_san_antonio', 'union_de_tula',
-    'valle_de_guadalupe', 'valle_de_juarez', 'villa_corona', 'villa_guerrero', 'villa_hidalgo',
-    'cañadas_de_obregon', 'yahualica_de_gonzalez_gallo', 'zacoalco_de_torres', 'zafiro',
-    'zapotiltic', 'zapotitlan_de_vadillo', 'zapotlan_del_rey', 'zapotlanejo', 'san_gabriel',
-    'zapotlan_el_grande',
-    name='municipioenum',
-)
-
-
 def upgrade() -> None:
     bind = op.get_bind()
     inspector = sa.inspect(bind)
 
-    # 1. Crear la tabla 'directorio' si no existe
+    # 1. Crear tipo ENUM de forma defensiva e independiente
+    with op.get_context().autocommit_block():
+        op.execute(
+            """
+            DO $$
+            BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'municipioenum') THEN
+                    CREATE TYPE municipioenum AS ENUM (
+                        'acatic', 'acatlan_de_juarez', 'ahualulco_de_mercado', 'amacoeca', 'amatitan',
+                        'ameca', 'arandas', 'atengo', 'atenguillo', 'atotonilco_el_alto', 'atoyac',
+                        'autlan_de_navarro', 'ayotlan', 'ayutla', 'bolanos', 'cabo_corrientes',
+                        'casimiro_castillo', 'chapala', 'chimaltitan', 'chiquilistlan', 'cihuatlan',
+                        'cocula', 'colotlan', 'concepcion_de_buenos_aires', 'cuautitlan_de_garcia_barragan',
+                        'cuautla', 'quiquio', 'degollado', 'ejutla', 'el_arenal', 'el_grullo', 'el_limon',
+                        'el_salto', 'encarnacion_de_diaz', 'gomez_farias', 'guachinango', 'hostotipaquillo',
+                        'huejucar', 'huejuquilla_el_alto', 'la_barca', 'la_manzanilla_de_la_paz', 'la_huerta',
+                        'lagos_de_moreno', 'magdalena', 'mascota', 'mazamitla', 'mexticacan', 'mezquitic',
+                        'mixtlan', 'ocotlan', 'ojuelos_de_jalisco', 'pihuamo', 'poncitlan', 'puerto_vallarta',
+                        'villa_purificacion', 'quitupan', 'san_cristobal_de_la_barranca', 'san_diego_de_alejandria',
+                        'san_juan_de_los_lagos', 'san_juanito_de_escobedo', 'san_julian', 'san_marcos',
+                        'san_martin_de_bolanos', 'san_martin_hidalgo', 'san_miguel_el_alto', 'san_patricio_melaque',
+                        'san_sebastian_el_oeste', 'santa_maria_de_los_angeles', 'santa_maria_del_oro', 'sayula',
+                        'tala', 'talpa_de_allende', 'tamazula_de_gordiano', 'tapalpa', 'tecalitlan',
+                        'techaluta_de_montenegro', 'tecolotlan', 'tenamaxtlan', 'teocaltiche',
+                        'teocuitatlan_de_corona', 'tepatitlan_de_morelos', 'tequila', 'teuchitlan',
+                        'tizapan_el_alto', 'toliman', 'tomatlan', 'tonaya', 'tonila', 'totatiche', 'tototlan',
+                        'tuxcacuesco', 'tuxcueca', 'tuxpan', 'union_de_san_antonio', 'union_de_tula',
+                        'valle_de_guadalupe', 'valle_de_juarez', 'villa_corona', 'villa_guerrero', 'villa_hidalgo',
+                        'cañadas_de_obregon', 'yahualica_de_gonzalez_gallo', 'zacoalco_de_torres', 'zafiro',
+                        'zapotiltic', 'zapotitlan_de_vadillo', 'zapotlan_del_rey', 'zapotlanejo', 'san_gabriel',
+                        'zapotlan_el_grande'
+                    );
+                END IF;
+            END$$;
+            """
+        )
+
+    # 2. Crear tabla 'directorio'
     if not inspector.has_table('directorio'):
         op.create_table(
             'directorio',
@@ -59,23 +68,25 @@ def upgrade() -> None:
         )
     op.execute('CREATE INDEX IF NOT EXISTS ix_directorio_id ON directorio (id)')
 
-    # 2. Crear la tabla 'cuadernillos' si no existe
+    # 3. Crear tabla 'cuadernillos' referenciando el ENUM existente mediante Postgres postgresql.ENUM
     if not inspector.has_table('cuadernillos'):
-        # Validar la existencia del enum antes de pasarlo con create_type=False
-        municipio_enum.create(bind, checkfirst=True)
         op.create_table(
             'cuadernillos',
             sa.Column('id', sa.Integer(), nullable=False),
             sa.Column('titulo', sa.String(200), nullable=False),
             sa.Column('archivo', sa.String(200), nullable=True),
-            sa.Column('municipio', sa.Enum(*municipio_enum.enums, name='municipioenum', create_type=False), nullable=True),
+            sa.Column(
+                'municipio',
+                sa.postgresql.ENUM(name='municipioenum', create_type=False),
+                nullable=True,
+            ),
             sa.Column('anyo', sa.Integer(), nullable=True),
             sa.Column('slug', sa.String(200), nullable=True),
             sa.PrimaryKeyConstraint('id'),
         )
     op.execute('CREATE INDEX IF NOT EXISTS ix_cuadernillos_id ON cuadernillos (id)')
 
-    # 3. Re-inspeccionar la tabla directorio para verificar columnas faltantes de forma segura
+    # 4. Columnas adicionales en 'directorio'
     inspector = sa.inspect(bind)
     if inspector.has_table('directorio'):
         directorio_columns = {column['name'] for column in inspector.get_columns('directorio')}
@@ -104,4 +115,5 @@ def downgrade() -> None:
         op.execute('DROP INDEX IF EXISTS ix_directorio_id')
         op.drop_table('directorio')
 
-    municipio_enum.drop(bind, checkfirst=True)
+    with op.get_context().autocommit_block():
+        op.execute('DROP TYPE IF EXISTS municipioenum')
