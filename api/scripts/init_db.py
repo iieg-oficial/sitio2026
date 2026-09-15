@@ -19,7 +19,7 @@ def aplicar_migraciones():
 
     print("▶️ Aplicando migraciones Alembic...")
     subprocess.run(
-        [sys.executable, "-m", "alembic", "-c", str(alembic_ini), "upgrade", "head"],
+        [sys.executable, "-m", "alembic", "-c", str(alembic_ini), "upgrade", "heads"],
         check=True,
         cwd=root,
     )
