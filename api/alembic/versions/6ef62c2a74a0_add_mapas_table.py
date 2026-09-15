@@ -1,13 +1,5 @@
-"""add mapas table
-
-Revision ID: 6ef62c2a74a0
-Revises: a1b2c3d4e5f6
-Create Date: 2026-05-26 17:34:39.342458
-
-"""
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
-
 from alembic import op
 
 revision = '6ef62c2a74a0'
@@ -15,7 +7,7 @@ down_revision = 'a1b2c3d4e5f6'
 branch_labels = None
 depends_on = None
 
-
+# 1. Se define create_type=False para evitar que op.create_table intente crearlo automáticamente
 tipomapaenum = postgresql.ENUM(
     'separado', 'atlas', 'libro', 'compuesto', 'casos', 'bolsillo',
     'monumento_hipsografico', 'atlas_catastral_jalisco', 'plano_separado',
@@ -24,6 +16,7 @@ tipomapaenum = postgresql.ENUM(
     'edicion_bolsillo_1er', 'carta_municipal', 'mapa_general',
     'carta_general',
     name='tipomapaenum',
+    create_type=False
 )
 
 
@@ -31,7 +24,21 @@ def upgrade() -> None:
     bind = op.get_bind()
     inspector = sa.inspect(bind)
 
-    tipomapaenum.create(bind, checkfirst=True)
+    # 2. Creación explícita y segura con SQL puro (evita errores en transacciones)
+    op.execute("""
+        DO $$ BEGIN
+            CREATE TYPE tipomapaenum AS ENUM (
+                'separado', 'atlas', 'libro', 'compuesto', 'casos', 'bolsillo',
+                'monumento_hipsografico', 'atlas_catastral_jalisco', 'plano_separado',
+                'mapa_grafico', 'carta_topografica', 'carta_geologica',
+                'carta_frontera_agricola', 'carta_uso_suelo_vegetacion',
+                'edicion_bolsillo_1er', 'carta_municipal', 'mapa_general',
+                'carta_general'
+            );
+        EXCEPTION
+            WHEN duplicate_object THEN null;
+        END $$;
+    """)
 
     if 'mapa' not in inspector.get_table_names():
         op.create_table(
@@ -99,4 +106,4 @@ def downgrade() -> None:
         if 'tipo' in columns:
             op.drop_column('mapa', 'tipo')
 
-    tipomapaenum.drop(bind, checkfirst=True)
+    op.execute("DROP TYPE IF EXISTS tipomapaenum CASCADE;")
