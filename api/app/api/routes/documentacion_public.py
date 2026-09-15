@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import Integer, cast, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
@@ -17,7 +17,10 @@ async def listar_documentaciones(
     db: Session = Depends(get_db),
 ):
     documentaciones = db.execute(
-        select(Documentacion).order_by(Documentacion.titulo, Documentacion.id.desc())
+        select(Documentacion).order_by(
+            cast(Documentacion.anyo, Integer).desc().nulls_last(),
+            Documentacion.id.desc(),
+        )
     ).scalars().all()
     return {
         "documentaciones": documentaciones,

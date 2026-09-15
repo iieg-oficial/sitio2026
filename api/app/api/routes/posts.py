@@ -7,6 +7,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.core.search import escape_like
 from app.models import Posts, Subject, Usuario
 from app.models.posts import GalleryImage
@@ -152,8 +153,13 @@ async def actualizar_post(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Posts, update_data["slug"], exclude_id=post_id
+            )
+        else:
+            del update_data["slug"]
 
     if "tema_ids" in update_data:
         post.temas = _load_temas(db, update_data.pop("tema_ids") or [])

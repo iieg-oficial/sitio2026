@@ -3,6 +3,7 @@ from slugify import slugify
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Modulos, Usuario
 from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
 
@@ -76,8 +77,13 @@ def update_modulo(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Modulos, update_data["slug"], exclude_id=id
+            )
+        else:
+            del update_data["slug"]
 
     for campo, valor in update_data.items():
         setattr(db_modulo, campo, valor)

@@ -56,7 +56,7 @@ const router = createBrowserRouter([
             { path: '/convocatorias/:slug', element: <PaginaIndividual /> },
             { path: '/galeria-de-mapas/:slug', element: <PaginaIndividual /> },
             { path: '/clasificador-de-cultivos', element: <ClasificadorCultivos /> },
-            { path: '/sieej', element: <Sieej /> },
+            { path: '/landing-sieej', element: <Sieej /> },
             { path: '/aviso-de-privacidad', element: <AvisoDePrivacidad /> }
         ],
     },
