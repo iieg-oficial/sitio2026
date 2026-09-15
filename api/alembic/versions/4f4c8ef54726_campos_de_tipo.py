@@ -29,8 +29,16 @@ def upgrade() -> None:
         if 'archivo' not in documentacion_columns:
             op.add_column('documentacion', sa.Column('archivo', sa.String(), nullable=True))
 
+        # Creación segura de tipoenum sin delegar en SQLAlchemy Enum.create
+        enum_exists = bool(
+            bind.execute(
+                sa.text("SELECT 1 FROM pg_type WHERE typname = 'tipoenum'")
+            ).scalar()
+        )
+        if not enum_exists:
+            op.execute("CREATE TYPE tipoenum AS ENUM ('metodologia', 'codigo', 'manual')")
+
         tipo_enum = sa.Enum('metodologia', 'codigo', 'manual', name='tipoenum')
-        tipo_enum.create(bind, checkfirst=True)
 
         if 'tipo' not in documentacion_columns:
             op.add_column('documentacion', sa.Column('tipo', tipo_enum, nullable=True))
@@ -46,12 +54,23 @@ def upgrade() -> None:
 
     # 2. Procesar la tabla 'flashes' solo si existe físicamente
     if inspector.has_table('flashes'):
+        mes_enum_exists = bool(
+            bind.execute(
+                sa.text("SELECT 1 FROM pg_type WHERE typname = 'mesenum'")
+            ).scalar()
+        )
+        if not mes_enum_exists:
+            op.execute(
+                "CREATE TYPE mesenum AS ENUM ("
+                "'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', "
+                "'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre')"
+            )
+
         mes_enum = sa.Enum(
             'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
             'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
             name='mesenum'
         )
-        mes_enum.create(bind, checkfirst=True)
 
         flashes_columns = {
             column['name'] for column in inspector.get_columns('flashes')
@@ -96,8 +115,7 @@ def downgrade() -> None:
 
     # Eliminar enums si existen
     for enum_name in ['mesenum', 'tipoenum']:
-        enum_obj = sa.Enum(name=enum_name)
         try:
-            enum_obj.drop(bind, checkfirst=True)
+            op.execute(f"DROP TYPE IF EXISTS {enum_name}")
         except Exception:
             pass
