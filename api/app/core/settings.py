@@ -4,7 +4,7 @@ from typing import Annotated
 from urllib.parse import quote_plus
 
 from pydantic import field_validator, model_validator
-from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     acervo_iieg_access_key: str
     acervo_iieg_secret_key: str
     acervo_iieg_bucket_name: str
-    cors_origins: list[str]
+    cors_origins: str
     admin_prefix: str
     web_prefix: str
     cookie_name: str
@@ -54,15 +54,15 @@ class Settings(BaseSettings):
     smtp_password: str | None = None
     contact_dest_email: str | None = None
 
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def parse_cors_origins(cls, v):
-        if isinstance(v, str):
-            v = v.strip()
-            if v.startswith("["):
+    @property
+    def cors_origins_list(self) -> list[str]:
+        v = self.cors_origins.strip()
+        if v.startswith("["):
+            try:
                 return json.loads(v)
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
-        return v
+            except json.JSONDecodeError:
+                pass
+        return [origin.strip() for origin in v.split(",") if origin.strip()]
 
     @model_validator(mode="after")
     def build_database_url(self):
