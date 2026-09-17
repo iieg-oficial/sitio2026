@@ -26,8 +26,7 @@ services:
     environment:
       ACERVO_UPSTREAM_URL: ${ACERVO_UPSTREAM_URL:?ACERVO_UPSTREAM_URL is required}
       ACERVO_UPSTREAM_HOST: ${ACERVO_UPSTREAM_HOST:?ACERVO_UPSTREAM_HOST is required}
-      NGINX_ENVSUBST_FILTER: "^(ACERVO_|CSP_)"
-      CSP_CONNECT_SRC: https://analytics.google.com https://*.analytics.google.com https://*.google-analytics.com https://*.googletagmanager.com https://*.cartocdn.com
+      NGINX_ENVSUBST_FILTER: "^ACERVO_"
     depends_on:
       - api
       - ckan
