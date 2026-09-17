@@ -235,3 +235,9 @@ curl -fsS https://<DOMINIO>/datos-abiertos/api/3/action/status_show
 Valida login del admin, páginas, imágenes, descargas del portal, datasets de CKAN, preview y descargas. Las imágenes y archivos del Acervo no aparecerán por restaurar este proyecto; deben seguir disponibles en el bucket/servicio externo con las mismas claves y prefijos.
 
 Para un corte final, bloquea escrituras, ejecuta otra vez `make backup ENV=...`, termina la copia del Acervo, restaura ese último respaldo y cambia DNS. Conserva el servidor anterior sin escrituras hasta terminar la validación para permitir rollback.
+
+
+
+
+
+

@@ -121,6 +121,7 @@ services:
         condition: service_healthy
     environment:
       CKAN_SITE_URL: ${CKAN_SITE_URL:?CKAN_SITE_URL is required}
+      CKAN_SQLALCHEMY_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/ckan_default
       CKAN_DB_PASSWORD: ${CKAN_DB_PASSWORD:?CKAN_DB_PASSWORD is required}
       DATASTORE_RO_PASSWORD: ${DATASTORE_RO_PASSWORD:?DATASTORE_RO_PASSWORD is required}
       CKAN_SOLR_URL: http://ckan-solr:8983/solr/ckan
@@ -150,7 +151,9 @@ services:
       CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
       CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
-      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?file:///srv/app/licenses.json}
+      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?file:///srv/app/licenses.json}      
+      CKAN___CKAN__DATASTORE__WRITE_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/datastore_default
+      CKAN___CKAN__DATASTORE__READ_URL: postgresql://datastore_ro:${DATASTORE_RO_PASSWORD}@ckan-db:5432/datastore_default
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme
