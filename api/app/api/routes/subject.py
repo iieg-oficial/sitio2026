@@ -14,7 +14,7 @@ router = APIRouter(prefix="/subject", tags=["temas"])
 @router.get("/tree", response_model=list[SubjectOut])
 async def obtener_temas_tree(
     db: Session = Depends(get_db)):
-    temas = db.execute(select(Subject).where(Subject.parent_id.is_not(None))).scalars().all()
+    temas = db.execute(select(Subject)).scalars().all()
     return temas
 
 @router.get("", response_model=list[SubjectFlat])

@@ -98,7 +98,7 @@ export default function Flashes() {
     const handleEdit = (record) => {
         setEditingFlash(record);
         // Pre-cargar los temas seleccionados desde el registro
-        const ids = (record.temas ?? []).map((t) => t.id);
+        const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
         const fechaFormateada = record.fecha_publicacion
         ? new Date(record.fecha_publicacion).toISOString().split('T')[0]

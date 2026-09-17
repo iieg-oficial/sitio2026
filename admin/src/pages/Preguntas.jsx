@@ -54,7 +54,7 @@ export default function Preguntas() {
 
     const handleEdit = (record) => {
         setEditingPregunta(record);
-        const ids = record.temas.map((t) => t.id);
+        const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
         form.setFieldsValue(record);
         setIsModalVisible(true);

@@ -104,8 +104,20 @@ export default function Archivos() {
         const selectedIds = [...new Set(
             (record.temas ?? []).flatMap((tema) => {
                 const ids = [];
-                if (tema?.id) ids.push(Number(tema.id));
-                if (tema?.parent_id) ids.push(Number(tema.parent_id));
+
+                if (typeof tema === 'object' && tema !== null) {
+                    // Caso 1: Es un objeto { id: 2, parent_id: 1 }
+                    if (tema.id !== undefined && tema.id !== null) {
+                        ids.push(Number(tema.id));
+                    }
+                    if (tema.parent_id !== undefined && tema.parent_id !== null) {
+                        ids.push(Number(tema.parent_id));
+                    }
+                } else if (tema !== undefined && tema !== null) {
+                    // Caso 2: Es un ID directo [1, 2] o ["1", "2"]
+                    ids.push(Number(tema));
+                }
+
                 return ids;
             })
         )].filter((id) => !Number.isNaN(id));

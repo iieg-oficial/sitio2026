@@ -113,7 +113,7 @@ export default function Documentacion() {
     const handleEdit = (record) => {
         setEditingDocumentacion(record);
         // Pre-cargar los temas seleccionados desde el registro
-        const ids = (record.temas ?? []).map((t) => t.id);
+        const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         const idsp = (record.sistemas ?? []).map((t) => t.id);
         const formValues = { 
             ...record
