@@ -1,4 +1,7 @@
 import mimetypes
+from pathlib import Path
+import re
+import unicodedata
 import uuid
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
@@ -35,7 +38,7 @@ router = APIRouter(prefix="/multimedia", tags=["media"])
 settings = get_settings()
 
 ALLOWED_BUCKETS = {PORTAL_BUCKET, IIEG_BUCKET}
-
+_SAFE_NAME_RE = re.compile(r"[^a-zA-Z0-9._-]+")
 
 def _validate_bucket(bucket: str) -> str:
     if bucket not in ALLOWED_BUCKETS:
@@ -120,6 +123,23 @@ def _serialize_s3_object(obj: dict, bucket: str) -> dict:
         "metadata": {},
         "bucket": bucket,
     }
+
+def split_ext(filename: str) -> tuple[str, str]:
+    if "." in filename:
+        base, ext = filename.rsplit(".", 1)
+        return base, f".{ext}"
+    return filename, ""
+
+def sanitize_filename(filename: str) -> str:
+    raw = (filename or "").rsplit("/", 1)[-1].rsplit("\\", 1)[-1]
+    base, ext = split_ext(raw)
+    base = unicodedata.normalize("NFKD", base).encode("ascii", "ignore").decode("ascii")
+    base = _SAFE_NAME_RE.sub("-", base).strip("-._").lower()
+    if not base:
+        base = "archivo"
+    ext = unicodedata.normalize("NFKD", ext).encode("ascii", "ignore").decode("ascii")
+    ext = _SAFE_NAME_RE.sub("", ext).lower()
+    return f"{base}{ext}" if ext else base
 
 
 @router.get("", response_model=list[dict])
@@ -228,15 +248,19 @@ async def subir_archivo(
     acervo_service = get_acervo_service()
 
     file_extension = file.filename.split(".")[-1] if "." in file.filename else ""
-    unique_name = f"{uuid.uuid4()}.{file_extension}" if file_extension else str(uuid.uuid4())
+    #unique_name = f"{uuid.uuid4()}.{file_extension}" if file_extension else str(uuid.uuid4())
+    raw_name = Path(file.filename).name                    
+    safe_name = sanitize_filename(raw_name)
+    folder_clean = folder.strip("/") if folder and folder != "/" else ""
+    object_key = f"{folder_clean}/{safe_name}" if folder_clean else safe_name
 
     try:
-        url = await acervo_service.upload_file(file, unique_name, bucket=bucket)
+        url = await acervo_service.upload_file(file, object_key, bucket=bucket)
 
         if bucket == PORTAL_BUCKET:
             folder = _ensure_folder_path_exists(db, folder)
             nuevo_media = Media(
-                name=unique_name,
+                name=safe_name,
                 original_name=file.filename,
                 type=validated_content_type,  # MIME seguro
                 size=file.size or 0,
@@ -253,8 +277,8 @@ async def subir_archivo(
             return _serialize_media(nuevo_media)
 
         return {
-            "id": f"{bucket}:{unique_name}",
-            "name": unique_name,
+            "id": f"{bucket}:{safe_name}",
+            "name": safe_name,
             "originalName": file.filename,
             "type": validated_content_type,  # MIME seguro
             "size": file.size or 0,

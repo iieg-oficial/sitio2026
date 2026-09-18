@@ -11,7 +11,6 @@ server {
     listen 80;
     server_name _;
 
-    
     resolver 127.0.0.11 valid=30s ipv6=off;
 
     absolute_redirect off;
@@ -29,7 +28,7 @@ server {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
-    
+
     location ~* \.(js|css)\.map$ {
         return 404;
     }
@@ -144,7 +143,6 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $forwarded_proto;
         add_header Content-Disposition "attachment; filename=\"\$request_filename\"" always;
-        
         proxy_connect_timeout 60;
         proxy_send_timeout 60;
         proxy_read_timeout 60;
