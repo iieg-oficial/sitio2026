@@ -3,7 +3,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import mediaService from '@services/mediaService';
 
 function UploadAcervo({ onUploaded, bucket = 'portal', folder = '/' , label = 'Subir Archivo' }) {
-    
+
+       
     const handleUpload = async ({ file, onSuccess, onError, onProgress }) => {
         const expectedUrl = mediaService.buildMediaUrl(file.name, { bucket, folder });
         console.info('[Acervo] URL esperada:', expectedUrl);
@@ -19,6 +20,7 @@ function UploadAcervo({ onUploaded, bucket = 'portal', folder = '/' , label = 'S
             message.success(`${file.name} subido`);
             onUploaded?.(result);
         } catch (error) {
+            console.log(`[Acervo] Fallo de subida. URL posible: ${expectedUrl}`);
             console.error('[Acervo] No se pudo subir el archivo.', {
                 error,
                 expectedUrl,

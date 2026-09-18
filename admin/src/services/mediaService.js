@@ -1,5 +1,6 @@
 import api from './api';
 
+
 const DB_NAME = 'CMS_MediaStorage';
 const DB_VERSION = 1;
 const STORE_NAME = 'media_files';
@@ -46,7 +47,8 @@ const sanitizeMediaFilename = (filename) => {
 };
 
 export const buildMediaUrl = (filename, { bucket = 'portal', folder = '/' } = {}) => {
-    const folderParts = String(folder || '/')
+    const folderClean = sanitizeFolderPath(folder);
+    const folderParts = String(folderClean || '/')
         .split('/')
         .filter(Boolean)
         .map((part) => encodeURIComponent(part));
@@ -54,6 +56,34 @@ export const buildMediaUrl = (filename, { bucket = 'portal', folder = '/' } = {}
 
     return `${MEDIA_BASE_URL}/${pathParts.join('/')}`;
 };
+
+export const sanitizeFolderPath = (folder) => {
+  if (!folder || folder === '/') return '';
+
+  let clean = String(folder).trim();
+
+  // Normaliza separadores y quita espacios raross
+  clean = clean.replace(/\\/g, '/');
+
+  // Quita slashes al inicio/fin
+  clean = clean.replace(/^\/+|\/+$/g, '');
+
+  // Descompón por segmentos y filtra basura
+  const segments = clean
+    .split('/')
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0 && s !== '.' && s !== '..');
+
+  // Sanitiza cada segmento: minúsculas, sin acentos, sin caracteres raros
+  const safeSegments = segments.map((s) =>
+    s
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+      .toLowerCase()
+      .replace(/[^a-z0-9\-_.]/g, '-')
+  );
+
+  return safeSegments.join('/');
+}
 
 const initDB = () => {
     return new Promise((resolve, reject) => {
@@ -203,8 +233,10 @@ export const uploadMediaFile = async (file, options = {}) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        if (options.folder) {
-            formData.append('folder', options.folder);
+        const folderClean = sanitizeFolderPath(options.folder);
+
+        if (folderClean) {
+            formData.append('folder', folderClean);
         }
 
         if (options.alt) {
@@ -426,7 +458,6 @@ export const getImageDimensions = (file) => {
 export default {
     getMediaFiles,
     getMediaFile,
-    buildMediaUrl,
     uploadMediaFile,
     uploadMultipleFiles,
     updateMediaFile,

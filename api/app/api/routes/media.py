@@ -14,6 +14,7 @@ from app.models.media import Media, MediaFolder
 from app.models.user import Usuario
 from app.schemas.media import FolderCreate, FolderResponse
 from app.services.acervo import IIEG_BUCKET, PORTAL_BUCKET, get_acervo_service
+from pathlib import PurePosixPath
 
 MAX_FILE_SIZE = 100 * 1024 * 1024 # 100 MB
 ALLOWED_EXTENSIONS = {
@@ -50,16 +51,21 @@ def _validate_bucket(bucket: str) -> str:
 
 
 def _normalize_folder_path(folder: str | None) -> str:
-    folder = (folder or "/").strip()
-    if not folder:
-        return "/"
-    if not folder.startswith("/"):
-        folder = f"/{folder}"
-    while "//" in folder:
-        folder = folder.replace("//", "/")
-    if len(folder) > 1 and folder.endswith("/"):
-        folder = folder.rstrip("/")
-    return folder or "/"
+    if not folder or folder == "/":
+        return ""
+    # Normaliza separadores
+    folder = folder.strip().replace("\\", "/")
+
+    # Usa PurePosixPath para resolver sin tocar el filesystem real
+    parts = PurePosixPath(folder).parts
+
+    safe_parts = []
+    for part in parts:
+        if part in ("", "/", ".", ".."):
+            continue  # descarta traversal y vacíos
+        safe_parts.append(sanitize_filename(part))  # reusa tu sanitizer existente
+
+    return "/".join(safe_parts)
 
 
 def _ensure_folder_path_exists(db: Session, folder_path: str) -> str:
@@ -70,8 +76,8 @@ def _ensure_folder_path_exists(db: Session, folder_path: str) -> str:
         db.add(MediaFolder(name="Root", path="/", parent=None))
         db.flush()
 
-    if folder_path == "/":
-        return folder_path
+    if not folder_path:
+        return "/"
 
     current_parent = "/"
     current_path = ""
@@ -83,7 +89,7 @@ def _ensure_folder_path_exists(db: Session, folder_path: str) -> str:
             db.flush()
         current_parent = current_path
 
-    return folder_path
+    return current_path
 
 
 def _serialize_media(item: Media) -> dict:
@@ -141,6 +147,8 @@ def sanitize_filename(filename: str) -> str:
     ext = _SAFE_NAME_RE.sub("", ext).lower()
     return f"{base}{ext}" if ext else base
 
+def _display_folder(normalized: str) -> str:
+    return f"/{normalized}" if normalized else "/"
 
 
 @router.get("", response_model=list[dict])
@@ -158,7 +166,8 @@ async def listar_media(
         query = db.query(Media)
 
         if folder:
-            query = query.filter(Media.folder == folder)
+            folder_norm = _display_folder(_normalize_folder_path(folder))
+            query = query.filter(Media.folder == folder_norm)
 
         if type:
             query = query.filter(Media.type.startswith(type))
@@ -187,7 +196,8 @@ async def listar_media(
             if search_lower in i["name"].lower() or search_lower in i["originalName"].lower()
         ]
     if folder:
-        items = [i for i in items if i["folder"] == folder]
+        folder_norm = _display_folder(_normalize_folder_path(folder))
+        items = [i for i in items if i["folder"] == folder_norm]
 
     items.sort(key=lambda i: i["uploadedAt"], reverse=True)
     return items[:limit]
@@ -261,7 +271,7 @@ async def subir_archivo(
         if bucket == PORTAL_BUCKET:
             folder = _ensure_folder_path_exists(db, folder)
             nuevo_media = Media(
-                name=safe_name,
+                name=object_key,
                 original_name=file.filename,
                 type=validated_content_type,  # MIME seguro
                 size=file.size or 0,
