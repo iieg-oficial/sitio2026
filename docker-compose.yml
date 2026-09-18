@@ -151,9 +151,7 @@ services:
       CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
       CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
-      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?file:///srv/app/licenses.json}      
-      CKAN___CKAN__DATASTORE__WRITE_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/datastore_default
-      CKAN___CKAN__DATASTORE__READ_URL: postgresql://datastore_ro:${DATASTORE_RO_PASSWORD}@ckan-db:5432/datastore_default
+      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?file:///srv/app/licenses.json}
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme

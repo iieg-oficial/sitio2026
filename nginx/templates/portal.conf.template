@@ -92,6 +92,7 @@ server {
     }
 
     location ^~ /datos-abiertos {
+        rewrite ^/datos-abiertos/?(.*)$ /$1 break; 
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
