@@ -142,6 +142,7 @@ def sanitize_filename(filename: str) -> str:
     return f"{base}{ext}" if ext else base
 
 
+
 @router.get("", response_model=list[dict])
 async def listar_media(
     db: Session = Depends(get_db),
