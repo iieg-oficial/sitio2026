@@ -5,6 +5,7 @@ const DB_VERSION = 1;
 const STORE_NAME = 'media_files';
 
 const DEFAULT_MAX_SIZE = 100 * 1024 * 1024; // 10 MB
+const MEDIA_BASE_URL = (import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo').replace(/\/+$/, '');
 
 const ALLOWED_MIME_MAP = {
     'jpg':  { mime: 'image/jpeg',      bytes: [0xFF, 0xD8, 0xFF] },
@@ -23,6 +24,36 @@ const ALLOWED_MIME_MAP = {
 };
 
 let dbInstance = null;
+
+const sanitizeMediaFilename = (filename) => {
+    const rawName = (filename || '').split(/[\\/]/).pop() || '';
+    const extensionIndex = rawName.lastIndexOf('.');
+    const baseName = extensionIndex > 0 ? rawName.slice(0, extensionIndex) : rawName;
+    const extension = extensionIndex > 0 ? rawName.slice(extensionIndex + 1) : '';
+    const normalizedBase = baseName
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9._-]+/g, '-')
+        .replace(/^[-._]+|[-._]+$/g, '')
+        .toLowerCase() || 'archivo';
+    const normalizedExtension = extension
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9_-]/g, '')
+        .toLowerCase();
+
+    return normalizedExtension ? `${normalizedBase}.${normalizedExtension}` : normalizedBase;
+};
+
+export const buildMediaUrl = (filename, { bucket = 'portal', folder = '/' } = {}) => {
+    const folderParts = String(folder || '/')
+        .split('/')
+        .filter(Boolean)
+        .map((part) => encodeURIComponent(part));
+    const pathParts = [encodeURIComponent(bucket), ...folderParts, encodeURIComponent(sanitizeMediaFilename(filename))];
+
+    return `${MEDIA_BASE_URL}/${pathParts.join('/')}`;
+};
 
 const initDB = () => {
     return new Promise((resolve, reject) => {
@@ -395,6 +426,7 @@ export const getImageDimensions = (file) => {
 export default {
     getMediaFiles,
     getMediaFile,
+    buildMediaUrl,
     uploadMediaFile,
     uploadMultipleFiles,
     updateMediaFile,
