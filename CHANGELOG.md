@@ -2,6 +2,11 @@
 
 Todos los cambios notables se documentan en este archivo. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
+## [Sin publicar]
+
+### Cambiado
+- `cuadernillos.municipio` conserva en PostgreSQL los nombres minúsculos de `MunicipioEnum`, mientras la API sigue validando y devolviendo sus valores capitalizados. Antes de desplegar sobre otra base, comprobar que no existan filas con etiquetas capitalizadas; si las hay, normalizarlas antes de publicar el código para evitar errores al leer cuadernillos.
+
 ## [1.9.0] - 2026-07-31
 
 Preparación para colgar el portal de la raíz del dominio, detrás de gateway-hub.

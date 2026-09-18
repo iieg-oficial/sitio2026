@@ -67,7 +67,7 @@ export default function Sistemas() {
 
     const handleEdit = (record) => {
         setEditingSistema(record);
-        const ids = (record.temas ?? []).map((t) => t.id);
+        const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
         form.setFieldsValue(record);
         setModalVisible(true);

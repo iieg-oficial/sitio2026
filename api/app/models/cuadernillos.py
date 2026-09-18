@@ -133,6 +133,7 @@ class MunicipioEnum(str, enum.Enum):
     zapopan = "Zapopan"
 
 
+
 class Cuadernillo(Base):
     __tablename__ = "cuadernillos"
 
@@ -143,8 +144,7 @@ class Cuadernillo(Base):
         SQLEnum(
             MunicipioEnum,
             name="municipioenum",
-            create_type=False,
-            values_callable=lambda x: [e.value for e in x]
+            create_type=False
         ),
         nullable=True,
     )

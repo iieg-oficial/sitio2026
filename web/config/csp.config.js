@@ -37,7 +37,11 @@ const BASE_POLICY = {
 
   "connect-src": [
     "'self'",
+    "https://analytics.google.com",
+    "https://*.analytics.google.com",
     "https://*.google-analytics.com",
+    "https://*.googletagmanager.com",
+    "https://*.cartocdn.com",
     "https://iieg.jalisco.gob.mx",
   ],
 

@@ -121,6 +121,7 @@ services:
         condition: service_healthy
     environment:
       CKAN_SITE_URL: ${CKAN_SITE_URL:?CKAN_SITE_URL is required}
+      CKAN_SQLALCHEMY_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/ckan_default
       CKAN_DB_PASSWORD: ${CKAN_DB_PASSWORD:?CKAN_DB_PASSWORD is required}
       DATASTORE_RO_PASSWORD: ${DATASTORE_RO_PASSWORD:?DATASTORE_RO_PASSWORD is required}
       CKAN_SOLR_URL: http://ckan-solr:8983/solr/ckan

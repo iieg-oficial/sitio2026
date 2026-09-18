@@ -84,7 +84,7 @@ export default function Posts() {
     const handleEdit = (record) => {
         
         setEditingPost(record);
-        const ids = record.temas.map((tema) => tema.id);
+        const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
         setGalleryImages((record.gallery_images ?? []).map((img) => img.url));
         form.setFieldsValue(record);

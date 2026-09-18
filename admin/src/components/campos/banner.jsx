@@ -67,31 +67,22 @@ export const CamposBannerMin = () => {
     const imagen = Form.useWatch('imagen', form);
 
     return (
-        <>
-            <Form.Item name="color_fondo" label="Color de Fondo" initialValue="#8936ab" rules={[{ required: false }]}>
-                <ColorPickerField name="color_fondo" />
-            </Form.Item>
-            <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>            
+        <>            
+            <ColorPickerField label="Color de Fondo" name="color_fondo" initialValue="#8936ab" />
+            
+            <Form.Item label="Imagen" required={false}>
                 <Space direction="vertical" style={{ width: '100%' }}>
-                        <UploadAcervo
-                            bucket="portal"
-                            folder="/banners"
-                            label="Subir imagen "                            
-                            onUploaded={(media) => {
-                                form.setFieldValue('imagen', media.url);
-                            }}
-                        />
-                        <Form.Item name="imagen" noStyle>
-                            <Input placeholder="URL imagen" />
-                        </Form.Item>
-                        {imagen ? (
-                            <Image
-                                src={imagen}
-                                alt="Vista previa imagen"
-                                style={{ maxWidth: 260, borderRadius: 6 }}
-                            />
-                        ) : null}
-                    </Space>
+                    <UploadAcervo
+                        bucket="portal"
+                        folder="/banners"
+                        label="Subir imagen "
+                        onUploaded={(media) => form.setFieldValue('imagen', media.url)}
+                    />
+                    <Form.Item name="imagen" noStyle>
+                        <Input placeholder="URL imagen" />
+                    </Form.Item>
+                    {imagen ? <Image src={imagen} alt="Vista previa imagen" style={{ maxWidth: 260, borderRadius: 6 }} /> : null}
+                </Space>
             </Form.Item>
         </>
     );

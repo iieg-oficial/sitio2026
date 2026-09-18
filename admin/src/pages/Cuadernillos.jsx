@@ -36,7 +36,7 @@ export default function Cuadernillos() {
 
     const fetchMunicipios = async () => {
         try {
-            const response = await api.get('/cuadernillos/municipios/');
+            const response = await api.get('/cuadernillos/municipios');
             setMunicipios(response.data.municipios || {});
         } catch (error) {
             message.error('Error al obtener los municipios');
@@ -46,7 +46,7 @@ export default function Cuadernillos() {
     const fetchCuadernillos = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
-            const response = await api.get('/cuadernillos/', {
+            const response = await api.get('/cuadernillos', {
                 params: {
                     ...(search ? { search } : {}),
                     page,
@@ -108,10 +108,10 @@ export default function Cuadernillos() {
     const handleSubmit = async (values) => {
         try {
             if (editingCuadernillo) {
-                await api.patch(`/cuadernillos/${editingCuadernillo.id}/`, values);
+                await api.patch(`/cuadernillos/${editingCuadernillo.id}`, values);
                 message.success('Cuadernillo actualizado');
             } else {
-                await api.post('/cuadernillos/', values);
+                await api.post('/cuadernillos', values);
                 message.success('Cuadernillo creado');
             }
             setModalVisible(false);
@@ -221,11 +221,10 @@ export default function Cuadernillos() {
                         filterOption={(input, option) =>
                             (option?.label || '').toLowerCase().includes(input.toLowerCase())
                         }
-                        options={Object.entries(municipios).map(([key, value]) => ({
-                            key,
-                            value,
-                            label: value,
-                        }))}
+                        options={Array.isArray(municipios) 
+                            ? municipios.map((m) => ({ value: m, label: m }))
+                            : Object.entries(municipios).map(([key, value]) => ({ value: value, label: value }))
+                        }
                     />
                 </Form.Item>
                 <Form.Item name="anyo" label="Año" rules={[{ required: true, message: 'Por favor ingresa el año' }]}>

@@ -113,7 +113,7 @@ export default function Cursos() {
       destacado: !!record.destacado,
       tipo_curso: record.tipo_curso,
     };
-    setSelectedTemas(record.temas ? record.temas.map(t => t.id) : []);
+    setSelectedTemas((record.temas ?? []).map((t) => Number(t.id || t)));
     setTipoCurso(record.tipo_curso || null);
     form.setFieldsValue(formValues);
     setModalVisible(true);

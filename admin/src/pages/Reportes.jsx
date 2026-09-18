@@ -114,7 +114,7 @@ export default function Reportes() {
 
     const handleEdit = (record) => {
         setEditingReporte(record);
-        const ids = (record.temas ?? []).map((t) => t.id);
+        const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
 
         let preMes = record.mes;
