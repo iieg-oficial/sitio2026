@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SafeHtml } from '@components/SafeHtml';
 
 export default function CapacitacionesList({ curso }) {

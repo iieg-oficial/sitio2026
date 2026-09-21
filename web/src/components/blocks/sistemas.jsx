@@ -126,8 +126,7 @@ export default function Sistemas() {
                     {filteredByTab.length > 0 && (
                         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                             {currentSystems.map((sistema) => {
-                                const original = sistema.imagen;
-                                const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
+                                const original = sistema.imagen;                                
                                 
                                 const hasLink = Boolean(sistema.link);
                                 const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);

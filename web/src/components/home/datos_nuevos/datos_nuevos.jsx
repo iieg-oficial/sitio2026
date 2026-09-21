@@ -16,11 +16,11 @@ export default function DatosNuevos() {
         fetchDatosNuevos()
     }, [location])
 
-    const imagenes = {
+    {/*const imagenes = {
     sube:   "/ico_flecha_positivo.png",
     baja: "/ico_flecha_negativo.png",
     igual:  "/ico_igual.png",
-    };
+    };*/}
 
     return (
         <div className="">
