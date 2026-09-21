@@ -4,7 +4,6 @@ import Searcher from '@components/pageComponents/searcher'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import { Helmet } from 'react-helmet-async'
-import { format } from 'date-fns';
 import { SafeHtml } from '@components/SafeHtml';
 
 function Post() {
@@ -18,54 +17,57 @@ function Post() {
 
     const [posts, setPosts] = useState([]);
     const [page, setPage] = useState(defaultPage);
-    const [loading, setLoading] = useState(true)
-    const [loadError, setLoadError] = useState(false)
     const [activeTab, setActiveTab] = useState(0)    
     const [searchTerm, setSearchTerm] = useState("");
-    const keys = ['titulo', 'resumen', 'contenido', 'keywords', 'subject.titulo', 'claves', 'temas', 'temas.titulo'];
+    
 
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
 
-    const fetchPageHome = async () => {
-        try {
-            const res = await api.get('/paginas/slug/comunicacion-institucional');
-            const responseData = res?.data;
-            if (!responseData || typeof responseData !== 'object') {
+    useEffect(() => {
+        const loadInitialData = async () => {
+            // 1. Cargar Página Home
+            try {
+                const res = await api.get('/paginas/slug/comunicacion-institucional');
+                const responseData = res?.data;
+                if (!responseData || typeof responseData !== 'object') {
+                    setPage(defaultPage);
+                } else {
+                    const safePage = {
+                        ...defaultPage,
+                        ...responseData,
+                        title: responseData.title || defaultPage.title,
+                        description: responseData.description || defaultPage.description,
+                        description_meta: responseData.description_meta || defaultPage.description_meta,
+                        keywords_meta: responseData.keywords_meta || defaultPage.keywords_meta,
+                        postlink: responseData.postlink || defaultPage.postlink,
+                    };
+                    setPage(safePage);
+                }
+            } catch (err) {
+                if (err.response?.status !== 404) {
+                    console.error("Error fetching page community:", err);
+                }
                 setPage(defaultPage);
-                return;
             }
 
-            const safePage = {
-                ...defaultPage,
-                ...responseData,
-                title: responseData.title || defaultPage.title,
-                description: responseData.description || defaultPage.description,
-                description_meta: responseData.description_meta || defaultPage.description_meta,
-                keywords_meta: responseData.keywords_meta || defaultPage.keywords_meta,
-                postlink: responseData.postlink || defaultPage.postlink,
-            };
-
-            setPage(safePage);
-        } catch (err) {
-            if (err.response?.status !== 404) {
-                console.error("Error fetching page community:", err);
+            // 2. Cargar Posts
+            try {
+                const response = await api.get('/posts');
+                const payload = response.data;
+                const postsData = Array.isArray(payload)
+                    ? payload
+                    : payload?.posts ?? payload?.items ?? payload?.data ?? [];
+                
+                setPosts(postsData);
+            } catch (err) {
+                console.error("Error fetching posts:", err);
+                setPosts([]);
             }
-            setPage(defaultPage);
-        }
-    }
+        };
 
-    const showData = async () => {
-    const response = await api.get('/posts');
-    
-    const payload = response.data;
-    const postsData = Array.isArray(payload)
-        ? payload
-        : payload?.posts ?? payload?.items ?? payload?.data ?? [];
-    
-
-    setPosts(postsData);
-    }
+        loadInitialData();
+    }, []);
 
     useEffect(() => {
         fetchPageHome();
