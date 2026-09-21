@@ -102,7 +102,7 @@ export default function Sistemas() {
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
 
             <div className="relative container mx-auto px-2 mt-15">
-                    <span class="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
+                    <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
                     <div
                         className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto snap-x snap-mandatory"
                         style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: '5px' }}

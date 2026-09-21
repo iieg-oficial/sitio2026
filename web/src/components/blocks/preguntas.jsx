@@ -56,7 +56,7 @@ export default function Preguntas() {
    return (
     <div className='container mx-auto px-2'>
         <div className="relative container mx-auto px-2">
-                    <span class="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
+                    <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
                     <div
                         className="flex gap-5 mb-10 lg:ml-15 overflow-x-auto sm:overflow-visible snap-x snap-mandatory"
                         style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
@@ -71,7 +71,7 @@ export default function Preguntas() {
                             </TabButton>
                         ))}
                     </div>
-                    <span class="material-symbols--chevron-right absolute z-10 bottom-5 right-0 sm:hidden!"></span>
+                    <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 sm:hidden!"></span>
                 </div>
 
 
