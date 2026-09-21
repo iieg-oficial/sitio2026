@@ -3,17 +3,19 @@ import { useState, useEffect, useCallback } from 'react'
 export default function Carousel({ slides = [], autoplay = true, interval = 5000, className = '' }) {
     const [current, setCurrent] = useState(0)
 
-    const next = useCallback(() => {
-        setCurrent(prev => (prev + 1) % slides.length)
-    }, [slides.length])
+    const next = () => {
+        setCurrent(prev => (prev + 1) % slides.length);
+    };
 
     useEffect(() => {
-        if (!autoplay || slides.length <= 1) return
-        const timer = setInterval(next, interval)
-        return () => clearInterval(timer)
-    }, [autoplay, interval, next])
+        if (!autoplay || !slides || slides.length <= 1) return;
 
-    if (!slides || slides.length === 0) return null
+        const timer = setInterval(() => {
+            setCurrent(prev => (prev + 1) % slides.length);
+        }, interval);
+
+        return () => clearInterval(timer);
+    }, [autoplay, interval, slides?.length]);
 
     return (
         <div className={`relative w-full overflow-hidden min-h-[480px] md:min-h-[560px] ${className}`}>

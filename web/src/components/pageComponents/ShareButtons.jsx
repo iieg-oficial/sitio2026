@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import PropTypes from 'prop-types';
 
 function ShareButtons({ url, title = ""}) {
   const encodedUrl = encodeURIComponent(url);
@@ -44,5 +45,10 @@ function ShareButtons({ url, title = ""}) {
     </div>
   );
 }
+
+ShareButtons.propTypes = {
+    url: PropTypes.string.isRequired,
+    title: PropTypes.string,
+};
 
 export default ShareButtons;
