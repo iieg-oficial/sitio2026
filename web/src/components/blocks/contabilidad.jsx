@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import api from '@services/apiService'
-import ReactPaginate from 'react-paginate';
 import Searcher from '../pageComponents/searcher';
 import { format } from 'date-fns';
 import TrackedLink from '@components/blocks/boton'

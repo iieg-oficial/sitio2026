@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
@@ -23,7 +23,7 @@ export default function Capacitaciones() {
         return false
     }
 
-    const fetchCapacitaciones = async () => {
+    const fetchCapacitaciones = useCallback( async () => {
         try {
             const response = await api.get('/cursos-public', {
                 params: { tipo_curso: 'capacitacion' },
@@ -41,11 +41,11 @@ export default function Capacitaciones() {
             setCapacitaciones([])
             setCapacitacionesDestacadas([])
         }
-    }
+    }, []);
 
     useEffect(() => {
         fetchCapacitaciones()
-    }, []);
+    }, [fetchCapacitaciones]);
 
     const [itemOffset, setItemOffset] = useState(0)
     const itemsPerPage = 12
@@ -70,8 +70,8 @@ export default function Capacitaciones() {
         <div>
             <div className='grid grid-cols-1 gap-4 rounded-3xl p-7 container 2xl:w-[70%] mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
                 {capacitacionesDestacadas.map(capacitacion => (
-                    <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
-                    <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group' key={capacitacion.id}>                                               
+                    <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} key={capacitacion.id} className="" rel="noopener noreferrer">
+                    <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group'>                                               
                         <div className='lg:col-span-2'>
                             <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='h-auto rounded-3xl w-full object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
                         </div>
