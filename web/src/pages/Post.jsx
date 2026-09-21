@@ -69,10 +69,7 @@ function Post() {
         loadInitialData();
     }, []);
 
-    useEffect(() => {
-        fetchPageHome();
-        showData();        
-    }, []);
+
 
 const filteredPosts = useMemo(() => (
     !searchTerm 
