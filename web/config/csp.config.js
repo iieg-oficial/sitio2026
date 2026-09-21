@@ -22,14 +22,23 @@ const BASE_POLICY = {
     "data:",
     "blob:",
     "https://*.cartocdn.com",
+    "https://google-analytics.com",
+    "https://www.google-analytics.com",
     "https://*.google-analytics.com",
+    "https://analytics.google.com",
+    "https://*.analytics.google.com",
     "https://*.googletagmanager.com",
     "https://iieg.jalisco.gob.mx", // acervo de imágenes IIEG (mapoteca/mariachi)
   ],
 
   "media-src": ["'self'", "https://iieg.jalisco.gob.mx"],
 
-  "script-src": ["'self'", "https://*.googletagmanager.com"],
+  "script-src": [
+    "'self'", 
+    "https://*.googletagmanager.com",
+    "https://www.google-analytics.com",
+    "https://ssl.google-analytics.com"
+  ],
 
   "style-src": ["'self'", "'unsafe-inline'"],
 
@@ -39,6 +48,8 @@ const BASE_POLICY = {
     "'self'",
     "https://analytics.google.com",
     "https://*.analytics.google.com",
+    "https://google-analytics.com",
+    "https://www.google-analytics.com",
     "https://*.google-analytics.com",
     "https://*.googletagmanager.com",
     "https://*.cartocdn.com",
