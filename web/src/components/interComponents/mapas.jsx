@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
 import Backlink from '../pageComponents/Backlink'
-import { Download, X } from "lucide-react";
 import TrackedLink from '@components/blocks/boton'
 import { SafeHtml } from '@components/SafeHtml';
 

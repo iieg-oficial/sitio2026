@@ -13,8 +13,7 @@ dayjs.locale('es')
 
 export default function Capacitaciones() {
     const { slug } = useParams(); // obtiene el id del elemento clicleable
-    const [singleCapacitacion, setSingleCapacitacion] = useState(null);
-    const [activeTab, setActiveTab] = useState(null);
+    const [singleCapacitacion, setSingleCapacitacion] = useState(null);    
     const [error, setError] = useState(null);
 
     useEffect(() => {

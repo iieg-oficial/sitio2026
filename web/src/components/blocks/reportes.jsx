@@ -253,8 +253,8 @@ export default function Reportes() {
 
             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mx-auto container px-2'>
                 {currentReportes.map(reporte => (
-                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" download>
-                        <div className='border-2 border-card rounded-2xl p-8 hover:border-tertiary hover:border group' key={reporte.id}>
+                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" download key={reporte.id}>
+                        <div className='border-2 border-card rounded-2xl p-8 hover:border-tertiary hover:border group'>
                             
                             <div className="flex items-center gap-2 mb-4 bg-white justify-between">
                                 <p className='text-18 text-titulos group-hover:text-tertiary'>{reporte.titulo}</p>
