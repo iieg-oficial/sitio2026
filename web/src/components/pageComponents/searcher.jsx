@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+
 
 const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
     const isSearching = searchTerm.length > 0;
@@ -60,10 +60,6 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
     );
 }
 
-Searcher.propTypes = {
-    searchTerm: PropTypes.string.isRequired,
-    setSearchTerm: PropTypes.func.isRequired,
-    placeholder: PropTypes.string,
-};
+
 
 export default Searcher;

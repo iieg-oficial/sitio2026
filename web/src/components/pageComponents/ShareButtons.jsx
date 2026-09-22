@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { FaFacebook, FaLinkedin, FaWhatsapp } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6'; // Ícono actualizado de X / Twitter
 
@@ -47,9 +46,5 @@ function ShareButtons({ url, title = "" }) {
   );
 }
 
-ShareButtons.propTypes = {
-  url: PropTypes.string.isRequired,
-  title: PropTypes.string,
-};
 
 export default ShareButtons;

@@ -28,7 +28,7 @@ const BASE_POLICY = {
     "https://analytics.google.com",
     "https://*.analytics.google.com",
     "https://*.googletagmanager.com",
-    "https://iieg.jalisco.gob.mx", // acervo de imágenes IIEG (mapoteca/mariachi)
+    "https://iieg.jalisco.gob.mx",
   ],
 
   "media-src": ["'self'", "https://iieg.jalisco.gob.mx"],
@@ -75,19 +75,29 @@ const STAGING_OVERRIDES = {
 };
 
 function mergePolicies(base, overrides) {
-  const merged = { ...base };
+  const merged = {};
+
+  for (const [directive, sources] of Object.entries(base)) {
+    merged[directive] = [...sources];
+  }
+
   for (const [directive, sources] of Object.entries(overrides)) {
     const existing = merged[directive] || [];
     merged[directive] = Array.from(new Set([...existing, ...sources]));
   }
+
   return merged;
 }
 
 function buildCSPString(policy) {
   return Object.entries(policy)
-    .map(([directive, sources]) =>
-      sources.length ? `${directive} ${sources.join(" ")}` : directive
-    )
+    .map(([directive, sources]) => {
+      if (Array.isArray(sources) && sources.length > 0) {
+        return `${directive} ${sources.join(" ")}`;
+      }
+      return directive;
+    })
+    .filter(Boolean)
     .join("; ");
 }
 

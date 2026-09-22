@@ -27,6 +27,10 @@ if (!existsSync("dist")) {
   mkdirSync("dist");
 }
 
+if (csp.includes('"')) {
+  throw new Error("CSP string contiene comillas dobles, revisa csp.config.js");
+}
+
 writeFileSync("dist/csp-header.conf", nginxSnippet);
 console.log("✅ Snippet Nginx generado en dist/csp-header.conf");
 console.log(csp);
