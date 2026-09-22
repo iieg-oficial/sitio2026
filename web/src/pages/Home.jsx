@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams, Link } from 'react-router'
-import { getPageBySlug, getPreviewPage } from '@services/pageService'
+import { useEffect, useState, useCallback } from 'react'
+import { useSearchParams } from 'react-router'
+import { getPreviewPage } from '@services/pageService'
 import BlockRenderer from '@components/BlockRenderer'
 import TrackedLink from '@components/blocks/boton'
 import { Helmet } from 'react-helmet-async'
@@ -12,42 +12,54 @@ function HomePage() {
     const [page, setPage] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    const fetchPageHome = async () => {
+    const fetchPageHome = useCallback(async () => {
         try {
-            const res = await api.get('/paginas/slug/home')
-            return res.data
+            const res = await api.get('/paginas/slug/home');
+            return res.data;
         } catch (err) {
-            console.error("Error fetching page home:", err)
-            throw err
+            console.error("Error fetching page home:", err);
+            throw err;
         }
-    }
+    }, []);
+
     useEffect(() => {
-        setLoading(true)
+        let isMounted = true;
 
-        const loadPage = previewToken
-            ? getPreviewPage(previewToken)
-            : fetchPageHome()
+        const loadPageData = async () => {
+            // Solo activamos loading si no es el primer render y cambia previewToken
+            setLoading(true);
+            try {
+                const loadPromise = previewToken
+                    ? getPreviewPage(previewToken)
+                    : fetchPageHome();
 
-        loadPage
-            .then(data => {
-                if (data && data.sections && data.sections.length > 0) {
-                    setPage(data)
+                const data = await loadPromise;
+
+                if (isMounted && data?.sections?.length > 0) {
+                    setPage(data);
                 }
-            })
-            .catch(err => {
-                console.error("Failed to load home page config", err)
-            })
-            .finally(() => {
-                setLoading(false)
-            })
-    }, [previewToken])
+            } catch (err) {
+                console.error("Failed to load home page config", err);
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        loadPageData();
+
+        return () => {
+            isMounted = false; // Evita fugas de memoria si el componente se desmonta
+        };
+    }, [previewToken, fetchPageHome]);
 
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-900"></div>
             </div>
-        )
+        );
     }
 
 

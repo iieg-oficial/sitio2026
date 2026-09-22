@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
     const isSearching = searchTerm.length > 0;
@@ -59,5 +59,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
         </div>
     );
 }
+
+
 
 export default Searcher;

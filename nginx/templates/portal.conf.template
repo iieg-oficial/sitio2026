@@ -190,10 +190,13 @@ server {
     }
 
     location / {
+        include /usr/share/nginx/html/csp-header.conf;
         try_files $uri /index.html;
     }
 
+    # Bloque de control de caché para index.html manteniendo el CSP
     location = /index.html {
+        include /usr/share/nginx/html/csp-header.conf;
         add_header Cache-Control "no-store" always;
     }
 }

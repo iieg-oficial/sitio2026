@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '@services/apiService'
 import Backlink from '../pageComponents/Backlink'
-import { Download, X } from "lucide-react";
 import TrackedLink from '@components/blocks/boton'
 import { SafeHtml } from '@components/SafeHtml';
 
@@ -116,7 +115,7 @@ export default function Mapas() {
                                     </button>*/}
                         
                                     <div className="flex items-center justify-center mb-5">
-                                        <span class="griddy-icons--chat-circle-info bg-tertiary mr-5"></span>
+                                        <span className="griddy-icons--chat-circle-info bg-tertiary mr-5"></span>
                                         <h2 className="text-lg font-semibold text-tertiary">
                                             Importante
                                         </h2>
@@ -153,7 +152,7 @@ export default function Mapas() {
 
                     <>
                         <div className='col-span-6 text-14 bg-[#FFF2E5] border border-[#FF83004D] text-tertiary rounded-2xl p-5 mt-4 mb-7 flex gap-2 font-garet text-14'>
-                            <span class="griddy-icons--chat-circle-info bg-tertiary"></span> <span>Información no oficial y sin efectos legales. Este material se difunde exclusivamente por su valor histórico-cultural y con fines de investigación.</span>
+                            <span className="griddy-icons--chat-circle-info bg-tertiary"></span> <span>Información no oficial y sin efectos legales. Este material se difunde exclusivamente por su valor histórico-cultural y con fines de investigación.</span>
                         </div>
                     </>
 

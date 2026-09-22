@@ -22,8 +22,7 @@ export default function Snieg() {
             
             {snieg.map(snieg => {
 
-                const original = snieg.imagen
-                const thumb = original.substring(original.lastIndexOf('/') + 1);
+                const original = snieg.imagen                
 
                 return (
                     <ConditionalLink
@@ -34,8 +33,7 @@ export default function Snieg() {
                     >
                     <div key={snieg.id} className={`bg-card rounded-3xl p-6 mb-5 group grid md:grid-cols-6 gap-4 ${ snieg.enlace ? "hover:border-1 hover:border-tertiary" : ""} `}>
                         <div className='md:col-span-2'>
-                            <img src={snieg.imagen ? snieg.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={snieg.titulo} />
-                            {/*<img src={snieg.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/snieg/${thumb}?w=400` : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={snieg.titulo} /> */}
+                            <img src={snieg.imagen ? snieg.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={snieg.titulo} />                            
                         </div>
                         <div className='lg:col-span-4'>
                             <h2 className='text-36 text-titulo font-garet-extra font-extrabold'>{snieg.titulo}</h2>

@@ -14,19 +14,30 @@
 import { writeFileSync, existsSync, mkdirSync } from "fs";
 import { CSP_POLICY, buildCSPString } from "../config/csp.config.js";
 
-const csp = buildCSPString(CSP_POLICY);
+// Se sanitiza la cadena eliminando saltos de línea internos (\r, \n) y dobles espacios
+const csp = buildCSPString(CSP_POLICY)
+  .replace(/[\r\n]+/g, " ")
+  .replace(/\s+/g, " ")
+  .trim();
 
-const nginxSnippet = `# ------------------------------------------------------------------
-# Generado automáticamente desde web/config/csp.config.js
-# NO EDITAR A MANO — correr: node scripts/generate-csp-nginx.js
-# ------------------------------------------------------------------
-add_header Content-Security-Policy "${csp}" always;
-`;
+// Se asegura que los saltos de línea del archivo sean estrictamente \n (LF)
+const nginxSnippet = [
+  "# ------------------------------------------------------------------",
+  "# Generado automáticamente desde web/config/csp.config.js",
+  "# NO EDITAR A MANO — correr: node scripts/generate-csp-nginx.js",
+  "# ------------------------------------------------------------------",
+  `add_header Content-Security-Policy "${csp}" always;`,
+  ""
+].join("\n");
 
 if (!existsSync("dist")) {
   mkdirSync("dist");
 }
 
-writeFileSync("dist/csp-header.conf", nginxSnippet);
+if (csp.includes('"')) {
+  throw new Error("CSP string contiene comillas dobles, revisa csp.config.js");
+}
+
+writeFileSync("dist/csp-header.conf", nginxSnippet, "utf-8");
 console.log("✅ Snippet Nginx generado en dist/csp-header.conf");
 console.log(csp);

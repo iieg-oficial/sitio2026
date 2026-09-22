@@ -22,23 +22,23 @@ function Footer() {
                             </div>
                             <div className='flex md:justify-start justify-center gap-4 content-end'>
                                 <a href="https://www.instagram.com/iiegjalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="line-md--instagram"></span>
+                                    <span className="line-md--instagram"></span>
                                 </a>
 
                                 <a href="https://www.facebook.com/IIEGJalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="ri--facebook-fill"></span>
+                                    <span className="ri--facebook-fill"></span>
                                 </a>
                                 
                                 <a href="https://x.com/IIEGJ" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="pajamas--twitter"></span>
+                                    <span className="pajamas--twitter"></span>
                                 </a>
                                 
                                 <a href="www.linkedin.com/company/iiegjalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="ri--linkedin-fill"></span>
+                                    <span className="ri--linkedin-fill"></span>
                                 </a>
                                 
                                 <a href="https://www.youtube.com/@IIEGJaliscoGob" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="mdi--youtube"></span>
+                                    <span className="mdi--youtube"></span>
                                 </a>
                             </div>                            
                         </div>

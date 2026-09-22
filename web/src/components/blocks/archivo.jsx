@@ -18,7 +18,7 @@ export default function Archivo() {
         setArchivos(response.data);
     };
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     useEffect(() => {
         showData();
     }, []);

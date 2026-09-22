@@ -102,7 +102,7 @@ export default function Sistemas() {
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
 
             <div className="relative container mx-auto px-2 mt-15">
-                    <span class="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
+                    <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
                     <div
                         className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto snap-x snap-mandatory"
                         style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: '5px' }}
@@ -126,8 +126,7 @@ export default function Sistemas() {
                     {filteredByTab.length > 0 && (
                         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                             {currentSystems.map((sistema) => {
-                                const original = sistema.imagen;
-                                const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
+                                const original = sistema.imagen;                                
                                 
                                 const hasLink = Boolean(sistema.link);
                                 const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);

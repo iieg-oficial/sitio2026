@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useSearchParams, Link } from 'react-router'
 import { Helmet } from 'react-helmet-async'
 import api from '@services/apiService'
 import Backlink from '../components/pageComponents/Backlink'

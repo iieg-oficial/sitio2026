@@ -1,19 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SafeHtml } from '@components/SafeHtml';
 
 export default function CapacitacionesList({ curso }) {
-    const [singleCapacitacion, setSingleCapacitacion] = useState(curso ?? null);
-    const [activeTab, setActiveTab] = useState(null);
+    const singleCapacitacion = curso ?? null;
 
-    useEffect(() => {
-        setSingleCapacitacion(curso ?? null);
-    }, [curso]);
+    // Calculamos cuál debería ser el nombre por defecto del último módulo
+    const defaultTab = Array.isArray(singleCapacitacion?.modulos) && singleCapacitacion.modulos.length > 0
+        ? singleCapacitacion.modulos[singleCapacitacion.modulos.length - 1].nombre
+        : null;
 
-    useEffect(() => {
-        if (Array.isArray(singleCapacitacion?.modulos) && singleCapacitacion.modulos.length > 0) {
-            setActiveTab([...singleCapacitacion.modulos].reverse()[0].nombre);
-        }
-    }, [singleCapacitacion]);
+    // Inicializamos el estado directamente con ese valor
+    const [activeTab, setActiveTab] = useState(defaultTab);
 
     if (!singleCapacitacion) {
         return <div>Cargando ...</div>;

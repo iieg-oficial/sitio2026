@@ -231,7 +231,7 @@ export default function Mapas() {
                                                         />
                                                     )}
                                                     <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                                                        <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
+                                                        <TrackedLink to={`/galeria-de-mapas/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
                                                             <h3 className='text-white text-22 font-garet-bold font-800'>{mapa.titulo}</h3>
                                                             <div className='flex mb-5 mt-5 gap-2'> 
                                                                 {mapa.anyo ? (

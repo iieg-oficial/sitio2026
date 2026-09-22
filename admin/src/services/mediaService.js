@@ -466,7 +466,8 @@ export default {
     getFolders,
     createFolder,
     deleteFolder,
-
+    buildMediaUrl,
+    sanitizeFolderPath,
     formatFileSize,
     getFileIcon,
     validateFileType,

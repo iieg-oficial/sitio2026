@@ -1,4 +1,3 @@
-import { Link } from 'react-router'
 import { format, isValid} from 'date-fns';
 import { es } from 'date-fns/locale';
 import TrackedLink from '@components/blocks/boton'
@@ -51,16 +50,12 @@ function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
                         const original = post.gallery_images?.[0]?.url
                         const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
 
-                        const imgSrc = thumb 
-                                        ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/blog/${thumb}?w=400` 
-                                        : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
-
                         return(
                             <TrackedLink to={`/comunicacion-institucional/${post.slug}`} className="" rel="noopener noreferrer" key={post.id}>
                                 <div className="bg-card p-4 rounded-3xl hover:border hover:border-primary grid xl:grid-cols-2 gap-4 px-5 group">
                                     <div>
                                         <img src={post.gallery_images?.[0]?.url ?? "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={post.titulo} className='rounded-3xl mx-auto'/>
-                                        {/*<img src={imgSrc} alt={post.titulo} className='rounded-3xl'/>*/}
+                                        
                                     </div>
                                     <div>
                                         <h3 className="text-primary font-garet-extra text-28">{post.titulo}</h3>

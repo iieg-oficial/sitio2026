@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, Component } from 'react';
+import { lazy, Suspense, Component } from 'react';
 import { useParams } from 'react-router';
 import { pageMap } from '../../config/pageMap';
 
