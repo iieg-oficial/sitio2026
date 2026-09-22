@@ -160,7 +160,7 @@ def _build_result_url(model_name: str, row) -> str:
         return f"/comunidad/{row.slug}" if getattr(row, "slug", None) else "/comunidad"
 
     if model_name == "Mapa":
-        return f"/mapas-historicos/{row.slug}" if getattr(row, "slug", None) else "/mapas-historicos"
+        return f"/galeria-de-mapas/{row.slug}" if getattr(row, "slug", None) else "/galeria-de-mapas"
 
     if model_name == "Cursos":
         return f"/cursos/{row.slug}" if getattr(row, "slug", None) else "/cursos"
