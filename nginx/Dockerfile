@@ -3,17 +3,23 @@ WORKDIR /app
 COPY ./web/package*.json ./
 RUN npm install --no-audit --no-fund
 COPY ./web/ .
+
+# Argumentos de compilación
 ARG VITE_NODE_ENV=production
+ARG VITE_APP_ENV=production
 ARG VITE_GOOGLE_TAG_MANAGER_ID
-ENV VITE_GOOGLE_TAG_MANAGER_ID=$VITE_GOOGLE_TAG_MANAGER_ID
 ARG VITE_WEB_API_URL
 ARG VITE_API_TIMEOUT=10000
 ARG VITE_APP_NAME
 ARG VITE_MEDIA_BASE_URL
 ARG VITE_MAPALAB_BASE_URL
 ARG VITE_MAPALAB_API_KEY
-ENV VITE_NODE_ENV=$VITE_NODE_ENV
 ARG VITE_GOOGLE_ANALYTICS_ID
+
+# Exportar variables para Node.js / Vite / postbuild
+ENV VITE_NODE_ENV=$VITE_NODE_ENV
+ENV VITE_APP_ENV=$VITE_APP_ENV
+ENV VITE_GOOGLE_TAG_MANAGER_ID=$VITE_GOOGLE_TAG_MANAGER_ID
 ENV VITE_GOOGLE_ANALYTICS_ID=$VITE_GOOGLE_ANALYTICS_ID
 ENV VITE_WEB_API_URL=$VITE_WEB_API_URL
 ENV VITE_API_TIMEOUT=$VITE_API_TIMEOUT
@@ -21,6 +27,7 @@ ENV VITE_APP_NAME=$VITE_APP_NAME
 ENV VITE_MEDIA_BASE_URL=$VITE_MEDIA_BASE_URL
 ENV VITE_MAPALAB_BASE_URL=$VITE_MAPALAB_BASE_URL
 ENV VITE_MAPALAB_API_KEY=$VITE_MAPALAB_API_KEY
+
 RUN npm run build
 
 FROM node:24-alpine AS admin-builder
@@ -28,29 +35,38 @@ WORKDIR /app
 COPY ./admin/package*.json ./
 RUN npm install --no-audit --no-fund
 COPY ./admin/ .
-ARG VITE_NODE_ENV=production
 
+ARG VITE_NODE_ENV=production
 ARG VITE_ADMIN_API_URL
 ARG VITE_ADMIN_API_TIMEOUT=10000
 ARG VITE_ADMIN_APP_NAME
 ARG VITE_MEDIA_BASE_URL
-ENV VITE_NODE_ENV=$VITE_NODE_ENV
 ARG VITE_GOOGLE_ANALYTICS_ID
 ARG VITE_GOOGLE_TAG_MANAGER_ID
+
+ENV VITE_NODE_ENV=$VITE_NODE_ENV
 ENV VITE_GOOGLE_TAG_MANAGER_ID=$VITE_GOOGLE_TAG_MANAGER_ID
 ENV VITE_GOOGLE_ANALYTICS_ID=$VITE_GOOGLE_ANALYTICS_ID
 ENV VITE_ADMIN_API_URL=$VITE_ADMIN_API_URL
 ENV VITE_ADMIN_API_TIMEOUT=$VITE_ADMIN_API_TIMEOUT
 ENV VITE_ADMIN_APP_NAME=$VITE_ADMIN_APP_NAME
 ENV VITE_MEDIA_BASE_URL=$VITE_MEDIA_BASE_URL
+
+# Nota: Si admin no tiene script de CSP, asegurarse que admin/package.json no ejecute postbuild con el script de web
 RUN npm run build
 
 FROM nginx:alpine
+# Limpiar configuraciones por defecto
 RUN rm -f /etc/nginx/conf.d/default.conf
+
+# Copiar configuraciones globales y plantillas
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./nginx/templates/portal.conf.template /etc/nginx/templates/portal.conf.template
 COPY ./nginx/static /usr/share/nginx/static
+
+# Copia de artefactos compilados (incluye /usr/share/nginx/html/csp-header.conf)
 COPY --from=web-builder /app/dist /usr/share/nginx/html
 COPY --from=admin-builder /app/dist /usr/share/nginx/html/portal-admin
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
