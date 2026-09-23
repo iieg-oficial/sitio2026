@@ -56,7 +56,11 @@ export default function Reportes() {
 
         const fetchReportes = async () => {
             try {
-            const response = await api.get('/reportes');
+            // Se envía un parámetro timestamp _t para evitar respuestas en memoria caché
+            const response = await api.get('/reportes', {
+                params: { _t: new Date().getTime() }
+            });
+
             if (isMounted) {
                 // Si la respuesta es un objeto con la propiedad "reportes", tomar el array
                 const data = Array.isArray(response.data)
@@ -71,6 +75,10 @@ export default function Reportes() {
         };
 
         fetchReportes();
+
+        // Re-consultar la API automáticamente cuando el usuario regresa a esta pestaña
+        const handleFocus = () => fetchReportes();
+        window.addEventListener('focus', handleFocus);
 
         return () => {
             isMounted = false;

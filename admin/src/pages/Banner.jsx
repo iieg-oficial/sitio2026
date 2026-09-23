@@ -26,8 +26,9 @@ export default function Banner() {
     const fetchBanners = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/banner');
-            setBanners(response.data.banners);
+        const response = await api.get('/banner');
+            // El endpoint administrativo responde: { banners: [...], total: X }
+            setBanners(response.data.banners || []); 
         } catch (error) {
             message.error('Error al cargar los banners');
         } finally {

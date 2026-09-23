@@ -32,7 +32,7 @@ export default function Reportes() {
         fetchSubjects();
         fetchPeriocidad();
         fetchMeses();
-        fetchReportes();
+        fetchReportes('', 1, 10);
     }, []);
 
     const getDynamicFolder = () => {
@@ -54,24 +54,28 @@ export default function Reportes() {
         }
     };
 
-    const fetchReportes = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchReportes = async (search = '', page = 1, pageSize = pagination.pageSize) => {
         setLoading(true);
+        
         try {
+            // Se agrega timestamp _t para romper cualquier caché del navegador/servidor
             const response = await api.get('/reportes', {
                 params: {
                     ...(search ? { search } : {}),
-                    page,
-                    pageSize
+                    page: page,
+                    pageSize: pageSize,
+                    _t: new Date().getTime() 
                 }
             });
+
+            
             setReportes(response.data.reportes);
-            setPagination((prev) => ({
-                ...prev,
+            setPagination({
                 current: page,
-                pageSize,
+                pageSize: pageSize,
                 total: response.data.total
-            }));
-        } catch {
+            });
+        } catch (error) {            
             message.error('Error al cargar reportes');
         } finally {
             setLoading(false);
@@ -83,6 +87,7 @@ export default function Reportes() {
     });
 
     const handleTableChange = (newPagination) => {
+        console.log("🔄 Cambio de página en la tabla Antd:", newPagination);
         fetchReportes(searchText, newPagination.current, newPagination.pageSize);
     };
 
@@ -165,16 +170,25 @@ export default function Reportes() {
     const handleSubmit = async (values) => {
         try {
             const payload = { ...values, tema_ids: selectedSubjects };
+            
+
             if (editingReporte) {
                 await api.patch(`/reportes/${editingReporte.id}`, payload);
                 message.success('Reporte actualizado exitosamente');
+                await fetchReportes(searchText, pagination.current, pagination.pageSize);
             } else {
                 await api.post('/reportes/create', payload);
                 message.success('Reporte creado exitosamente');
+
+                setSearchText('');
+
+                await fetchReportes(searchText, 1, pagination.pageSize);
             }
+
             setModalVisible(false);
-            fetchReportes(searchText, pagination.current, pagination.pageSize);
+            
         } catch {
+            console.error("Error al guardar:", error);
             message.error(editingReporte ? 'Error al actualizar reporte' : 'Error al crear reporte');
         }
     };
@@ -185,7 +199,7 @@ export default function Reportes() {
             title: 'Tema',
             dataIndex: 'temas',
             key: 'temas',
-            render: (temas) => temas.map((t) => t.titulo).join(', ')
+            render: (temas) => (temas || []).map((t) => t.titulo).join(', ')
         },
         {
             title: 'Fecha',
