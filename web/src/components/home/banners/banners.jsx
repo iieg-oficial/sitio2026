@@ -14,16 +14,28 @@ export default function Banners() {
 
     useEffect(() => {
         const fetchBanners = async () => {
-            const response = await api.get('/banner', { params: { activo: true } })
-            setBanners(response.data)
+            try {
+                const response = await api.get('/banner');
+                
+                const data = Array.isArray(response.data) 
+                    ? response.data 
+                    : (response.data.banners || []);
+
+                setBanners(data);
+            } catch (error) {
+                console.error("Error al cargar banners:", error);
+            }
         }
         fetchBanners()
     }, [location])
+
+    if (banners.length === 0) return null; // Evita renderizar Swiper vacío
 
 
   return (
     <>    
       <Swiper
+        key={banners.length}
         pagination={{
           dynamicBullets: true,
           clickable: true,
