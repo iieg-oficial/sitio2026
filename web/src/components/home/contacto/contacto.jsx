@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import api from "../../../services/apiService";
 import MapaContacto from './mapaContacto';
 import mec from '@/config/mapalab-embed-content.json';
@@ -10,17 +11,30 @@ export default function Contacto() {
         message: "",
     });
     const [status, setStatus] = useState("");
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const recaptchaRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!captchaToken) {
+            setStatus("captcha_error");
+            return;
+        }
+
         setStatus("Enviando...");
         try {
-            // Usamos el servicio de API configurado que ya tiene la baseURL adecuada
-            const response = await api.post("/contacto/", form);
+            
+            const response = await api.post("/contacto/", {
+                ...form,
+                recaptcha_token: captchaToken
+            });
             
             if (response.data.status === "ok") {
                 setStatus("ok");
                 setForm({ name: "", email: "", message: "" });
+                setCaptchaToken(null);
+                recaptchaRef.current?.reset();
             } else {
                 setStatus("error");
             }
@@ -70,6 +84,15 @@ export default function Contacto() {
                             required
                         ></textarea>
                     </div>
+
+                    <div className="my-4">
+                        <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey="TU_CLAVE_DE_SITIO_RECAPTCHA" // Reemplazar o usar import.meta.env.VITE_RECAPTCHA_SITE_KEY
+                            onChange={(token) => setCaptchaToken(token)}
+                            onExpired={() => setCaptchaToken(null)}
+                        />
+                    </div>
                     
                     <button 
                         type="submit" 
@@ -85,6 +108,12 @@ export default function Contacto() {
                         <div className="p-4 bg-green-50 border-l-4 border-exito text-exito animate-fade-in">
                             <p className="font-bold">✓ ¡Éxito!</p>
                             <p className="text-sm">Tu mensaje ha sido enviado correctamente.</p>
+                        </div>
+                    )}
+                    {status === "captcha_error" && (
+                        <div className="p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 animate-fade-in">
+                            <p className="font-bold">⚠ Verificación requerida</p>
+                            <p className="text-sm">Por favor, completa la casilla del Captcha antes de enviar.</p>
                         </div>
                     )}
                     {status === "error" && (
