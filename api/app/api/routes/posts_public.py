@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -19,9 +19,15 @@ router = APIRouter(prefix="/posts", tags=["portal - posts"])
 
 @router.get("", response_model=PostList)
 async def listar_posts(
+    response: Response,
     db: Session = Depends(get_db),
 ):
-    posts = db.execute(select(Posts)).scalars().all()
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
+    # Ordenar por ID descendente (creación más reciente primero)
+    stmt = select(Posts).order_by(Posts.id.desc())
+    posts = db.execute(stmt).scalars().all()
+
     return {
         "posts": posts,
         "total": len(posts),

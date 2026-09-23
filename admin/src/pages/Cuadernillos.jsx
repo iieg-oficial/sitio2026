@@ -19,7 +19,7 @@ export default function Cuadernillos() {
     const watchAnyo = Form.useWatch('anyo', form);
     
     useEffect(() => {
-        fetchCuadernillos();
+        fetchCuadernillos('', 1, pagination.pageSize);
         fetchMunicipios();
     }, []);
 
@@ -43,17 +43,18 @@ export default function Cuadernillos() {
         }
     }
 
-    const fetchCuadernillos = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchCuadernillos = async (search = '', page = 1, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
             const response = await api.get('/cuadernillos', {
                 params: {
                     ...(search ? { search } : {}),
                     page,
-                    pageSize
+                    pageSize,
+                    _t: new Date().getTime() // Anti-caché
                 }
             });
-            setCuadernillos(response.data.cuadernillos);
+            setCuadernillos(response.data.cuadernillos || []);
             setPagination((prev) => ({
                 ...prev,
                 current: page,
@@ -110,12 +111,17 @@ export default function Cuadernillos() {
             if (editingCuadernillo) {
                 await api.patch(`/cuadernillos/${editingCuadernillo.id}`, values);
                 message.success('Cuadernillo actualizado');
+                setModalVisible(false);
+                // Mantiene la vista actual al editar
+                await fetchCuadernillos(searchText, pagination.current, pagination.pageSize);
             } else {
                 await api.post('/cuadernillos', values);
                 message.success('Cuadernillo creado');
+                setModalVisible(false);
+                setSearchText('');
+                // Redirige automáticamente a la página 1 sin filtro para que aparezca arriba de primero
+                await fetchCuadernillos('', 1, pagination.pageSize);
             }
-            setModalVisible(false);
-            fetchCuadernillos(searchText, pagination.current, pagination.pageSize);
         } catch (error) {
             message.error('Error al guardar el cuadernillo');
         }

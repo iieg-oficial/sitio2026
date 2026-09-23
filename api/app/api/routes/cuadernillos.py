@@ -13,6 +13,15 @@ from app.schemas import CuadernilloCreate, CuadernilloOut, CuadernilloResponse
 
 router = APIRouter(prefix="/cuadernillos", tags=["cuadernillos"])
 
+def parse_year(val) -> int:
+    """Convierte el valor de año a entero de forma segura."""
+    if not val:
+        return 0
+    try:
+        return int(str(val).strip())
+    except (ValueError, TypeError):
+        return 0
+
 @router.get("/", response_model=CuadernilloResponse)
 def read_cuadernillos(
     search: Optional[str] = Query(None),
@@ -30,17 +39,28 @@ def read_cuadernillos(
             )
         )
 
+    # 1. Total de registros para la paginación
     total = db.execute(
         select(func.count()).select_from(query.subquery())
     ).scalar_one()
 
-    cuadernillos = db.execute(
-        query.order_by(Cuadernillo.anyo.desc(), Cuadernillo.id.desc())
-        .offset((page - 1) * page_size)
-        .limit(page_size)
+    # 2. Traer todos los registros filtrados ordenados por ID desc por defecto
+    all_cuadernillos = db.execute(
+        query.order_by(Cuadernillo.id.desc())
     ).scalars().all()
 
-    return {"cuadernillos": cuadernillos, "total": total}
+    # 3. Ordenar de manera segura en Python: 1º Año (desc) -> 2º ID (desc)
+    all_cuadernillos.sort(
+        key=lambda x: (parse_year(x.anyo), x.id or 0),
+        reverse=True
+    )
+
+    # 4. Aplicar paginación manual sobre el arreglo ordenado
+    start = (page - 1) * page_size
+    end = start + page_size
+    paginated_cuadernillos = all_cuadernillos[start:end]
+
+    return {"cuadernillos": paginated_cuadernillos, "total": total}
 
 
 @router.post("/", response_model=CuadernilloOut, status_code=status.HTTP_201_CREATED)

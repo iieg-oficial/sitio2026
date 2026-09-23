@@ -4,9 +4,13 @@ import TrackedLink from '@components/blocks/boton'
 import { SafeHtml } from '@components/SafeHtml';
 
 function PostList({ results = [], tabs = [], activeTab = 0, setActiveTab }) {
-    if (!results || results.length === 0) return <p>No se encontraron resultados.</p>;
+    if (!tabs || tabs.length === 0) {
+        if (!results || results.length === 0) return <p className="text-center my-15">No se encontraron resultados.</p>;
+    }
 
-     const TabButton = ({ children, active, ...props }) => (
+    const sortedResults = [...results].sort((a, b) => (b.id || 0) - (a.id || 0));
+
+    const TabButton = ({ children, active, ...props }) => (
             <button
               type="button"
               {...props}

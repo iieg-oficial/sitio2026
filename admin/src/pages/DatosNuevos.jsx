@@ -25,7 +25,7 @@ export default function DatosNuevos() {
     const fetchTipos = async () => {
         try {
             const response = await api.get('/datos-nuevos/tipo');
-            setTipos(response.data.tipos);
+            setTipos(response.data.tipos || []);
         } catch (error) {
             message.error('Error al cargar los tipos');
         } finally {
@@ -36,8 +36,10 @@ export default function DatosNuevos() {
     const fetchDatosNuevos = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/datos-nuevos');
-            setDatosNuevos(response.data.datos_nuevos);
+            const response = await api.get('/datos-nuevos', {
+                params: { _t: new Date().getTime() }
+            });
+            setDatosNuevos(response.data.datos_nuevos || []);
         } catch (error) {
             message.error('Error al cargar los datos nuevos');
         }
@@ -85,10 +87,11 @@ export default function DatosNuevos() {
             } else {
                 await api.post('/datos-nuevos/create', values);
                 message.success('Dato nuevo creado exitosamente');
+                setSearchText('');
             }
             setIsModalVisible(false);
-            fetchDatosNuevos();
-        } catch (error) {
+            await fetchDatosNuevos();
+        } catch {
             message.error(editingData ? 'Error al actualizar el dato nuevo' : 'Error al crear el dato nuevo');
         }
     };

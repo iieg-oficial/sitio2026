@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
@@ -22,42 +22,43 @@ export default function Posts() {
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
     useEffect(() => {
-        fetchPosts();
+        fetchPosts('', 1, pagination.pageSize);
         fetchSubjects();
     }, []);
-
 
     const removeGalleryImage = (url) => {
         setGalleryImages((prev) => prev.filter((img) => img !== url));
     };
     
     const fetchSubjects = async () => {
-        
         try {
             const response = await api.get('/subject/tree');
-            setSubjects(response.data);
+            setSubjects(response.data || []);
         } catch {
             message.error('Error al cargar temas');
         } 
     };
     
-    const fetchPosts = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchPosts = async (search = '', page = 1, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
             const response = await api.get('/posts', {
                 params: {
                     ...(search ? { search } : {}),
                     page,
-                    pageSize
+                    pageSize,
+                    _t: new Date().getTime()
                 }
             });
-            setPosts(response.data.posts);
+            setPosts(response.data.posts || []);
+
             setPagination((prev) => ({
                 ...prev,
                 current: page,
                 pageSize,
-                total: response.data.total
+                total: response.data.total || 0
             }));
+
         } catch {
             message.error('Error al cargar');
         } finally {
@@ -82,7 +83,6 @@ export default function Posts() {
     };
 
     const handleEdit = (record) => {
-        
         setEditingPost(record);
         const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
@@ -101,7 +101,7 @@ export default function Posts() {
             onOk: async () => {
                 try {
                     await api.delete(`/posts/${record.id}`);
-                    message.success('eliminado exitosamente');
+                    message.success('Eliminado exitosamente');
                     fetchPosts(searchText, pagination.current, pagination.pageSize);
                 } catch {
                     message.error('Error al eliminar');
@@ -117,64 +117,85 @@ export default function Posts() {
                 tema_ids: selectedSubjects,
                 gallery_urls: galleryImages.map((img) => (typeof img === 'string' ? img : img.url)),
             };
-            console.log('Payload enviado:', payload); // <-- temporal
+
             if (editingPost) {
                 await api.patch(`/posts/${editingPost.id}`, payload);
                 message.success('Actualizado exitosamente');
+                setModalVisible(false);
+                await fetchPosts(searchText, pagination.current, pagination.pageSize);
             } else {
                 await api.post('/posts/create', payload);
-                message.success('creado exitosamente');
+                message.success('Creado exitosamente');
+                setModalVisible(false);
+                setSearchText('');
+                await fetchPosts('', 1, pagination.pageSize);
             }
-            setModalVisible(false);
-            fetchPosts(searchText, pagination.current, pagination.pageSize);
         } catch {
             message.error(editingPost ? 'Error al actualizar' : 'Error al crear');
         }
     };
+
+    const SITE_URL = window.location.origin;
 
     const columns = [
         {
             title: 'Titulo',
             dataIndex: 'titulo',
             key: 'titulo',
-            sorter: (a, b) => a.titulo.localeCompare(b.titulo)
+            sorter: (a, b) => (a.titulo || '').localeCompare(b.titulo || '')
         },
         {
             title: 'Resumen',
             dataIndex: 'resumen',
             key: 'resumen',
-            sorter: (a, b) => a.resumen.localeCompare(b.resumen),
+            sorter: (a, b) => (a.resumen || '').localeCompare(b.resumen || ''),
             render: (text) => (
                 <div
-                className="tiptap-content"
-                dangerouslySetInnerHTML={{ __html: text }}
+                    className="tiptap-content"
+                    dangerouslySetInnerHTML={{ __html: text || '' }}
                 />
             ),
         },
         {
-            title: 'Slug',
+            title: 'URL Completa',
             dataIndex: 'slug',
-            key: 'slug',
-            sorter: (a, b) => a.slug.localeCompare(b.slug)
+            key: 'url_completa',
+            render: (slug) => {
+                if (!slug) return null;
+                const fullUrl = `${SITE_URL}/comunicacion/${slug}`;
+                return (
+                    <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1890ff' }}>
+                        {fullUrl}
+                    </a>
+                );
+            }
         },
         {
             title: 'Fecha',
             dataIndex: 'fecha',
             key: 'fecha',
-            render: (date) => new Date(date).toLocaleDateString('es-MX'),
-            sorter: (a, b) => new Date(a.fecha) - new Date(b.fecha)
+            render: (date) => (date ? new Date(date).toLocaleDateString('es-MX') : '-'),
+            sorter: (a, b) => {
+                const dateA = a.fecha ? new Date(a.fecha).getTime() : 0;
+                const dateB = b.fecha ? new Date(b.fecha).getTime() : 0;
+                return dateA - dateB;
+            }
         },
         {
             title: 'Tema',
             dataIndex: 'temas',
             key: 'temas',
-            render: (temas) => temas.map((t) => t.titulo).join(', '),
-            sorter: (a, b) => a.temas.map((t) => t.titulo).join(', ').localeCompare(b.temas.map((t) => t.titulo).join(', '))
+            render: (temas) => (Array.isArray(temas) ? temas.map((t) => t.titulo || '').join(', ') : ''),
+            sorter: (a, b) => {
+                const stringA = Array.isArray(a.temas) ? a.temas.map((t) => t.titulo || '').join(', ') : '';
+                const stringB = Array.isArray(b.temas) ? b.temas.map((t) => t.titulo || '').join(', ') : '';
+                return stringA.localeCompare(stringB);
+            }
         },
         {
             title: 'Acciones',
             key: 'actions',
-            render: (_, record) => (
+            render: (item, record) => (
                 <Space>
                     <Button
                         type="link"
@@ -222,12 +243,12 @@ export default function Posts() {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                            current: pagination.current,
-                            pageSize: pagination.pageSize,
-                            total: pagination.total,
-                            showSizeChanger: true,
-                            showTotal: (total) => `Total ${total} entradas`
-                        }}
+                        current: pagination.current,
+                        pageSize: pagination.pageSize,
+                        total: pagination.total,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} entradas`
+                    }}
                     onChange={handleTableChange}
                 />
             </Card>
@@ -285,7 +306,8 @@ export default function Posts() {
                         <Input type="date" />
                     </Form.Item>
 
-                    <Form.Item name="claves"
+                    <Form.Item 
+                        name="claves"
                         label="Palabras clave"
                         rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
                     >
@@ -299,7 +321,8 @@ export default function Posts() {
                             setSelectedSubjects(ids);
                         }}
                     />
-                    <Form.Item name="video"
+                    <Form.Item 
+                        name="video"
                         label="Video"
                         rules={[{ required: false, message: 'Por favor ingrese url' }]}
                     >
@@ -318,38 +341,35 @@ export default function Posts() {
                         <Space direction="vertical" style={{ width: '100%', marginTop: 10 }}>
                             {galleryImages.map((url) => (
                                 <div key={url} style={{ marginBottom: 10, borderBottom: '1px solid #a59c9c', paddingBottom: 10, position: 'relative' }}>
-                                        
-                                        <div style={{ margin: '15px 0px' }}>
-                                            <a href={url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="block text-xs text-blue-600 truncate mt-1"
-                                                title={url}
-                                            >
-                                                <img src={url}
+                                    <div style={{ margin: '15px 0px' }}>
+                                        <a href={url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="block text-xs text-blue-600 truncate mt-1"
+                                            title={url}
+                                        >
+                                            <img src={url}
                                                 style={{ maxWidth: 260, marginBottom: 10 }}
                                                 onError={(e) => { e.target.style.display = 'none'; }}
-                                                />                                            
-                                            </a>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeGalleryImage(url)}
-                                                style={{ float: 'right',width: '10%' }}
-                                            >
-                                                ×
-                                            </button>
-                                            <Form.Item name="url" noStyle>
-                                                <Input placeholder={url} value={url} />
-                                            </Form.Item>
-                                        </div>
+                                            />                                            
+                                        </a>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeGalleryImage(url)}
+                                            style={{ float: 'right', width: '10%' }}
+                                        >
+                                            ×
+                                        </button>
+                                        <Form.Item name="url" noStyle>
+                                            <Input placeholder={url} value={url} />
+                                        </Form.Item>
+                                    </div>
                                 </div>
                             ))}
                         </Space>
-                            
-                        
                     </Form.Item>
                 </Form>
             </Modal>
         </div>
-    )
+    );
 }

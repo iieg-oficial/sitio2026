@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from slugify import slugify
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
@@ -38,11 +38,15 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 
 @router.get("", response_model=PostList)
 async def listar_posts(
+    response: Response,
     search: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
+    # Deshabilitar caché del navegador
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
     query = select(Posts)
 
     if search:
@@ -58,8 +62,9 @@ async def listar_posts(
         select(func.count()).select_from(query.subquery())
     ).scalar_one()
 
+    # Ordenar por ID descendente (el más reciente capturado primero)
     posts = db.execute(
-        query.order_by(Posts.fecha.desc(), Posts.id.desc())
+        query.order_by(Posts.id.desc(), Posts.fecha.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()
