@@ -19,16 +19,43 @@ export default function Flashes() {
     const [itemOffset, setItemOffset] = useState(0);
     const keys = ['titulo', 'desc_jal', 'desc_nac', 'periocidad', 'fuente', 'temas.titulo'];
     
+    const loadData = async (isMounted = true) => {
+        try {
+            const timestamp = new Date().getTime();
+            
+            // Consultas en paralelo desactivando la caché de Axios
+            const [resFlashes, resLast] = await Promise.all([
+                api.get('/flashes', { params: { _t: timestamp } }),
+                api.get('/flashes/last', { params: { _t: timestamp } })
+            ]);
 
-    const fetchFlashes = async () => {
-        const response = await api.get('/flashes')
-        setFlashes(response.data.flashes)
-    }
+            if (isMounted) {
+                const dataFlashes = Array.isArray(resFlashes.data)
+                    ? resFlashes.data
+                    : (resFlashes.data.flashes || []);
+                    
+                setFlashes(dataFlashes);
+                setLastFlash(resLast.data[0] || null);
+            }
+        } catch (error) {
+            console.error("Error al cargar flashes:", error);
+        }
+    };
 
-    const fetchLastFlash = async () => {
-        const response = await api.get('/flashes/last')
-        setLastFlash(response.data[0] || null)
-    }
+    useEffect(() => {
+        let isMounted = true;
+        loadData(isMounted);
+
+        // Re-consultar la API automáticamente cuando el usuario regresa a esta pestaña
+        const handleFocus = () => loadData(isMounted);
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            isMounted = false;
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, []);
+
 
     const hasActiveFilters = Boolean(searchTerm.trim() || selectedTemaId || selectedSubtemaId || selectedYear || selectedMonth);
     const itemsPerPage = hasActiveFilters ? 12 : 3;
@@ -43,11 +70,6 @@ export default function Flashes() {
         if (!lastFlash) return flashes;
         return flashes.filter(flash => flash.id !== lastFlash.id);
     }, [flashes, lastFlash]);
-
-    useEffect(() => {
-        fetchFlashes()
-        fetchLastFlash()
-    }, []);
 
     const themes = useMemo(() => {
         const map = new Map();

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
 import '../../blocks/styles/flash.css'
@@ -13,14 +13,34 @@ export default function Flashes() {
     const [flashes, setFlashes] = useState([])
     const location = useLocation()
 
-    useEffect(() => {
-        const fetchFlashes = async () => {
-            const response = await api.get('/flashes/last')
-            setFlashes(response.data)
+    const fetchFlashes = useCallback(async (isMounted = true) => {
+        try {
+            const response = await api.get('/flashes/last', {
+                params: { _t: new Date().getTime() } // Evita caché del navegador/Axios
+            });
+            if (isMounted) {
+                setFlashes(Array.isArray(response.data) ? response.data : []);
+            }
+        } catch (error) {
+            console.error("Error al cargar el último flash:", error);
         }
-        
-        fetchFlashes()
-    }, [location])
+    }, []);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        // Carga inicial al cambiar de ubicación/ruta
+        fetchFlashes(isMounted);
+
+        // Re-consultar automáticamente cuando el usuario regresa a la pestaña
+        const handleFocus = () => fetchFlashes(isMounted);
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            isMounted = false;
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [location, fetchFlashes]);
 
     return (
         <div className="float-left w-full lg:w-10/12">

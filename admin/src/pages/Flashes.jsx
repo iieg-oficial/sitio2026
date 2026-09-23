@@ -22,11 +22,11 @@ export default function Flashes() {
     const [meses, setMeses] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
-    useEffect(() => {
-        fetchFlashes();
+    useEffect(() => {        
         fetchSubjects();
         fetchPeriodo();
         fetchMeses();
+        fetchFlashes('', 1, pagination.pageSize);
     }, []);
 
     const fetchPeriodo = async () => {
@@ -47,24 +47,28 @@ export default function Flashes() {
         } 
     };
 
-    const fetchFlashes = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchFlashes = async (search = '', page = 1, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
             const response = await api.get('/flashes', {
                 params: {
                     ...(search ? { search } : {}),
-                    page,
-                    pageSize
+                    page,        
+                    pageSize,    
+                    _t: new Date().getTime() 
                 }
             });
-            setFlashes(response.data.flashes);
-            setPagination((prev) => ({
-                ...prev,
+
+            setFlashes(response.data.flashes || []);
+
+            setPagination({
                 current: page,
-                pageSize,
-                total: response.data.total
-            }));
-        } catch {
+                pageSize: pageSize,
+                total: response.data.total || 0
+            });
+
+        } catch (error){
+            console.error("Error al cargar flashes:", error);
             message.error('Error al cargar flashes');
         } finally {
             setLoading(false);
@@ -129,19 +133,23 @@ export default function Flashes() {
         });
     };
 
-    const handleSubmit = async (values) => {
+    const handleSubmit = async (values) => {        
         try {
-            // TemaSelector vive fuera del Form, hay que agregar los IDs manualmente
+
+            // TemaSelector vive fuera del Form, se asigna manualmente al payload
             const payload = { ...values, tema_ids: selectedSubjects };
+
             if (editingFlash) {
                 await api.patch(`/flashes/${editingFlash.id}`, payload);
-                message.success('actualizado exitosamente');
+                message.success('Actualizado exitosamente');
+                await fetchFlashes(searchText, pagination.current, pagination.pageSize);
             } else {
                 await api.post('/flashes/create', payload);
-                message.success('creado exitosamente');
+                message.success('Creado exitosamente');
+                setSearchText('');
+                await fetchFlashes('', 1, pagination.pageSize);
             }
             setModalVisible(false);
-            fetchFlashes(searchText, pagination.current, pagination.pageSize);
         } catch {
             message.error(editingFlash ? 'Error al actualizar' : 'Error al crear');
         }
@@ -181,8 +189,7 @@ export default function Flashes() {
             title: "Fecha de publicación",
             dataIndex: "fecha_publicacion",
             key: "fecha_publicacion",
-            render: (date) => new Date(date).toLocaleDateString('es-MX'),
-            sorter: (a, b) => new Date(a.fecha_publicacion) - new Date(b.fecha_publicacion)
+            render: (date) => date ? new Date(date).toLocaleDateString('es-MX') : '-',
         },
         {
             title: 'Link',
