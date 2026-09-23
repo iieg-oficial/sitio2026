@@ -56,10 +56,15 @@ export default function Reportes() {
 
         const fetchReportes = async () => {
             try {
-                const response = await api.get('/reportes');
-                if (isMounted) {
-                    setReportes(response.data.reportes);
-                }
+            const response = await api.get('/reportes');
+            if (isMounted) {
+                // Si la respuesta es un objeto con la propiedad "reportes", tomar el array
+                const data = Array.isArray(response.data)
+                    ? response.data
+                    : (response.data.reportes || []);
+                    
+                setReportes(data);
+            }
             } catch (error) {
                 console.error("Error al cargar reportes:", error);
             }
