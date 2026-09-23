@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import Integer, cast, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db
 from app.models import Documentacion
@@ -14,14 +14,21 @@ router.add_api_route("/tipos", get_documentacion_tipos, methods=["GET"])
 
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
+    response: Response,
     db: Session = Depends(get_db),
 ):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
+    # Consulta directa ordenando por ID descendente (evita el cast que revienta el SQL)
     documentaciones = db.execute(
-        select(Documentacion).order_by(
-            cast(Documentacion.anyo, Integer).desc().nulls_last(),
-            Documentacion.id.desc(),
+        select(Documentacion)
+        .options(
+            joinedload(Documentacion.temas),
+            joinedload(Documentacion.sistemas)
         )
-    ).scalars().all()
+        .order_by(Documentacion.id.desc())
+    ).scalars().unique().all()
+
     return {
         "documentaciones": documentaciones,
         "total": len(documentaciones),
@@ -32,7 +39,15 @@ async def obtener_documentacion(
     documentacion_id: int,
     db: Session = Depends(get_db),
 ):
-    documentacion = db.execute(select(Documentacion).filter(Documentacion.id == documentacion_id)).scalar_one_or_none()
+    documentacion = db.execute(
+        select(Documentacion)
+        .options(
+            joinedload(Documentacion.temas),
+            joinedload(Documentacion.sistemas)
+        )
+        .where(Documentacion.id == documentacion_id)
+    ).scalars().first()
+
     if not documentacion:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
@@ -45,7 +60,15 @@ def get_documentacion_slug(
     db: Session = Depends(get_db),
 ):
     """Obtener una documentación por slug"""
-    documentacion = db.execute(select(Documentacion).filter(Documentacion.slug == slug)).scalar_one_or_none()
+    documentacion = db.execute(
+        select(Documentacion)
+        .options(
+            joinedload(Documentacion.temas),
+            joinedload(Documentacion.sistemas)
+        )
+        .where(Documentacion.slug == slug)
+    ).scalars().first()
+
     if not documentacion:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Documentación no encontrada"
