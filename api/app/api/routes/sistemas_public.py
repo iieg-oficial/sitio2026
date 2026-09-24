@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from sqlalchemy import select
+
 # pyrefly: ignore [missing-import]
-from slugify import slugify
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
 from app.api.deps import get_db
 from app.models import Sistemas, Subject
-from app.schemas.sistemas import SistemasResponse, SistemasOut, SistemasList
+from app.schemas.sistemas import SistemasList, SistemasOut
 
 router = APIRouter(prefix="/sistemas", tags=["sistemas-public"])
 
@@ -54,8 +55,8 @@ def read_sistemas_destacados(
     limit: int = 4,
 ):
     """Obtener todos los sistemas destacados"""
-    sistemas = db.query(Sistemas).filter(Sistemas.destacado == True).offset(skip).limit(limit).all()
-    total = db.query(Sistemas).filter(Sistemas.destacado == True).count()
+    sistemas = db.query(Sistemas).filter(Sistemas.destacado).offset(skip).limit(limit).all()
+    total = db.query(Sistemas).filter(Sistemas.destacado).count()
     return {
         "sistemas": sistemas,
         "total": total,

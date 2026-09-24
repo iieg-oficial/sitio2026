@@ -1,2 +1,2 @@
 resource_type,resource_id,usuario_id,data,estado,comentario_rechazo
-
+posts,post-panorama-economico,1,"{""titulo"":""Panorama economico"",""status"":""draft""}",en_progreso,

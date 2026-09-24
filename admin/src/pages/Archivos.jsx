@@ -4,6 +4,8 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { TableSearch } from '@components/common/TableSearch';
+import { useDebouncedSearch } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -16,6 +18,32 @@ export default function Archivos() {
     const [editingArchivo, setEditingArchivo] = useState(null);
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
+
+    const watchTipo = Form.useWatch('tipo', form);
+    const watchFecha = Form.useWatch('fecha', form);
+
+    const getDynamicFolder = () => {
+        let folderPath = '/archivos';
+
+        if (watchTipo) {
+            folderPath += `/${watchTipo}`;
+        }
+
+        if (watchFecha) {
+            // Se asume que la fecha está en formato 'YYYY-MM-DD' desde el input
+            const dateParts = watchFecha.split('-');
+            if (dateParts.length >= 2) {
+                const year = dateParts[0];
+                /*const month = dateParts[1];
+                folderPath += `/${year}/${month}`;*/
+                folderPath += `/${year}`;
+                }
+        }
+
+
+        return folderPath;
+    };
 
     useEffect(() => {
         fetchArchivos();
@@ -31,16 +59,36 @@ export default function Archivos() {
         }
     };
 
-    const fetchArchivos = async () => {
+    const fetchArchivos = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
-            const response = await api.get('/archivos');
+            const response = await api.get('/archivos', {
+                params: {
+                    ...(search ? { search } : {}),
+                    page,
+                    pageSize
+                }
+            });
             setArchivos(response.data.archivos);
+            setPagination((prev) => ({
+                ...prev,
+                current: page,
+                pageSize,
+                total: response.data.total
+            }));
         } catch {
             message.error('Error al cargar archivos');
         } finally {
             setLoading(false);
         }
+    };
+
+    const { searchText, setSearchText } = useDebouncedSearch((text) => {
+        fetchArchivos(text, 1, pagination.pageSize);
+    });
+
+    const handleTableChange = (newPagination) => {
+        fetchArchivos(searchText, newPagination.current, newPagination.pageSize);
     };
 
     const handleCreate = () => {
@@ -52,10 +100,41 @@ export default function Archivos() {
 
     const handleEdit = (record) => {
         setEditingArchivo(record);
-        // Pre-cargar los temas seleccionados desde el registro
-        const ids = (record.temas ?? []).map((t) => t.id);
-        setSelectedSubjects(ids);
-        form.setFieldsValue(record);
+
+        const selectedIds = [...new Set(
+            (record.temas ?? []).flatMap((tema) => {
+                const ids = [];
+
+                if (typeof tema === 'object' && tema !== null) {
+                    // Caso 1: Es un objeto { id: 2, parent_id: 1 }
+                    if (tema.id !== undefined && tema.id !== null) {
+                        ids.push(Number(tema.id));
+                    }
+                    if (tema.parent_id !== undefined && tema.parent_id !== null) {
+                        ids.push(Number(tema.parent_id));
+                    }
+                } else if (tema !== undefined && tema !== null) {
+                    // Caso 2: Es un ID directo [1, 2] o ["1", "2"]
+                    ids.push(Number(tema));
+                }
+
+                return ids;
+            })
+        )].filter((id) => !Number.isNaN(id));
+
+        setSelectedSubjects(selectedIds);
+
+        const normalizedFecha = (() => {
+            if (!record.fecha) return undefined;
+            const value = typeof record.fecha === 'string' ? record.fecha : new Date(record.fecha).toISOString();
+            return value.slice(0, 10);
+        })();
+
+        form.setFieldsValue({
+            ...record,
+            fecha: normalizedFecha,
+        });
+
         setModalVisible(true);
     };
 
@@ -70,7 +149,7 @@ export default function Archivos() {
                 try {
                     await api.delete(`/archivos/${record.id}`);
                     message.success('Archivo eliminado exitosamente');
-                    fetchArchivos();
+                    fetchArchivos(searchText, pagination.current, pagination.pageSize);
                 } catch {
                     message.error('Error al eliminar archivo');
                 }
@@ -90,7 +169,7 @@ export default function Archivos() {
                 message.success('Archivo creado exitosamente');
             }
             setModalVisible(false);
-            fetchArchivos();
+            fetchArchivos(searchText, pagination.current, pagination.pageSize);
         } catch {
             message.error(editingArchivo ? 'Error al actualizar archivo' : 'Error al crear archivo');
         }
@@ -160,16 +239,25 @@ export default function Archivos() {
                     </div>
 
                     <Card>
+                        <TableSearch
+                            value={searchText}
+                            onChange={setSearchText}
+                            placeholder="Buscar por título..."
+                            loading={loading}
+                        />
                         <Table
                             columns={columns}
                             dataSource={archivos}
                             rowKey="id"
                             loading={loading}
                             pagination={{
-                                pageSize: 10,
+                                current: pagination.current,
+                                pageSize: pagination.pageSize,
+                                total: pagination.total,
                                 showSizeChanger: true,
                                 showTotal: (total) => `Total ${total} archivos`
-                            }}
+                                }}
+                            onChange={handleTableChange}
                         />
                     </Card>
 
@@ -214,7 +302,7 @@ export default function Archivos() {
                                 <Space direction="vertical" style={{ width: '100%' }}>
                                     <UploadAcervo
                                         bucket="portal"
-                                        folder="/archivos"
+                                        folder={getDynamicFolder()}
                                         label="Subir archivo"
                                         onUploaded={(media) => {
                                             form.setFieldValue('archivo', media.url);

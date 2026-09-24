@@ -3,6 +3,7 @@ import api from '@services/apiService'
 import ReactPaginate from 'react-paginate'
 import { useLocation } from 'react-router'
 import Searcher from '../pageComponents/searcher';
+import { SafeHtml } from '@components/SafeHtml';
 
 const ITEMS_PER_PAGE = 12
 
@@ -101,10 +102,10 @@ export default function Sistemas() {
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
 
             <div className="relative container mx-auto px-2 mt-15">
-                    <span class="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
+                    <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
                     <div
-                        className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto sm:overflow-visible snap-x snap-mandatory"
-                        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
+                        className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto snap-x snap-mandatory"
+                        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: '5px' }}
                     >
                         {tabs.map((tab, index) => (
                             <TabButton
@@ -123,58 +124,64 @@ export default function Sistemas() {
                     {filteredByTab.length === 0 && <p>No hay sistemas</p>}
 
                     {filteredByTab.length > 0 && (
-                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                             {currentSystems.map((sistema) => {
-                                const original = sistema.imagen;
-                                const thumb = original ? original.substring(original.lastIndexOf('/') + 1) : null;
+                                const original = sistema.imagen;                                
                                 
                                 const hasLink = Boolean(sistema.link);
-                                const CardTag = hasLink ? 'a' : 'div';
-
-                                // 1. Validamos si el enlace es externo (inicia con http/https)
                                 const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);
+                                const content = (
+                                    <div 
+                                        className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 md:min-h-[640px] lg:min-h-[485px] xl:min-h-[445px] ${
+                                            hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
+                                        }`}
+                                    >
+                                        <div className='sm:w-[150px] md:h-[115px] lg:h-auto lg:w-full lg:col-span-2'>
+                                            <img
+                                                src={sistema.imagen ? sistema.imagen : 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png'}                                                
+                                                alt={sistema.titulo}
+                                                className="mb-3 h-auto w-full rounded-lg object-cover md:h-full lg:h-auto md:w-auto lg:w-full"
+                                            />
+                                        </div>
+                                        <div className='lg:col-span-4'>
+                                            <h3 className="mb-3 text-primary text-28 font-garet-extrabold">
+                                                {sistema.titulo}
+                                            </h3>
+                                            <SafeHtml htmlContent={sistema.descripcion || ''} className='diez text-18 font-garet' />
+                                        </div>
+                                        <div className='lg:col-span-6 mt-5'>
+                                            {sistema.tipo && (
+                                                <span className={`e${sistema.tipo} rounded-xl px-4 py-2 text-14 font-garet-bold`}>
+                                                    {sistema.tipo_label || sistema.tipo.replace('-', ' ')}
+                                                </span>
+                                            )}
+                                            
+                                            {hasLink && (
+                                                <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                                    <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+
+                                if (hasLink) {
+                                    return (
+                                        <a 
+                                            key={sistema.id}
+                                            href={sistema.link} 
+                                            target={isExternal ? "_blank" : "_self"}
+                                            rel={isExternal ? "noopener noreferrer" : undefined}
+                                        >
+                                            {content}
+                                        </a>
+                                    );
+                                }
 
                                 return (
-                                    <CardTag 
-                                        key={sistema.id}
-                                        {...(hasLink ? { 
-                                            href: sistema.link, 
-                                            ...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})
-                                        } : {})}
-                                    >
-                                        <div 
-                                            className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 ${
-                                                hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
-                                            }`}
-                                        >
-                                            <div className='md:h-[60px] lg:h-auto lg:col-span-2'>
-                                                <img
-                                                    src={sistema.imagen ? sistema.imagen : '/demo.jpg'}                                                
-                                                    alt={sistema.titulo}
-                                                    className="mb-3 h-auto w-full rounded-lg object-cover md:h-full lg:h-auto md:w-auto lg:w-full"
-                                                />
-                                            </div>
-                                            <div className='lg:col-span-4'>
-                                                <h3 className="mb-3 text-primary text-28 font-garet-extrabold">
-                                                    {sistema.titulo}
-                                                </h3>
-                                                <div className="diez text-18 font-garet" dangerouslySetInnerHTML={{ __html: sistema.descripcion }} />
-                                            </div>
-                                            <div className='lg:col-span-6 mt-5'>
-                                                {sistema.tipo && (
-                                                    <span className={`e${sistema.tipo} rounded-xl px-4 py-2 text-14`}>
-                                                        {sistema.tipo_label || sistema.tipo.replace('-', ' ')}
-                                                    </span>
-                                                )}
-                                                
-                                                {hasLink && (
-                                                    <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
-                                                        <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </CardTag>
+                                    <div key={sistema.id}>
+                                        {content}
+                                    </div>
                                 );
                             })}
                         </div>

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-from slugify import slugify
+from sqlalchemy.orm import Session
+
 from app.api.deps import get_db
 from app.models import Posts
-from app.schemas.posts import PostOut, PostResponse, PostList
+from app.schemas.posts import PostList, PostOut, PostResponse
 
 
 def _obtener_post_por_identificador(db: Session, identificador: str):
@@ -21,7 +21,7 @@ router = APIRouter(prefix="/posts", tags=["portal - posts"])
 async def listar_posts(
     db: Session = Depends(get_db),
 ):
-    posts = db.execute(select(Posts)).scalars().all()    
+    posts = db.execute(select(Posts)).scalars().all()
     return {
         "posts": posts,
         "total": len(posts),
@@ -29,7 +29,7 @@ async def listar_posts(
 
 @router.get("/slug/{slug}", response_model=PostOut)
 async def obtener_post_slug(
-    slug: str, 
+    slug: str,
     db: Session = Depends(get_db)
 ):
     post = db.execute(select(Posts).where(Posts.slug == slug)).scalar_one_or_none()

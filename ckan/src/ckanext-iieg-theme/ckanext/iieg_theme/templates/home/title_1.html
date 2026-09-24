@@ -11,38 +11,11 @@
                     </p>
                     {% endif %}
                 </div>
-                <div id="searcher" class="no-padding position-bottom">
+                <div id="searcher" class="no-padding position-bottom mt-14">
                     {% block search %}
                         {% snippet 'home/snippets/search.html', search_facets=search_facets %}
                     {% endblock %}
-                </div>
-                <div id="stats" class="hidden-xs">
-
-                    <div class="estatisticas-box">
-                        <span class="numero">{{ h.total_datasets() }} {{ _('Datasets publicados') }}</span>
-                    </div>
-
-                    {# 2. Bloque para listar los más populares #}
-                    <div class="datasets-populares">
-                        <span class="numero">{{ _('Datasets más populares') }}</span>
-                        <ul>
-                        {# Invocamos el helper del plugin pasando el límite que queramos #}
-                        {% for dataset in h.iieg_datasets_populares(5) %}
-                        <li>
-                            {# Enlace compatible con las rutas Flask de CKAN 2.11 #}
-                            <a href="{{ h.url_for('dataset.read', id=dataset.name) }}">
-                            {{ dataset.title or dataset.name }}
-                            </a>
-                            <span class="badge">
-                            {{ dataset.tracking_summary.total if dataset.tracking_summary else 0 }} {{ _('visitas') }}
-                            </span>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    </div>
-
-
-                </div>
+                </div>                
             </div>
             <div class="col-xs-12 col-md-5 col-xl-4">
                 <img src="https://iieg.jalisco.gob.mx/acervo/portal/banners/img_banner.png" alt="" class="img-fluid" />    

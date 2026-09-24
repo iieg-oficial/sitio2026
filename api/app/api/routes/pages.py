@@ -1,19 +1,22 @@
-from slugify import slugify
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from sqlalchemy import select, func
 from typing import Any
-from app.api.deps import get_current_user, get_db, verify_csrf
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from slugify import slugify
+from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models.menu_item import MenuItem
 from app.models.page import Page
 from app.models.user import Usuario
 from app.schemas.page import (
     PageCreate,
-    PageResponse,
-    PageUpdate,
-    PageResponseList,
-    PageTreeOut,
     PageFlat,
+    PageResponse,
+    PageResponseList,
+    PageUpdate,
 )
 
 router = APIRouter(prefix="/paginas", tags=["páginas"])
@@ -53,7 +56,7 @@ def list_pages(
 
 @router.post("/create", response_model=PageResponse)
 def create_page(
-    data: PageCreate, 
+    data: PageCreate,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
@@ -67,7 +70,7 @@ def create_page(
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="No se pueden crear páginas hijas de páginas hijas"
             )
-    
+
     base_slug = slugify(data.slug_custom)
     slug = base_slug
     contador = 1
@@ -75,7 +78,7 @@ def create_page(
     while db.query(Page).filter(Page.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     page_data = data.model_dump(exclude={"slug"})
     if page_data.get("order") is None:
         max_sibling_order = (
@@ -87,7 +90,14 @@ def create_page(
 
     page = Page(**page_data, slug=slug)
     db.add(page)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="No se pudo crear la página porque sus datos entran en conflicto con otra página",
+        )
     db.refresh(page)
     return page
 
@@ -145,8 +155,8 @@ def reorder_pages(
 
 @router.put("/{page_id:int}", response_model=PageUpdate)
 def update_page(
-    page_id: int, 
-    data: PageCreate, 
+    page_id: int,
+    data: PageCreate,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
@@ -156,8 +166,8 @@ def update_page(
 
     if (data.parent_id == page.id):
         raise HTTPException(400, "No se puede asignar una página como su propio padre")
-    
-    
+
+
     update_data = data.model_dump(exclude_unset=True)
 
     if "title" in update_data and update_data["title"] != page.title:
@@ -168,8 +178,13 @@ def update_page(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Page, update_data["slug"], exclude_id=page_id
+            )
+        else:
+            del update_data["slug"]
 
     for key, val in update_data.items():
         setattr(page, key, val)
@@ -211,7 +226,7 @@ def get_pages_tree(
     db: Session = Depends(get_db),
 ):
     """Obtener páginas en formato tree"""
-    pages = db.execute(select(Page).where(Page.parent_id == None)).scalars().all()
+    pages = db.execute(select(Page).where(Page.parent_id.is_(None))).scalars().all()
     return pages
 
 

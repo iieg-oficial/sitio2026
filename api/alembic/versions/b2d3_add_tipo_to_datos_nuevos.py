@@ -5,9 +5,8 @@ Revises: a1d2_add_datos_nuevos_table
 Create Date: 2026-06-08
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 revision = 'b2d3_add_tipo_to_datos_nuevos'
 down_revision = 'a1d2_add_datos_nuevos_table'
@@ -16,22 +15,33 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # create enum type if it doesn't exist
-    op.execute("""
-    DO $$
-    BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'nuevoenum') THEN
-            CREATE TYPE nuevoenum AS ENUM ('sube','baja','igual');
-        END IF;
-    END$$;
-    """)
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
 
-    # add column tipo if not exists with default 'igual'
-    op.execute("ALTER TABLE datos_nuevos ADD COLUMN IF NOT EXISTS tipo nuevoenum DEFAULT 'igual';")
+    # 1. Crear tipo ENUM en bloque autocommit por compatibilidad con PostgreSQL
+    with op.get_context().autocommit_block():
+        op.execute(
+            """
+            DO $$
+            BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'nuevoenum') THEN
+                    CREATE TYPE nuevoenum AS ENUM ('sube', 'baja', 'igual');
+                END IF;
+            END$$;
+            """
+        )
+
+    # 2. Agregar la columna solo si la tabla existe
+    if inspector.has_table('datos_nuevos'):
+        op.execute("ALTER TABLE datos_nuevos ADD COLUMN IF NOT EXISTS tipo nuevoenum DEFAULT 'igual';")
 
 
 def downgrade() -> None:
-    # remove column if exists
-    op.execute("ALTER TABLE datos_nuevos DROP COLUMN IF EXISTS tipo;")
-    # drop enum type if exists (may fail if used elsewhere)
-    op.execute("DROP TYPE IF EXISTS nuevoenum;")
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+
+    if inspector.has_table('datos_nuevos'):
+        op.execute("ALTER TABLE datos_nuevos DROP COLUMN IF EXISTS tipo;")
+    
+    with op.get_context().autocommit_block():
+        op.execute("DROP TYPE IF EXISTS nuevoenum;")

@@ -1,22 +1,45 @@
 import mimetypes
+from pathlib import Path
+import re
+import unicodedata
 import uuid
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
+from app.core.search import escape_like
 from app.core.settings import get_settings
 from app.models.media import Media, MediaFolder
 from app.models.user import Usuario
 from app.schemas.media import FolderCreate, FolderResponse
 from app.services.acervo import IIEG_BUCKET, PORTAL_BUCKET, get_acervo_service
+from pathlib import PurePosixPath
+
+MAX_FILE_SIZE = 100 * 1024 * 1024 # 100 MB
+ALLOWED_EXTENSIONS = {
+    "jpg":  {"mime": "image/jpeg",      "bytes": b"\xFF\xD8\xFF"},
+    "jpeg": {"mime": "image/jpeg",      "bytes": b"\xFF\xD8\xFF"},
+    "png":  {"mime": "image/png",       "bytes": b"\x89PNG\r\n\x1a\n"},
+    "gif":  {"mime": "image/gif",       "bytes": b"GIF8"},
+    "pdf":  {"mime": "application/pdf", "bytes": b"%PDF"},
+    "zip":  {"mime": "application/zip", "bytes": b"PK\x03\x04"},
+    "doc":  {"mime": "application/msword", "bytes": b"\xD0\xCF\x11\xE0"},
+    "docx": {"mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "bytes": b"PK\x03\x04"},
+    "xls":  {"mime": "application/vnd.ms-excel", "bytes": b"\xD0\xCF\x11\xE0"},
+    "xlsx": {"mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "bytes": b"PK\x03\x04"},
+    # Archivos de texto/estructurados (sin comprobación binaria estricta)
+    "xml":  {"mime": "application/xml", "text": True},
+    "json": {"mime": "application/json", "text": True},
+    "csv":  {"mime": "text/csv",        "text": True},
+}
 
 router = APIRouter(prefix="/multimedia", tags=["media"])
 
 settings = get_settings()
 
 ALLOWED_BUCKETS = {PORTAL_BUCKET, IIEG_BUCKET}
-
+_SAFE_NAME_RE = re.compile(r"[^a-zA-Z0-9._-]+")
 
 def _validate_bucket(bucket: str) -> str:
     if bucket not in ALLOWED_BUCKETS:
@@ -28,16 +51,21 @@ def _validate_bucket(bucket: str) -> str:
 
 
 def _normalize_folder_path(folder: str | None) -> str:
-    folder = (folder or "/").strip()
-    if not folder:
-        return "/"
-    if not folder.startswith("/"):
-        folder = f"/{folder}"
-    while "//" in folder:
-        folder = folder.replace("//", "/")
-    if len(folder) > 1 and folder.endswith("/"):
-        folder = folder.rstrip("/")
-    return folder or "/"
+    if not folder or folder == "/":
+        return ""
+    # Normaliza separadores
+    folder = folder.strip().replace("\\", "/")
+
+    # Usa PurePosixPath para resolver sin tocar el filesystem real
+    parts = PurePosixPath(folder).parts
+
+    safe_parts = []
+    for part in parts:
+        if part in ("", "/", ".", ".."):
+            continue  # descarta traversal y vacíos
+        safe_parts.append(sanitize_filename(part))  # reusa tu sanitizer existente
+
+    return "/".join(safe_parts)
 
 
 def _ensure_folder_path_exists(db: Session, folder_path: str) -> str:
@@ -48,8 +76,8 @@ def _ensure_folder_path_exists(db: Session, folder_path: str) -> str:
         db.add(MediaFolder(name="Root", path="/", parent=None))
         db.flush()
 
-    if folder_path == "/":
-        return folder_path
+    if not folder_path:
+        return "/"
 
     current_parent = "/"
     current_path = ""
@@ -61,7 +89,7 @@ def _ensure_folder_path_exists(db: Session, folder_path: str) -> str:
             db.flush()
         current_parent = current_path
 
-    return folder_path
+    return current_path
 
 
 def _serialize_media(item: Media) -> dict:
@@ -102,6 +130,26 @@ def _serialize_s3_object(obj: dict, bucket: str) -> dict:
         "bucket": bucket,
     }
 
+def split_ext(filename: str) -> tuple[str, str]:
+    if "." in filename:
+        base, ext = filename.rsplit(".", 1)
+        return base, f".{ext}"
+    return filename, ""
+
+def sanitize_filename(filename: str) -> str:
+    raw = (filename or "").rsplit("/", 1)[-1].rsplit("\\", 1)[-1]
+    base, ext = split_ext(raw)
+    base = unicodedata.normalize("NFKD", base).encode("ascii", "ignore").decode("ascii")
+    base = _SAFE_NAME_RE.sub("-", base).strip("-._").lower()
+    if not base:
+        base = "archivo"
+    ext = unicodedata.normalize("NFKD", ext).encode("ascii", "ignore").decode("ascii")
+    ext = _SAFE_NAME_RE.sub("", ext).lower()
+    return f"{base}{ext}" if ext else base
+
+def _display_folder(normalized: str) -> str:
+    return f"/{normalized}" if normalized else "/"
+
 
 @router.get("", response_model=list[dict])
 async def listar_media(
@@ -109,6 +157,7 @@ async def listar_media(
     folder: str | None = Query(None),
     type: str | None = Query(None),
     search: str | None = Query(None),
+    limit: int = Query(100, ge=1, le=1000),
     bucket: str = Query(PORTAL_BUCKET),
 ):
     bucket = _validate_bucket(bucket)
@@ -117,18 +166,20 @@ async def listar_media(
         query = db.query(Media)
 
         if folder:
-            query = query.filter(Media.folder == folder)
+            folder_norm = _display_folder(_normalize_folder_path(folder))
+            query = query.filter(Media.folder == folder_norm)
 
         if type:
             query = query.filter(Media.type.startswith(type))
 
         if search:
-            search_lower = f"%{search.lower()}%"
+            search_lower = f"%{escape_like(search.lower())}%"
             query = query.filter(
-                Media.name.ilike(search_lower) | Media.original_name.ilike(search_lower)
+                Media.name.ilike(search_lower, escape='\\')
+                | Media.original_name.ilike(search_lower, escape='\\')
             )
 
-        items = query.order_by(Media.uploaded_at.desc()).all()
+        items = query.order_by(Media.uploaded_at.desc()).limit(limit).all()
         return [_serialize_media(item) for item in items]
 
     acervo_service = get_acervo_service()
@@ -145,10 +196,11 @@ async def listar_media(
             if search_lower in i["name"].lower() or search_lower in i["originalName"].lower()
         ]
     if folder:
-        items = [i for i in items if i["folder"] == folder]
+        folder_norm = _display_folder(_normalize_folder_path(folder))
+        items = [i for i in items if i["folder"] == folder_norm]
 
     items.sort(key=lambda i: i["uploadedAt"], reverse=True)
-    return items
+    return items[:limit]
 
 
 @router.get("/carpetas", response_model=list[dict])
@@ -169,18 +221,49 @@ async def subir_archivo(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
+    # 1. Validar Tamaño del Archivo (100 MB Máximo)
+    if file.size and file.size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El archivo excede el tamaño máximo permitido de 100MB."
+        )
+
+    # 2. Validar Extensión (Allowlist)
+    file_extension = file.filename.split(".")[-1].lower() if "." in file.filename else ""
+    if file_extension not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"La extensión .{file_extension} no está permitida."
+        )
+
+    config = ALLOWED_EXTENSIONS[file_extension]
+
+    # 3. Validar Magic Bytes (Si no es un archivo puramente de texto)
+    if not config.get("text"):
+        header_bytes = await file.read(8)
+        await file.seek(0)  # REINICIAR PUNTERO para que el servicio guarde el archivo completo
+
+        expected_bytes = config["bytes"]
+        if not header_bytes.startswith(expected_bytes):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El contenido del archivo no coincide con su extensión."
+            )
+
+    # Usar el MIME real validado internamente, no el que envía el cliente
+    validated_content_type = config["mime"]
+
     bucket = _validate_bucket(bucket)
     folder = _normalize_folder_path(folder)
 
     acervo_service = get_acervo_service()
 
     file_extension = file.filename.split(".")[-1] if "." in file.filename else ""
-    unique_name = f"{uuid.uuid4()}.{file_extension}" if file_extension else str(uuid.uuid4())
-
-    # Construir el object key con el prefijo de carpeta para que el archivo
-    # quede en la ruta correcta dentro del bucket (e.g. "banners/uuid.jpg")
-    folder_prefix = folder.strip("/")
-    object_key = f"{folder_prefix}/{unique_name}" if folder_prefix else unique_name
+    #unique_name = f"{uuid.uuid4()}.{file_extension}" if file_extension else str(uuid.uuid4())
+    raw_name = Path(file.filename).name                    
+    safe_name = sanitize_filename(raw_name)
+    folder_clean = folder.strip("/") if folder and folder != "/" else ""
+    object_key = f"{folder_clean}/{safe_name}" if folder_clean else safe_name
 
     try:
         url = await acervo_service.upload_file(file, object_key, bucket=bucket)
@@ -190,7 +273,7 @@ async def subir_archivo(
             nuevo_media = Media(
                 name=object_key,
                 original_name=file.filename,
-                type=file.content_type or "application/octet-stream",
+                type=validated_content_type,  # MIME seguro
                 size=file.size or 0,
                 url=url,
                 thumbnail=url if file.content_type and file.content_type.startswith("image/") else None,
@@ -205,10 +288,10 @@ async def subir_archivo(
             return _serialize_media(nuevo_media)
 
         return {
-            "id": f"{bucket}:{object_key}",
-            "name": object_key,
+            "id": f"{bucket}:{safe_name}",
+            "name": safe_name,
             "originalName": file.filename,
-            "type": file.content_type or "application/octet-stream",
+            "type": validated_content_type,  # MIME seguro
             "size": file.size or 0,
             "url": url,
             "thumbnail": url if file.content_type and file.content_type.startswith("image/") else None,

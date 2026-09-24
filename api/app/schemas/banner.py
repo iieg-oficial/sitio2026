@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import Optional, List
 import re
+from typing import List, Optional
+
+from pydantic import BaseModel
+
 
 def valid_hex(v: str) -> str:
     if not re.match(r'^#[0-9A-Fa-f]{6}$', v):
@@ -44,5 +46,5 @@ class BannerOut(BaseModel):
 class BannerResponse(BaseModel):
     banners: List[BannerOut]
     total: int
-    
+
 

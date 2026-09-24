@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import desc
 from sqlalchemy.orm import Session
-from slugify import slugify
+
 from app.api.deps import get_db
 from app.models import Banner
-from app.schemas.banner import BannerOut, BannerResponse
+from app.schemas.banner import BannerOut
 
 router = APIRouter(prefix="/banner", tags=["public - banner"])
 
@@ -13,7 +14,7 @@ def read_banner(
     limit: int = 5,
 ):
     """Obtener todos los banners"""
-    banners = db.query(Banner).limit(limit).all()
+    banners = db.query(Banner).order_by(desc(Banner.id)).limit(limit).all()
     return banners
 
 @router.get("/{slug}", response_model=BannerOut)

@@ -8,7 +8,7 @@ export default function PlataformasDestacado() {
 
     useEffect(() => {
         const fetchPlataformas = async () => {
-            const response = await api.get('/sistemas/destacados/')
+            const response = await api.get('/sistemas/destacados')
             setPlataformas(response.data.sistemas)
         }
         fetchPlataformas()

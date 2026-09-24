@@ -4,6 +4,8 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { CamposBannerFull, CamposBannerMin } from '@components/campos/banner';
 import RichTextEditor from '@components/campos/RichTextEditor';
+import { TableSearch } from '@components/common/TableSearch';
+import { useSearchFilter } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 
@@ -15,6 +17,7 @@ export default function Banner() {
     const [modalVisible, setModalVisible] = useState(false);
     const [form] = Form.useForm();
     const [editingBanner, setEditingBanner] = useState(null);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(banners, ['titulo']);
 
     useEffect(() => {
         fetchBanners();
@@ -153,9 +156,15 @@ export default function Banner() {
                 </Button>
             </div>
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
-                    dataSource={banners}
+                    dataSource={filteredData}
                     loading={loading}
                     rowKey="id"
                     pagination={{ 
@@ -171,7 +180,7 @@ export default function Banner() {
                 okText={editingBanner ? 'Actualizar' : 'Crear'}
                 cancelText="Cancelar"
             >
-                <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{ color_fondo: '#6A2884' }}>
+                <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{ color_fondo: '#8936ab' }}>
                     <Form.Item name="titulo" label="Título" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>

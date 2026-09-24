@@ -15,6 +15,7 @@ services:
         VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:?VITE_GOOGLE_ANALYTICS_ID is required}
         VITE_WEB_API_URL: ${VITE_WEB_API_URL:?VITE_WEB_API_URL is required}
         VITE_ADMIN_API_URL: ${VITE_ADMIN_API_URL:?VITE_ADMIN_API_URL is required}
+        VITE_MEDIA_BASE_URL: ${VITE_MEDIA_BASE_URL:?VITE_MEDIA_BASE_URL is required}
         VITE_MAPALAB_BASE_URL: ${VITE_MAPALAB_BASE_URL:?VITE_MAPALAB_BASE_URL is required}
         VITE_MAPALAB_API_KEY: ${VITE_MAPALAB_API_KEY:?VITE_MAPALAB_API_KEY is required}
     container_name: portal-nginx_dev
@@ -29,6 +30,7 @@ services:
       - ckan
     networks:
       portal_network_dev:
+        ipv4_address: ${NGINX_CONTAINER_IP:?NGINX_CONTAINER_IP is required}
 
   postgres:
     image: postgres:18-alpine
@@ -174,8 +176,6 @@ services:
       CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
       CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg_theme stats
       CKAN__ROOT_PATH: /datos-abiertos/{{LANG}}
-      CKAN___FAVICON: /images/iieg_logo-32x32.png
-      CKAN___SITE_TITLE: "Datos Abiertos - IIEG"
       CKAN_TRACKING_ENABLED: "True"
       CKAN___SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CKANEXT__S3FILESTORE__SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
@@ -187,10 +187,13 @@ services:
       CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
       CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: datos-abiertos
       CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
+      CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
+      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?LICENSES_GROUP_URL is required, default file:///srv/app/licenses.json}
     volumes:
       - ckan_storage_dev:/var/lib/ckan
       - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme
+      - ./ckan/licenses.json:/srv/app/licenses.json
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:5000/api/3/action/status_show"]
       interval: 30s
@@ -222,6 +225,7 @@ services:
       seaweedfs:
         condition: service_healthy
     environment:
+      FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS:?FORWARDED_ALLOW_IPS is required}
       PROJECT_NAME: Portal IIEG
       VERSION: "1.9.0"
       ALGORITHM: HS256
@@ -237,7 +241,9 @@ services:
       DOCS_URL: /docs
       REDOC_URL: /redoc
       ACERVO_REGION: us-east-1
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
       REDIS_URL: redis://redis:6379/0
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CSRF_SECRET_KEY: ${CSRF_SECRET_KEY:?CSRF_SECRET_KEY is required}
@@ -318,5 +324,8 @@ volumes:
 networks:
   portal_network_dev:
     driver: bridge
+    ipam:
+      config:
+        - subnet: ${PORTAL_SUBNET:?PORTAL_SUBNET is required}
   ckan_network_dev:
     driver: bridge

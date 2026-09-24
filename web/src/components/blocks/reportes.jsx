@@ -1,18 +1,48 @@
-import { useEffect, useMemo, useState } from 'react'
-import api from '@services/apiService'
+import { useEffect, useMemo, useState } from 'react';
+import api from '@services/apiService';
 import Searcher from '../pageComponents/searcher';
 import ReactPaginate from 'react-paginate';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-
 
 const monthNames = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ];
 
+const MONTH_NAME_TO_NUMBER = {
+    enero: '01',
+    febrero: '02',
+    marzo: '03',
+    abril: '04',
+    mayo: '05',
+    junio: '06',
+    julio: '07',
+    agosto: '08',
+    septiembre: '09',
+    octubre: '10',
+    noviembre: '11',
+    diciembre: '12',
+};
+
+const getTemaTitles = (reporte) => {
+    const temas = reporte.temas ?? [];
+    return temas
+        .filter(t => !t.parent_id)
+        .map(t => t.titulo)
+        .filter(Boolean);
+};
+
+const getSubtemaTitles = (reporte) => {
+    const temas = reporte.temas ?? [];
+    return temas
+        .filter(t => t.parent_id)
+        .map(t => t.titulo)
+        .filter(Boolean);
+};
+
 export default function Reportes() {
-    const [reportes, setReportes] = useState([])
+    const [reportes, setReportes] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [temaFilter, setTemaFilter] = useState("");
     const [subtemaFilter, setSubtemaFilter] = useState("");
@@ -20,47 +50,27 @@ export default function Reportes() {
     const [monthFilter, setMonthFilter] = useState("");
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
-    const keys = ['titulo', 'claves', 'periocidad', 'mes', 'anyo'];
-
-    const fetchReportes = async () => {
-        const response = await api.get('/reportes')
-        setReportes(response.data.reportes)
-    }
 
     useEffect(() => {
-        fetchReportes()
+        let isMounted = true;
+
+        const fetchReportes = async () => {
+            try {
+                const response = await api.get('/reportes');
+                if (isMounted) {
+                    setReportes(response.data.reportes);
+                }
+            } catch (error) {
+                console.error("Error al cargar reportes:", error);
+            }
+        };
+
+        fetchReportes();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
-
-    const monthNameToNumber = {
-        enero: '01',
-        febrero: '02',
-        marzo: '03',
-        abril: '04',
-        mayo: '05',
-        junio: '06',
-        julio: '07',
-        agosto: '08',
-        septiembre: '09',
-        octubre: '10',
-        noviembre: '11',
-        diciembre: '12',
-    };
-
-    const getTemaTitles = (reporte) => {
-        const temas = reporte.temas ?? [];
-        return temas
-            .filter(t => !t.parent_id)
-            .map(t => t.titulo)
-            .filter(Boolean);
-    };
-
-    const getSubtemaTitles = (reporte) => {
-        const temas = reporte.temas ?? [];
-        return temas
-            .filter(t => t.parent_id)
-            .map(t => t.titulo)
-            .filter(Boolean);
-    };
 
     const reportesWithMeta = useMemo(() => {
         return reportes.map(reporte => {
@@ -70,7 +80,7 @@ export default function Reportes() {
             const subtemaTitles = getSubtemaTitles(reporte);
             const anyo = reporte.anyo ?? (validDate ? Number(format(fecha, 'yyyy')) : null);
             const month = reporte.mes
-                ? monthNameToNumber[String(reporte.mes).toLowerCase()] || String(reporte.mes)
+                ? MONTH_NAME_TO_NUMBER[String(reporte.mes).toLowerCase()] || String(reporte.mes)
                 : validDate
                     ? format(fecha, 'MM')
                     : '';
@@ -81,8 +91,12 @@ export default function Reportes() {
                 subtemaTitles,
                 year: anyo ? String(anyo) : '',
                 month: month || '',
-            }
-        })
+            };
+        }).sort((reporteA, reporteB) => {
+            const fechaA = reporteA.fecha ? new Date(reporteA.fecha).getTime() : 0;
+            const fechaB = reporteB.fecha ? new Date(reporteB.fecha).getTime() : 0;
+            return fechaB - fechaA;
+        });
     }, [reportes]);
 
     const temas = useMemo(
@@ -100,8 +114,11 @@ export default function Reportes() {
         return [...uniqueSubtemas].sort();
     }, [reportesWithMeta, temaFilter]);
 
+    // Derivación directa para evitar el useEffect innecesario
+    const activeSubtemaFilter = subtemas.includes(subtemaFilter) ? subtemaFilter : "";
+
     const years = useMemo(
-        () => [...new Set(reportesWithMeta.map(r => r.year).filter(Boolean))].sort((a, b) => Number(b) - Number(a)),
+        () => [...new Set(reportesWithMeta.map(r => r.year).filter(Boolean))].sort((b, a) => Number(b) - Number(a)),
         [reportesWithMeta]
     );
 
@@ -114,14 +131,8 @@ export default function Reportes() {
         }));
     }, [reportesWithMeta]);
 
-    useEffect(() => {
-        if (subtemaFilter && !subtemas.includes(subtemaFilter)) {
-            setSubtemaFilter("");
-        }
-    }, [temaFilter, subtemas, subtemaFilter]);
-
     const filteredReportes = useMemo(() => {
-        const filtered = reportesWithMeta.filter(post => {
+        return reportesWithMeta.filter(post => {
             const searchTermLower = searchTerm.toLowerCase();
             const matchesSearch = !searchTerm || [
                 post.titulo,
@@ -132,22 +143,19 @@ export default function Reportes() {
                 || post.subtemaTitles.some(title => title.toLowerCase().includes(searchTermLower));
 
             const matchesTema = !temaFilter || post.temaTitles.includes(temaFilter);
-            const matchesSubtema = !subtemaFilter || post.subtemaTitles.includes(subtemaFilter);
+            const matchesSubtema = !activeSubtemaFilter || post.subtemaTitles.includes(activeSubtemaFilter);
             const matchesYear = !yearFilter || post.year === yearFilter;
             const matchesMonth = !monthFilter || post.month === monthFilter;
 
             return matchesSearch && matchesTema && matchesSubtema && matchesYear && matchesMonth;
         });
+    }, [reportesWithMeta, searchTerm, temaFilter, activeSubtemaFilter, yearFilter, monthFilter]);
 
-        return filtered.sort((a, b) => {
-            const dateA = a.fecha ? new Date(a.fecha).getTime() : 0;
-            const dateB = b.fecha ? new Date(b.fecha).getTime() : 0;
-            return dateB - dateA;
-        });
-    }, [reportesWithMeta, searchTerm, temaFilter, subtemaFilter, yearFilter, monthFilter]);
+    // Previene offsets fuera de rango al filtrar
+    const safeOffset = itemOffset >= filteredReportes.length ? 0 : itemOffset;
 
-    const endOffset = itemOffset + itemsPerPage;
-    const currentReportes = filteredReportes.slice(itemOffset, endOffset);
+    const endOffset = safeOffset + itemsPerPage;
+    const currentReportes = filteredReportes.slice(safeOffset, endOffset);
     const pageCount = Math.ceil(filteredReportes.length / itemsPerPage);
 
     const handlePageClick = (event) => {
@@ -156,9 +164,32 @@ export default function Reportes() {
         setItemOffset(newOffset);
     };
 
-    useEffect(() => {
+    // Manejadores de actualización + reseteo de página
+    const handleSearchChange = (val) => {
+        setSearchTerm(val);
         setItemOffset(0);
-    }, [searchTerm, temaFilter, subtemaFilter, yearFilter, monthFilter]);
+    };
+
+    const handleTemaChange = (val) => {
+        setTemaFilter(val);
+        setSubtemaFilter("");
+        setItemOffset(0);
+    };
+
+    const handleSubtemaChange = (val) => {
+        setSubtemaFilter(val);
+        setItemOffset(0);
+    };
+
+    const handleYearChange = (val) => {
+        setYearFilter(val);
+        setItemOffset(0);
+    };
+
+    const handleMonthChange = (val) => {
+        setMonthFilter(val);
+        setItemOffset(0);
+    };
 
     const clearFilters = () => {
         setTemaFilter("");
@@ -170,17 +201,24 @@ export default function Reportes() {
 
     return (
         <div>
-            <div className='w-full md:w-11/12 mx-auto md:ml-auto md:mr-0'>
-                <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué reportes quieres buscar?" />
+            <div className="container mx-auto grid md:grid-cols-12 gap-1">  
+                <div className='md:col-span-1'></div>           
+                <div className="col-span-11 w-full px-2 md:px-0">
+                    <Searcher 
+                        searchTerm={searchTerm} 
+                        setSearchTerm={handleSearchChange} 
+                        placeholder="¿Qué quieres buscar?" 
+                    />
+                </div>             
             </div>
 
             <div className='mx-auto px-2 container my-15'>
-                <div className='flex flex-col lg:flex-wrap lg:flex-row md:justify-between gap-5 mb-5'>
+                <div className='flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5'>
                     <div>
                         <label className='block text-14 text-primary'>Selecciona un Tema</label>
                         <select
                             value={temaFilter}
-                            onChange={(event) => setTemaFilter(event.target.value)}
+                            onChange={(e) => handleTemaChange(e.target.value)}
                             className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                         >
                             <option value='' className='text-titulo! bg-card!'>Todos</option>
@@ -194,8 +232,8 @@ export default function Reportes() {
                         <div>
                             <label className='block text-14 text-primary'>Selecciona un Subtema</label>
                             <select
-                                value={subtemaFilter}
-                                onChange={(event) => setSubtemaFilter(event.target.value)}
+                                value={activeSubtemaFilter}
+                                onChange={(e) => handleSubtemaChange(e.target.value)}
                                 className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                             >
                                 <option value='' className='text-titulo! bg-card!'>Todos</option>
@@ -210,7 +248,7 @@ export default function Reportes() {
                         <label className='block text-14 text-primary'>Selecciona un Año</label>
                         <select
                             value={yearFilter}
-                            onChange={(event) => setYearFilter(event.target.value)}
+                            onChange={(e) => handleYearChange(e.target.value)}
                             className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                         >
                             <option value='' className='text-titulo! bg-card!'>Todos</option>
@@ -224,7 +262,7 @@ export default function Reportes() {
                         <label className='block text-14 text-primary'>Selecciona un Mes</label>
                         <select
                             value={monthFilter}
-                            onChange={(event) => setMonthFilter(event.target.value)}
+                            onChange={(e) => handleMonthChange(e.target.value)}
                             className='w-full rounded-lg bg-card text-titulo px-4 py-2'
                         >
                             <option value='' className='text-titulo! bg-card!'>Todos</option>
@@ -234,7 +272,7 @@ export default function Reportes() {
                         </select>
                     </div>
 
-                    {(temaFilter || subtemaFilter || yearFilter || monthFilter) && (
+                    {(temaFilter || activeSubtemaFilter || yearFilter || monthFilter) && (
                         <div className='flex items-end'>
                             <button
                                 onClick={clearFilters}
@@ -249,48 +287,51 @@ export default function Reportes() {
 
             <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mx-auto container px-2'>
                 {currentReportes.map(reporte => (
-                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" download>
-                        <div className='border-2 border-card rounded-2xl p-8 hover:border-titulo hover:border' key={reporte.id}>
-                            
-                            <div className="flex items-center gap-2 mb-4 bg-white justify-between">
-                                <p className=' text-22 text-titulo group-hover:text-tertiary'>{reporte.titulo}</p>
-                                <div className='bg-[#FF83004D] h-[31px] w-[30px] rounded-full flex items-center justify-center'>
-                                    <span className="material-symbols--download text-tertiary"></span> 
-                                </div>
-                            </div> 
+                    <a href={reporte.archivo} target="_blank" rel="noopener noreferrer" download key={reporte.id}>
+                        <div className='border-2 border-card rounded-2xl p-8 hover:border-tertiary hover:border group h-full flex flex-col justify-between'>
+                            <div>
+                                <div className="flex items-center gap-2 mb-4 bg-white justify-between">
+                                    <p className='text-18 text-titulos group-hover:text-tertiary'>{reporte.titulo}</p>
+                                    <div className="group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center flex-shrink-0">
+                                        <span className="material-symbols--download group-hover:bg-white!"></span>
+                                    </div> 
+                                </div> 
+                            </div>
 
-                            <div className='flex flex-wrap gap-5 text-14'>
-                                {reporte.anyo && (
-                                    <p className='text-tertiary border border-tertiary bg-etiqueta-sec py-3 px-5 rounded-xl'>{reporte.anyo}</p>
+                            <div className='flex flex-wrap gap-2 mt-4'>
+                                {reporte.year && (
+                                    <p className='font-garet-bold text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{reporte.year}</p>
                                 )}
                                 {reporte.periocidad && (
-                                    <p className='text-titulo border border-titulo bg-etiqueta-ter py-3 px-5 rounded-xl'>{reporte.periocidad}</p>
+                                    <p className='font-garet-bold text-titulo text-[12px] capitalize border border-titulo bg-etiqueta-ter p-2 rounded-xl'>{reporte.periocidad}</p>
                                 )}
                                 {reporte.fecha && (
-                                    <p className='text-primary border border-primary bg-etiqueta py-3 px-5 rounded-xl'>Publicada: {format(new Date(reporte.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                                    <p className='font-garet-bold text-primary text-[12px] capitalize border border-[#5C24724D] bg-[#F3EAFF] p-2 rounded-xl'>
+                                        Publicada: {format(new Date(reporte.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}
+                                    </p>
                                 )}
                             </div>
-                            
-                            
                         </div>
                     </a>
                 ))}
             </div>
 
-            <ReactPaginate
-                previousLabel={"<"}
-                nextLabel={">"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / itemsPerPage)}
-            />
+            {pageCount > 1 && (
+                <div className="my-8 flex justify-center">
+                    <ReactPaginate
+                        previousLabel={'<'}
+                        nextLabel={'>'}
+                        breakLabel={'...'}
+                        pageCount={pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={handlePageClick}
+                        containerClassName={'pagination'}
+                        activeClassName={'active'}
+                        forcePage={Math.floor(safeOffset / itemsPerPage)}
+                    />
+                </div>
+            )}
         </div>
-    )
+    );
 }
-    

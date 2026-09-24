@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
-from slugify import slugify
+
 from app.api.deps import get_db
 from app.models.subject import Subject
 from app.schemas.subject import SubjectOut, SubjectResponse
@@ -11,13 +12,13 @@ router = APIRouter(prefix="/subject", tags=["public - temas"])
 
 @router.get("/tree", response_model=list[SubjectResponse])
 async def obtener_temas_tree(db: Session = Depends(get_db)):
-    temas = db.execute(select(Subject).where(Subject.parent_id == None)).scalars().all()
+    temas = db.execute(select(Subject).where(Subject.parent_id.is_not(None))).scalars().all()
     return temas
 
 @router.get("", response_model=list[SubjectResponse])
 async def listar_subjects(db: Session = Depends(get_db)):
     subjects = db.execute(select(Subject)).scalars().all()
-    return subjects 
+    return subjects
 
 
 @router.get("/{subject_id}", response_model=SubjectOut)

@@ -4,8 +4,8 @@ Revision ID: zz_add_datos_recientes
 Revises: a7c9e22b8f4b
 Create Date: 2026-06-17
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision = 'zz_add_datos_recientes'
 down_revision = 'a7c9e22b8f4b'
@@ -17,50 +17,62 @@ def upgrade() -> None:
     conn = op.get_bind()
     inspector = sa.inspect(conn)
 
-    if 'sistemas' not in inspector.get_table_names():
+    if not inspector.has_table('sistemas'):
         return
 
-    # Create an intermediate enum that contains both old and new labels
-    op.execute(
-        "CREATE TYPE tiposistemaenum_new AS ENUM ('plataforma', 'datos', 'datos-recientes', 'estadistica')"
-    )
+    columns = {col['name'] for col in inspector.get_columns('sistemas')}
+    if 'tipo' not in columns:
+        return
 
-    # Move the column to the intermediate enum
-    op.execute(
-        "ALTER TABLE sistemas ALTER COLUMN tipo TYPE tiposistemaenum_new USING tipo::text::tiposistemaenum_new"
-    )
+    with op.get_context().autocommit_block():
+        # 1. Crear tipo intermedio
+        op.execute("DROP TYPE IF EXISTS tiposistemaenum_new")
+        op.execute(
+            "CREATE TYPE tiposistemaenum_new AS ENUM ('plataforma', 'datos', 'datos-recientes', 'estadistica')"
+        )
 
-    # Update rows that used the old 'datos' label to the new 'datos-recientes'
-    op.execute("UPDATE sistemas SET tipo = 'datos-recientes' WHERE tipo = 'datos'")
+        # 2. Migrar la columna al tipo intermedio
+        op.execute(
+            "ALTER TABLE sistemas ALTER COLUMN tipo TYPE tiposistemaenum_new USING tipo::text::tiposistemaenum_new"
+        )
 
-    # Create the final enum without the old 'datos' label
-    op.execute(
-        "CREATE TYPE tiposistemaenum_final AS ENUM ('plataforma', 'datos-recientes', 'estadistica')"
-    )
+        # 3. Actualizar registros antiguos
+        op.execute("UPDATE sistemas SET tipo = 'datos-recientes' WHERE tipo = 'datos'")
 
-    # Convert the column to the final enum
-    op.execute(
-        "ALTER TABLE sistemas ALTER COLUMN tipo TYPE tiposistemaenum_final USING tipo::text::tiposistemaenum_final"
-    )
+        # 4. Crear el tipo final sin la etiqueta obsoleta
+        op.execute("DROP TYPE IF EXISTS tiposistemaenum_final")
+        op.execute(
+            "CREATE TYPE tiposistemaenum_final AS ENUM ('plataforma', 'datos-recientes', 'estadistica')"
+        )
 
-    # Cleanup: drop intermediate and replace original
-    op.execute("DROP TYPE tiposistemaenum_new")
-    # Drop the old type if it exists, then rename final to the canonical name
-    op.execute("DROP TYPE IF EXISTS tiposistemaenum")
-    op.execute("ALTER TYPE tiposistemaenum_final RENAME TO tiposistemaenum")
+        # 5. Convertir columna al tipo final y limpiar
+        op.execute(
+            "ALTER TABLE sistemas ALTER COLUMN tipo TYPE tiposistemaenum_final USING tipo::text::tiposistemaenum_final"
+        )
+
+        op.execute("DROP TYPE IF EXISTS tiposistemaenum_new")
+        op.execute("DROP TYPE IF EXISTS tiposistemaenum")
+        op.execute("ALTER TYPE tiposistemaenum_final RENAME TO tiposistemaenum")
 
 
 def downgrade() -> None:
     conn = op.get_bind()
     inspector = sa.inspect(conn)
 
-    if 'sistemas' not in inspector.get_table_names():
+    if not inspector.has_table('sistemas'):
         return
 
-    # Recreate the old enum with 'datos'
-    op.execute("CREATE TYPE tiposistemaenum_old AS ENUM ('plataforma', 'datos', 'estadistica')")
-    op.execute(
-        "ALTER TABLE sistemas ALTER COLUMN tipo TYPE tiposistemaenum_old USING tipo::text::tiposistemaenum_old"
-    )
-    op.execute("DROP TYPE tiposistemaenum")
-    op.execute("ALTER TYPE tiposistemaenum_old RENAME TO tiposistemaenum")
+    columns = {col['name'] for col in inspector.get_columns('sistemas')}
+    if 'tipo' not in columns:
+        return
+
+    with op.get_context().autocommit_block():
+        op.execute("DROP TYPE IF EXISTS tiposistemaenum_old")
+        op.execute("CREATE TYPE tiposistemaenum_old AS ENUM ('plataforma', 'datos', 'estadistica')")
+        
+        op.execute(
+            "ALTER TABLE sistemas ALTER COLUMN tipo TYPE tiposistemaenum_old USING tipo::text::tiposistemaenum_old"
+        )
+        
+        op.execute("DROP TYPE IF EXISTS tiposistemaenum")
+        op.execute("ALTER TYPE tiposistemaenum_old RENAME TO tiposistemaenum")

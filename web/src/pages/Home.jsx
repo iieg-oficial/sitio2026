@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams, Link } from 'react-router'
-import { getPageBySlug, getPreviewPage } from '@services/pageService'
+import { useEffect, useState, useCallback } from 'react'
+import { useSearchParams } from 'react-router'
+import { getPreviewPage } from '@services/pageService'
 import BlockRenderer from '@components/BlockRenderer'
 import TrackedLink from '@components/blocks/boton'
 import { Helmet } from 'react-helmet-async'
@@ -12,43 +12,54 @@ function HomePage() {
     const [page, setPage] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    const fetchPageHome = async () => {
-        setLoading(true)
+    const fetchPageHome = useCallback(async () => {
         try {
-            const res = await api.get('/paginas/slug/home/')
-            setPage(res.data)            
+            const res = await api.get('/paginas/slug/home');
+            return res.data;
         } catch (err) {
-            console.error("Error fetching page home:", err)
+            console.error("Error fetching page home:", err);
+            throw err;
         }
-        finally {
-            setLoading(false)
-        }
-    }
-    useEffect(() => {
-        const loadPage = previewToken
-            ? getPreviewPage(previewToken)
-            : fetchPageHome()
+    }, []);
 
-        loadPage
-            .then(data => {
-                if (data && data.sections && data.sections.length > 0) {
-                    setPage(data)
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadPageData = async () => {
+            // Solo activamos loading si no es el primer render y cambia previewToken
+            setLoading(true);
+            try {
+                const loadPromise = previewToken
+                    ? getPreviewPage(previewToken)
+                    : fetchPageHome();
+
+                const data = await loadPromise;
+
+                if (isMounted && data?.sections?.length > 0) {
+                    setPage(data);
                 }
-            })
-            .catch(err => {
-                console.error("Failed to load home page config", err)
-            })
-            .finally(() => {
-                setLoading(false)
-            })
-    }, [previewToken])
+            } catch (err) {
+                console.error("Failed to load home page config", err);
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        loadPageData();
+
+        return () => {
+            isMounted = false; // Evita fugas de memoria si el componente se desmonta
+        };
+    }, [previewToken, fetchPageHome]);
 
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-900"></div>
             </div>
-        )
+        );
     }
 
 
@@ -75,14 +86,14 @@ function HomePage() {
                 <title>{page?.title || 'Inicio - IIEG'}</title>
                 {page?.description_meta && <meta name="description" content={page.description_meta} />}
                 {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
-                <meta property="og:image" content={page?.postlink ? page?.postlink : "/demo.jpg"} />
+                <meta property="og:image" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 {/* Twitter Cards (Específico para X / Twitter) */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={page?.title || 'Instituto de Información Estadística y Geográfica - IIEG'} />
                 <meta name="twitter:description" content={page?.description_meta || 'Conoce Jalisco, nuestro territorio y sus recursos naturales; las características de su población y las condiciones en las que vive; así como su situación económica y las oportunidades que ofrece nuestro estado, sus municipios y los diferentes ordenes de gobierno.'} />
-                <meta name="twitter:image" content={page?.postlink ? page?.postlink : "/demo.jpg"} />
+                <meta name="twitter:image" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
             </Helmet>
             <section className="h-auto md:h-[565px] lg:h-[580px] xl:h-[592px]  2xl:h-[600px] " role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
@@ -92,7 +103,7 @@ function HomePage() {
                     <div className='bg-primary text-center z-10 mx-auto absolute top-[50%] lg:top-[60%] 2xl:top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-10 py-11 rounded-2xl w-11/12 lg:w-10/12 xl:w-7/12 extra:max-w-[1220px]'>
                         <img src="/ico_mapalab.png" alt="MapaLab" className="inline-block mr-2" />
                         <p className='text-center text-white my-8 text-22'>Explora el territorio de Jalisco con datos geoespaciales</p>
-                        <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-medio hover:bg-tertiary text-base block max-w-[395px] mx-auto">
+                        <TrackedLink to="https://iieg.jalisco.gob.mx/mapalab/" className="button bg-tertiary hover:bg-medio text-base block max-w-[395px] mx-auto">
                             Quiero explorar MapaLab
                         </TrackedLink>
                     </div>
@@ -121,16 +132,16 @@ function HomePage() {
                 <h2 className="text-titulo text-center my-10">Visita nuestras plataformas interactivas</h2>
                 <BlockRenderer block={{ type: 'plataformas_slider' }} />
                 <TrackedLink to="/nuestros-productos" className="button2 sm:w-[350px] text-base text-center block mx-auto mt-3 text-primary hover:text-white border-primary hover:bg-primary mt-5">
-                    Conoce todos nuestros productos
+                    Quiero ver todas las plataformas
                 </TrackedLink>
 
             </section>
 
             <section className="w-11/12 mx-auto relative my-15">
-                <h2 className="text-titulo text-center mb-14 text-44 font-extrabold">Conoce los mapas históricos de Jalisco</h2>
+                <h2 className="text-titulo text-center mb-14 text-44 font-extrabold">Consulta los mapas históricos de Jalisco</h2>
                 <BlockRenderer block={{ type: 'mapas' }} />
                 <TrackedLink 
-                to="/mapas-historicos" 
+                to="/galeria-de-mapas" 
                 target="_self"
                 className="button2 block w-[350px] text-center mx-auto mt-14 text-primary hover:text-white border-primary hover:bg-primary">
                     Quiero ver todos los mapas

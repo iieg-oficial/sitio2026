@@ -1,13 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
-from sqlalchemy.orm import Session
-from sqlalchemy import select
-from app.api.deps import get_current_user, get_db, verify_csrf
-from app.models import Posts, Usuario, Subject
-from app.models.posts import GalleryImage
-from app.schemas.posts import PostCreate, PostOut, PostResponse, PostList
-from slugify import slugify
-import uuid, shutil
 from pathlib import Path
+from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from slugify import slugify
+from sqlalchemy import func, or_, select
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
+from app.core.search import escape_like
+from app.models import Posts, Subject, Usuario
+from app.models.posts import GalleryImage
+from app.schemas.posts import PostCreate, PostList, PostOut, PostResponse
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 UPLOAD_DIR = Path("static/uploads")
@@ -34,13 +38,33 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
 
 @router.get("", response_model=PostList)
 async def listar_posts(
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
-    posts = db.execute(select(Posts)).scalars().all()
-    return {
-        "posts": posts,
-        "total": len(posts),
-    }
+    query = select(Posts)
+
+    if search:
+        like = f"%{escape_like(search)}%"
+        query = query.where(
+            or_(
+                Posts.titulo.ilike(like, escape='\\'),
+                Posts.resumen.ilike(like, escape='\\'),
+            )
+        )
+
+    total = db.execute(
+        select(func.count()).select_from(query.subquery())
+    ).scalar_one()
+
+    posts = db.execute(
+        query.order_by(Posts.fecha.desc(), Posts.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+    ).scalars().all()
+
+    return {"posts": posts, "total": total}
 
 
 @router.get("/{post_id}", response_model=PostResponse)
@@ -55,19 +79,6 @@ async def obtener_post(
         )
     return post
 
-@router.post("/uploads/image")
-async def upload_image(file: UploadFile = File(...)):
-    if file.content_type not in ALLOWED:
-        raise HTTPException(400, "Tipo de archivo no permitido")
-
-    ext = file.filename.split(".")[-1]
-    filename = f"{uuid.uuid4()}.{ext}"
-    dest = UPLOAD_DIR / filename
-
-    with dest.open("wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    return {"url": f"/static/uploads/{filename}"}
 
 @router.post("/create", response_model=PostOut, status_code=status.HTTP_201_CREATED)
 async def crear_post(
@@ -94,8 +105,8 @@ async def crear_post(
         video=post_in.video,
     )
     nuevo.temas = _load_temas(db, post_in.tema_ids or [])
-    
-    
+
+
     db.add(nuevo)
 
     db.flush()
@@ -103,7 +114,7 @@ async def crear_post(
         nuevo.gallery_images.append(
             GalleryImage(url=url, order=i)
         )
-        
+
     db.commit()
     db.refresh(nuevo)
 
@@ -111,7 +122,7 @@ async def crear_post(
 
 @router.get("/slug/{slug}", response_model=PostOut)
 async def obtener_post_slug(
-    slug: str, 
+    slug: str,
     db: Session = Depends(get_db)
 ):
     post = db.execute(select(Posts).where(Posts.slug == slug)).scalar_one_or_none()
@@ -132,7 +143,7 @@ async def actualizar_post(
     post = db.get(Posts, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post no encontrado")
-    
+
     update_data = post_in.dict(exclude_unset=True)
     if "titulo" in update_data and update_data["titulo"] != post.titulo:
         slug = slugify(update_data["titulo"])
@@ -142,12 +153,17 @@ async def actualizar_post(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
-    
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Posts, update_data["slug"], exclude_id=post_id
+            )
+        else:
+            del update_data["slug"]
+
     if "tema_ids" in update_data:
         post.temas = _load_temas(db, update_data.pop("tema_ids") or [])
-    
+
     if "gallery_urls" in update_data:
         gallery_urls = update_data.pop("gallery_urls") or []
         post.gallery_images.clear()
@@ -157,10 +173,10 @@ async def actualizar_post(
 
     for campo, valor in update_data.items():
         setattr(post, campo, valor)
-    
+
     db.commit()
     db.refresh(post)
-    
+
     return post
 
 @router.delete("/{post_id}")

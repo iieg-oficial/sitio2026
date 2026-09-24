@@ -3,7 +3,6 @@ from typing import Any
 
 from import_generic_model_data import import_model_data
 
-
 MODEL_NAME = "Page"
 
 def page_payload_hook(row: dict[str, Any], payload: dict[str, Any]) -> None:

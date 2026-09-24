@@ -37,7 +37,7 @@ else
 $(error ENV=$(ENV) no existe. Usa dev, prod, prod-local o monolito)
 endif
 
-.PHONY: help up build rebuild deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-monolito build-seed-monolito
+.PHONY: help up build rebuild build-clean-cache deploy _up-prod down logs restart clean prune prune-all backup shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one clear-model import-mapa import-reportes import-posts install-api-dep install-slugify setup
 
 help:
 	@echo ''
@@ -54,11 +54,13 @@ help:
 	@echo '${GREEN}Comandos:${RESET}'
 	@echo '  ${YELLOW}make up${RESET}               - Inicia el entorno (en segundo plano)'
 	@echo '  ${YELLOW}make build${RESET}            - Reconstruye e inicia el entorno'
+	@echo '  ${YELLOW}make build-clean-cache${RESET} - Hace build sin caché y borra caché local de Docker para el ENV activo'
 	@echo '  ${YELLOW}make deploy [DEPLOY_ENV=monolito|prod]${RESET} - git pull + rebuild. monolito en una VM, prod en nodo propio'
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
 	@echo '  ${YELLOW}make clean${RESET}            - Borra contenedores, redes y volúmenes de BD (conserva buckets/acervo)'
+	@echo '  ${YELLOW}make backup${RESET}           - Respalda código/configuración, PostgreSQL y volúmenes auxiliares (excluye acervo/mariachi)'
 	@echo '  ${YELLOW}make up-prod-local${RESET}    - Inicia el entorno en modo producción local'
 	@echo '  ${YELLOW}make down-prod-local${RESET}  - Detiene el entorno en modo producción local'
 	@echo '  ${YELLOW}make restart-prod-local${RESET}- Reinicia el entorno en modo producción local'
@@ -72,6 +74,7 @@ help:
 	@echo '  ${YELLOW}make bucket-ls [PREFIX=datos-abiertos/]${RESET} - Lista archivos del bucket S3/SeaweedFS en consola'
 	@echo '  ${YELLOW}make import-data SCRIPT=api/scripts/import_reportes_data.py SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Ejecuta un importador genérico'
 	@echo '  ${YELLOW}make import-one MODEL=mapa FILE=api/scripts/examples/mapa_import_example.csv${RESET} - Importa un archivo individual usando scripts/import_<modelo>.py'
+	@echo '  ${YELLOW}make clear-model MODEL=Archivos [DRY_RUN=1] [FORCE=1]${RESET} - Borra todos los registros de un modelo de la BD; con DRY_RUN=1 solo muestra lo que se borraría'
 	@echo '  ${YELLOW}make import-mapa FILE=api/scripts/examples/mapa_import_example.csv${RESET} - Importa un archivo individual para mapa'
 	@echo '  ${YELLOW}make import-reportes SOURCE=api/scripts/examples/reportes_import_example.csv${RESET} - Alias para el importador de reportes'
 	@echo '  ${YELLOW}make import-posts SOURCE=api/scripts/examples/posts_import_example.csv${RESET} - Alias para el importador de posts'
@@ -81,19 +84,7 @@ help:
 	@echo '${GREEN}Setup inicial:${RESET}'
 	@echo '  ${YELLOW}make setup${RESET}            - Crea .env.development y .env.production desde los .example si no existen'
 	@echo ''
-	@echo '${GREEN}Seed / Carga de datos de ejemplo (CSVs):${RESET}'
-	@echo '  ${YELLOW}make seed${RESET}             - Importa los CSVs de examples/ en el contenedor api ya levantado'
-	@echo '  ${YELLOW}make up-seed${RESET}          - Levanta el entorno E importa los CSVs al iniciar'
-	@echo '  ${YELLOW}make build-seed${RESET}       - Reconstruye el entorno E importa los CSVs al iniciar'
-	@echo '  ${YELLOW}make up-seed-prod${RESET}         - Igual que up-seed con ENV=prod'
-	@echo '  ${YELLOW}make build-seed-prod${RESET}      - Igual que build-seed con ENV=prod'
-	@echo '  ${YELLOW}make up-seed-prod-local${RESET}   - Igual que up-seed con ENV=prod-local'
-	@echo '  ${YELLOW}make build-seed-prod-local${RESET} - Igual que build-seed con ENV=prod-local'
-	@echo '  ${YELLOW}make up-seed-monolito${RESET}     - Igual que up-seed con ENV=monolito'
-	@echo '  ${YELLOW}make build-seed-monolito${RESET}  - Igual que build-seed con ENV=monolito'
-	@echo '  Opciones opcionales: ${YELLOW}MODE=upsert|insert  DRY_RUN=1  ONLY=page,menu_item  SKIP=mapa${RESET}'
-	@echo ''
-
+	
 up:
 	@echo "${GREEN}Iniciando entorno: $(MSG_ENV)${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
@@ -101,6 +92,12 @@ up:
 build:
 	@echo "${GREEN}Reconstruyendo entorno: $(MSG_ENV)${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d --build
+
+build-clean-cache:
+	@echo "${GREEN}Reconstruyendo SIN caché y borrando caché Docker: $(MSG_ENV)${RESET}"
+	docker builder prune -af
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) build --no-cache
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
 
 rebuild:
 	@echo "${GREEN}Reconstruyendo SIN caché: $(MSG_ENV)${RESET}"
@@ -128,6 +125,41 @@ prune-all:
 	@echo "${GREEN}Sistema Docker limpiado.${RESET}"
 
 restart: down up
+
+BACKUP_ROOT ?= backups
+
+backup:
+	@set -eu; \
+	STAMP=$$(date +%Y-%m-%d-%H%M%S); \
+	DEST="$(BACKUP_ROOT)/$$STAMP"; \
+	mkdir -p "$$DEST/databases" "$$DEST/volumes"; \
+	chmod 700 "$(BACKUP_ROOT)" "$$DEST"; \
+	echo "${GREEN}Creando respaldo en $$DEST ($(MSG_ENV))${RESET}"; \
+	echo "${YELLOW}Respaldando PostgreSQL del portal...${RESET}"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T postgres sh -c 'pg_dump -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -Fc' > "$$DEST/databases/portal.dump"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T postgres sh -c 'pg_dumpall -U "$$POSTGRES_USER" --globals-only' > "$$DEST/databases/portal-globals.sql"; \
+	echo "${YELLOW}Respaldando PostgreSQL de CKAN...${RESET}"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T ckan-db pg_dump -U postgres -d ckan_default -Fc > "$$DEST/databases/ckan.dump"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T ckan-db pg_dump -U postgres -d datastore_default -Fc > "$$DEST/databases/datastore.dump"; \
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T ckan-db pg_dumpall -U postgres --globals-only > "$$DEST/databases/ckan-globals.sql"; \
+	backup_volume() { \
+		service="$$1"; destination="$$2"; output="$$3"; \
+		container=$$(docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) ps -q "$$service"); \
+		[ -n "$$container" ] || { echo "${RED}El servicio $$service no está creado o ejecutándose.${RESET}" >&2; exit 1; }; \
+		volume=$$(docker inspect -f "{{range .Mounts}}{{if eq .Destination \"$$destination\"}}{{.Name}}{{end}}{{end}}" "$$container"); \
+		[ -n "$$volume" ] || { echo "${RED}No se encontró el volumen de $$service en $$destination.${RESET}" >&2; exit 1; }; \
+		docker run --rm -v "$$volume":/data:ro alpine:3.22 tar czf - -C /data . > "$$DEST/volumes/$$output"; \
+	}; \
+	echo "${YELLOW}Respaldando volúmenes auxiliares de CKAN, Solr y Redis...${RESET}"; \
+	backup_volume ckan /var/lib/ckan ckan-storage.tgz; \
+	backup_volume ckan-solr /var/solr ckan-solr.tgz; \
+	backup_volume redis /data redis.tgz; \
+	echo "${YELLOW}Respaldando código y configuración del proyecto (sin acervo/mariachi)...${RESET}"; \
+	tar --exclude='./.git' --exclude='./backups' --exclude='*/node_modules' --exclude='*/dist' --exclude='*/build' --exclude='*/__pycache__' --exclude='*/static/uploads' --exclude='*/acervo/*' --exclude='*/mariachi/*' -czf "$$DEST/proyecto.tgz" .; \
+	( cd "$$DEST" && sha256sum databases/* volumes/* proyecto.tgz > SHA256SUMS ); \
+	chmod -R go-rwx "$$DEST"; \
+	echo "${GREEN}Respaldo terminado: $$DEST${RESET}"; \
+	echo "${YELLOW}Incluye .env y otros secretos si existen; almacénalo con permisos restringidos.${RESET}"
 
 deploy:
 	@echo "${GREEN}Desplegando con ENV=$(DEPLOY_ENV)${RESET}"
@@ -217,6 +249,16 @@ import-one:
 	@echo "${GREEN}Importando archivo individual ($(FILE)) con import_$(MODEL).py en $(MSG_ENV)...${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api python scripts/import_$(MODEL).py $(patsubst api/%,%,$(FILE)) $(if $(MODE),--mode $(MODE),) $(if $(LIMIT),--limit $(LIMIT),) $(if $(DRY_RUN),--dry-run,) $(ARGS)
 
+clear-model:
+	@test -n "$(MODEL)" || { echo "${RED}Uso: make clear-model MODEL=Archivos [ENV=dev|prod|monolito] [DRY_RUN=1] [FORCE=1]${RESET}"; exit 1; }
+	@if [ "$(FORCE)" != "1" ]; then \
+		printf "Escribe ${YELLOW}yes${RESET} para confirmar la eliminación de todos los registros de ${RED}$(MODEL)${RESET} en $(MSG_ENV): "; \
+		read confirm; \
+		[ "$$confirm" = "yes" ] || { echo "${YELLOW}Cancelado.${RESET}"; exit 1; }; \
+	fi
+	@echo "${RED}⚠ $(if $(DRY_RUN),Vista previa de borrado,Eliminando) todos los registros de $(MODEL) en $(MSG_ENV)...${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -e PYTHONPATH=/app -T api python scripts/clear_model.py --model "$(MODEL)" $(if $(DRY_RUN),--dry-run,)
+
 import-mapa:
 	@test -n "$(FILE)" || { echo "${RED}Uso: make import-mapa FILE=api/scripts/examples/mapa_import_example.csv [ENV=dev|prod|monolito] [MODE=upsert|insert] [LIMIT=10] [DRY_RUN=1] [ARGS='--key-field slug']${RESET}"; exit 1; }
 	@$(MAKE) import-one ENV=$(ENV) MODEL=mapa FILE=$(FILE) MODE=$(MODE) LIMIT=$(LIMIT) DRY_RUN=$(DRY_RUN) ARGS="$(if $(ARGS),$(ARGS),--key-field slug)"
@@ -239,53 +281,3 @@ import-posts:
 setup:
 	@./scripts/init-env.sh
 
-# ── Seed / Carga de datos de ejemplo ────────────────────────────────────────
-# Construye los argumentos opcionales para import_all_examples.py
-SEED_ARGS := --mode $(if $(MODE),$(MODE),upsert)
-ifdef DRY_RUN
-	SEED_ARGS += --dry-run
-endif
-ifdef ONLY
-	SEED_ARGS += --only $(ONLY)
-endif
-ifdef SKIP
-	SEED_ARGS += --skip $(SKIP)
-endif
-
-## seed: Ejecuta la importación de CSVs en el contenedor api ya levantado.
-##       Útil cuando el ambiente está corriendo y quieres poblar/repoblar la BD.
-##       Opciones: MODE=upsert|insert  DRY_RUN=1  ONLY=page,menu_item  SKIP=mapa
-seed:
-	@echo "${GREEN}Importando datos de ejemplo (CSVs) → $(MSG_ENV)${RESET}"
-	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api \
-		python scripts/import_all_examples.py $(SEED_ARGS)
-
-## up-seed: Levanta el entorno (sin rebuild) y activa la carga de CSVs al iniciar.
-up-seed:
-	@echo "${GREEN}Levantando entorno con seed: $(MSG_ENV)${RESET}"
-	SEED_EXAMPLES=true docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
-
-## build-seed: Reconstruye el entorno y activa la carga de CSVs al iniciar.
-##             Equivalente a: SEED_EXAMPLES=true docker compose up --build
-build-seed:
-	@echo "${GREEN}Reconstruyendo entorno con seed: $(MSG_ENV)${RESET}"
-	SEED_EXAMPLES=true docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d --build
-
-## Atajos rápidos por entorno
-up-seed-prod:
-	$(MAKE) up-seed ENV=prod
-
-build-seed-prod:
-	$(MAKE) build-seed ENV=prod
-
-up-seed-prod-local:
-	$(MAKE) up-seed ENV=prod-local
-
-build-seed-prod-local:
-	$(MAKE) build-seed ENV=prod-local
-
-up-seed-monolito:
-	$(MAKE) up-seed ENV=monolito
-
-build-seed-monolito:
-	$(MAKE) build-seed ENV=monolito

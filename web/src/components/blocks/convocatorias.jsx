@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Convocatorias() {
     const [convocatorias, setConvocatorias] = useState([])
@@ -59,26 +60,29 @@ export default function Convocatorias() {
     };
 
     return (
-        <div className='mb-10'>
-            <div className='grid grid-cols-1 gap-4 p-4 container mx-auto bg-card hover:border hover:border-tertiary group rounded-3xl'>
+        <div>
+            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
                 {currentItems.map(convocatoria => (
                     <TrackedLink to={`/convocatorias/${convocatoria.slug}`} className="" rel="noopener noreferrer">
-                        <div className='grid md:grid-cols-6' key={convocatoria.id}>                        
-                            <div className='md:col-span-2'></div>
-                                <div className='md:col-span-4 p-6'>
-                                    <h3 className='text-28 text-primary'>{convocatoria.titulo}</h3>                                                                
-                                    <div dangerouslySetInnerHTML={{__html: convocatoria.descripcion}} className='diez my-5' /> 
-                                    {esFechaPasada(convocatoria.fin) ? (
-                                    <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2'>
-                                        Convocatoria cerrada
-                                    </span>
-                                    ) : (
-                                    <span className='rounded-2xl bg-etiqueta-sec border-tertiary text-tertiary text-14 px-5 py-2'>
-                                        Convocatoria abierta
-                                    </span>
-                                    )}                        
-                                    <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
-                                        <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                        <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group' key={convocatoria.id}>                        
+                            <div className='lg:col-span-2'>
+                                <img src={convocatoria.img_portada} alt={convocatoria.titulo} className='rounded-3xl w-full h-full object-cover sm:w-1/2 lg:w-7/12 text-center mx-auto' />
+                            </div>
+                                <div className='lg:col-span-4'>
+                                    <h3 className='text-28 text-primary font-garet-extra'>{convocatoria.titulo}</h3>                            
+                                    
+                                    <SafeHtml htmlContent={convocatoria.descripcion} className='diez mt-5' />
+                                    <div className='grid grid-cols-2 gap-4 mt-10'>
+                                        <div>
+                                            {esFechaPasada(convocatoria.fin) && (
+                                                <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] font-garet-bold text-tertiary text-14 px-5 py-2'>Finalizado</span>
+                                            )}   
+                                        </div>
+                                        <div>
+                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary text-center float-right'>
+                                                <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                            </div>                                
+                                        </div>
                                     </div>
                             </div>                        
                         </div>
@@ -103,16 +107,15 @@ export default function Convocatorias() {
             />
             */}
 
-            <div className='grid grid-cols-1 gap-4 p-4 container mx-auto bg-card rounded-3xl mt-16'>
-                <div className='grid md:grid-cols-6'>                        
-                    <div className='md:col-span-2'></div>
-                        <div className='md:col-span-4 p-6'>
-                            <h3 className='text-28 text-primary'>Sesiones informativas</h3>                            
+            <div className='my-15 grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
+                <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group'>                        
+                    <div className='lg:col-span-2'>
+                        <img src='https://iieg.jalisco.gob.mx/acervo/portal/cursos/sesiones-informativas.png' alt='Sesiones informativas' className='rounded-3xl w-full h-full object-cover sm:w-1/2 lg:w-7/12 text-center mx-auto' />
+                    </div>
+                        <div className='lg:col-span-4'>
+                            <h3 className='text-28 text-primary font-garet-extra'>Sesiones informativas</h3>                            
                                 <div className='diez mt-5'>                        
                                     <p>Presentaciones orientadas a dar a conocer el trabajo, productos y servicios del IIEG, en función de las necesidades del público participante.</p>
-                                </div>
-                                <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 '>
-                                    <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
                                 </div>
                             </div>                        
                         </div>

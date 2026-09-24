@@ -4,6 +4,7 @@ import PaginaDinamica from './PaginaDinamica';
 import api from '@services/apiService';
 import NotFound from '../blocks/NotFound';
 import Backlink from "./Backlink";
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function PaginaPorSlug({ slug }) {
   const [page, setPage] = useState(null);
@@ -66,7 +67,7 @@ export default function PaginaPorSlug({ slug }) {
     );
   }
 
-  const interno = ["datos-expres", "reportes"].includes(page.slug_custom);
+  const interno = ["flashes", "reportes"].includes(page.slug_custom);
 
   return (
     <>    
@@ -78,10 +79,10 @@ export default function PaginaPorSlug({ slug }) {
           <div className="container mx-auto grid md:grid-cols-12 gap-1">  
             {interno && <div className='md:col-span-1'><Backlink /></div>}            
             <div className={interno ? 'col-span-11 w-full px-2 md:px-0' : 'col-span-12 mx-auto'}>
-            <h1 className="text-titulos text-center">
-              {page.title}
-            </h1> 
-            <div dangerouslySetInnerHTML={{ __html: page.description }} className={interno ? 'w-11/12 prose mt-5 mx-auto text-18' : 'w-11/12 prose mt-5 mx-auto text-18'} />             
+              <h1 className="text-titulo text-center">
+                {page.title}
+              </h1>           
+              <SafeHtml htmlContent={page.description} className={interno ? 'w-11/12 prose mt-5 mx-auto text-18' : 'w-11/12 prose mt-5 mx-auto text-18'} />
             </div>             
           </div>
         </section>

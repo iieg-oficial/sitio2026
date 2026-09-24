@@ -5,8 +5,6 @@ Revises: a7c9e22b8f4b
 Create Date: 2026-06-17 19:21:54.131306
 
 """
-from alembic import op
-import sqlalchemy as sa
 
 
 revision = '76c619d9360c'

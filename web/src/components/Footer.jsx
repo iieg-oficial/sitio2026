@@ -22,23 +22,23 @@ function Footer() {
                             </div>
                             <div className='flex md:justify-start justify-center gap-4 content-end'>
                                 <a href="https://www.instagram.com/iiegjalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="line-md--instagram"></span>
+                                    <span className="line-md--instagram"></span>
                                 </a>
 
                                 <a href="https://www.facebook.com/IIEGJalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="ri--facebook-fill"></span>
+                                    <span className="ri--facebook-fill"></span>
                                 </a>
                                 
                                 <a href="https://x.com/IIEGJ" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="pajamas--twitter"></span>
+                                    <span className="pajamas--twitter"></span>
                                 </a>
                                 
                                 <a href="www.linkedin.com/company/iiegjalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="ri--linkedin-fill"></span>
+                                    <span className="ri--linkedin-fill"></span>
                                 </a>
                                 
                                 <a href="https://www.youtube.com/@IIEGJaliscoGob" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
-                                    <span class="mdi--youtube"></span>
+                                    <span className="mdi--youtube"></span>
                                 </a>
                             </div>                            
                         </div>
@@ -82,7 +82,7 @@ function Footer() {
                                 <a href='' target='_blank' className='linkfooter'>Transparencia</a>
                             </li>
                             <li className='mb-8'>
-                                <a href='https://iieg.gob.mx/' target='_blank' className='linkfooter'>Sitio anterior</a>
+                                <a href='https://iieg.gob.mx/' target='_blank' className='linkfooter'>Sitio histórico</a>
                             </li>
                             <li className='mb-8'>
                                 <Link to='/aviso-de-privacidad' className='linkfooter'>Aviso de privacidad</Link> | <a href="https://info.jalisco.gob.mx/politicas/?remote=true" target="_blank" className='linkfooter'>Políticas de uso y privacidad</a>

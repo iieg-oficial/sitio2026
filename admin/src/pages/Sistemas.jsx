@@ -5,6 +5,8 @@ import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { TableSearch } from '@components/common/TableSearch';
+import { useSearchFilter } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -18,6 +20,7 @@ export default function Sistemas() {
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [tipos, setTipos] = useState([]);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(sistemas, ['titulo']);
 
     useEffect(() => {
         fetchSistemas();
@@ -64,7 +67,7 @@ export default function Sistemas() {
 
     const handleEdit = (record) => {
         setEditingSistema(record);
-        const ids = (record.temas ?? []).map((t) => t.id);
+        const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
         form.setFieldsValue(record);
         setModalVisible(true);
@@ -119,10 +122,10 @@ export default function Sistemas() {
             key: 'link',
         },
         {
-            title: 'Slug',
-            dataIndex: 'slug',
-            key: 'slug',
-            sorter: (a, b) => a.slug.localeCompare(b.slug),
+            title: 'Tipo',
+            dataIndex: 'tipo',
+            key: 'tipo',
+            sorter: (a, b) => a.tipo.localeCompare(b.tipo),
         },
         {
             title: 'Destacado',
@@ -169,9 +172,15 @@ export default function Sistemas() {
                 </Button>
             </div>
         <Card>
+            <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+            />
             <Table 
             columns={columns} 
-            dataSource={sistemas} 
+            dataSource={filteredData} 
             loading={loading} 
             rowKey="id"
             pagination={{ 
@@ -213,40 +222,6 @@ export default function Sistemas() {
                         }))}
                     />
                 </Form.Item>
-                <Form.Item
-                        name="destacado"
-                        label="Destacada"
-                        valuePropName="checked"
-                        rules={[{ required: false, message: 'Por favor seleccione si es destacada' }]}
-                    >
-                        <Checkbox>Destacada</Checkbox>
-                </Form.Item>
-                <Form.Item
-                        name="slider"
-                        label="En Slider"
-                        valuePropName="checked"
-                        rules={[{ required: false, message: 'Por favor seleccione si es destacada' }]}
-                    >
-                        <Checkbox>En Slider</Checkbox>
-                </Form.Item>
-                <Form.Item name="imagen_slider" label="Imagen Slider" rules={[{ required: false }]}>
-                    <Space direction="vertical" style={{ width: '100%' }}>
-                        <UploadAcervo
-                            bucket="portal"
-                            folder="/sistemas"
-                            label="Subir imagen slider"
-                            onUploaded={(media) => {
-                                form.setFieldValue('imagen_slider', media.url);
-                            }}
-                        />
-                        <Form.Item name="imagen_slider" noStyle>
-                            <Input placeholder="URL de la imagen slider" />
-                        </Form.Item>
-                        {form.getFieldValue('imagen_slider') ? (
-                            <Image src={form.getFieldValue('imagen_slider')} alt="Imagen del sistema" style={{ maxWidth: 200, borderRadius: 6 }} />
-                        ) : null}
-                    </Space>
-                </Form.Item>
                 <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
                     <Space direction="vertical" style={{ width: '100%' }}>
                         <UploadAcervo
@@ -278,14 +253,47 @@ export default function Sistemas() {
                 >
                     <Input />
                 </Form.Item>
-
+                <Form.Item
+                        name="destacado"
+                        label="Destacada"
+                        valuePropName="checked"
+                        rules={[{ required: false, message: 'Por favor seleccione si es destacada' }]}
+                    >
+                        <Checkbox>Destacada</Checkbox>
+                </Form.Item>
+                <Form.Item
+                        name="slider"
+                        label="En Slider"
+                        valuePropName="checked"
+                        rules={[{ required: false, message: 'Por favor seleccione si aparece en el slider' }]}
+                    >
+                        <Checkbox>En Slider</Checkbox>
+                </Form.Item>
+                <Form.Item name="imagen_slider" label="Imagen Slider" rules={[{ required: false }]}>
+                    <Space direction="vertical" style={{ width: '100%' }}>
+                        <UploadAcervo
+                            bucket="portal"
+                            folder="/sistemas"
+                            label="Subir imagen slider"
+                            onUploaded={(media) => {
+                                form.setFieldValue('imagen_slider', media.url);
+                            }}
+                        />
+                        <Form.Item name="imagen_slider" noStyle>
+                            <Input placeholder="URL de la imagen slider" />
+                        </Form.Item>
+                        {form.getFieldValue('imagen_slider') ? (
+                            <Image src={form.getFieldValue('imagen_slider')} alt="Imagen del sistema" style={{ maxWidth: 200, borderRadius: 6 }} />
+                        ) : null}
+                    </Space>
+                </Form.Item>
                     <Form.Item
                         name="orden"
                         label="Orden"
                         rules={[{ required: true, message: 'Por favor ingrese el orden' }]}
                     >
                         <Input type="number" />
-                </Form.Item>
+                    </Form.Item>
             </Form>
         </Modal>
        </div>

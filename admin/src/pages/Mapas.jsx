@@ -4,6 +4,8 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { TableSearch } from '@components/common/TableSearch';
+import { useDebouncedSearch } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 
@@ -14,22 +16,43 @@ export default function Mapas() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingMapa, setEditingMapa] = useState(null);
     const [tipoMapa, setTipoMapa] = useState([]);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
     useEffect(() => {
         fetchMapas();
         fetchTipoMapa();
     }, []);
 
-    const fetchMapas = async () => {
+    const fetchMapas = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
-            const response = await api.get('/mapas/');
+            const response = await api.get('/mapas/', {
+                params: {
+                    ...(search ? { search } : {}),
+                    page,
+                    pageSize
+                }
+            });
             setMapas(Array.isArray(response.data?.mapas) ? response.data.mapas : []);
+            setPagination((prev) => ({
+                ...prev,
+                current: page,
+                pageSize,
+                total: response.data.total
+            }));
         } catch {
             message.error('Error al cargar mapas');
         } finally {
             setLoading(false);
         }
+    };
+
+    const { searchText, setSearchText } = useDebouncedSearch((text) => {
+        fetchMapas(text, 1, pagination.pageSize);
+    });
+
+    const handleTableChange = (newPagination) => {
+        fetchMapas(searchText, newPagination.current, newPagination.pageSize);
     };
 
     const fetchTipoMapa = async () => {
@@ -66,7 +89,7 @@ export default function Mapas() {
                 try {
                     await api.delete(`/mapas/${record.id}`);
                     message.success('Mapa eliminado exitosamente');
-                    fetchMapas();
+                    fetchMapas(searchText, pagination.current, pagination.pageSize);
                 } catch (error) {
                     message.error('Error al eliminar el mapa');
                 }
@@ -84,7 +107,7 @@ export default function Mapas() {
                 message.success('Mapa creado exitosamente');
             }
             setModalVisible(false);
-            fetchMapas();
+            fetchMapas(searchText, pagination.current, pagination.pageSize);
         } catch (error) {
             message.error('Error al guardar el mapa');
         }
@@ -136,7 +159,26 @@ export default function Mapas() {
                 </Button>
             </div>
             <Card>
-                <Table columns={columns} dataSource={mapas} loading={loading} rowKey="id" />
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
+                <Table 
+                    columns={columns} 
+                    dataSource={mapas} 
+                    loading={loading} 
+                    rowKey="id" 
+                    pagination={{
+                            current: pagination.current,
+                            pageSize: pagination.pageSize,
+                            total: pagination.total,
+                            showSizeChanger: true,
+                            showTotal: (total) => `Total ${total} mapas`
+                        }}
+                    onChange={handleTableChange}
+                />
             </Card>
 
             <Modal

@@ -2,7 +2,6 @@ import argparse
 
 from import_generic_model_data import import_model_data
 
-
 MODEL_NAME = "Archivos"
 
 
@@ -40,10 +39,13 @@ def split_values(value: object) -> list[str]:
 def archivos_payload_hook(row: dict, payload: dict) -> None:
     tema_slugs = split_values(row.get("temas_slugs") or row.get("tema_slugs"))
     subtema_slugs = split_values(row.get("subtemas_slugs") or row.get("subtema_slugs"))
-    
-    all_slugs = list(set(tema_slugs + subtema_slugs))
+
+    all_slugs = list(dict.fromkeys(tema_slugs + subtema_slugs))
     if all_slugs:
+        row["tema_slugs"] = "|".join(all_slugs)
         row["temas_slugs"] = "|".join(all_slugs)
+        row["subtema_slugs"] = "|".join(subtema_slugs)
+        row["subtemas_slugs"] = "|".join(subtema_slugs)
 
 
 def main() -> None:

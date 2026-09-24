@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -34,11 +34,10 @@ export default function Galeria({ images }) {
             >
                 {images.map((imagen) => {
                     const original = imagen
-                    const thumb = original.substring(original.lastIndexOf('/') + 1);
+                    
                     return (
                         <SwiperSlide key={imagen.id}>
-                            <img src={imagen.url} alt={`Imagen ${imagen.id}`} />
-                            {/*<img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/blog/${thumb}?w=1280`} alt={`Imagen ${imagen.id}`} />*/}
+                            <img src={imagen.url} alt={`Imagen ${imagen.id}`} />                            
                         </SwiperSlide>
                     );
                 })}
@@ -55,7 +54,18 @@ export default function Galeria({ images }) {
             >
                 {images.map((imagen) => (
                     <SwiperSlide key={imagen.id}>
-                        <img src={imagen.url} alt={`Imagen ${imagen.id}`} />
+                        <img src={imagen.url} alt={`Imagen ${imagen.id}`} 
+                            onError={(e) => {
+                                    if (!e.target.dataset.triedFallback) {
+                                        e.target.dataset.triedFallback = 'true';
+                                        e.target.src = imagen.url
+                                            ? imagen.url
+                                            : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                    } else {                                        
+                                        e.target.onerror = null;
+                                        e.target.src = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
+                                    }
+                                }}/>
                     </SwiperSlide>
                 ))}
             </Swiper>

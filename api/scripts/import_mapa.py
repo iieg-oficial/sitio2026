@@ -1,8 +1,8 @@
 import argparse
 
 from import_generic_model_data import import_model_data
-from app.models.mapa import TipoMapaEnum
 
+from app.models.mapa import TipoMapaEnum
 
 MODEL_NAME = "Mapa"
 

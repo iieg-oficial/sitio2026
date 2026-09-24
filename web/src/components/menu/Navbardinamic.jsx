@@ -62,11 +62,11 @@ const Navbardinamic = () => {
     }));
   };
 
-  // 3. Cerrar menú automáticamente cuando cambia la ruta
-  useEffect(() => {
+  // 3. Manejador centralizado para cerrar el menú en móviles al hacer clic en un enlace
+  const handleLinkClick = () => {
     setIsOpen(false);
     setActiveSubmenus({});
-  }, [location.pathname]);
+  };
 
   const handleSearch = (term) => {
     if (!term) {
@@ -87,7 +87,7 @@ const Navbardinamic = () => {
   return (
     <div className="container-fluid bg-primary py-5">
       <div className="menu-wrapper grid grid-cols-2 xl:grid-cols-12 container mx-auto">
-        <Link to="/" className="lg:col-span-3 content-center">
+        <Link to="/" className="lg:col-span-3 xl:col-span-2 content-center" onClick={handleLinkClick}>
           <img src="/ico_IIEG_header.svg" alt="IIEG" className="h-12 w-auto" />
         </Link>
         
@@ -99,7 +99,7 @@ const Navbardinamic = () => {
           <span className="material-symbols--menu-rounded"></span>
         </a>
 
-        <nav id="menu" className={`navbar col-span-2 md:col-span-12 xl:col-span-9 ${isOpen ? 'active' : ''}`} role="navigation">
+        <nav id="menu" className={`navbar col-span-2 lg:col-span-9 xl:col-span-10 ${isOpen ? 'active' : ''}`} role="navigation">
           <div className="menu">
             <ul className="menu">
 
@@ -122,6 +122,7 @@ const Navbardinamic = () => {
                         to={destination}
                         className={isCurrent ? 'active' : ''}
                         target={item.link_interno ? undefined : '_blank'}
+                        onClick={handleLinkClick}
                       >
                         {item.title}
                       </TrackedLink>
@@ -150,6 +151,7 @@ const Navbardinamic = () => {
                                     to={subDestination}
                                     className={`nav-link ${isSubActive ? 'active' : ''}`} 
                                     target={subItem.link_interno ? undefined : '_blank'}
+                                    onClick={handleLinkClick}
                                   >
                                     {subItem.title}
                                   </TrackedLink>
@@ -164,8 +166,7 @@ const Navbardinamic = () => {
             </ul>
           </div>
         </nav>    
-
-
+ 
       </div>
     </div>
   );

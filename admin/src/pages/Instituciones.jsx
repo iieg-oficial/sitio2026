@@ -4,6 +4,8 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { TableSearch } from '@components/common/TableSearch';
+import { useSearchFilter } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 
@@ -13,6 +15,8 @@ export default function Instituciones() {
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [editingInstitucion, setEditingInstitucion] = useState(null);
+
+    const { searchText, setSearchText, filteredData } = useSearchFilter(instituciones, ['nombre']);
 
     useEffect(() => {
         fetchInstituciones();
@@ -135,9 +139,15 @@ export default function Instituciones() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
-                    dataSource={instituciones}
+                    dataSource={filteredData}
                     rowKey="id"
                     loading={loading}
                     pagination={{

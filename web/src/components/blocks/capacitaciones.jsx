@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Capacitaciones() {
     const [capacitaciones, setCapacitaciones] = useState([])
@@ -22,7 +23,7 @@ export default function Capacitaciones() {
         return false
     }
 
-    const fetchCapacitaciones = async () => {
+    const fetchCapacitaciones = useCallback( async () => {
         try {
             const response = await api.get('/cursos-public', {
                 params: { tipo_curso: 'capacitacion' },
@@ -40,11 +41,11 @@ export default function Capacitaciones() {
             setCapacitaciones([])
             setCapacitacionesDestacadas([])
         }
-    }
+    }, []);
 
     useEffect(() => {
         fetchCapacitaciones()
-    }, []);
+    }, [fetchCapacitaciones]);
 
     const [itemOffset, setItemOffset] = useState(0)
     const itemsPerPage = 12
@@ -67,50 +68,58 @@ export default function Capacitaciones() {
 
     return (
         <div>
-            <div className='grid grid-cols-1 gap-4 rounded-3xl p-4 container mx-auto bg-card hover:border hover border-tertiary px-5 xl:px-5 2xl:px-0'>
+            <div className='grid grid-cols-1 gap-4 rounded-3xl p-7 container 2xl:w-[70%] mx-auto bg-card hover:border hover:border-primary px-5 xl:px-5 2xl:px-0'>
                 {capacitacionesDestacadas.map(capacitacion => (
-                    <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" rel="noopener noreferrer">
-                    <div className='grid md:grid-cols-6' key={capacitacion.id}>                                               
-                        <div className='md:col-span-2'></div>
-                        <div className='md:col-span-4'>
-                            <h3 className='text-44 text-primary'>{capacitacion.titulo}</h3>       
-                            <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez my-5' />
-                            {esFechaPasada(capacitacion.fin) ? (
-                            <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2'>
-                                Convocatoria cerrada
-                            </span>
-                            ) : (
-                            <span className='rounded-2xl bg-etiqueta-sec border-tertiary text-tertiary text-14 px-5 py-2'>
-                                Convocatoria abierta
-                            </span>
-                            )} 
-                            <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10 mr-5'>
-                                <span className="material-symbols--chevron-right"></span>
+                    <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} key={capacitacion.id} className="" rel="noopener noreferrer">
+                    <div className='grid lg:grid-cols-6 gap-6 px-2 sm:px-5 group'>                                               
+                        <div className='lg:col-span-2'>
+                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='h-auto rounded-3xl w-full object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
+                        </div>
+                        <div className='lg:col-span-4'>
+                            <h3 className='text-44 text-primary font-garet-extra'>{capacitacion.titulo}</h3>
+                            
+                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5 text-22 font-garet'/>
+                            
+                            <div className='grid grid-cols-2 gap-4 mt-10'>
+                                <div>
+                                    {esFechaPasada(capacitacion.fin) && (
+                                        <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] font-garet-bold text-tertiary text-14 px-5 py-2'>Finalizado</span>
+                                    )}   
+                                </div>
+                                <div>
+                                    <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary text-center float-right'>
+                                        <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                    </div>                                
+                                </div>
                             </div>
                         </div>                        
                     </div>
                     </TrackedLink>
                 ))}
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-15 container mx-auto px-5 xl:px-5 2xl:px-0'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 p-7 gap-4 mt-15 container 2xl:w-[85%] mx-auto xl:px-5 2xl:px-0'>
                 {currentItems.map(capacitacion => (
-                    <TrackedLink to={`/capacitaciones/${capacitacion.slug}`} className="" rel="noopener noreferrer">
-                    <div className='grid md:grid-cols-6 hover:border hover:border-tertiary rounded-3xl' key={capacitacion.id}>                        
-                        <div className='md:col-span-2'></div>                        
-                        <div className='md:col-span-4 p-6'>
-                            <h3 className='text-28 text-primary'>{capacitacion.titulo}</h3>                              
-                            <div dangerouslySetInnerHTML={{__html: capacitacion.descripcion}} className='diez my-5' />                        
-                            {esFechaPasada(capacitacion.fin) ? (
-                            <span className='rounded-2xl bg-etiqueta-ter border-titulo text-titulo text-14 px-5 py-2 mt-5'>
-                                Convocatoria cerrada
-                            </span>
-                            ) : (
-                            <span className='rounded-2xl bg-etiqueta-sec border-tertiary text-tertiary text-14 px-5 py-2 mt-5'>
-                                Convocatoria abierta
-                            </span>
-                            )} 
-                            <div className='bg-white rounded-full float-right w-[27px] h-[27px] text-center mt-10'>
-                                <span className="material-symbols--chevron-right"></span>
+                    <TrackedLink to={`/educacion-continua/${capacitacion.slug}`} className="" rel="noopener noreferrer">
+                    <div className='grid bg-card lg:grid-cols-6 hover:border hover:border-primary rounded-3xl px-2 sm:px-5 group' key={capacitacion.id}>                        
+                        <div className='lg:col-span-2 pt-6'>
+                            <img src={capacitacion.img_portada} alt={capacitacion.titulo} className='rounded-3xl w-full h-auto object-cover sm:w-1/2 lg:w-full text-center mx-auto' />
+                        </div>                        
+                        <div className='lg:col-span-4 p-6'>
+                            <h3 className='text-28 text-primary font-garet-extra'>{capacitacion.titulo}</h3>                                
+                            
+                            <SafeHtml htmlContent={capacitacion.descripcion} className='diez mt-5 font-garet text-18'/>
+                                                
+                            <div className='grid grid-cols-2 gap-4 mt-10'>
+                                <div>
+                                    {esFechaPasada(capacitacion.fin) && (
+                                        <span className='rounded-xl bg-[#FFF2E5] border border-[#FF83004D] font-garet-bold text-tertiary text-14 px-5 py-2'>Finalizado</span>
+                                    )}   
+                                </div>
+                                <div>
+                                    <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary text-center float-right'>
+                                        <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                    </div>                                
+                                </div>
                             </div>
                         </div>                        
                     </div>
@@ -119,19 +128,20 @@ export default function Capacitaciones() {
             </div>
 
 
-            <ReactPaginate
-                previousLabel={"Ant"}
-                nextLabel={"Sig"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / itemsPerPage)}
-            />
+            {pageCount > 1 && (
+                        <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            breakLabel={'...'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                            forcePage={Math.floor(itemOffset / itemsPerPage)}
+                        />
+                    )}
         </div>
     )
 }

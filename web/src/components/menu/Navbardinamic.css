@@ -25,21 +25,8 @@
   color: #ffffff;
   text-decoration: none;
   border-bottom: none;
-  font-size: 16px; 
+  font-size: 16px;
 }
-
-@media (width >= 80rem) {
-  .menu-wrapper a {
-    font-size: 14px; 
-  }
-}
-
-@media (width >= 96rem) {
-  .menu-wrapper a {
-    font-size: 16px; 
-  }
-}
-
 .menu-wrapper a:hover {  
   transition: all 0.5s;
   color: #ff8300;
@@ -80,13 +67,13 @@
   white-space: nowrap;
   line-height: 1.8em;
   border: none;
-  color: #5c2472;
+  color: var(--color-primary);
   padding: 5px 25px;
 }
 .menu-wrapper .sub-menu a:hover,
 .menu-wrapper .sub-menu a.active,
 .menu-wrapper .sub-menu li.active > a {
-  background: #f4d8ff;
+  background: #FFEFDE;
   color: #ff8300;
   font-weight: 600;
 }
@@ -126,6 +113,10 @@
     padding-left: 10px;
     border: none;
     margin: 0;
+  }
+  .menu-wrapper .sub-menu a {
+    text-align: center;
+    color: white;
   }
   .menu-wrapper a.menu-link:hover {
     background: #6618a2;
@@ -237,7 +228,7 @@
     top: 5px;
     margin-top:0px;
     right: 4px;
-    color: #fff;
+    color: white;
     font-size: 28px;
     padding-bottom: 5px;
   }

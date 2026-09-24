@@ -14,7 +14,7 @@ from sqlalchemy import select
 sys.path.append(str(Path(__file__).parent.parent))
 
 from app.core.database import SessionLocal
-from app.models import Posts, Subject, GalleryImage
+from app.models import GalleryImage, Posts, Subject
 
 
 class TipTapHTMLParser(HTMLParser):

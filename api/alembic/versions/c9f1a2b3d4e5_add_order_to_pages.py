@@ -5,36 +5,53 @@ Revises: 4cc71a6d42e6
 Create Date: 2026-05-27 19:00:00.000000
 
 """
+from typing import Sequence, Union
+
 from alembic import op
 import sqlalchemy as sa
 
-
 revision = 'c9f1a2b3d4e5'
 down_revision = '4cc71a6d42e6'
-branch_labels = None
-depends_on = None
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    columns = [col['name'] for col in inspector.get_columns('pages')]
 
-    # Assign a stable order inside each sibling group.
-    op.execute(
-        """
+    # 1. Crear la columna 'order' si no existe
+    if 'order' not in columns:
+        op.add_column('pages', sa.Column('order', sa.Integer(), nullable=True))
+
+    # 2. Evaluar si parent_id existe físicamente para incluir o omitir la cláusula
+    has_parent_id = 'parent_id' in columns
+    partition_sql = "PARTITION BY parent_id " if has_parent_id else ""
+
+    # 3. Formatear la consulta sin dejar espacios vacíos en OVER()
+    query = f"""
         WITH ranked_pages AS (
-            SELECT id,
-                   ROW_NUMBER() OVER (PARTITION BY parent_id ORDER BY id) - 1 AS order_index
+            SELECT 
+                id,
+                (ROW_NUMBER() OVER ({partition_sql}ORDER BY id) - 1)::integer AS order_index
             FROM pages
         )
         UPDATE pages
         SET "order" = ranked_pages.order_index
         FROM ranked_pages
         WHERE pages.id = ranked_pages.id
-        """
-    )
+    """
+    op.execute(query)
 
+    # 4. Establecer la restricción NOT NULL
     op.alter_column('pages', 'order', nullable=False, server_default='0')
 
 
 def downgrade() -> None:
-    op.drop_column('pages', 'order')
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    columns = [col['name'] for col in inspector.get_columns('pages')]
+
+    if 'order' in columns:
+        op.drop_column('pages', 'order')

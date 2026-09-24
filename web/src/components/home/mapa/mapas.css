@@ -1,6 +1,8 @@
 .mapa {
   position: relative;
   cursor: pointer;
+  overflow: hidden;
+  border-radius: 1.5rem;
 }
 
 .mapa .image-mapa {

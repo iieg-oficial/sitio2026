@@ -51,7 +51,7 @@ export default function Cuadernillos() {
     );
 
     const filteredCuadernillos = useMemo(() => {
-        const filtered = cuadernillosFilter.filter(cuaderno => {
+        return cuadernillosFilter.filter(cuaderno => {
             const matchesSearch = !searchTerm || keys.some(key => {
                 const value = key.split('.').reduce((obj, part) => obj?.[part], cuaderno);
                 return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());
@@ -61,8 +61,6 @@ export default function Cuadernillos() {
 
             return matchesSearch && matchesYear && matchesMunicipio;
         });
-
-        return filtered.sort((a, b) => (a.municipio || '').localeCompare(b.municipio || ''));
     }, [cuadernillosFilter, searchTerm, yearFilter, municipioFilter]);
 
     const [itemOffset, setItemOffset] = useState(0);
@@ -93,7 +91,7 @@ export default function Cuadernillos() {
 
     return (
         <div>
-            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+            <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?"/>
 
             <div className='mx-auto px-2 container my-15'>
                 <div className='flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5'>
@@ -139,33 +137,35 @@ export default function Cuadernillos() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 container mx-auto my-15 px-5 xl:px-5 2xl:px-0">
                 {currentCuadernillos.map((cuadernillo) => (
                     <TrackedLink key={cuadernillo.id} to={cuadernillo.archivo} target="_blank" download>
-                        <div className="bg-card hover:border hover:border-tertiary rounded-3xl p-4">
+                        <div className="bg-card hover:border hover:border-tertiary rounded-3xl p-4 group sm:min-h-[170px] 2xl:min-h-[150px]">
                             <div className='flex justify-between'>
                                 <h3 className='text-primary text-20'>{cuadernillo.titulo}</h3>
-                                <span className="material-symbols--download text-tertiary"></span>
+                                <div className="group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1">
+                                    <span className="material-symbols--download group-hover:bg-white!"></span>
+                                </div> 
                             </div>
                             <div className='flex flex-wrap gap-4 mt-10'>
-                                <p className='rounded-2xl bg-etiqueta-ter text-primary text-14 px-5 py-2'>Año: {cuadernillo.anyo}</p>
-                                <p className='rounded-2xl bg-etiqueta-sec text-tertiary text-14 px-5 py-2'>Municipio: {cuadernillo.municipio || 'N/A'}</p>
+                                <p className='font-garet-bold text-tertiary text-[12px] capitalize border border-tertiary bg-etiqueta-sec p-2 rounded-xl'>{cuadernillo.anyo}</p>                                
                             </div>
                         </div>
                     </TrackedLink>
                 ))}
             </div>
 
-            <ReactPaginate
-                previousLabel={"Ant"}
-                nextLabel={"Sig"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / itemsPerPage)}
-            />
+            {pageCount > 1 && (
+                        <ReactPaginate
+                            previousLabel={'<'}
+                            nextLabel={'>'}
+                            breakLabel={'...'}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={'pagination'}
+                            activeClassName={'active'}
+                            forcePage={Math.floor(itemOffset / itemsPerPage)}
+                        />
+                    )}
         </div>
     );
 }

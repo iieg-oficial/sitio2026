@@ -2,15 +2,56 @@
 
 {% block footer_content %}
     <div class="row">
-      <div class="col-md-8 footer-links">
+      <div class="col-md-6 footer-links">
         {% if c.user %}
           <a href="{{ h.url_for('stats.index') }}">{{ _('Ver estadísticas del sitio') }}</a>
         {% endif %}
+        <div class="d-flex justify-content-md-start justify-content-center gap-4 align-content-end gap-4">
+          <div class="">
+            <a href="https://iieg.jalisco.gob.mx" target="_blank">
+              <img alt="Link al sitio del IIEG" class="logos" src="https://iieg.jalisco.gob.mx/acervo/portal/ico_iieg_header.svg">
+            </a>
+          </div>
+          <div class="">
+            <a href="https://jalisco.gob.mx/inicio" target="_blank">
+              <img alt="Link al sitio del gobierno de jalisco" class="logos" src="https://iieg.jalisco.gob.mx/acervo/portal/ico_gobjal_logo.svg">
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="d-flex justify-content-md-start justify-content-center gap-4 align-content-end gap-4">
+            <a href="https://www.instagram.com/iiegjalisco/" target="_blank" class="rounded-full bg-tertiary hover:bg-medio rsicon">
+              <span class="line-md--instagram"></span>
+            </a>
+            <a href="https://www.facebook.com/IIEGJalisco/" target="_blank" class="rounded-full bg-tertiary hover:bg-medio rsicon">
+              <span class="ri--facebook-fill"></span>
+            </a>
+            <a href="https://x.com/IIEGJ" target="_blank" class="rounded-full bg-tertiary hover:bg-medio rsicon">
+              <span class="pajamas--twitter"></span>
+            </a>
+            <a href="www.linkedin.com/company/iiegjalisco/" target="_blank" class="rounded-full bg-tertiary hover:bg-medio rsicon">
+              <span class="ri--linkedin-fill"></span>
+            </a>
+            <a href="https://www.youtube.com/@IIEGJaliscoGob" target="_blank" class="rounded-full bg-tertiary hover:bg-medio rsicon">
+              <span class="mdi--youtube"></span>
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="col-md-4 attribution">
+      <div class="col-md-3 attribution">
+        
+      </div>
+      <div class="col-md-3 text-center text-md-end">
         {% block footer_lang %}
           {% snippet "snippets/language_selector.html" %}
         {% endblock %}
+        <a href="https://iieg.jalisco.gob.mx/aviso-de-privacidad" target="_blank" class="text-white">
+          Aviso de privacidad
+        <a>
+        <br>
+        <a href="https://info.jalisco.gob.mx/politicas/?remote=true" target="_blank" class="text-white">
+          Políticas de privacidad
+        <a>
       </div>
     </div>
     {% endblock %}

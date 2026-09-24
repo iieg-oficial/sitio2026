@@ -1,5 +1,7 @@
 import enum
-from sqlalchemy import Column, Integer, String, Enum
+
+from sqlalchemy import Column, Integer, String
+from sqlalchemy import Enum as SQLEnum
 from app.core.database import Base
 
 
@@ -130,13 +132,21 @@ class MunicipioEnum(str, enum.Enum):
     zapotlanejo = "Zapotlanejo"
     zapopan = "Zapopan"
 
-    
+
+
 class Cuadernillo(Base):
     __tablename__ = "cuadernillos"
 
     id = Column(Integer, primary_key=True, index=True)
     titulo = Column(String(200), nullable=False)
     archivo = Column(String(200), nullable=True)
-    municipio = Column(Enum(MunicipioEnum), nullable=True)
+    municipio = Column(
+        SQLEnum(
+            MunicipioEnum,
+            name="municipioenum",
+            create_type=False
+        ),
+        nullable=True,
+    )
     anyo = Column(Integer, nullable=True)
     slug = Column(String(200), nullable=True)

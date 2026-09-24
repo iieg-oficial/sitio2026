@@ -1,15 +1,17 @@
 import enum
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Text, DateTime, Enum
+
+from sqlalchemy import Column, DateTime, Enum, Integer, String, Text
 
 from app.core.database import Base
+
 
 class TipoDocsEnum(str, enum.Enum):
     valor = "valor"
     normatividad = "normatividad"
     plan_institucional = "plan_institucional"
     plan_de_trabajo = "plan_de_trabajo"
-    
+
 
 class DocsIIEG(Base):
     __tablename__ = "docs_iieg"

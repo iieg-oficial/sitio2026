@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
     const isSearching = searchTerm.length > 0;
@@ -6,7 +6,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
     return (
         <div className="w-full">
             {/* Contenedor principal que controla el ancho en móvil y escritorio */}
-            <div className="mx-auto w-full px-2 md:w-3/6">
+            <div className="mx-auto w-full px-2 md:w-3/6 max-w-[1000px]">
                 
                 {/* Contenedor/Simulador del Input:
                   Mantiene el fondo 'bg-card', los bordes redondeados 'rounded-3xl' y el centrado 'justify-center'.
@@ -19,7 +19,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
                     border-primary
                     
                     /* Tus efectos de FOCUS aplicados al borde cuando el usuario da click */
-                    focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo
+                    focus-within:border-primary focus-within:ring-1 focus-within:ring-primary focus-within:ring-primary focus-within:bg-[#F3EAFF]
                     
                     /* Tu cambio de estado dinámico (opcional, por si quieres cambiar el borde al escribir) */
                     ${isSearching ? 'border-primary' : ''}
@@ -31,7 +31,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
                         placeholder={placeholder}
                         value={searchTerm} 
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-transparent text-center outline-none placeholder-primary"
+                        className="w-full bg-transparent text-primary text-center outline-none placeholder-primary font-garet-bold text-22"
                     />
 
                     {/* El Ícono SVG: 
@@ -44,7 +44,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
                             width="24" 
                             height="24" 
                             viewBox="0 0 24 24"
-                            className={`transition-colors duration-200 ${isSearching ? 'text-positivo' : 'text-gray-400'}`}
+                            className={`transition-colors duration-200 ${isSearching ? 'text-secondary' : 'text-primary'}`}
                         >
                             <path d="M0 0h24v24H0z" fill="none" />
                             <path 
@@ -59,5 +59,7 @@ const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
         </div>
     );
 }
+
+
 
 export default Searcher;

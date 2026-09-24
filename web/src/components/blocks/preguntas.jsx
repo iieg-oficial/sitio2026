@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Preguntas() {
     const [preguntas, setPreguntas] = useState([]);
@@ -55,7 +56,7 @@ export default function Preguntas() {
    return (
     <div className='container mx-auto px-2'>
         <div className="relative container mx-auto px-2">
-                    <span class="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
+                    <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
                     <div
                         className="flex gap-5 mb-10 lg:ml-15 overflow-x-auto sm:overflow-visible snap-x snap-mandatory"
                         style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
@@ -70,7 +71,7 @@ export default function Preguntas() {
                             </TabButton>
                         ))}
                     </div>
-                    <span class="material-symbols--chevron-right absolute z-10 bottom-5 right-0 sm:hidden!"></span>
+                    <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 sm:hidden!"></span>
                 </div>
 
 
@@ -84,7 +85,7 @@ export default function Preguntas() {
                         const isOpen = openPreguntas[pregunta.id] ?? false;
 
                         return (
-                            <div key={pregunta.id} className='mb-5 w-full rounded-2xl bg-card pl-11 p-4 px-8 my-5 group hover:border-2 hover:border-primary'>
+                            <div key={pregunta.id} className='mb-5 w-full rounded-2xl bg-card p-5 sm:p-7 lg:p-10 xl:pl-20 my-5 group hover:border-2 hover:border-primary'>
                                 <button
                                     type='button'
                                     onClick={() => togglePregunta(pregunta.id)}
@@ -98,7 +99,8 @@ export default function Preguntas() {
                                     </div>
                                 </button>
                                 {isOpen && (
-                                    <div dangerouslySetInnerHTML={{ __html: pregunta.respuesta }} className='diez mt-5 font-garet text-18' />
+                                    
+                                    <SafeHtml htmlContent={pregunta.respuesta} className='diez mt-5 font-garet text-18 xl:pr-15'/>
                                 )}
                             </div>
                         )

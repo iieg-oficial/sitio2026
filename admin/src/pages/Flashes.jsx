@@ -4,7 +4,9 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
-import UploadAcervo from '@components/UploadAcervo';
+import { UploadAcervo } from '@components/UploadAcervo';
+import { TableSearch } from '@components/common/TableSearch';
+import { useDebouncedSearch } from '@components/common/searchHooks';
 
 const { Title } = Typography;
 
@@ -18,6 +20,7 @@ export default function Flashes() {
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [periodo, setPeriodo] = useState([]);
     const [meses, setMeses] = useState([]);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
     useEffect(() => {
         fetchFlashes();
@@ -44,16 +47,36 @@ export default function Flashes() {
         } 
     };
 
-    const fetchFlashes = async () => {
+    const fetchFlashes = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
-            const response = await api.get('/flashes');
+            const response = await api.get('/flashes', {
+                params: {
+                    ...(search ? { search } : {}),
+                    page,
+                    pageSize
+                }
+            });
             setFlashes(response.data.flashes);
+            setPagination((prev) => ({
+                ...prev,
+                current: page,
+                pageSize,
+                total: response.data.total
+            }));
         } catch {
             message.error('Error al cargar flashes');
         } finally {
             setLoading(false);
         }
+    };
+
+    const { searchText, setSearchText } = useDebouncedSearch((text) => {
+        fetchFlashes(text, 1, pagination.pageSize);
+    });
+
+    const handleTableChange = (newPagination) => {
+        fetchFlashes(searchText, newPagination.current, newPagination.pageSize);
     };
 
     const fetchMeses = async () => {
@@ -75,7 +98,7 @@ export default function Flashes() {
     const handleEdit = (record) => {
         setEditingFlash(record);
         // Pre-cargar los temas seleccionados desde el registro
-        const ids = (record.temas ?? []).map((t) => t.id);
+        const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
         const fechaFormateada = record.fecha_publicacion
         ? new Date(record.fecha_publicacion).toISOString().split('T')[0]
@@ -98,7 +121,7 @@ export default function Flashes() {
                 try {
                     await api.delete(`/flashes/${record.id}`);
                     message.success('eliminado exitosamente');
-                    fetchFlashes();
+                    fetchFlashes(searchText, pagination.current, pagination.pageSize);
                 } catch {
                     message.error('Error al eliminar');
                 }
@@ -118,7 +141,7 @@ export default function Flashes() {
                 message.success('creado exitosamente');
             }
             setModalVisible(false);
-            fetchFlashes();
+            fetchFlashes(searchText, pagination.current, pagination.pageSize);
         } catch {
             message.error(editingFlash ? 'Error al actualizar' : 'Error al crear');
         }
@@ -191,16 +214,25 @@ export default function Flashes() {
             </div>
 
             <Card>
+                <TableSearch
+                    value={searchText}
+                    onChange={setSearchText}
+                    placeholder="Buscar por título..."
+                    loading={loading}
+                />
                 <Table
                     columns={columns}
                     dataSource={flashes}
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                        pageSize: 10,
-                        showSizeChanger: true,
-                        showTotal: (total) => `Total ${total}`
-                    }}      
+                            current: pagination.current,
+                            pageSize: pagination.pageSize,
+                            total: pagination.total,
+                            showSizeChanger: true,
+                            showTotal: (total) => `Total ${total} datos`
+                        }}
+                    onChange={handleTableChange}    
                 />
             </Card> 
 

@@ -1,4 +1,3 @@
-# encoding: utf-8
 """
 Vista de descarga de recursos S3 para el tema IIEG.
 
@@ -20,17 +19,16 @@ Solución:
     Ejemplo:
         https://10.25.7.4/acervo/portal/datos-abiertos/resources/<uuid>/<archivo>.xlsx
 """
-import os
 import logging
+import os
 
-import flask
-
-import ckan.logic as logic
-import ckan.lib.base as base
-import ckan.lib.uploader as uploader
-import ckan.model as model
 import ckantoolkit as toolkit
-from ckantoolkit import config as ckan_config, _, c
+import flask
+from ckan.lib import base, uploader
+from ckantoolkit import _, c
+from ckantoolkit import config as ckan_config
+
+from ckan import logic, model
 
 log = logging.getLogger(__name__)
 
@@ -45,10 +43,10 @@ redirect = toolkit.redirect_to
 # Registramos el blueprint con el mismo prefijo que usa s3filestore,
 # así Flask usa ESTE handler y no el del plugin base.
 iieg_s3_resource = Blueprint(
-    u'iieg_s3_resource',
+    'iieg_s3_resource',
     __name__,
-    url_prefix=u'/dataset/<id>/resource',
-    url_defaults={u'package_type': u'dataset'}
+    url_prefix='/dataset/<id>/resource',
+    url_defaults={'package_type': 'dataset'}
 )
 
 
@@ -106,7 +104,7 @@ def resource_download(package_type, id, resource_id, filename=None):
             proxy = download_proxy.rstrip('/')
 
             # La URL pública final: proxy + / + bucket + / + key_path
-            url = '{}/{}/{}'.format(proxy, bucket, key_path)
+            url = f'{proxy}/{bucket}/{key_path}'
 
             log.debug(
                 'IIEG resource download (direct proxy URL): %s', url)
@@ -124,23 +122,23 @@ def resource_download(package_type, id, resource_id, filename=None):
                 url = upload.get_signed_url_to_key(
                     upload.get_path(rsc['id'], filename), params)
                 return redirect(url)
-            except Exception as e:
+            except Exception as e: # noqa: BLE001
                 log.error(
-                    'Error generando presigned URL para recurso %s: %s',
-                    resource_id, str(e))
+                    'Error generando presigned URL para recurso %s: %s', rsc['id'], e
+                )
                 return abort(500, _('Error al generar la URL de descarga'))
 
     else:
         # Recurso de tipo enlace (no upload): redirigir a la URL almacenada.
-        return redirect(rsc[u'url'])
+        return redirect(rsc['url'])
 
 
 # Registramos las mismas rutas que s3filestore para sobrescribirlas.
 iieg_s3_resource.add_url_rule(
-    u'/<resource_id>/download',
+    '/<resource_id>/download',
     view_func=resource_download)
 iieg_s3_resource.add_url_rule(
-    u'/<resource_id>/download/<filename>',
+    '/<resource_id>/download/<filename>',
     view_func=resource_download)
 
 

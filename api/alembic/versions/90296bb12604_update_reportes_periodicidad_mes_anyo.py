@@ -5,9 +5,8 @@ Revises: c9f1a2b3d4e5
 Create Date: 2026-06-05 16:58:59.443305
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 revision = '90296bb12604'
 down_revision = 'c9f1a2b3d4e5'
@@ -66,35 +65,37 @@ def upgrade() -> None:
     conn = op.get_bind()
     inspector = sa.inspect(conn)
 
+    # 1. Ejecutar ALTER TYPE en bloque autocommit (requerido por PostgreSQL)
     if _enum_exists(conn, "periocidadenum"):
-        for periodicidad in NUEVAS_PERIOCIDADES:
-            if not _enum_value_exists(conn, "periocidadenum", periodicidad):
-                op.execute(sa.text(f"ALTER TYPE periocidadenum ADD VALUE '{periodicidad}'"))
+        with op.get_context().autocommit_block():
+            for periodicidad in NUEVAS_PERIOCIDADES:
+                if not _enum_value_exists(conn, "periocidadenum", periodicidad):
+                    op.execute(sa.text(f"ALTER TYPE periocidadenum ADD VALUE '{periodicidad}'"))
 
+    # 2. Crear el ENUM 'mesenum' si no existe
     if not _enum_exists(conn, "mesenum"):
         quoted_values = ", ".join(f"'{mes}'" for mes in MESES)
         op.execute(sa.text(f"CREATE TYPE mesenum AS ENUM ({quoted_values})"))
 
-    if "reportes" not in inspector.get_table_names():
-        return
+    # 3. Modificar la tabla 'reportes' solo si existe
+    if inspector.has_table("reportes"):
+        columnas = {col["name"] for col in inspector.get_columns("reportes")}
 
-    columnas = {col["name"] for col in inspector.get_columns("reportes")}
+        if "mes" not in columnas:
+            op.add_column(
+                "reportes",
+                sa.Column("mes", sa.Enum(*MESES, name="mesenum", create_type=False), nullable=True),
+            )
 
-    if "mes" not in columnas:
-        op.add_column(
-            "reportes",
-            sa.Column("mes", sa.Enum(*MESES, name="mesenum", create_type=False), nullable=True),
-        )
-
-    if "anyo" not in columnas:
-        op.add_column("reportes", sa.Column("anyo", sa.Integer(), nullable=True))
+        if "anyo" not in columnas:
+            op.add_column("reportes", sa.Column("anyo", sa.Integer(), nullable=True))
 
 
 def downgrade() -> None:
     conn = op.get_bind()
     inspector = sa.inspect(conn)
 
-    if "reportes" in inspector.get_table_names():
+    if inspector.has_table("reportes"):
         columnas = {col["name"] for col in inspector.get_columns("reportes")}
         if "anyo" in columnas:
             op.drop_column("reportes", "anyo")

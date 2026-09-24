@@ -3,74 +3,81 @@ import { Select, Typography } from 'antd';
 
 const { Text } = Typography;
 
-/**
- * TemaSelector - Selector jerárquico de temas en dos pasos.
- *
- * Paso 1: muestra solo los temas raíz para seleccionar.
- * Paso 2: muestra los subtemas de los padres seleccionados.
- *
- * Props:
- *   temas        - array árbol desde /subject/tree (solo raíces con subtemas anidados)
- *   seleccionados - array de IDs actualmente seleccionados (padres e hijos mezclados)
- *   onChange     - callback(nuevosIds: number[])
- */
 export function TemaSelector({ temas = [], seleccionados = [], onChange }) {
-  // Estado interno para padres e hijos — necesario para manejar la race condition
-  // donde `seleccionados` llega antes que `temas` (fetch aún en curso)
   const [padresSeleccionados, setPadresSeleccionados] = useState([]);
   const [subtemasSeleccionados, setSubtemasSeleccionados] = useState([]);
 
-  // Re-sincronizar cuando llegan los temas o cambia la lista seleccionada externamente
   useEffect(() => {
-    if (temas.length === 0) return; // Esperar a que los temas carguen
+    if (!temas || temas.length === 0) return;
 
-    const idsPadres = temas.map((t) => t.id);
-    const idsSubtemas = temas.flatMap((t) => (t.subtemas ?? []).map((s) => s.id));
+    // Normalizar a número para evitar discrepancias tipo '1' !== 1
+    const idsNormalizados = (seleccionados || []).map((id) => Number(id));
 
-    const nuevosPadres = seleccionados.filter((id) => idsPadres.includes(id));
-    const nuevosSubtemas = seleccionados.filter((id) => idsSubtemas.includes(id));
+    const idsPadresDirectos = new Set();
+    const idsSubtemasDirectos = new Set();
 
-    setPadresSeleccionados(nuevosPadres);
-    setSubtemasSeleccionados(nuevosSubtemas);
+    // Indexar padres y subtemas para búsqueda rápida
+    const mapaPadreDeSubtema = new Map();
+    
+    temas.forEach((padre) => {
+      const padreId = Number(padre.id);
+      (padre.subtemas ?? []).forEach((sub) => {
+        const subId = Number(sub.id);
+        mapaPadreDeSubtema.set(subId, padreId);
+      });
+    });
+
+    const idsPadresTodos = new Set(temas.map((t) => Number(t.id)));
+
+    idsNormalizados.forEach((id) => {
+      if (idsPadresTodos.has(id)) {
+        idsPadresDirectos.add(id);
+      } else if (mapaPadreDeSubtema.has(id)) {
+        idsSubtemasDirectos.add(id);
+        // INFERIR PADRE: Si se seleccionó el subtema, auto-activar su tema padre
+        idsPadresDirectos.add(mapaPadreDeSubtema.get(id));
+      }
+    });
+
+    setPadresSeleccionados(Array.from(idsPadresDirectos));
+    setSubtemasSeleccionados(Array.from(idsSubtemasDirectos));
   }, [temas, seleccionados]);
 
-  // IDs de todos los temas raíz
-  const idsPadres = temas.map((t) => t.id);
-
-  // Reunir subtemas solo de los padres seleccionados
+  // Subtemas disponibles basados en los padres seleccionados
   const subtemasDisponibles = temas
-    .filter((t) => padresSeleccionados.includes(t.id))
+    .filter((t) => padresSeleccionados.includes(Number(t.id)))
     .flatMap((t) => t.subtemas ?? []);
 
-  // Al cambiar los padres: conservar solo los subtemas que sigan siendo válidos
   const handlePadresChange = (nuevosIds) => {
+    const nuevosIdsNum = nuevosIds.map(Number);
     const nuevosSubtemasValidos = new Set(
       temas
-        .filter((t) => nuevosIds.includes(t.id))
-        .flatMap((t) => (t.subtemas ?? []).map((s) => s.id))
+        .filter((t) => nuevosIdsNum.includes(Number(t.id)))
+        .flatMap((t) => (t.subtemas ?? []).map((s) => Number(s.id)))
     );
+
     const subtemasConservados = subtemasSeleccionados.filter((id) =>
       nuevosSubtemasValidos.has(id)
     );
-    setPadresSeleccionados(nuevosIds);
+
+    setPadresSeleccionados(nuevosIdsNum);
     setSubtemasSeleccionados(subtemasConservados);
-    onChange([...nuevosIds, ...subtemasConservados]);
+    onChange([...nuevosIdsNum, ...subtemasConservados]);
   };
 
-  // Al cambiar los subtemas: mantener los padres seleccionados intactos
   const handleSubtemasChange = (nuevosSubIds) => {
-    setSubtemasSeleccionados(nuevosSubIds);
-    onChange([...padresSeleccionados, ...nuevosSubIds]);
+    const nuevosSubIdsNum = nuevosSubIds.map(Number);
+    setSubtemasSeleccionados(nuevosSubIdsNum);
+    onChange([...padresSeleccionados, ...nuevosSubIdsNum]);
   };
 
   const nombresPadresSeleccionados = temas
-    .filter((t) => padresSeleccionados.includes(t.id))
+    .filter((t) => padresSeleccionados.includes(Number(t.id)))
     .map((t) => t.titulo)
     .join(', ');
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      {/* Paso 1 — Temas raíz */}
       <div>
         <Text strong style={{ display: 'block', marginBottom: 4, fontSize: 13 }}>
           Temas
@@ -81,14 +88,13 @@ export function TemaSelector({ temas = [], seleccionados = [], onChange }) {
           placeholder="Selecciona uno o varios temas"
           value={padresSeleccionados}
           onChange={handlePadresChange}
-          options={temas.map((t) => ({ label: t.titulo, value: t.id }))}
+          options={temas.map((t) => ({ label: t.titulo, value: Number(t.id) }))}
           allowClear
           showSearch
           optionFilterProp="label"
         />
       </div>
 
-      {/* Paso 2 — Subtemas (solo si hay padres seleccionados con subtemas) */}
       {padresSeleccionados.length > 0 && subtemasDisponibles.length > 0 && (
         <div>
           <Text strong style={{ display: 'block', marginBottom: 4, fontSize: 13 }}>
@@ -100,7 +106,7 @@ export function TemaSelector({ temas = [], seleccionados = [], onChange }) {
             placeholder="Selecciona subtemas (opcional)"
             value={subtemasSeleccionados}
             onChange={handleSubtemasChange}
-            options={subtemasDisponibles.map((s) => ({ label: s.titulo, value: s.id }))}
+            options={subtemasDisponibles.map((s) => ({ label: s.titulo, value: Number(s.id) }))}
             allowClear
             showSearch
             optionFilterProp="label"
@@ -108,7 +114,6 @@ export function TemaSelector({ temas = [], seleccionados = [], onChange }) {
         </div>
       )}
 
-      {/* Mensaje si los temas elegidos no tienen subtemas */}
       {padresSeleccionados.length > 0 && subtemasDisponibles.length === 0 && (
         <Text type="secondary" style={{ fontSize: 12 }}>
           Los temas seleccionados no tienen subtemas.

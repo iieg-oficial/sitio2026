@@ -3,6 +3,11 @@ import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate'
 import TrackedLink from '@components/blocks/boton'
+import Searcher from '../pageComponents/searcher';
+
+const BASE_MEDIA_URL = import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo'
+const THUMB_BASE_URL = `${BASE_MEDIA_URL}/thumb/portal/mapas`
+const DEFAULT_IMAGE = `${BASE_MEDIA_URL}/portal/img_postlink.png`
 
 // ─── Utilidad: mezcla aleatoria (Fisher-Yates) ────────────────────────────────
 function shuffleArray(arr) {
@@ -35,8 +40,7 @@ export default function Mapas() {
 
     // ── Debounce del campo de texto ───────────────────────────────────────────
     const debounceTimer = useRef(null)
-    const handleKeywordChange = (e) => {
-        const value = e.target.value
+    const handleKeywordChange = (value) => {
         setKeyword(value)
         clearTimeout(debounceTimer.current)
         debounceTimer.current = setTimeout(() => setDebouncedKeyword(value), DEBOUNCE_MS)
@@ -121,15 +125,9 @@ export default function Mapas() {
         <div className="container mx-auto px-2 ">
             {/* ── Panel de filtros ── */}
 
-            <div className="mx-auto container md:w-6/12 mb-15">
-                        <input
-                            type="search"
-                            value={keyword}
-                            onChange={handleKeywordChange}
-                            placeholder="Filtrar por palabras clave"
-                            className="w-full bg-transparent text-center border border-primary rounded-3xl px-4 py-2 text-titulo placeholder-titulo transition-all duration-200 outline-none focus-within:border-positivo focus-within:ring-1 focus-within:ring-positivo focus-within:ring-positivo"
-                        />
-                    </div>
+            <div className="mx-auto container mb-15">
+                 <Searcher searchTerm={keyword} setSearchTerm={handleKeywordChange} placeholder="¿Qué quieres buscar?" />
+              </div>
             
                 <div className="flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5">
 
@@ -206,23 +204,41 @@ export default function Mapas() {
 
                         const original = mapa.imagen
                         const thumb = original.substring(original.lastIndexOf('/') + 1);
+                        const titulo = mapa?.titulo ?? '';
+
+                        const srcImagen = thumb 
+                            ? `${THUMB_BASE_URL}/${thumb}?w=560` 
+                            : DEFAULT_IMAGE;
+
                         return (
-                            <a href={`/mapas-historicos/${mapa.slug}`} key={mapa.id}>
-                                                <div key={mapa.id} className="p-4 overflow-hidden mapa h-96 relative rounded-4xl">                    
+                            <a href={`/galeria-de-mapas/${mapa.slug}`} key={mapa.id}>
+                                                <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl">                    
                                                     
 
                                                     {mapa.imagen && (
-                                                        <img src={`https://iieg.jalisco.gob.mx/acervo/thumb/portal/mapas/${thumb}?w=1280`} alt={mapa.titulo} className='w-full h-full object-cover' />
+                                                        <img src={srcImagen} alt={titulo} className='w-full h-full object-cover image-mapa' 
+                                                            onError={(e) => {
+                                                                if (!e.target.dataset.triedFallback) {
+                                                                    e.target.dataset.triedFallback = 'true';
+                                                                    e.target.src = mapa.imagen 
+                                                                        ? mapa.imagen 
+                                                                        : DEFAULT_IMAGE;
+                                                                } else {                                        
+                                                                    e.target.onerror = null;
+                                                                    e.target.src = DEFAULT_IMAGE;
+                                                                }
+                                                            }}
+                                                        />
                                                     )}
-                                                    <div className='info'>
-                                                        <TrackedLink to={`/mapas-historicos/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
-                                                            <h3 className='text-white'>{mapa.titulo}</h3>
-                                                            <div className='flex mb-4 gap-2'> 
+                                                    <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
+                                                        <TrackedLink to={`/galeria-de-mapas/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
+                                                            <h3 className='text-white text-22 font-garet-bold font-800'>{mapa.titulo}</h3>
+                                                            <div className='flex mb-5 mt-5 gap-2'> 
                                                                 {mapa.anyo ? (
-                                                                    <p className='bg-card text-titulo rounded-2xl px-4 py-2 text-14'>{mapa.anyo}</p>
+                                                                    <p className='text-14 font-bold rounded-xl py-2 px-5 bg-[#FFF2E5] text-tertiary border border-[#FF83004D]'>{mapa.anyo}</p>
                                                                 ) : null}
                                                                 {mapa.tipo ? (
-                                                                    <p className='bg-etiqueta-sec text-primary rounded-2xl px-4 py-2 text-14'>{mapa.tipo}</p>
+                                                                    <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>{mapa.tipo}</p>
                                                                 ) : null}
                                                             </div>
                                                             

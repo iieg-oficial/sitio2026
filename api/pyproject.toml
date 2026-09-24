@@ -1,6 +1,6 @@
 [project]
 name = "backend-portal"
-version = "1.8.0"
+version = "1.9.0"
 description = "FastAPI backend for CMS and portal frontends."
 authors = [{name = "IIEG", email = "dev@iieg.gob.mx"}]
 requires-python = ">=3.10"

@@ -5,18 +5,15 @@ Revises: 3c59a2cbf559
 Create Date: 2026-08-20
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 revision = 'a8f9e0b1c2d3'
 down_revision = '3c59a2cbf559'
 branch_labels = None
 depends_on = None
 
-
 NEW_MUNICIPIO_VALUES = [
-    # Values added to the original enum from the initial migration
     'atemajac_de_brizuela',
     'amacueca',
     'canadas_de_obregon',
@@ -40,16 +37,45 @@ NEW_MUNICIPIO_VALUES = [
 
 
 def upgrade() -> None:
-    op.alter_column('documentacion', 'descripcion',
-               existing_type=sa.Text(),
-               nullable=True)
-    # ALTER TYPE cannot run inside a transaction in PostgreSQL
-    op.execute("COMMIT")
-    for value in NEW_MUNICIPIO_VALUES:
-        op.execute(f"ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS '{value}'")
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+
+    if inspector.has_table('documentacion'):
+        columns = {col['name']: col for col in inspector.get_columns('documentacion')}
+        if 'descripcion' in columns and not columns['descripcion']['nullable']:
+            op.alter_column(
+                'documentacion',
+                'descripcion',
+                existing_type=sa.Text(),
+                nullable=True,
+            )
+
+    with op.get_context().autocommit_block():
+        # Validar la existencia del Enum directamente dentro del bloque autocommit
+        enum_exists = bool(
+            bind.execute(
+                sa.text("SELECT 1 FROM pg_type WHERE typname = 'municipioenum'")
+            ).scalar()
+        )
+        if enum_exists:
+            for value in NEW_MUNICIPIO_VALUES:
+                op.execute(
+                    sa.text(
+                        f"ALTER TYPE municipioenum ADD VALUE IF NOT EXISTS '{value}'"
+                    )
+                )
 
 
 def downgrade() -> None:
-    op.alter_column('documentacion', 'descripcion',
-               existing_type=sa.Text(),
-               nullable=False)
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+
+    if inspector.has_table('documentacion'):
+        columns = {col['name']: col for col in inspector.get_columns('documentacion')}
+        if 'descripcion' in columns:
+            op.alter_column(
+                'documentacion',
+                'descripcion',
+                existing_type=sa.Text(),
+                nullable=False,
+            )

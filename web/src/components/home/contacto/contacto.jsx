@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from "../../../services/apiService";
 import MapaContacto from './mapaContacto';
+import mec from '@/config/mapalab-embed-content.json';
 
 export default function Contacto() {
     const [form, setForm] = useState({
@@ -39,7 +40,7 @@ export default function Contacto() {
                         <input 
                             type="text" 
                             placeholder="Ej. Juan Pérez" 
-                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
+                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all active:ring-primary"
                             value={form.name} 
                             onChange={(e) => setForm({ ...form, name: e.target.value })} 
                             required
@@ -51,7 +52,7 @@ export default function Contacto() {
                         <input 
                             type="email" 
                             placeholder="correo@ejemplo.com" 
-                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all active:ring-positivo"
+                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all active:ring-primary"
                             value={form.email} 
                             onChange={(e) => setForm({ ...form, email: e.target.value })} 
                             required
@@ -63,7 +64,7 @@ export default function Contacto() {
                         <textarea 
                             rows="5" 
                             placeholder="¿En qué podemos ayudarte?" 
-                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-positivo focus:bg-white outline-none transition-all resize-none"
+                            className="text-titulo text-22 w-full px-4 py-3 bg-[#EFF4FF] rounded-lg focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all resize-none"
                             value={form.message} 
                             onChange={(e) => setForm({ ...form, message: e.target.value })}
                             required
@@ -95,14 +96,14 @@ export default function Contacto() {
                 </form>
                 <div className="my-6 text-20 font-bold text-titulo">
                     
-                    <a href="tel:+523337771770" className="text-titulo hover:text-tertiary flex items-center">
-                        <span class="et--phone mr-4 w-[26px] h-[26px] flex-none"></span> 
-                        <span className="flex-1">33 3777 1770</span>
+                    <a href={`tel:+52${mec.telefono.replace(/\s+/g, '')}`} className="text-titulo hover:text-tertiary flex items-center">
+                        <span className="et--phone mr-4 w-[26px] h-[26px] flex-none"></span> 
+                        <span className="flex-1">{mec.telefono}</span>
                     </a>
                     
                     <p className="mt-2 text-20 font-bold text-titulo flex items-center mt-5">
-                        <span class="mynaui--map-pin w-[25px] h-[25px] mr-4 flex-none"></span> 
-                        <span className="flex-1">Calz. de los Pirules #71, Granja, 45010. Zapopan, Jal.</span>
+                        <span className="mynaui--map-pin w-[25px] h-[25px] mr-4 flex-none"></span> 
+                        <span className="flex-1">{mec.direccion}</span>
                     </p>
                 </div>
             </div>

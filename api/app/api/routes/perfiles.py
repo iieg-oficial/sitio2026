@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Perfiles, Usuario
-from app.schemas.perfiles import PerfilesCreate, PerfilesResponse, PerfilesOut
+from app.schemas.perfiles import PerfilesCreate, PerfilesOut, PerfilesResponse
 
 router = APIRouter(prefix="/perfiles", tags=["perfiles"])
 
@@ -30,7 +32,7 @@ def create_perfil(
     while db.query(Perfiles).filter(Perfiles.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     """Crear un nuevo perfil"""
     perfil_db = Perfiles(
         nombre=perfil.nombre,
@@ -54,7 +56,7 @@ def update_perfil(
     perfil_db = db.query(Perfiles).filter(Perfiles.id == id).first()
     if not perfil_db:
         raise HTTPException(
-            status_code=404, 
+            status_code=404,
             detail="Perfil no encontrado"
         )
 
@@ -68,8 +70,13 @@ def update_perfil(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Perfiles, update_data["slug"], exclude_id=id
+            )
+        else:
+            del update_data["slug"]
 
     for campo, valor in update_data.items():
         setattr(perfil_db, campo, valor)
@@ -87,7 +94,7 @@ def delete_perfil(
     """Eliminar un perfil"""
     perfil_db = db.query(Perfiles).filter(Perfiles.id == id).first()
     if not perfil_db:
-        raise HTTPException(status_code=404, 
+        raise HTTPException(status_code=404,
         detail="Perfil no encontrado")
     db.delete(perfil_db)
     db.commit()

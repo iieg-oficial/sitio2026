@@ -2,6 +2,12 @@
 
 Todos los cambios notables se documentan en este archivo. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y versionado siguiendo [Semantic Versioning](https://semver.org/lang/es/).
 
+## [Sin publicar]
+
+### Cambiado
+- El mapa de contacto pide el widget de MapaLab como `mapalab.js?v=1.5.0`. Los navegadores que guardaron la versión vieja, con caché de un año, no mostraban la tarjeta de la sede y pintaban el pie «Fuente: IIEG».
+- `cuadernillos.municipio` conserva en PostgreSQL los nombres minúsculos de `MunicipioEnum`, mientras la API sigue validando y devolviendo sus valores capitalizados. Antes de desplegar sobre otra base, comprobar que no existan filas con etiquetas capitalizadas; si las hay, normalizarlas antes de publicar el código para evitar errores al leer cuadernillos.
+
 ## [1.10.0] - 2026-08-28
 
 ### Cambiado

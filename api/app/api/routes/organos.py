@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Organos, Usuario
-from app.api.deps import get_current_user, get_db, verify_csrf
+from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 
 router = APIRouter(prefix="/organos", tags=["organos"])
 
@@ -13,7 +15,7 @@ def read_organos(
     ):
     organos = db.query(Organos).all()
     return {"organos": organos, "total": len(organos)}
-    
+
 
 @router.post("/create", response_model=OrganosOut)
 def create_organos(
@@ -27,7 +29,7 @@ def create_organos(
     while db.query(Organos).filter(Organos.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     db_organos = Organos(
         titulo=organos.titulo,
         descripcion=organos.descripcion,
@@ -62,8 +64,13 @@ def update_organos(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Organos, update_data["slug"], exclude_id=id
+            )
+        else:
+            del update_data["slug"]
 
     for campo, valor in update_data.items():
         setattr(db_organos, campo, valor)

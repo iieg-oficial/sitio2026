@@ -1,13 +1,14 @@
 import inspect
 import logging
 
-import app.models as model_registry
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import String, cast, or_
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
+import app.models as model_registry
 from app.api.deps import get_db
+from app.core.search import escape_like
 from app.schemas.search import SearchResponse
 
 router = APIRouter(prefix="/search", tags=["portal - search"])
@@ -159,7 +160,7 @@ def _build_result_url(model_name: str, row) -> str:
         return f"/comunidad/{row.slug}" if getattr(row, "slug", None) else "/comunidad"
 
     if model_name == "Mapa":
-        return f"/mapas-historicos/{row.slug}" if getattr(row, "slug", None) else "/mapas-historicos"
+        return f"/galeria-de-mapas/{row.slug}" if getattr(row, "slug", None) else "/galeria-de-mapas"
 
     if model_name == "Cursos":
         return f"/cursos/{row.slug}" if getattr(row, "slug", None) else "/cursos"
@@ -246,7 +247,7 @@ def global_search(
     db: Session = Depends(get_db),
 ):
     query = q.strip()
-    like = f"%{query}%"
+    like = f"%{escape_like(query)}%"
 
     results = []
 
@@ -257,7 +258,7 @@ def global_search(
                 continue
             if column.primary_key:
                 continue
-            conditions.append(cast(column, String).ilike(like))
+            conditions.append(cast(column, String).ilike(like, escape='\\'))
 
         if not conditions:
             continue

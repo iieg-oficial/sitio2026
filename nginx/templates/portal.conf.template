@@ -6,6 +6,7 @@ upstream ckan_backend {
     server portal-ckan:5000;
 }
 
+
 server {
     listen 80;
     server_name _;
@@ -23,11 +24,13 @@ server {
     gzip_proxied any;
     gzip_types text/plain text/css text/xml text/javascript application/javascript application/json;
 
-    include /usr/share/nginx/html/csp-header.conf;
-
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
+    }
+
+    location ~* \.(js|css)\.map$ {
+        return 404;
     }
 
     location ^~ /api/ {
@@ -36,7 +39,7 @@ server {
         proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_connect_timeout 60;
         proxy_send_timeout 60;
         proxy_read_timeout 60;
@@ -88,13 +91,13 @@ server {
     }
 
     location ^~ /datos-abiertos {
-        rewrite ^/datos-abiertos/?(.*)$ /$1 break;
+        rewrite ^/datos-abiertos/?(.*)$ /$1 break; 
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
         proxy_connect_timeout 60;
@@ -106,7 +109,7 @@ server {
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
@@ -115,7 +118,7 @@ server {
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
@@ -124,7 +127,7 @@ server {
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_set_header X-Script-Name /datos-abiertos;
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
@@ -138,7 +141,8 @@ server {
         proxy_set_header Host ${ACERVO_UPSTREAM_HOST};
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        add_header Content-Disposition "attachment; filename=\"\$request_filename\"" always;
         proxy_connect_timeout 60;
         proxy_send_timeout 60;
         proxy_read_timeout 60;
@@ -186,10 +190,13 @@ server {
     }
 
     location / {
-        try_files $uri $uri/ /index.html;
+        include /usr/share/nginx/html/csp-header.conf;
+        try_files $uri /index.html;
     }
 
+    # Bloque de control de caché para index.html manteniendo el CSP
     location = /index.html {
-        add_header Cache-Control "no-store";
+        include /usr/share/nginx/html/csp-header.conf;
+        add_header Cache-Control "no-store" always;
     }
 }

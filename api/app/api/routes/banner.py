@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from slugify import slugify
-from app.api.deps import get_current_user, get_db, verify_csrf
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Banner, Usuario
 from app.schemas.banner import BannerCreate, BannerOut, BannerResponse
 
@@ -30,7 +32,7 @@ def create_banner(
     while db.query(Banner).filter(Banner.slug == slug).first():
         slug = f"{base_slug}-{contador}"
         contador += 1
-    
+
     """Crear un nuevo banner"""
     db_banner = Banner(
         titulo=banner.titulo,
@@ -74,8 +76,13 @@ def update_banner(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
-    elif "slug" in update_data and not update_data["slug"]:
-        del update_data["slug"]
+    elif "slug" in update_data:
+        if update_data["slug"]:
+            update_data["slug"] = make_unique_slug(
+                db, Banner, update_data["slug"], exclude_id=id
+            )
+        else:
+            del update_data["slug"]
 
     for campo, valor in update_data.items():
         setattr(db_banner, campo, valor)

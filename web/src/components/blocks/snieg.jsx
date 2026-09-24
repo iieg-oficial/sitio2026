@@ -3,6 +3,7 @@ import { useLocation } from 'react-router'
 import api from '@services/apiService'
 import TrackedLink from '@components/blocks/boton'
 import ConditionalLink from '../pageComponents/ConditionalLink'
+import { SafeHtml } from '@components/SafeHtml';
 
 export default function Snieg() {
     const [snieg, setSnieg] = useState([])
@@ -21,8 +22,7 @@ export default function Snieg() {
             
             {snieg.map(snieg => {
 
-                const original = snieg.imagen
-                const thumb = original.substring(original.lastIndexOf('/') + 1);
+                const original = snieg.imagen                
 
                 return (
                     <ConditionalLink
@@ -31,14 +31,14 @@ export default function Snieg() {
                     target="_blank"
                     rel="noopener noreferrer"
                     >
-                    <div key={snieg.id} className={`bg-card group rounded-[45px] p-5 sm:p-10 xl:px-20 mb-5 grid lg:grid-cols-6 gap-5 ${ snieg.enlace ? "hover:border-2 hover:border-primary" : ""} `}>
-                        <div className='md:h-[200px] lg:h-auto lg:col-span-2'>
-                            <img src={snieg.imagen ? snieg.imagen : "/demo.jpg"} alt={snieg.titulo} className='mx-auto md:h-full lg:h-auto'/>
-                            {/*<img src={snieg.imagen ? `https://iieg.jalisco.gob.mx/acervo/thumb/portal/snieg/${thumb}?w=400` : "/demo.jpg"} alt={snieg.titulo} /> */}
+                    <div key={snieg.id} className={`bg-card rounded-3xl p-6 mb-5 group grid md:grid-cols-6 gap-4 ${ snieg.enlace ? "hover:border-1 hover:border-tertiary" : ""} `}>
+                        <div className='md:col-span-2'>
+                            <img src={snieg.imagen ? snieg.imagen : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt={snieg.titulo} />                            
                         </div>
                         <div className='lg:col-span-4'>
                             <h2 className='text-36 text-titulo font-garet-extra font-extrabold'>{snieg.titulo}</h2>
-                            <div dangerouslySetInnerHTML={{__html: snieg.descripcion}} className='diez mt-5' />
+                            
+                            <SafeHtml htmlContent={snieg.descripcion} className='mt-5 diez'/>
                             { snieg.enlace ?
                                                 <div className='mb-4 h-10'>
                                                 <TrackedLink to={snieg.enlace} className="" target="_blank" rel="noopener noreferrer">
