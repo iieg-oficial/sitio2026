@@ -4,7 +4,12 @@ import api from "../../../services/apiService";
 import MapaContacto from './mapaContacto';
 import mec from '@/config/mapalab-embed-content.json';
 
+// Asignar clave con valor por defecto
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
 export default function Contacto() {
+    console.log("Site Key en uso:", RECAPTCHA_SITE_KEY);
+
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -24,7 +29,6 @@ export default function Contacto() {
 
         setStatus("Enviando...");
         try {
-            
             const response = await api.post("/contacto/", {
                 ...form,
                 recaptcha_token: captchaToken
@@ -85,10 +89,10 @@ export default function Contacto() {
                         ></textarea>
                     </div>
 
-                    <div className="my-4">
+                    <div className="my-4 min-h-[78px]">
                         <ReCAPTCHA
                             ref={recaptchaRef}
-                            sitekey="TU_CLAVE_DE_SITIO_RECAPTCHA" // Reemplazar o usar import.meta.env.VITE_RECAPTCHA_SITE_KEY
+                            sitekey={RECAPTCHA_SITE_KEY}
                             onChange={(token) => setCaptchaToken(token)}
                             onExpired={() => setCaptchaToken(null)}
                         />
@@ -123,8 +127,8 @@ export default function Contacto() {
                         </div>
                     )}
                 </form>
+
                 <div className="my-6 text-20 font-bold text-titulo">
-                    
                     <a href={`tel:+52${mec.telefono.replace(/\s+/g, '')}`} className="text-titulo hover:text-tertiary flex items-center">
                         <span className="et--phone mr-4 w-[26px] h-[26px] flex-none"></span> 
                         <span className="flex-1">{mec.telefono}</span>

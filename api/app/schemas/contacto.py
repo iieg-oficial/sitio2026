@@ -7,7 +7,6 @@ class ContactoCreate(BaseModel):
     name: str
     email: EmailStr
     message: str
-    recaptcha_token: str
 
 
 class ContactoOut(BaseModel):
@@ -15,7 +14,6 @@ class ContactoOut(BaseModel):
     name: str
     email: EmailStr
     message: str
-    recaptcha_token: str
 
     class Config:
         from_attributes = True
