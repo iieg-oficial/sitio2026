@@ -1,5 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import api from '@services/apiService';
+import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 export default function Normatividad() {
     const [normatividad, setNormatividad] = useState([]);
@@ -7,9 +8,7 @@ export default function Normatividad() {
 
     const fetchNormatividad = useCallback(async () => {
         try {
-            const response = await api.get('/docs_iieg/tipo/normatividad', {
-                params: { _t: new Date().getTime() }
-            });
+            const response = await api.get('/docs_iieg/tipo/normatividad');
             const docs = response.data?.docs_iieg;
             const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
             setNormatividad(sorted);
@@ -20,19 +19,10 @@ export default function Normatividad() {
         }
     }, []);
 
-    useEffect(() => {
-        fetchNormatividad();
+    // Ejecuta la carga inicial y la sincronización al volver a la ventana/pestaña
+    useFetchOnFocus(fetchNormatividad);
 
-        const handleFocus = () => {
-            fetchNormatividad();
-        };
-        window.addEventListener('focus', handleFocus);
-        return () => {
-            window.removeEventListener('focus', handleFocus);
-        };
-    }, [fetchNormatividad]);
-
-    if (loading) {
+    if (loading && normatividad.length === 0) {
         return <p className="text-center py-6">Cargando Normatividad...</p>;
     }
 

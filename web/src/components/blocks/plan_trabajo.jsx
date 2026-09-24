@@ -1,6 +1,7 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import api from '@services/apiService';
 import { format, isValid } from 'date-fns';
+import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 export default function PlanTrabajo() {
     const [planTrabajo, setPlanTrabajo] = useState([]);
@@ -9,9 +10,7 @@ export default function PlanTrabajo() {
 
     const fetchPlanTrabajo = useCallback(async () => {
         try {
-            const response = await api.get('/docs_iieg/tipo/plan_de_trabajo', {
-                params: { _t: new Date().getTime() }
-            });
+            const response = await api.get('/docs_iieg/tipo/plan_de_trabajo');
             const docs = response.data?.docs_iieg;
             const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
             setPlanTrabajo(sorted);
@@ -22,17 +21,8 @@ export default function PlanTrabajo() {
         }
     }, []);
 
-    useEffect(() => {
-        fetchPlanTrabajo();
-
-        const handleFocus = () => {
-            fetchPlanTrabajo();
-        };
-        window.addEventListener('focus', handleFocus);
-        return () => {
-            window.removeEventListener('focus', handleFocus);
-        };
-    }, [fetchPlanTrabajo]);
+    // Ejecuta la carga inicial y se resincroniza automáticamente al enfocar la ventana/pestaña
+    useFetchOnFocus(fetchPlanTrabajo);
 
     const years = useMemo(() => {
         if (!planTrabajo || !Array.isArray(planTrabajo) || planTrabajo.length === 0) return [];
@@ -48,7 +38,8 @@ export default function PlanTrabajo() {
         return [...new Set(extractedYears)].sort((a, b) => Number(b) - Number(a));
     }, [planTrabajo]);
 
-    useEffect(() => {
+    // Establece el año activo por defecto al cargar/actualizar los datos
+    useMemo(() => {
         if (years.length > 0 && (!activeTab || !years.includes(activeTab))) {
             setActiveTab(years[0]);
         }
@@ -63,7 +54,7 @@ export default function PlanTrabajo() {
         });
     }, [planTrabajo, activeTab]);
 
-    if (loading) {
+    if (loading && planTrabajo.length === 0) {
         return <p className="text-center py-6">Cargando Plan de Trabajo...</p>;
     }
 
@@ -83,9 +74,11 @@ export default function PlanTrabajo() {
                                 <button
                                     key={year}
                                     onClick={() => setActiveTab(year)}
-                                    className={`px-10 py-3 cursor-pointer rounded-xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
+                                    className={`px-10 py-3 cursor-pointer rounded-xl border font-extrabold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${
+                                        activeTab === year
                                             ? 'bg-etiqueta-sec text-tertiary border-tertiary'
-                                            : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
+                                            : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'
+                                    }`}
                                 >
                                     {year}
                                 </button>

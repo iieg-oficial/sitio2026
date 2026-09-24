@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import api from '@services/apiService';
 import TrackedLink from '@components/blocks/boton';
+import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 export default function PlanInstitucional() {
     const [planInstitucional, setPlanInstitucional] = useState([]);
@@ -8,9 +9,7 @@ export default function PlanInstitucional() {
 
     const fetchPlanInstitucional = useCallback(async () => {
         try {
-            const response = await api.get('/docs_iieg/tipo/plan_institucional', {
-                params: { _t: new Date().getTime() }
-            });
+            const response = await api.get('/docs_iieg/tipo/plan_institucional');
             const docs = response.data?.docs_iieg;
             const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
             setPlanInstitucional(sorted);
@@ -21,19 +20,10 @@ export default function PlanInstitucional() {
         }
     }, []);
 
-    useEffect(() => {
-        fetchPlanInstitucional();
+    // Carga inicial y actualización automática al volver a la pestaña/ventana
+    useFetchOnFocus(fetchPlanInstitucional);
 
-        const handleFocus = () => {
-            fetchPlanInstitucional();
-        };
-        window.addEventListener('focus', handleFocus);
-        return () => {
-            window.removeEventListener('focus', handleFocus);
-        };
-    }, [fetchPlanInstitucional]);
-
-    if (loading) {
+    if (loading && planInstitucional.length === 0) {
         return <p className="text-center py-6">Cargando Plan Institucional...</p>;
     }
 

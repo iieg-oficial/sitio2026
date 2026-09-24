@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import api from '@services/apiService';
 import { SafeHtml } from '@components/SafeHtml';
+import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 export default function Valores() {
     const [valores, setValores] = useState([]);
@@ -8,9 +9,7 @@ export default function Valores() {
 
     const fetchValores = useCallback(async () => {
         try {
-            const response = await api.get('/docs_iieg/tipo/valor', {
-                params: { _t: new Date().getTime() }
-            });
+            const response = await api.get('/docs_iieg/tipo/valor');
             const docs = response.data?.docs_iieg;
             const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
             setValores(sorted);
@@ -21,19 +20,10 @@ export default function Valores() {
         }
     }, []);
 
-    useEffect(() => {
-        fetchValores();
+    // Carga inicial y actualización automática al enfocar la pestaña/ventana
+    useFetchOnFocus(fetchValores);
 
-        const handleFocus = () => {
-            fetchValores();
-        };
-        window.addEventListener('focus', handleFocus);
-        return () => {
-            window.removeEventListener('focus', handleFocus);
-        };
-    }, [fetchValores]);
-
-    if (loading) {
+    if (loading && valores.length === 0) {
         return <p className="text-center py-6">Cargando Valores...</p>;
     }
 
