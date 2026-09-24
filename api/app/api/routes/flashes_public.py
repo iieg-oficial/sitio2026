@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
@@ -11,10 +11,8 @@ router = APIRouter(prefix="/flashes", tags=["flashes-public"])
 
 @router.get("", response_model=FlashesList)
 def read_flashes(
-    response: Response,
     db: Session = Depends(get_db),
 ):
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     
     flashes = db.execute(
         select(Flashes)
@@ -29,12 +27,9 @@ def read_flashes(
 
 @router.get("/last", response_model=list[FlashesOut])
 def read_last_flashes(
-    response: Response,
     db: Session = Depends(get_db),
     limit: int = 1,
 ):
-    """Obtener el ultimo flash"""
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     
     flashes = db.execute(
         select(Flashes)

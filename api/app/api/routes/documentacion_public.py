@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import Integer, cast, select
 from sqlalchemy.orm import Session, joinedload
 
@@ -14,10 +14,8 @@ router.add_api_route("/tipos", get_documentacion_tipos, methods=["GET"])
 
 @router.get("", response_model=DocumentacionList)
 async def listar_documentaciones(
-    response: Response,
     db: Session = Depends(get_db),
 ):
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
 
     # Consulta directa ordenando por ID descendente (evita el cast que revienta el SQL)
     documentaciones = db.execute(

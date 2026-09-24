@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
@@ -9,11 +9,9 @@ router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos-public"])
 
 @router.get("", response_model=DatosNuevosResponse)
 def read_datos_nuevos(
-    response: Response,
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los datos nuevos ordenados por ID descendente (sin caché)"""
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
     
     datos_nuevos = db.query(DatosNuevos).order_by(DatosNuevos.id.desc()).all()
     return {

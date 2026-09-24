@@ -19,7 +19,7 @@ services:
         VITE_MEDIA_BASE_URL: ${VITE_MEDIA_BASE_URL:?VITE_MEDIA_BASE_URL is required}
         VITE_MAPALAB_BASE_URL: ${VITE_MAPALAB_BASE_URL:?VITE_MAPALAB_BASE_URL is required}
         VITE_MAPALAB_API_KEY: ${VITE_MAPALAB_API_KEY:?VITE_MAPALAB_API_KEY is required}
-        VITE_RECAPTCHA_SITE_KEY: ${VITE_RECAPTCHA_SITE_KEY:?VITE_RECAPTCHA_SITE_KEY is required}
+        VITE_RECAPTCHA_SITE_KEY: ${VITE_RECAPTCHA_SITE_KEY:?VITE_RECAPTCHA_SITE_KEY is required}        
     container_name: portal-nginx
     restart: unless-stopped
     ports:
@@ -225,6 +225,8 @@ services:
       SMTP_USER: ${SMTP_USER:?SMTP_USER is required}
       SMTP_PASSWORD: ${SMTP_PASSWORD:?SMTP_PASSWORD is required}
       CONTACT_DEST_EMAIL: ${CONTACT_DEST_EMAIL:?CONTACT_DEST_EMAIL is required}
+      VITE_RECAPTCHA_SITE_KEY: ${VITE_RECAPTCHA_SITE_KEY}
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY:?RECAPTCHA_SECRET_KEY is required}
     networks:
       portal_network:
         aliases:

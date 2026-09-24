@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db
@@ -9,11 +9,8 @@ router = APIRouter(prefix="/reportes", tags=["reportes - public"])
 
 @router.get("", response_model=ReporteList)
 async def listar_reportes(
-    response: Response,
     db: Session = Depends(get_db),
 ):
-    # Desactivar almacenamiento en caché del navegador/proxy
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
 
     reportes = (
         db.query(Reportes)

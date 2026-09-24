@@ -8,7 +8,6 @@ import mec from '@/config/mapalab-embed-content.json';
 const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
 export default function Contacto() {
-    console.log("Site Key en uso:", RECAPTCHA_SITE_KEY);
 
     const [form, setForm] = useState({
         name: "",
@@ -109,19 +108,19 @@ export default function Contacto() {
                     </button>
 
                     {status === "ok" && (
-                        <div className="p-4 bg-green-50 border-l-4 border-exito text-exito animate-fade-in">
+                        <div className="p-4 border-l-4 border-exito text-exito animate-fade-in">
                             <p className="font-bold">✓ ¡Éxito!</p>
                             <p className="text-sm">Tu mensaje ha sido enviado correctamente.</p>
                         </div>
                     )}
                     {status === "captcha_error" && (
-                        <div className="p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 animate-fade-in">
+                        <div className="p-4 border-l-4 border-tertiary text-body animate-fade-in">
                             <p className="font-bold">⚠ Verificación requerida</p>
                             <p className="text-sm">Por favor, completa la casilla del Captcha antes de enviar.</p>
                         </div>
                     )}
                     {status === "error" && (
-                        <div className="p-4 bg-red-50 border-l-4 border-negativo text-negativo animate-fade-in">
+                        <div className="p-4 border-l-4 border-negativo text-negativo animate-fade-in">
                             <p className="font-bold">⚠ Error</p>
                             <p className="text-sm">No pudimos enviar tu mensaje. Por favor intenta de nuevo.</p>
                         </div>

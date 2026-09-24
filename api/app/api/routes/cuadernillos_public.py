@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
@@ -8,13 +8,10 @@ from app.schemas import CuadernilloOut, CuadernilloResponse
 router = APIRouter(prefix="/cuadernillos", tags=["public - cuadernillos"])
 
 @router.get("", response_model=CuadernilloResponse)
-def read_cuadernillos(
-    response: Response,
+def read_cuadernillos(    
     db: Session = Depends(get_db),
     skip: int = 0,
 ):
-    """Obtener todos los cuadernillos ordenados por año (desc) y municipio (asc)"""
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
 
     # 1. Año más reciente primero -> 2. Alfabético por Titulo (A-Z)
     cuadernillos = (
