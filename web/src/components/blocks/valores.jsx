@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import api from '@services/apiService';
 import { SafeHtml } from '@components/SafeHtml';
 
@@ -6,35 +6,37 @@ export default function Valores() {
     const [valores, setValores] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const fetchValores = useCallback(async () => {
+        try {
+            const response = await api.get('/docs_iieg/tipo/valor', {
+                params: { _t: new Date().getTime() }
+            });
+            const docs = response.data?.docs_iieg;
+            const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
+            setValores(sorted);
+        } catch (error) {
+            console.error("Error al obtener los valores:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
-        let isMounted = true;
-
-        const fetchValores = async () => {
-            try {
-                const response = await api.get('/docs_iieg/tipo/valor');
-                const docs = response.data?.docs_iieg;
-                if (isMounted) {
-                    setValores(Array.isArray(docs) ? docs : []);
-                }
-            } catch (error) {
-                console.error("Error al obtener los valores:", error);
-            } finally {
-                if (isMounted) setLoading(false);
-            }
-        };
-
         fetchValores();
 
-        return () => {
-            isMounted = false;
+        const handleFocus = () => {
+            fetchValores();
         };
-    }, []); // ⚠️ Se ejecuta únicamente al montar el componente
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchValores]);
 
     if (loading) {
         return <p className="text-center py-6">Cargando Valores...</p>;
     }
 
-    // Si la base de datos está vacía, mostramos un mensaje amigable en lugar de romper
     if (!valores || valores.length === 0) {
         return (
             <div className="container-fluid py-10 text-center">

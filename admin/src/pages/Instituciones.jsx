@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -16,23 +16,41 @@ export default function Instituciones() {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingInstitucion, setEditingInstitucion] = useState(null);
 
+    // Observa el campo logo en tiempo real para la previsualización
+    const logoUrl = Form.useWatch('logo', form);
+
     const { searchText, setSearchText, filteredData } = useSearchFilter(instituciones, ['nombre']);
 
-    useEffect(() => {
-        fetchInstituciones();
-    }, []);
-
-    const fetchInstituciones = async () => {
+    const fetchInstituciones = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/instituciones');
-            setInstituciones(response.data.instituciones);
-        } catch {
+            const response = await api.get('/instituciones', {
+                params: { _t: new Date().getTime() }
+            });
+            // CORREGIDO: Leer el array dentro de la propiedad institucion / instituciones
+            const data = Array.isArray(response.data?.instituciones) ? response.data.instituciones : [];
+            const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            
+            // CORREGIDO: Actualizar el estado de instituciones (no directorio)
+            setInstituciones(sortedData);
+        } catch (error) {
             message.error('Error al cargar instituciones');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchInstituciones();
+
+        const handleFocus = () => {
+            fetchInstituciones();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchInstituciones]);
 
     const handleCreate = () => {
         setEditingInstitucion(null);
@@ -57,7 +75,7 @@ export default function Instituciones() {
                 try {
                     await api.delete(`/instituciones/${record.id}`);
                     message.success('Institución eliminada exitosamente');
-                    fetchInstituciones();
+                    await fetchInstituciones();
                 } catch {
                     message.error('Error al eliminar institución');
                 }
@@ -75,7 +93,7 @@ export default function Instituciones() {
                 message.success('Institución creada exitosamente');
             }
             setModalVisible(false);
-            fetchInstituciones();
+            await fetchInstituciones();
         } catch {
             message.error(editingInstitucion ? 'Error al actualizar institución' : 'Error al crear institución');
         }
@@ -86,7 +104,7 @@ export default function Instituciones() {
             title: 'Nombre',
             dataIndex: 'nombre',
             key: 'nombre',
-            sorter: (a, b) => a.nombre.localeCompare(b.nombre)
+            sorter: (a, b) => (a.nombre || '').localeCompare(b.nombre || '')
         },
         {
             title: 'Logo',
@@ -95,10 +113,10 @@ export default function Instituciones() {
             render: (logo) => logo ? <Image src={logo} alt="Logo" style={{ maxWidth: 100 }} /> : 'Sin logo'
         },
         {
-            title: 'Id',
+            title: 'ID',
             dataIndex: 'id',
             key: 'id',
-            sorter: (a, b) => a.id - b.id
+            sorter: (a, b) => (a.id || 0) - (b.id || 0)
         },
         {
             title: 'Acciones',
@@ -142,7 +160,7 @@ export default function Instituciones() {
                 <TableSearch
                     value={searchText}
                     onChange={setSearchText}
-                    placeholder="Buscar por título..."
+                    placeholder="Buscar por nombre..."
                     loading={loading}
                 />
                 <Table
@@ -185,10 +203,10 @@ export default function Instituciones() {
                     >
                         <RichTextEditor />
                     </Form.Item>
+                    
                     <Form.Item
                         label="Logo"
-                        name="logo"
-                        rules={[{ required: true, message: 'Por favor ingrese el logo' }]}
+                        required
                     >
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
@@ -199,12 +217,19 @@ export default function Instituciones() {
                                     form.setFieldValue('logo', media.url);
                                 }}
                             />
-                            <Input placeholder="URL del logo" />
-                            {form.getFieldValue('logo') && (
-                                 <Image
-                                    src={form.getFieldValue('logo')}
+                            <Form.Item
+                                name="logo"
+                                noStyle
+                                rules={[{ required: true, message: 'Por favor ingrese o suba el logo' }]}
+                            >
+                                <Input placeholder="URL del logo" />
+                            </Form.Item>
+                            
+                            {logoUrl && (
+                                <Image
+                                    src={logoUrl}
                                     alt="Vista previa del logo"
-                                    style={{ maxWidth: 200, marginTop: 10 }}
+                                    style={{ maxWidth: 200, marginTop: 10, borderRadius: 6 }}
                                 />
                             )}
                         </Space>

@@ -35,7 +35,7 @@ def get_docs_iieg(
         ).scalar_one()
 
     docs_iieg = db.execute(
-        query.order_by(DocsIIEG.fecha.desc(), DocsIIEG.id.desc())
+        query.order_by(DocsIIEG.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -6,7 +6,6 @@ import { CamposCapacitaciones, CamposConvocatorias, CamposComunes } from '@compo
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
-
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -26,6 +25,24 @@ export default function Cursos() {
   const [tipoCurso, setTipoCurso] = useState(null);
   const { searchText, setSearchText, filteredData } = useSearchFilter(cursos, ['titulo']);
 
+  // Petición con parámetro anti-caché
+  const fetchCursos = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await api.get('/cursos', {
+        params: { _t: new Date().getTime() }
+      });
+      const dataCursos = response.data.cursos || [];
+      // Aseguramos el orden descendente por ID en el cliente como respaldo
+      const sorted = [...dataCursos].sort((a, b) => (b.id || 0) - (a.id || 0));
+      setCursos(sorted);
+    } catch (error) {
+      console.error('Error al obtener:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchCursos();
     fetchInstituciones();
@@ -33,19 +50,16 @@ export default function Cursos() {
     fetchProfesores();
     fetchPerfiles();
     fetchTemas();
-  }, []);
 
-  const fetchCursos = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get('/cursos');
-      setCursos(response.data.cursos);
-    } catch (error) {
-      console.error('Error al obtener:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Actualización automática al enfocar la pestaña del navegador
+    const handleFocus = () => {
+      fetchCursos();
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [fetchCursos]);
 
   const fetchInstituciones = async () => {
     try {
@@ -169,27 +183,35 @@ export default function Cursos() {
       title: 'Titulo',
       dataIndex: 'titulo',
       key: 'titulo',
-      sorter: (a, b) => a.titulo.localeCompare(b.titulo)
+      sorter: (a, b) => (a.titulo || '').localeCompare(b.titulo || '')
     },
     {
       title: 'Tipo',
       dataIndex: 'tipo_curso',
       key: 'tipo_curso',
-      sorter: (a, b) => a.tipo_curso.localeCompare(b.tipo_curso)
+      sorter: (a, b) => (a.tipo_curso || '').localeCompare(b.tipo_curso || '')
     },
     {
       title: 'Fecha de inicio',
       dataIndex: 'inicio',
       key: 'inicio',
-      render: (date) => new Date(date).toLocaleDateString('es-MX'),
-      sorter: (a, b) => a.inicio.localeCompare(b.inicio)
+      render: (date) => (date ? new Date(date).toLocaleDateString('es-MX') : '-'),
+      sorter: (a, b) => {
+        const dateA = a.inicio ? new Date(a.inicio).getTime() : 0;
+        const dateB = b.inicio ? new Date(b.inicio).getTime() : 0;
+        return dateA - dateB;
+      }
     },
     {
       title: 'Fecha de finalizacion',
       dataIndex: 'fin',
       key: 'fin',
-      render: (date) => new Date(date).toLocaleDateString('es-MX'),
-      sorter: (a, b) => a.fin.localeCompare(b.fin)
+      render: (date) => (date ? new Date(date).toLocaleDateString('es-MX') : '-'),
+      sorter: (a, b) => {
+        const dateA = a.fin ? new Date(a.fin).getTime() : 0;
+        const dateB = b.fin ? new Date(b.fin).getTime() : 0;
+        return dateA - dateB;
+      }
     },
     {
       title: 'Acciones',

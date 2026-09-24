@@ -1,46 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import api from '@services/apiService';
 
 export default function Normatividad() {
     const [normatividad, setNormatividad] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const fetchNormatividad = useCallback(async () => {
+        try {
+            const response = await api.get('/docs_iieg/tipo/normatividad', {
+                params: { _t: new Date().getTime() }
+            });
+            const docs = response.data?.docs_iieg;
+            const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
+            setNormatividad(sorted);
+        } catch (error) {
+            console.error("Error al obtener la normatividad:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
-        let isMounted = true;
-
-        const fetchNormatividad = async () => {
-            try {
-                const response = await api.get('/docs_iieg/tipo/normatividad');
-                const docs = response.data?.docs_iieg;
-                if (isMounted) {
-                    setNormatividad(Array.isArray(docs) ? docs : []);
-                }
-            } catch (error) {
-                console.error("Error al obtener la normatividad:", error);
-            } finally {
-                if (isMounted) setLoading(false);
-            }
-        };
-
         fetchNormatividad();
 
-        return () => {
-            isMounted = false;
+        const handleFocus = () => {
+            fetchNormatividad();
         };
-    }, []);
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchNormatividad]);
 
     if (loading) {
         return <p className="text-center py-6">Cargando Normatividad...</p>;
     }
 
     return (
-        <div className="container-fuid py-15 px-2 bg-card">
+        <div className="container-fluid py-15 px-2 bg-card">
             <h2 className="text-titulo text-center">Normatividad</h2>
             
             <div className="container mx-auto mt-8">
                 {normatividad.length > 0 ? (
                     normatividad.map((item, idx) => (
-                        <div key={item?.id || idx} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-3xl group bg-white hover:border-tertiary group">
+                        <div key={item?.id || idx} className="flex items-center gap-2 mb-4 p-4 border border-[#E6EEFF] rounded-3xl group bg-white hover:border-tertiary">
                             <a 
                                 href={item?.documento || '#'} 
                                 target="_blank" 
@@ -48,10 +51,10 @@ export default function Normatividad() {
                                 download 
                                 className='flex gap-4'
                             >
-                                <div className="group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1">
+                                <div className="group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
                                     <span className="material-symbols--download group-hover:bg-white!"></span>
                                 </div>
-                                    <p className='text-22 text-titulo group-hover:text-tertiary'>
+                                <p className='text-22 text-titulo group-hover:text-tertiary'>
                                     {item?.nombre || 'Documento sin título'}
                                 </p>
                             </a>

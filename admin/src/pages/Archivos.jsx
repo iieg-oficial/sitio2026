@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -59,14 +59,15 @@ export default function Archivos() {
         }
     };
 
-    const fetchArchivos = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchArchivos = useCallback(async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
             const response = await api.get('/archivos', {
                 params: {
                     ...(search ? { search } : {}),
                     page,
-                    pageSize
+                    pageSize,
+                    _t: new Date().getTime() // Anti-caché
                 }
             });
             setArchivos(response.data.archivos);
@@ -81,7 +82,20 @@ export default function Archivos() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [pagination.current, pagination.pageSize]);
+
+    useEffect(() => {
+        fetchArchivos();
+        fetchSubjects();
+
+        const handleFocus = () => {
+            fetchArchivos();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchArchivos]);
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchArchivos(text, 1, pagination.pageSize);
@@ -164,12 +178,14 @@ export default function Archivos() {
             if (editingArchivo) {
                 await api.patch(`/archivos/${editingArchivo.id}`, payload);
                 message.success('Archivo actualizado exitosamente');
+                fetchArchivos(searchText, pagination.current, pagination.pageSize);            
             } else {
                 await api.post('/archivos/create', payload);
                 message.success('Archivo creado exitosamente');
+                fetchArchivos(searchText, pagination.current, pagination.pageSize);
             }
             setModalVisible(false);
-            fetchArchivos(searchText, pagination.current, pagination.pageSize);
+            
         } catch {
             message.error(editingArchivo ? 'Error al actualizar archivo' : 'Error al crear archivo');
         }

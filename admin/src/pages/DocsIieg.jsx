@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -19,18 +19,15 @@ export default function DocsIieg() {
     const [editingDoc, setEditingDoc] = useState(null);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
-    useEffect(() => {
-        fetchDocsIieg();
-    }, []);
-
-    const fetchDocsIieg = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchDocsIieg = useCallback(async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
         try {
             setLoading(true);
             const response = await api.get('/docs_iieg', {
                 params: {
                     ...(search ? { search } : {}),
                     page,
-                    pageSize
+                    pageSize,
+                    _t: new Date().getTime() // Anti-caché
                 }
             });
             setDocsIieg(response.data.docs_iieg);
@@ -45,7 +42,19 @@ export default function DocsIieg() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [pagination.current, pagination.pageSize]);
+
+    useEffect(() => {
+        fetchDocsIieg();
+
+        const handleFocus = () => {
+            fetchDocsIieg();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchDocsIieg]);
 
      const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchDocsIieg(text, 1, pagination.pageSize);
@@ -92,12 +101,14 @@ export default function DocsIieg() {
             if (editingDoc) {
                 await api.patch(`/docs_iieg/${editingDoc.id}`, values);
                 message.success('Documento del IIEG actualizado exitosamente');
+                fetchDocsIieg(searchText, pagination.current, pagination.pageSize);
             } else {
                 await api.post('/docs_iieg/create', values);
                 message.success('Documento del IIEG creado exitosamente');
+                fetchDocsIieg(searchText, 1, pagination.pageSize);
             }
             setIsModalVisible(false);
-            fetchDocsIieg(searchText, pagination.current, pagination.pageSize);
+            
         } catch (error) {
             message.error(editingDoc ? 'Error al actualizar el documento del IIEG' : 'Error al crear el documento del IIEG');
         }

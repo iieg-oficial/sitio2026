@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Checkbox, Image} from 'antd';
+import { useState, useEffect, useCallback } from 'react';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Checkbox, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
@@ -9,7 +9,6 @@ import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
 
 const { Title } = Typography;
-const { Option } = Select;
 
 export default function Sistemas() {
     const [sistemas, setSistemas] = useState([]);
@@ -19,44 +18,61 @@ export default function Sistemas() {
     const [editingSistema, setEditingSistema] = useState(null);
     const [subjects, setSubjects] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
-    const [tipos, setTipos] = useState([]);
+    const [tipos, setTipos] = useState({});
     const { searchText, setSearchText, filteredData } = useSearchFilter(sistemas, ['titulo']);
 
-    useEffect(() => {
-        fetchSistemas();
-        fetchSubjects();
-        fetchTipos();
-    }, []);
+    // Escuchar reactivamente los cambios de imagen para renderizar las previsualizaciones correctamente
+    const imagenUrl = Form.useWatch('imagen', form);
+    const imagenSliderUrl = Form.useWatch('imagen_slider', form);
 
     const fetchTipos = async () => {
-        try{
+        try {
             const response = await api.get('/sistemas/tipos');
-            setTipos(response.data.tipos || {});
-        } catch (error) {
+            setTipos(response.data?.tipos || {});
+        } catch {
             message.error('Error al obtener los tipos');
         }
-    }
+    };
 
-    const fetchSistemas = async () => {
+    const fetchSistemas = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/sistemas');
-            setSistemas(response.data.sistemas);
+            const response = await api.get('/sistemas', {
+                params: { _t: new Date().getTime() }
+            });
+            const data = Array.isArray(response.data?.sistemas) ? response.data.sistemas : [];
+            const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            // CORREGIDO: Se cambia la llamada recursiva errónea por setSistemas
+            setSistemas(sortedData);
         } catch {
             message.error('Error al cargar sistemas');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     const fetchSubjects = async () => {
         try {
             const response = await api.get('/subject/tree');
-            setSubjects(response.data);
+            setSubjects(response.data || []);
         } catch {
             message.error('Error al cargar temas');
         }
     };
+
+    useEffect(() => {
+        fetchSistemas();
+        fetchSubjects();
+        fetchTipos();
+
+        const handleFocus = () => {
+            fetchSistemas();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchSistemas]);
 
     const handleCreate = () => {
         setEditingSistema(null);
@@ -76,15 +92,15 @@ export default function Sistemas() {
     const handleDelete = (record) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar este producto?',
-            content: `Se eliminará el producto: ${record.titulo}`,
+            content: `Se eliminará el producto: ${record.titulo || ''}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
                     await api.delete(`/sistemas/${record.id}`);
-                    message.success('producto eliminado exitosamente');
-                    fetchSistemas();
+                    message.success('Producto eliminado exitosamente');
+                    await fetchSistemas();
                 } catch {
                     message.error('Error al eliminar producto');
                 }
@@ -94,16 +110,20 @@ export default function Sistemas() {
 
     const handleSubmit = async (values) => {
         try {
-            const payload = { ...values, tema_ids: selectedSubjects };
+            const payload = { 
+                ...values, 
+                orden: Number(values.orden || 0),
+                tema_ids: selectedSubjects 
+            };
             if (editingSistema) {
                 await api.patch(`/sistemas/${editingSistema.id}`, payload);
-                message.success('producto actualizado exitosamente');
+                message.success('Producto actualizado exitosamente');
             } else {
                 await api.post('/sistemas/create', payload);
-                message.success('producto creado exitosamente');
+                message.success('Producto creado exitosamente');
             }
             setModalVisible(false);
-            fetchSistemas();
+            await fetchSistemas();
         } catch {
             message.error('Error al guardar producto');
         }
@@ -114,7 +134,7 @@ export default function Sistemas() {
             title: 'Título',
             dataIndex: 'titulo',
             key: 'titulo',
-            sorter: (a, b) => a.titulo.localeCompare(b.titulo),            
+            sorter: (a, b) => (a.titulo || '').localeCompare(b.titulo || ''),            
         },
         {
             title: 'Link',
@@ -125,19 +145,19 @@ export default function Sistemas() {
             title: 'Tipo',
             dataIndex: 'tipo',
             key: 'tipo',
-            sorter: (a, b) => a.tipo.localeCompare(b.tipo),
+            sorter: (a, b) => (a.tipo || '').localeCompare(b.tipo || ''),
         },
         {
             title: 'Destacado',
             dataIndex: 'destacado',
             key: 'destacado',
-            render: (val) => val ? 'Sí' : 'No',            
+            render: (val) => (val ? 'Sí' : 'No'),            
         },
         {
             title: 'Slider',
             dataIndex: 'slider',
             key: 'slider',
-            render: (val) => val ? 'Sí' : 'No',            
+            render: (val) => (val ? 'Sí' : 'No'),            
         },
         {
             title: 'Acciones',
@@ -153,6 +173,7 @@ export default function Sistemas() {
                     </Button>
                     <Button 
                         type="link"
+                        danger
                         icon={<DeleteOutlined />}
                         onClick={() => handleDelete(record)}
                     >
@@ -164,129 +185,127 @@ export default function Sistemas() {
     ];
 
     return (
-       <div>
+        <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
                 <Title level={2} style={{ margin: 0 }}>Nuestros productos</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
                     Crear producto
                 </Button>
             </div>
-        <Card>
-            <TableSearch
+            <Card>
+                <TableSearch
                     value={searchText}
                     onChange={setSearchText}
                     placeholder="Buscar por título..."
                     loading={loading}
-            />
-            <Table 
-            columns={columns} 
-            dataSource={filteredData} 
-            loading={loading} 
-            rowKey="id"
-            pagination={{ 
-                pageSize: 10, 
-                showSizeChanger: true, 
-                showTotal: (total) => `Total ${total} productos` }}/>
-        </Card>
-        <Modal
-            title={editingSistema ? 'Editar producto' : 'Crear producto'}
-            open={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            onOk={form.submit}
-            okText={editingSistema ? 'Actualizar' : 'Crear'}
-            cancelText="Cancelar"
-        >
-            <Form form={form} onFinish={handleSubmit} layout="vertical">
-                <Form.Item name="titulo" label="Título" rules={[{ required: true }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name="descripcion" label="Descripción" rules={[{ required: true }]}>
-                    <RichTextEditor />
-                </Form.Item>
-                <Form.Item name="link" label="Link" rules={[{ required: false }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name="tipo" label="Tipo" rules={[{ required: true }]}>
-                    <Select
-                        placeholder="Selecciona un tipo"
-                        allowClear
-                        showSearch
-                        optionFilterProp="label"
-                        filterOption={(input, option) =>
-                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={Object.entries(tipos).map(([key, value]) => ({
-                            key,
-                            value,
-                            label: value,
-                        }))}
-                    />
-                </Form.Item>
-                <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
-                    <Space direction="vertical" style={{ width: '100%' }}>
-                        <UploadAcervo
-                            bucket="portal"
-                            folder="/sistemas"
-                            label="Subir imagen"
-                            onUploaded={(media) => {
-                                form.setFieldValue('imagen', media.url);
-                            }}
-                        />
-                        <Form.Item name="imagen" noStyle>
-                            <Input placeholder="URL de la imagen" />
-                        </Form.Item>
-                        {form.getFieldValue('imagen') ? (
-                            <Image src={form.getFieldValue('imagen')} alt="Imagen del sistema" style={{ maxWidth: 200, borderRadius: 6 }} />
-                        ) : null}
-                    </Space>
-                </Form.Item>
-                <TemaSelector
-                    temas={subjects}
-                    seleccionados={selectedSubjects}
-                    onChange={(ids) => {                                    
-                        setSelectedSubjects(ids);
+                />
+                <Table 
+                    columns={columns} 
+                    dataSource={filteredData} 
+                    loading={loading} 
+                    rowKey="id"
+                    pagination={{ 
+                        pageSize: 10, 
+                        showSizeChanger: true, 
+                        showTotal: (total) => `Total ${total} productos` 
                     }}
                 />
-                <Form.Item name="claves"
-                    label="Palabras clave"
-                    rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
+            </Card>
+            <Modal
+                title={editingSistema ? 'Editar producto' : 'Crear producto'}
+                open={modalVisible}
+                onCancel={() => setModalVisible(false)}
+                onOk={form.submit}
+                okText={editingSistema ? 'Actualizar' : 'Crear'}
+                cancelText="Cancelar"
+            >
+                <Form form={form} onFinish={handleSubmit} layout="vertical">
+                    <Form.Item name="titulo" label="Título" rules={[{ required: true, message: 'Por favor ingrese el título' }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="descripcion" label="Descripción" rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}>
+                        <RichTextEditor />
+                    </Form.Item>
+                    <Form.Item name="link" label="Link" rules={[{ required: false }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="tipo" label="Tipo" rules={[{ required: true, message: 'Por favor seleccione un tipo' }]}>
+                        <Select
+                            placeholder="Selecciona un tipo"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={Object.entries(tipos).map(([key, value]) => ({
+                                value: key,
+                                label: value,
+                            }))}
+                        />
+                    </Form.Item>
+                    <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/sistemas"
+                                label="Subir imagen"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('imagen', media.url);
+                                }}
+                            />
+                            <Form.Item name="imagen" noStyle>
+                                <Input placeholder="URL de la imagen" />
+                            </Form.Item>
+                            {imagenUrl ? (
+                                <Image src={imagenUrl} alt="Imagen del sistema" style={{ maxWidth: 200, borderRadius: 6 }} />
+                            ) : null}
+                        </Space>
+                    </Form.Item>
+                    <TemaSelector
+                        temas={subjects}
+                        seleccionados={selectedSubjects}
+                        onChange={(ids) => {                                    
+                            setSelectedSubjects(ids);
+                        }}
+                    />
+                    <Form.Item 
+                        name="claves"
+                        label="Palabras clave"
+                        rules={[{ required: false }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
                         name="destacado"
-                        label="Destacada"
                         valuePropName="checked"
-                        rules={[{ required: false, message: 'Por favor seleccione si es destacada' }]}
                     >
                         <Checkbox>Destacada</Checkbox>
-                </Form.Item>
-                <Form.Item
+                    </Form.Item>
+                    <Form.Item
                         name="slider"
-                        label="En Slider"
                         valuePropName="checked"
-                        rules={[{ required: false, message: 'Por favor seleccione si aparece en el slider' }]}
                     >
                         <Checkbox>En Slider</Checkbox>
-                </Form.Item>
-                <Form.Item name="imagen_slider" label="Imagen Slider" rules={[{ required: false }]}>
-                    <Space direction="vertical" style={{ width: '100%' }}>
-                        <UploadAcervo
-                            bucket="portal"
-                            folder="/sistemas"
-                            label="Subir imagen slider"
-                            onUploaded={(media) => {
-                                form.setFieldValue('imagen_slider', media.url);
-                            }}
-                        />
-                        <Form.Item name="imagen_slider" noStyle>
-                            <Input placeholder="URL de la imagen slider" />
-                        </Form.Item>
-                        {form.getFieldValue('imagen_slider') ? (
-                            <Image src={form.getFieldValue('imagen_slider')} alt="Imagen del sistema" style={{ maxWidth: 200, borderRadius: 6 }} />
-                        ) : null}
-                    </Space>
-                </Form.Item>
+                    </Form.Item>
+                    <Form.Item name="imagen_slider" label="Imagen Slider" rules={[{ required: false }]}>
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder="/sistemas"
+                                label="Subir imagen slider"
+                                onUploaded={(media) => {
+                                    form.setFieldValue('imagen_slider', media.url);
+                                }}
+                            />
+                            <Form.Item name="imagen_slider" noStyle>
+                                <Input placeholder="URL de la imagen slider" />
+                            </Form.Item>
+                            {imagenSliderUrl ? (
+                                <Image src={imagenSliderUrl} alt="Imagen slider" style={{ maxWidth: 200, borderRadius: 6 }} />
+                            ) : null}
+                        </Space>
+                    </Form.Item>
                     <Form.Item
                         name="orden"
                         label="Orden"
@@ -294,9 +313,8 @@ export default function Sistemas() {
                     >
                         <Input type="number" />
                     </Form.Item>
-            </Form>
-        </Modal>
-       </div>
+                </Form>
+            </Modal>
+        </div>
     );
 }
-            

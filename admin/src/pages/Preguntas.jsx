@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { useState, useEffect, useCallback } from 'react';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
@@ -19,11 +19,6 @@ export default function Preguntas() {
     const [loading, setLoading] = useState(false);
     const { searchText, setSearchText, filteredData } = useSearchFilter(preguntas, ['pregunta']);
 
-    useEffect(() => {
-        fetchPreguntas();
-        fetchSubjects();
-    }, []);
-
     const fetchSubjects = async () => {
         try {
             const response = await api.get('/subject/tree');
@@ -33,17 +28,34 @@ export default function Preguntas() {
         }
     };
 
-    const fetchPreguntas = async () => {
+    const fetchPreguntas = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/preguntas');
-            setPreguntas(response.data.preguntas);
+            const response = await api.get('/preguntas', {
+                params: { _t: new Date().getTime() }
+            });
+            const data = Array.isArray(response.data?.preguntas) ? response.data.preguntas : [];
+            const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            setPreguntas(sortedData);
         } catch {
             message.error('Error al cargar preguntas');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchPreguntas();
+        fetchSubjects();
+
+        const handleFocus = () => {
+            fetchPreguntas();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchPreguntas]);
 
     const handleCreate = () => {
         setEditingPregunta(null);
@@ -63,7 +75,7 @@ export default function Preguntas() {
     const handleDelete = (record) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar esta pregunta?',
-            content: `Se eliminará la pregunta: ${record.pregunta}`,
+            content: `Se eliminará la pregunta: ${record.pregunta || ''}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
@@ -71,7 +83,7 @@ export default function Preguntas() {
                 try {
                     await api.delete(`/preguntas/${record.id}`);
                     message.success('Pregunta eliminada exitosamente');
-                    fetchPreguntas();
+                    await fetchPreguntas();
                 } catch {
                     message.error('Error al eliminar pregunta');
                 }
@@ -93,7 +105,7 @@ export default function Preguntas() {
                 message.success('Pregunta creada exitosamente');
             }
             setIsModalVisible(false);
-            fetchPreguntas();
+            await fetchPreguntas();
         } catch {
             message.error(editingPregunta ? 'Error al actualizar pregunta' : 'Error al crear pregunta');
         }
@@ -104,11 +116,11 @@ export default function Preguntas() {
             title: 'Pregunta',
             dataIndex: 'pregunta',
             key: 'pregunta',
-            sorter: (a, b) => a.pregunta.localeCompare(b.pregunta),
+            sorter: (a, b) => (a.pregunta || '').localeCompare(b.pregunta || ''),
             render: (text) => (
                 <div
-                className="tiptap-content"
-                dangerouslySetInnerHTML={{ __html: text }}
+                    className="tiptap-content"
+                    dangerouslySetInnerHTML={{ __html: text || '' }}
                 />
             ),
         },
@@ -116,11 +128,11 @@ export default function Preguntas() {
             title: 'Respuesta',
             dataIndex: 'respuesta',
             key: 'respuesta',
-            sorter: (a, b) => a.respuesta.localeCompare(b.respuesta),
+            sorter: (a, b) => (a.respuesta || '').localeCompare(b.respuesta || ''),
             render: (text) => (
                 <div
-                className="tiptap-content"
-                dangerouslySetInnerHTML={{ __html: text }}
+                    className="tiptap-content"
+                    dangerouslySetInnerHTML={{ __html: text || '' }}
                 />
             ),
         },
@@ -128,8 +140,12 @@ export default function Preguntas() {
             title: 'Tema',
             dataIndex: 'temas',
             key: 'temas',
-            render: (temas) => temas.map((t) => t.titulo).join(', '),
-            sorter: (a, b) => a.temas.map((t) => t.titulo).join(', ').localeCompare(b.temas.map((t) => t.titulo).join(', '))
+            render: (temas) => (Array.isArray(temas) ? temas.map((t) => t.titulo).join(', ') : ''),
+            sorter: (a, b) => {
+                const temaA = Array.isArray(a.temas) ? a.temas.map((t) => t.titulo).join(', ') : '';
+                const temaB = Array.isArray(b.temas) ? b.temas.map((t) => t.titulo).join(', ') : '';
+                return temaA.localeCompare(temaB);
+            }
         },
         {
             title: 'Acciones',
@@ -219,7 +235,8 @@ export default function Preguntas() {
                             setSelectedSubjects(ids);
                         }}
                     />
-                    <Form.Item name="claves"
+                    <Form.Item 
+                        name="claves"
                         label="Palabras clave"
                         rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
                     >
@@ -230,4 +247,3 @@ export default function Preguntas() {
         </div>
     );
 }
-    

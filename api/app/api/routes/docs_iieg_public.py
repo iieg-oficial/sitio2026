@@ -11,8 +11,8 @@ router = APIRouter(prefix="/docs_iieg", tags=["docs_iieg_public"])
 def get_docs_iieg(
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los documentos del IIEG"""
-    docs_iieg = db.query(DocsIIEG).all()
+    """Obtener todos los documentos del IIEG ordenados del más reciente al más antiguo"""
+    docs_iieg = db.query(DocsIIEG).order_by(DocsIIEG.id.desc()).all()
     return {"docs_iieg": docs_iieg, "total": len(docs_iieg)}
 
 
@@ -21,8 +21,8 @@ def get_docs_iieg_tipo(
     tipo: str,
     db: Session = Depends(get_db),
 ):
-    """Obtener documentos del IIEG por tipo"""
-    docs_iieg = db.query(DocsIIEG).filter(DocsIIEG.tipo == tipo).all()
+    """Obtener documentos del IIEG por tipo ordenados del más reciente al más antiguo"""
+    docs_iieg = db.query(DocsIIEG).filter(DocsIIEG.tipo == tipo).order_by(DocsIIEG.id.desc()).all()
     return {"docs_iieg": docs_iieg, "total": len(docs_iieg)}
 
 @router.get("/slug/{slug}", response_model=DocsIIEGOut)
@@ -30,7 +30,6 @@ def get_docs_iieg_slug(
     slug: str,
     db: Session = Depends(get_db),
 ):
-    """Obtener un documento del IIEG por slug"""
     db_docs_iieg = db.query(DocsIIEG).filter(DocsIIEG.slug == slug).first()
     if not db_docs_iieg:
         raise HTTPException(

@@ -33,6 +33,11 @@ def get_cursos(
     if destacado is True:
         limit = min(limit, 1)
 
+    query = query.order_by(Cursos.id.desc())
+
+    if destacado is True:
+        limit = min(limit, 1)
+
     cursos = query.offset(skip).limit(limit).all()
 
     total = db.query(Cursos)

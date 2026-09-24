@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import api from '@services/apiService';
 import TrackedLink from '@components/blocks/boton';
 
@@ -6,29 +6,32 @@ export default function PlanInstitucional() {
     const [planInstitucional, setPlanInstitucional] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const fetchPlanInstitucional = useCallback(async () => {
+        try {
+            const response = await api.get('/docs_iieg/tipo/plan_institucional', {
+                params: { _t: new Date().getTime() }
+            });
+            const docs = response.data?.docs_iieg;
+            const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
+            setPlanInstitucional(sorted);
+        } catch (error) {
+            console.error("Error al obtener el plan institucional:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
-        let isMounted = true;
-
-        const fetchPlanInstitucional = async () => {
-            try {
-                const response = await api.get('/docs_iieg/tipo/plan_institucional');
-                const docs = response.data?.docs_iieg;
-                if (isMounted) {
-                    setPlanInstitucional(Array.isArray(docs) ? docs : []);
-                }
-            } catch (error) {
-                console.error("Error al obtener el plan institucional:", error);
-            } finally {
-                if (isMounted) setLoading(false);
-            }
-        };
-
         fetchPlanInstitucional();
 
-        return () => {
-            isMounted = false;
+        const handleFocus = () => {
+            fetchPlanInstitucional();
         };
-    }, []);
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchPlanInstitucional]);
 
     if (loading) {
         return <p className="text-center py-6">Cargando Plan Institucional...</p>;

@@ -11,15 +11,17 @@ from app.schemas.directorio import DirectorioCreate, DirectorioOut
 
 router = APIRouter(prefix="/directorio", tags=["directorio"])
 
-@router.get("/", response_model=List[DirectorioOut])
+
+@router.get("", response_model=List[DirectorioOut])
 def list_directorio(
     db: Session = Depends(get_db),
 ):
     """Obtener lista de directorio"""
-    directorio = db.query(Directorio).all()
+    directorio = db.query(Directorio).order_by(Directorio.id.desc()).all()
     return directorio
 
-@router.post("/create", response_model=DirectorioOut)
+
+@router.post("/create", response_model=DirectorioOut, status_code=status.HTTP_201_CREATED)
 def create_directorio(
     directorio: DirectorioCreate,
     db: Session = Depends(get_db),
@@ -32,7 +34,6 @@ def create_directorio(
         slug = f"{base_slug}-{contador}"
         contador += 1
 
-    """Crear un nuevo directorio"""
     db_directorio = Directorio(
         nombre=directorio.nombre,
         cargo=directorio.cargo,
@@ -45,6 +46,7 @@ def create_directorio(
     db.commit()
     db.refresh(db_directorio)
     return db_directorio
+
 
 @router.patch("/{directorio_id}", response_model=DirectorioOut)
 def update_directorio(
@@ -83,6 +85,7 @@ def update_directorio(
     db.refresh(db_directorio)
     return db_directorio
 
+
 @router.delete("/{directorio_id}")
 def delete_directorio(
     directorio_id: int,
@@ -96,6 +99,7 @@ def delete_directorio(
     db.delete(db_directorio)
     db.commit()
     return {"message": "Directorio eliminado exitosamente"}
+
 
 @router.get("/slug/{slug}", response_model=DirectorioOut)
 def get_directorio_slug(

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Image } from 'antd';
+import { useState, useEffect, useCallback } from 'react';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
@@ -17,20 +17,37 @@ export default function Snieg() {
     const [loading, setLoading] = useState(true);
     const { searchText, setSearchText, filteredData } = useSearchFilter(snieg, ['titulo']);
 
-    useEffect(() => {
-        fetchSnieg();
-    }, []);
+    // Hook para observar el valor de 'imagen' y redibujar el preview en tiempo real
+    const imagenUrl = Form.useWatch('imagen', form);
 
-    const fetchSnieg = async () => {
+    const fetchSnieg = useCallback(async () => {
+        setLoading(true);
         try {
-            const response = await api.get('/snieg');
-            setSnieg(response.data.snieg);
-        } catch (error) {
-            console.error('Error al obtener snieg:', error);
+            const response = await api.get('/snieg', {
+                params: { _t: new Date().getTime() }
+            });
+            const data = Array.isArray(response.data?.snieg) ? response.data.snieg : [];
+            const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            // CORREGIDO: Se asigna el estado con setSnieg en lugar de la recursión infinita
+            setSnieg(sortedData);
+        } catch {
+            message.error('Error al cargar snieg');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchSnieg();
+
+        const handleFocus = () => {
+            fetchSnieg();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchSnieg]);
 
     const handleCreate = () => {
         setEditingSnieg(null);
@@ -38,13 +55,13 @@ export default function Snieg() {
         setIsModalVisible(true);
     };
 
-    const handleEdit = (snieg) => {
-        setEditingSnieg(snieg);
-        form.setFieldsValue(snieg);
+    const handleEdit = (record) => {
+        setEditingSnieg(record);
+        form.setFieldsValue(record);
         setIsModalVisible(true);
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = (id) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar este snieg / CEIEG?',
             content: 'Se eliminará el snieg / CEIEG',
@@ -55,9 +72,9 @@ export default function Snieg() {
                 try {
                     await api.delete(`/snieg/${id}`);
                     message.success('Snieg / CEIEG eliminado correctamente');
-                    fetchSnieg();
-                } catch (error) {
-                    message.error('Error al eliminar snieg / CEIEG:', error);
+                    await fetchSnieg();
+                } catch {
+                    message.error('Error al eliminar snieg / CEIEG');
                 }
             }
         });
@@ -73,9 +90,9 @@ export default function Snieg() {
                 message.success('Snieg / CEIEG agregado correctamente');
             }
             setIsModalVisible(false);
-            fetchSnieg();
-        } catch (error) {
-            message.error('Error al guardar snieg / CEIEG:', error);
+            await fetchSnieg();
+        } catch {
+            message.error('Error al guardar snieg / CEIEG');
         }
     };
 
@@ -84,6 +101,7 @@ export default function Snieg() {
             title: 'Título',
             dataIndex: 'titulo',
             key: 'titulo',
+            sorter: (a, b) => (a.titulo || '').localeCompare(b.titulo || ''),
         },
         {
             title: 'Descripción',
@@ -91,8 +109,8 @@ export default function Snieg() {
             key: 'descripcion',
             render: (text) => (
                 <div
-                className="tiptap-content"
-                dangerouslySetInnerHTML={{ __html: text }}
+                    className="tiptap-content"
+                    dangerouslySetInnerHTML={{ __html: text || '' }}
                 />
             ),
         },
@@ -104,10 +122,23 @@ export default function Snieg() {
         {
             title: 'Acciones',
             key: 'actions',
-            render: (text, record) => (
+            render: (_, record) => (
                 <Space size="middle">
-                    <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} > Editar</Button>
-                    <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)} > Eliminar</Button>
+                    <Button 
+                        type="link" 
+                        icon={<EditOutlined />} 
+                        onClick={() => handleEdit(record)}
+                    > 
+                        Editar
+                    </Button>
+                    <Button 
+                        type="link" 
+                        danger 
+                        icon={<DeleteOutlined />} 
+                        onClick={() => handleDelete(record.id)}
+                    > 
+                        Eliminar
+                    </Button>
                 </Space>
             ),
         },
@@ -116,7 +147,7 @@ export default function Snieg() {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                <Title level={2}>Snieg / CEIEG</Title>
+                <Title level={2} style={{ margin: 0 }}>Snieg / CEIEG</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
                     Agregar Snieg / CEIEG
                 </Button>
@@ -133,11 +164,12 @@ export default function Snieg() {
                     dataSource={filteredData} 
                     columns={columns} 
                     rowKey="id" 
+                    loading={loading}
                     pagination={{
                         pageSize: 10,
                         showSizeChanger: true,
-                    showTotal: (total) => `Total ${total} snieg / CEIEG`
-                }}
+                        showTotal: (total) => `Total ${total} snieg / CEIEG`
+                    }}
                 />
             </Card>
 
@@ -145,14 +177,15 @@ export default function Snieg() {
                 title={editingSnieg ? 'Editar Snieg' : 'Agregar Snieg'}
                 open={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                onOk={form.submit}
+                onOk={() => form.submit()}
                 okText={editingSnieg ? 'Actualizar' : 'Crear'}
+                cancelText="Cancelar"
             >
                 <Form form={form} layout="vertical" onFinish={handleSubmit}>
-                    <Form.Item name="titulo" label="Título" rules={[{ required: true }]}>
+                    <Form.Item name="titulo" label="Título" rules={[{ required: true, message: 'Por favor ingrese el título' }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="descripcion" label="Descripción" rules={[{ required: true }]}>
+                    <Form.Item name="descripcion" label="Descripción" rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}>
                         <RichTextEditor />
                     </Form.Item>
                     <Form.Item name="imagen" label="Imagen" rules={[{ required: false }]}>
@@ -168,8 +201,8 @@ export default function Snieg() {
                             <Form.Item name="imagen" noStyle>
                                 <Input placeholder="URL de la imagen" />
                             </Form.Item>
-                            {form.getFieldValue('imagen') ? (
-                                <Image src={form.getFieldValue('imagen')} alt="Imagen del snieg" style={{ maxWidth: 200, borderRadius: 6 }} />
+                            {imagenUrl ? (
+                                <Image src={imagenUrl} alt="Imagen del snieg" style={{ maxWidth: 200, borderRadius: 6 }} />
                             ) : null}
                         </Space>
                     </Form.Item>
