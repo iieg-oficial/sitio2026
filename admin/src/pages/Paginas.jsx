@@ -97,7 +97,7 @@ export default function Paginas() {
         form.resetFields();
         setModalVisible(true);
     };
-    
+
     const handleEdit = (record) => {
         setEditingPage(record);
         const formattedRecord = { ...record };
@@ -108,7 +108,7 @@ export default function Paginas() {
         form.setFieldsValue(formattedRecord);
         setModalVisible(true);
     };
-    
+
     const handleDelete = (record) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar esta página?',
@@ -128,7 +128,7 @@ export default function Paginas() {
             }
         });
     };
-    
+
     const handleSubmit = async (values) => {
         try {
             if (editingPage) {
@@ -181,23 +181,23 @@ export default function Paginas() {
             if (!siblingIds.has(page.id)) return page;
 
             const nextOrder = reorderedSiblings.findIndex((item) => item.id === page.id);
-                return {
-                    ...page,
-                    order: nextOrder,
-                };
-            });
+            return {
+                ...page,
+                order: nextOrder,
+            };
+        });
 
-            setPages(nextPages);
+        setPages(nextPages);
 
-            try {
-                await persistOrder(nextPages);
-                message.success('Orden actualizado');
-            } catch (error) {
-                console.error('Error updating order:', error);
-                message.error('No se pudo actualizar el orden');
-                fetchPages();
-            }
-        };
+        try {
+            await persistOrder(nextPages);
+            message.success('Orden actualizado');
+        } catch (error) {
+            console.error('Error updating order:', error);
+            message.error('No se pudo actualizar el orden');
+            fetchPages();
+        }
+    };
 
     return (
         <div>
@@ -271,18 +271,18 @@ export default function Paginas() {
                     >
                         <RichTextEditor />
                     </Form.Item>
-                    <Form.Item 
-                        name="link_interno" 
+                    <Form.Item
+                        name="link_interno"
                         valuePropName="checked"
                         initialValue={true}
-                        >
+                    >
                         <Checkbox>¿Es link interno?</Checkbox>
                     </Form.Item>
-                    <Form.Item 
-                        name="activar" 
+                    <Form.Item
+                        name="activar"
                         valuePropName="checked"
                         initialValue={true}
-                        >
+                    >
                         <Checkbox>¿Activar página?</Checkbox>
                     </Form.Item>
                     <Form.Item
@@ -320,8 +320,8 @@ export default function Paginas() {
                         rules={[{ required: false, message: 'Por favor seleccione el padre' }]}
                     >
                         <Select
-                        value={pagesTree?.parent_id}
-                        onChange={(value) => form.setFieldValue('parent_id', value)}
+                            value={pagesTree?.parent_id}
+                            onChange={(value) => form.setFieldValue('parent_id', value)}
                         >
                             <Select.Option value={null}>Sin Padre</Select.Option>
                             {pagesTree.map((p) => (
@@ -331,7 +331,7 @@ export default function Paginas() {
                             ))}
                         </Select>
                     </Form.Item>
-                        
+
 
                 </Form>
             </Modal>

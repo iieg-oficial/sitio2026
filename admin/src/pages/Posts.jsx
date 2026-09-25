@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -21,51 +21,53 @@ export default function Posts() {
     const [selectedSubjects, setSelectedSubjects] = useState([]);    
     const [galleryImages, setGalleryImages] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
-    
 
-    useEffect(() => {
-        fetchPosts('', 1, pagination.pageSize);
-        fetchSubjects();
-    }, [fetchPosts]);
-
-    const removeGalleryImage = (url) => {
-        setGalleryImages((prev) => prev.filter((img) => img !== url));
-    };
-    
-    const fetchSubjects = async () => {
+    const fetchSubjects = useCallback(async () => {
         try {
             const response = await api.get('/subject/tree');
             setSubjects(response.data || []);
         } catch {
             message.error('Error al cargar temas');
         } 
-    };
-    
-    const fetchPosts = async (search = '', page = 1, pageSize = pagination.pageSize) => {
+    }, []);
+
+    const fetchPosts = useCallback(async (search = '', page, pageSize) => {
         setLoading(true);
-        try {
-            const response = await api.get('/posts', {
+        setPagination((prevPagination) => {
+            const currentPage = page ?? prevPagination.current;
+            const currentPageSize = pageSize ?? prevPagination.pageSize;
+
+            api.get('/posts', {
                 params: {
                     ...(search ? { search } : {}),
-                    page,
-                    pageSize,
-                    _t: new Date().getTime()
+                    page: currentPage,
+                    pageSize: currentPageSize
                 }
+            }).then((response) => {
+                setPosts(response.data.posts || []);
+                setPagination((prev) => ({
+                    ...prev,
+                    current: currentPage,
+                    pageSize: currentPageSize,
+                    total: response.data.total || 0
+                }));
+            }).catch(() => {
+                message.error('Error al cargar');
+            }).finally(() => {
+                setLoading(false);
             });
-            setPosts(response.data.posts || []);
 
-            setPagination((prev) => ({
-                ...prev,
-                current: page,
-                pageSize,
-                total: response.data.total || 0
-            }));
+            return prevPagination;
+        });
+    }, []);
 
-        } catch {
-            message.error('Error al cargar');
-        } finally {
-            setLoading(false);
-        }
+    useEffect(() => {
+        fetchPosts('', 1);
+        fetchSubjects();
+    }, [fetchPosts, fetchSubjects]);
+
+    const removeGalleryImage = (url) => {
+        setGalleryImages((prev) => prev.filter((img) => img !== url));
     };
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
@@ -137,7 +139,7 @@ export default function Posts() {
         }
     };
 
-    const SITE_URL = window.location.origin;
+    const SITE_URL = typeof window !== 'undefined' ? window.location.origin : '';
 
     const columns = [
         {
@@ -348,6 +350,7 @@ export default function Posts() {
                                             title={url}
                                         >
                                             <img src={url}
+                                                alt="Previsualización"
                                                 style={{ maxWidth: 260, marginBottom: 10 }}
                                                 onError={(e) => { e.target.style.display = 'none'; }}
                                             />                                            

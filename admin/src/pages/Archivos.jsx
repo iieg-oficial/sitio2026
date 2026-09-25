@@ -81,9 +81,21 @@ export default function Archivos() {
         });
     }, []);
 
-    // Carga inicial de materias/temas una sola vez
+    // Carga inicial de materias/temas resolviendo la promesa asíncrona
     useEffect(() => {
-        fetchSubjects();
+        let isMounted = true;
+
+        const loadInitialData = async () => {
+            if (isMounted) {
+                await fetchSubjects();
+            }
+        };
+
+        loadInitialData();
+
+        return () => {
+            isMounted = false;
+        };
     }, [fetchSubjects]);
 
     // Re-sincronización automática de archivos al enfocar ventana/pestaña

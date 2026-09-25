@@ -22,57 +22,60 @@ export default function Mapas() {
     const imagenUrl = Form.useWatch('imagen', form);
     const archivoUrl = Form.useWatch('archivo', form);
 
-    const fetchMapas = useCallback(async (search = '', page = 1, pageSize = 10) => {
+    const fetchMapas = useCallback(async (search = '', page, pageSize) => {
         setLoading(true);
-        try {
-            const response = await api.get('/mapas', {
+        setPagination((prevPagination) => {
+            const currentPage = page ?? prevPagination.current;
+            const currentPageSize = pageSize ?? prevPagination.pageSize;
+
+            api.get('/mapas', {
                 params: {
                     ...(search ? { search } : {}),
-                    page,
-                    pageSize,
-                    _t: new Date().getTime()
+                    page: currentPage,
+                    pageSize: currentPageSize
                 }
-            });
-            
-            const rawData = Array.isArray(response.data?.mapas) ? response.data.mapas : [];
-            const sortedMapas = [...rawData].sort((a, b) => (b.id || 0) - (a.id || 0));
+            }).then((response) => {
+                const rawData = Array.isArray(response.data?.mapas) ? response.data.mapas : [];
+                const sortedMapas = [...rawData].sort((a, b) => (b.id || 0) - (a.id || 0));
 
-            setMapas(sortedMapas);
-            setPagination({
-                current: page,
-                pageSize,
-                total: response.data?.total || sortedMapas.length
+                setMapas(sortedMapas);
+                setPagination((prev) => ({
+                    ...prev,
+                    current: currentPage,
+                    pageSize: currentPageSize,
+                    total: response.data?.total || sortedMapas.length
+                }));
+            }).catch(() => {
+                message.error('Error al cargar mapas');
+            }).finally(() => {
+                setLoading(false);
             });
-        } catch {
-            message.error('Error al cargar mapas');
-        } finally {
-            setLoading(false);
-        }
+
+            return prevPagination;
+        });
     }, []);
 
     const fetchTipoMapa = useCallback(async () => {
         try {
-            const response = await api.get('/mapas/tipos', {
-                params: { _t: new Date().getTime() }
-            });
-            setTipoMapa(response.data.tipos || []);
+            const response = await api.get('/mapas/tipos');
+            setTipoMapa(response.data?.tipos || []);
         } catch {
             message.error('Error al cargar tipos de mapa');
         }
     }, []);
 
     useEffect(() => {
-        fetchMapas('', pagination.current, pagination.pageSize);
+        fetchMapas('', 1);
         fetchTipoMapa();
 
         const handleFocus = () => {
-            fetchMapas('', pagination.current, pagination.pageSize);
+            fetchMapas('');
         };
         window.addEventListener('focus', handleFocus);
         return () => {
             window.removeEventListener('focus', handleFocus);
         };
-    }, [fetchMapas]);
+    }, [fetchMapas, fetchTipoMapa]);
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchMapas(text, 1, pagination.pageSize);

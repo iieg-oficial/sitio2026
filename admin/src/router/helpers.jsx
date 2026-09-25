@@ -1,4 +1,4 @@
-import RoleProtectedRoute from ''../components/RoleProtectedRoute';
+import RoleProtectedRoute from '../components/RoleProtectedRoute';
 
 export const protectedRoute = (path, element, allowedRoles) => ({
     path,

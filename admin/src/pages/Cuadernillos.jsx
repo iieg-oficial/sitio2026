@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { UploadAcervo } from '@components/UploadAcervo';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
+
 const { Title } = Typography;
 
 export default function Cuadernillos() {
@@ -18,11 +19,6 @@ export default function Cuadernillos() {
 
     const watchAnyo = Form.useWatch('anyo', form);
 
-    useEffect(() => {
-        fetchCuadernillos('', 1, pagination.pageSize);
-        fetchMunicipios();
-    }, []);
-
     const getDynamicFolder = () => {
         let folderPath = '/cuadernillos';
 
@@ -30,43 +26,66 @@ export default function Cuadernillos() {
             folderPath += `/${watchAnyo}`;
         }
 
-
         return folderPath;
     };
 
-    const fetchMunicipios = async () => {
+    const fetchMunicipios = useCallback(async () => {
         try {
             const response = await api.get('/cuadernillos/municipios');
             setMunicipios(response.data.municipios || {});
         } catch {
             message.error('Error al obtener los municipios');
         }
-    }
+    }, []);
 
-    const fetchCuadernillos = async (search = '', page = 1, pageSize = pagination.pageSize) => {
+    const fetchCuadernillos = useCallback(async (search = '', page, pageSize) => {
         setLoading(true);
-        try {
-            const response = await api.get('/cuadernillos', {
+        setPagination((prevPagination) => {
+            const currentPage = page ?? prevPagination.current;
+            const currentPageSize = pageSize ?? prevPagination.pageSize;
+
+            api.get('/cuadernillos', {
                 params: {
                     ...(search ? { search } : {}),
-                    page,
-                    pageSize,
-                    _t: new Date().getTime() // Anti-caché
+                    page: currentPage,
+                    pageSize: currentPageSize
                 }
+            }).then((response) => {
+                setCuadernillos(response.data.cuadernillos || []);
+                setPagination((prev) => ({
+                    ...prev,
+                    current: currentPage,
+                    pageSize: currentPageSize,
+                    total: response.data.total
+                }));
+            }).catch(() => {
+                message.error('Error al obtener los cuadernillos');
+            }).finally(() => {
+                setLoading(false);
             });
-            setCuadernillos(response.data.cuadernillos || []);
-            setPagination((prev) => ({
-                ...prev,
-                current: page,
-                pageSize,
-                total: response.data.total
-            }));
-        } catch {
-            message.error('Error al obtener los cuadernillos');
-        } finally {
-            setLoading(false);
-        }
-    };
+
+            return prevPagination;
+        });
+    }, []);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadInitialData = async () => {
+            if (isMounted) {
+                await Promise.all([
+                    fetchCuadernillos('', 1),
+                    fetchMunicipios()
+                ]);
+            }
+        };
+
+        loadInitialData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [fetchCuadernillos, fetchMunicipios]);
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchCuadernillos(text, 1, pagination.pageSize);
@@ -104,7 +123,7 @@ export default function Cuadernillos() {
                 }
             },
         });
-    }
+    };
 
     const handleSubmit = async (values) => {
         try {
@@ -112,14 +131,12 @@ export default function Cuadernillos() {
                 await api.patch(`/cuadernillos/${editingCuadernillo.id}`, values);
                 message.success('Cuadernillo actualizado');
                 setModalVisible(false);
-                // Mantiene la vista actual al editar
                 await fetchCuadernillos(searchText, pagination.current, pagination.pageSize);
             } else {
                 await api.post('/cuadernillos', values);
                 message.success('Cuadernillo creado');
                 setModalVisible(false);
                 setSearchText('');
-                // Redirige automáticamente a la página 1 sin filtro para que aparezca arriba de primero
                 await fetchCuadernillos('', 1, pagination.pageSize);
             }
         } catch {
@@ -138,7 +155,8 @@ export default function Cuadernillos() {
                     <Button
                         type="link"
                         icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)} >
+                        onClick={() => handleEdit(record)}
+                    >
                         Editar
                     </Button>
                     <Button
@@ -229,7 +247,7 @@ export default function Cuadernillos() {
                             }
                             options={Array.isArray(municipios)
                                 ? municipios.map((m) => ({ value: m, label: m }))
-                                : Object.entries(municipios).map(([key, value]) => ({ value: value, label: value }))
+                                : Object.values(municipios).map((value) => ({ value: value, label: value }))
                             }
                         />
                     </Form.Item>
