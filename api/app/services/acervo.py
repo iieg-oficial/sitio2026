@@ -10,7 +10,6 @@ from app.core.settings import get_settings
 settings = get_settings()
 
 PORTAL_BUCKET = "portal"
-IIEG_BUCKET = "iieg"
 
 
 class AcervoService:

@@ -13,7 +13,7 @@ from app.core.settings import get_settings
 from app.models.media import Media, MediaFolder
 from app.models.user import Usuario
 from app.schemas.media import FolderCreate, FolderResponse
-from app.services.acervo import IIEG_BUCKET, PORTAL_BUCKET, get_acervo_service
+from app.services.acervo import PORTAL_BUCKET, get_acervo_service
 from pathlib import PurePosixPath
 
 MAX_FILE_SIZE = 100 * 1024 * 1024 # 100 MB
@@ -38,7 +38,7 @@ router = APIRouter(prefix="/multimedia", tags=["media"])
 
 settings = get_settings()
 
-ALLOWED_BUCKETS = {PORTAL_BUCKET, IIEG_BUCKET}
+ALLOWED_BUCKETS = {PORTAL_BUCKET}
 _SAFE_NAME_RE = re.compile(r"[^a-zA-Z0-9._-]+")
 
 def _validate_bucket(bucket: str) -> str:
