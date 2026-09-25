@@ -1,3 +1,4 @@
+import os 
 from contextlib import asynccontextmanager
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from fastapi import FastAPI, Depends, APIRouter
@@ -42,9 +43,14 @@ def create_app() -> FastAPI:
         openapi_url=settings.openapi_url,
     )
 
-    TRUSTED_PROXIES = ["127.0.0.1", "172.28.0.10", "10.0.0.0/8"]
+    raw_trusted_hosts = os.getenv(
+            "FORWARDED_ALLOW_IPS", 
+            "127.0.0.1, 172.28.0.10, 10.0.0.0/8"
+    )
+    # Procesa la lista limpia separada por comas
+    trusted_hosts = [ip.strip() for ip in raw_trusted_hosts.split(",") if ip.strip()]
 
-    app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=TRUSTED_PROXIES)
+    app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=trusted_hosts)
 
     # 2. Registrar Slowapi en la aplicación
     app.state.limiter = limiter

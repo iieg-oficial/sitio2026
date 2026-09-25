@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
 from app.core.database import get_db
-from app.core.limiter import limiter
+from app.core.limiter import get_login_username_key, limiter
 from app.core.security import crear_access_token, crear_csrf_token, verify_password
 from app.core.settings import get_settings
 from app.models.user import Usuario
@@ -16,7 +16,7 @@ settings = get_settings()
 
 
 @router.post("/iniciar-sesion", response_model=LoginResponse)
-@limiter.limit("5/minute")
+@limiter.limit("5/minute", key_func=get_login_username_key)
 async def login(
     request: Request,
     credentials: LoginRequest,

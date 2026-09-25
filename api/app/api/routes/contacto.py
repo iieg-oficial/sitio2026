@@ -3,7 +3,6 @@ import os
 import httpx
 from fastapi import APIRouter, HTTPException, Request
 
-from app.core.limiter import limiter
 from app.schemas.contacto import ContactoCreate
 from app.services.email import send_contact_email
 
@@ -13,7 +12,6 @@ router = APIRouter(prefix="/contacto", tags=["contacto"])
 
 
 @router.post("/")
-@limiter.limit("2/minute")
 async def create_contacto(request: Request, form: ContactoCreate):
     # 1. Obtener la variable en tiempo de ejecución (evita problemas de cache al importar)
     recaptcha_secret = os.getenv("RECAPTCHA_SECRET_KEY")
