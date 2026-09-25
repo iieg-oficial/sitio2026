@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -7,7 +7,6 @@ import { UploadAcervo } from '@components/UploadAcervo';
 import parse from 'html-react-parser';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
-import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 const { Title } = Typography;
 
@@ -54,8 +53,34 @@ export default function DocsIieg() {
         }
     }, []);
 
-    // Carga inicial y actualización al volver a enfocar la ventana/pestaña
-    useFetchOnFocus(fetchDocsIieg);
+    // Carga inicial
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadInitialData = async () => {
+            if (isMounted) {
+                await fetchDocsIieg('', 1);
+            }
+        };
+
+        loadInitialData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [fetchDocsIieg]);
+
+    // Re-sincronización nativa al enfocar ventana/pestaña
+    useEffect(() => {
+        const handleFocus = () => {
+            fetchDocsIieg('');
+        };
+
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchDocsIieg]);
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchDocsIieg(text, 1, pagination.pageSize);

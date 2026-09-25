@@ -6,7 +6,6 @@ import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import { UploadAcervo } from '@components/UploadAcervo';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
-import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -81,13 +80,16 @@ export default function Archivos() {
         });
     }, []);
 
-    // Carga inicial de materias/temas resolviendo la promesa asíncrona
+    // Carga inicial de materias/temas y archivos
     useEffect(() => {
         let isMounted = true;
 
         const loadInitialData = async () => {
             if (isMounted) {
-                await fetchSubjects();
+                await Promise.all([
+                    fetchSubjects(),
+                    fetchArchivos('', 1)
+                ]);
             }
         };
 
@@ -96,10 +98,19 @@ export default function Archivos() {
         return () => {
             isMounted = false;
         };
-    }, [fetchSubjects]);
+    }, [fetchSubjects, fetchArchivos]);
 
-    // Re-sincronización automática de archivos al enfocar ventana/pestaña
-    useFetchOnFocus(fetchArchivos);
+    // Re-sincronización nativa al enfocar ventana/pestaña
+    useEffect(() => {
+        const handleFocus = () => {
+            fetchArchivos('');
+        };
+
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchArchivos]);
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchArchivos(text, 1, pagination.pageSize);

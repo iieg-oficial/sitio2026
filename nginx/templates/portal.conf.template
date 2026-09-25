@@ -6,17 +6,10 @@ upstream ckan_backend {
     server portal-ckan:5000;
 }
 
-set_real_ip_from  172.31.0.0/24;      # Ajusta según la IP de tu gateway/proxy
+set_real_ip_from  127.0.0.1;      # Ajusta según la IP de tu gateway/proxy
 real_ip_header    X-Forwarded-For;
 real_ip_recursive on;
 
-
-limit_req_zone $binary_remote_addr zone=login_limit:10m rate=5r/m;
-
- # Contacto: Máximo 2 peticiones por minuto por IP
-limit_req_zone $binary_remote_addr zone=contact_limit:10m rate=2r/m;
-
-limit_req_status 429;
 
 server {
     listen 80;
@@ -58,11 +51,6 @@ server {
     }
 
     location = /datos-abiertos/login {
-        
-        limit_req zone=login_limit burst=3 nodelay;
-
-        proxy_pass http://backend_upstream;
-        include proxy_params;
         return 301 /datos-abiertos/es/user/login;
     }
 
@@ -76,10 +64,6 @@ server {
     }
 
     location = /datos-abiertos/register {
-        limit_req zone=login_limit burst=3 nodelay;
-
-        proxy_pass http://backend_upstream;
-        include proxy_params;
         return 301 /datos-abiertos/es/user/register;
     }
 
@@ -180,10 +164,6 @@ server {
     }
 
     location ^~ /portal-admin {
-        limit_req zone=login_limit burst=3 nodelay;
-
-        proxy_pass http://backend_upstream;
-        include proxy_params;
         alias /usr/share/nginx/html/portal-admin;
         try_files $uri $uri/ /portal-admin/index.html;
     }

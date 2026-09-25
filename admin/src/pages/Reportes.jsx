@@ -6,7 +6,6 @@ import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import { UploadAcervo } from '@components/UploadAcervo';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
-import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 const { Title } = Typography;
 
@@ -99,15 +98,39 @@ export default function Reportes() {
         });
     }, []);
 
-    // Carga inicial de datos complementarios
+    // Carga inicial de datos complementarios y reportes
     useEffect(() => {
-        fetchSubjects();
-        fetchPeriocidad();
-        fetchMeses();
-    }, [fetchSubjects, fetchPeriocidad, fetchMeses]);
+        let isMounted = true;
 
-    // Re-sincronización automática de reportes al enfocar la pestaña/ventana
-    useFetchOnFocus(fetchReportes);
+        const loadInitialData = async () => {
+            if (isMounted) {
+                await Promise.all([
+                    fetchReportes('', 1),
+                    fetchSubjects(),
+                    fetchPeriocidad(),
+                    fetchMeses()
+                ]);
+            }
+        };
+
+        loadInitialData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [fetchReportes, fetchSubjects, fetchPeriocidad, fetchMeses]);
+
+    // Re-sincronización nativa al enfocar ventana/pestaña sin requerir 'useFetchOnFocus'
+    useEffect(() => {
+        const handleFocus = () => {
+            fetchReportes('');
+        };
+
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchReportes]);
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchReportes(text, 1, pagination.pageSize);

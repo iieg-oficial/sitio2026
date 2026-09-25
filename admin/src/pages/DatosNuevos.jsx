@@ -5,7 +5,7 @@ import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
-import { SafeHtml } from '../../components/SafeHtml.jsx';
+import { SafeHtml } from '@components/SafeHtml';
 
 const { Title } = Typography;
 

@@ -3,11 +3,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from app.api.deps import get_current_user
+from app.core.limiter import limiter
 from app.core.settings import get_settings
 
 # Importación de routers
@@ -25,9 +25,6 @@ from app.api.routes import (
 )
 
 settings = get_settings()
-
-# 1. Configurar Limiter para Rate Limiting
-limiter = Limiter(key_func=get_remote_address)
 
 
 @asynccontextmanager
@@ -65,7 +62,7 @@ def create_app() -> FastAPI:
     # -------------------------------------------------------------------------
     
     # Auth (Login) DEBE ser público para poder autenticarse
-    app.include_router(auth.router, prefix=f"{settings.admin_prefix}/auth", tags=["auth"])
+    app.include_router(auth.router, prefix=settings.admin_prefix)
     
     # Formulario de contacto público
     app.include_router(contacto.router, prefix=settings.web_prefix, tags=["contacto"])
