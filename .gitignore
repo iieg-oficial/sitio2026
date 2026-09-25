@@ -37,3 +37,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+*.bak
+*.bak-*
+*.bak.*
