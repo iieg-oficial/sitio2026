@@ -30,7 +30,7 @@ export default function Organos() {
             
             // Usar el setter del estado de React
             setOrganos(sortedData);
-        } catch (error) {
+        } catch {
             message.error('Error al cargar órganos');
         } finally {
             setLoading(false);
@@ -74,7 +74,7 @@ export default function Organos() {
                     await api.delete(`/organos/${record.id}`);
                     message.success('Órgano eliminado correctamente');
                     await fetchOrganos();
-                } catch (err) {
+                } catch {
                     message.error('Error al eliminar el órgano');
                 }
             },
@@ -92,7 +92,7 @@ export default function Organos() {
             }
             setModalVisible(false);
             await fetchOrganos();
-        } catch (err) {
+        } catch {
             message.error('Error al guardar el órgano');
         }
     };
@@ -109,8 +109,9 @@ export default function Organos() {
             dataIndex: 'descripcion',
             key: 'descripcion',
             sorter: (a, b) => (a.descripcion || '').localeCompare(b.descripcion || ''),
-            render: <SafeHtml htmlContent={descripcion} className='mt-5 prose max-w-none'/>
-           
+            render: (descripcion) => (
+                <SafeHtml htmlContent={descripcion} className='mt-5 prose max-w-none'/>
+            ),           
         },
         {
             title: 'Link',

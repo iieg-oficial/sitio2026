@@ -27,7 +27,7 @@ export default function DatosNuevos() {
         try {
             const response = await api.get('/datos-nuevos/tipo');
             setTipos(response.data.tipos || []);
-        } catch (error) {
+        } catch  {
             message.error('Error al cargar los tipos');
         } finally {
             setLoading(false);
@@ -41,7 +41,7 @@ export default function DatosNuevos() {
                 params: { _t: new Date().getTime() }
             });
             setDatosNuevos(response.data.datos_nuevos || []);
-        } catch (error) {
+        } catch {
             message.error('Error al cargar los datos nuevos');
         }
         finally {
@@ -73,7 +73,7 @@ export default function DatosNuevos() {
                     await api.delete(`/datos-nuevos/${record.id}`);
                     message.success('Dato nuevo eliminado exitosamente');
                     fetchDatosNuevos();
-                } catch (error) {
+                } catch {
                     message.error('Error al eliminar el dato nuevo');
                 }
             }
@@ -109,8 +109,9 @@ export default function DatosNuevos() {
             dataIndex: 'descripcion',
             key: 'descripcion',
             sorter: (a, b) => a.descripcion.localeCompare(b.descripcion),
-            render: <SafeHtml htmlContent={descripcion} className='mt-5 prose max-w-none'/>
-            
+            render: (descripcion) => (
+                <SafeHtml htmlContent={descripcion} className='mt-5 prose max-w-none'/>
+            ),
         },
         {
             title: 'Acciones',

@@ -108,8 +108,9 @@ export default function Snieg() {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
-            render: <SafeHtml htmlContent={descripcion} className='mt-5 prose max-w-none'/>
-            
+            render: (descripcion) => (
+                <SafeHtml htmlContent={descripcion} className='mt-5 prose max-w-none'/>
+            ),            
         },
         {
             title: 'Enlace',

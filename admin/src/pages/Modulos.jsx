@@ -31,7 +31,7 @@ export default function Modulos() {
             
             // CORREGIDO: Usar el setter del estado en vez de la llamada recursiva a fetchModulos
             setModulos(sortedData);
-        } catch (error) {
+        } catch {
             message.error('Error al cargar módulos');
         } finally {
             setLoading(false);
@@ -74,7 +74,7 @@ export default function Modulos() {
                     await api.delete(`/modulos/${record.id}`);
                     message.success('Módulo eliminado exitosamente');
                     await fetchModulos();
-                } catch (error) {
+                } catch {
                     message.error('Error al eliminar módulo');
                 }
             }
@@ -92,7 +92,7 @@ export default function Modulos() {
             }
             setModalVisible(false);
             await fetchModulos();
-        } catch (error) {
+        } catch {
             message.error(editingModulo ? 'Error al actualizar módulo' : 'Error al crear módulo');
         }
     };

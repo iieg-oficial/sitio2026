@@ -72,7 +72,7 @@ export default function Mapas() {
         return () => {
             window.removeEventListener('focus', handleFocus);
         };
-    }, []);
+    }, [fetchMapas]);
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchMapas(text, 1, pagination.pageSize);

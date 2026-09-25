@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -7,9 +7,9 @@ import { UploadAcervo } from '@components/UploadAcervo';
 import parse from 'html-react-parser';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
+import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 const { Title } = Typography;
-const { Option } = Select;
 
 export default function DocsIieg() {
     const [docsIieg, setDocsIieg] = useState([]);
@@ -19,44 +19,45 @@ export default function DocsIieg() {
     const [editingDoc, setEditingDoc] = useState(null);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
-    const fetchDocsIieg = useCallback(async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchDocsIieg = useCallback(async (search = '', page, pageSize) => {
         try {
             setLoading(true);
-            const response = await api.get('/docs_iieg', {
-                params: {
-                    ...(search ? { search } : {}),
-                    page,
-                    pageSize,
-                    _t: new Date().getTime() // Anti-caché
-                }
+            setPagination((prevPagination) => {
+                const currentPage = page ?? prevPagination.current;
+                const currentPageSize = pageSize ?? prevPagination.pageSize;
+
+                api.get('/docs_iieg', {
+                    params: {
+                        ...(search ? { search } : {}),
+                        page: currentPage,
+                        pageSize: currentPageSize
+                    }
+                }).then((response) => {
+                    setDocsIieg(response.data.docs_iieg || []);
+                    setPagination((prev) => ({
+                        ...prev,
+                        current: currentPage,
+                        pageSize: currentPageSize,
+                        total: response.data.total || 0
+                    }));
+                }).catch(() => {
+                    message.error('Error al cargar los documentos del IIEG');
+                }).finally(() => {
+                    setLoading(false);
+                });
+
+                return prevPagination;
             });
-            setDocsIieg(response.data.docs_iieg);
-            setPagination((prev) => ({
-                ...prev,
-                current: page,
-                pageSize,
-                total: response.data.total
-            }));
         } catch (error) {
-            message.error('Error al cargar los documentos del IIEG');
-        } finally {
+            console.error('Error al solicitar documentos:', error);
             setLoading(false);
         }
-    }, [pagination.current, pagination.pageSize]);
+    }, []);
 
-    useEffect(() => {
-        fetchDocsIieg();
+    // Carga inicial y actualización al volver a enfocar la ventana/pestaña
+    useFetchOnFocus(fetchDocsIieg);
 
-        const handleFocus = () => {
-            fetchDocsIieg();
-        };
-        window.addEventListener('focus', handleFocus);
-        return () => {
-            window.removeEventListener('focus', handleFocus);
-        };
-    }, [fetchDocsIieg]);
-
-     const { searchText, setSearchText } = useDebouncedSearch((text) => {
+    const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchDocsIieg(text, 1, pagination.pageSize);
     });
 
@@ -89,7 +90,7 @@ export default function DocsIieg() {
                     message.success('Documento del IIEG eliminado exitosamente');
                     fetchDocsIieg(searchText, pagination.current, pagination.pageSize);
                 } catch (error) {
-                    console.log(error);
+                    console.error(error);
                     message.error('Error al eliminar el documento del IIEG');
                 }
             }
@@ -108,8 +109,8 @@ export default function DocsIieg() {
                 fetchDocsIieg(searchText, 1, pagination.pageSize);
             }
             setIsModalVisible(false);
-            
         } catch (error) {
+            console.error(error);
             message.error(editingDoc ? 'Error al actualizar el documento del IIEG' : 'Error al crear el documento del IIEG');
         }
     };
@@ -119,7 +120,7 @@ export default function DocsIieg() {
             title: 'Nombre',
             dataIndex: 'nombre',
             key: 'nombre',
-            sorter: (a, b) => a.nombre.localeCompare(b.nombre)
+            sorter: (a, b) => (a.nombre || '').localeCompare(b.nombre || '')
         },
         {
             title: 'Descripción',
@@ -136,7 +137,7 @@ export default function DocsIieg() {
             title: 'Tipo',
             dataIndex: 'tipo',
             key: 'tipo',
-            sorter: (a, b) => a.tipo.localeCompare(b.tipo)
+            sorter: (a, b) => (a.tipo || '').localeCompare(b.tipo || '')
         },
         {
             title: 'Acciones',
@@ -189,12 +190,12 @@ export default function DocsIieg() {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                            current: pagination.current,
-                            pageSize: pagination.pageSize,
-                            total: pagination.total,
-                            showSizeChanger: true,
-                            showTotal: (total) => `Total ${total} documentos`
-                        }}
+                        current: pagination.current,
+                        pageSize: pagination.pageSize,
+                        total: pagination.total,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} documentos`
+                    }}
                     onChange={handleTableChange}
                 />
             </Card>
@@ -217,7 +218,7 @@ export default function DocsIieg() {
                     <Form.Item
                         name="descripcion"
                         label="Descripción"
-                        rules={[{ required: false, message: 'Por favor ingrese la descripción' }]}
+                        rules={[{ required: false }]}
                     >
                         <RichTextEditor />
                     </Form.Item>
@@ -226,18 +227,20 @@ export default function DocsIieg() {
                         label="Tipo"
                         rules={[{ required: true, message: 'Por favor seleccione el tipo' }]}
                     >
-                        <Select placeholder="Seleccione el tipo" options={[
-                            { value: 'valor', label: 'Valor' },
-                            { value: 'normatividad', label: 'Normatividad' },
-                            { value: 'plan_institucional', label: 'Plan Institucional' },
-                            { value: 'plan_de_trabajo', label: 'Plan de Trabajo' }
-                        ]}
+                        <Select
+                            placeholder="Seleccione el tipo"
+                            options={[
+                                { value: 'valor', label: 'Valor' },
+                                { value: 'normatividad', label: 'Normatividad' },
+                                { value: 'plan_institucional', label: 'Plan Institucional' },
+                                { value: 'plan_de_trabajo', label: 'Plan de Trabajo' }
+                            ]}
                         />
                     </Form.Item>
                     <Form.Item
                         name="imagen"
                         label="Imagen"
-                        rules={[{ required: false, message: 'Por favor ingrese la imagen' }]}
+                        rules={[{ required: false }]}
                     >
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
@@ -263,14 +266,14 @@ export default function DocsIieg() {
                     <Form.Item
                         name="link"
                         label="Link"
-                        rules={[{ required: false, message: 'Por favor ingrese el link' }]}
+                        rules={[{ required: false }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
                         name="documento"
                         label="Documento"
-                        rules={[{ required: false, message: 'Por favor ingrese el documento' }]}
+                        rules={[{ required: false }]}
                     >
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
@@ -294,7 +297,7 @@ export default function DocsIieg() {
                     <Form.Item
                         name="fecha"
                         label="Fecha"
-                        rules={[{ required: false, message: 'Por favor ingrese la fecha' }]}
+                        rules={[{ required: false }]}
                     >
                         <Input type="date" />
                     </Form.Item>

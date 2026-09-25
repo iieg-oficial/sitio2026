@@ -25,7 +25,7 @@ export default function Directorio() {
             // Ordenamiento estricto por ID descendente
             const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
             setDirectorio(sortedData);
-        } catch (error) {
+        } catch {
             message.error('Error al cargar directorio');
         } finally {
             setLoading(false);
@@ -68,7 +68,7 @@ export default function Directorio() {
                     await api.delete(`/directorio/${record.id}`);
                     message.success('Directorio eliminado exitosamente');
                     await fetchDirectorio();
-                } catch (error) {
+                } catch {
                     message.error('Error al eliminar directorio');
                 }
             }
@@ -86,7 +86,7 @@ export default function Directorio() {
             }
             setModalVisible(false);
             await fetchDirectorio();
-        } catch (error) {
+        } catch {
             message.error(editingDirectorio ? 'Error al actualizar directorio' : 'Error al crear directorio');
         }
     };

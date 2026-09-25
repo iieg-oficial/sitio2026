@@ -26,7 +26,7 @@ export default function Posts() {
     useEffect(() => {
         fetchPosts('', 1, pagination.pageSize);
         fetchSubjects();
-    }, []);
+    }, [fetchPosts]);
 
     const removeGalleryImage = (url) => {
         setGalleryImages((prev) => prev.filter((img) => img !== url));
@@ -151,8 +151,9 @@ export default function Posts() {
             dataIndex: 'resumen',
             key: 'resumen',
             sorter: (a, b) => (a.resumen || '').localeCompare(b.resumen || ''),
-            render: <SafeHtml htmlContent={resumen} className='mt-5 prose max-w-none'/>
-            
+            render: (resumen) => (
+                <SafeHtml htmlContent={resumen} className='mt-5 prose max-w-none'/>
+            ),            
         },
         {
             title: 'URL Completa',

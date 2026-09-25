@@ -29,7 +29,7 @@ export default function Profesores() {
             const data = Array.isArray(response.data?.profesores) ? response.data.profesores : [];
             const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
             setProfesores(sortedData);
-        } catch (error) {
+        } catch {
             message.error('Error al cargar profesores');
         } finally {
             setLoading(false);

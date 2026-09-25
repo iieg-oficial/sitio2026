@@ -28,13 +28,13 @@ export default function Flashes() {
         fetchPeriodo();
         fetchMeses();
         fetchFlashes('', 1, pagination.pageSize);
-    }, []);
+    }, [fetchFlashes]);
 
     const fetchPeriodo = async () => {
         try{
             const response = await api.get('/flashes/periocidad');
             setPeriodo(response.data.periodo || {});            
-        } catch (error) {
+        } catch {
             message.error('Error al obtener los periocidad');
         }
     }
@@ -69,7 +69,7 @@ export default function Flashes() {
             });
 
         } catch (error){
-            console.error("Error al cargar flashes:", error);
+            console.error('Error al cargar flashes:', error);
             message.error('Error al cargar flashes');
         } finally {
             setLoading(false);
@@ -106,8 +106,8 @@ export default function Flashes() {
         const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
         const fechaFormateada = record.fecha_publicacion
-        ? new Date(record.fecha_publicacion).toISOString().split('T')[0]
-        : null;
+            ? new Date(record.fecha_publicacion).toISOString().split('T')[0]
+            : null;
         form.setFieldsValue({
             ...record,
             fecha_publicacion: fechaFormateada,
@@ -156,9 +156,8 @@ export default function Flashes() {
         }
     }
 
-    useEffect(() => {
-    
-}, [periodo]);
+    useEffect(() => {    
+    }, [periodo]);
 
     const columns = [
         { 
@@ -172,9 +171,9 @@ export default function Flashes() {
             dataIndex: 'desc_jal', 
             key: 'desc_jal',
             sorter: (a, b) => a.desc_jal.localeCompare(b.desc_jal),
-            render: 
+            render: (desc_jal) => (
                 <SafeHtml htmlContent={desc_jal} className='mt-5 prose max-w-none'/>
-            
+            ),
         },
         {
             title: 'periocidad',
@@ -184,9 +183,9 @@ export default function Flashes() {
             
         },
         {
-            title: "Fecha de publicación",
-            dataIndex: "fecha_publicacion",
-            key: "fecha_publicacion",
+            title: 'Fecha de publicación',
+            dataIndex: 'fecha_publicacion',
+            key: 'fecha_publicacion',
             render: (date) => date ? new Date(date).toLocaleDateString('es-MX') : '-',
         },
         {
@@ -231,12 +230,12 @@ export default function Flashes() {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                            current: pagination.current,
-                            pageSize: pagination.pageSize,
-                            total: pagination.total,
-                            showSizeChanger: true,
-                            showTotal: (total) => `Total ${total} datos`
-                        }}
+                        current: pagination.current,
+                        pageSize: pagination.pageSize,
+                        total: pagination.total,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} datos`
+                    }}
                     onChange={handleTableChange}    
                 />
             </Card> 
@@ -261,19 +260,19 @@ export default function Flashes() {
                     </Form.Item>
                     <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingresa la periocidad' }]}>
                         <Select
-                        placeholder="Selecciona un periodo"
-                        allowClear
-                        showSearch
-                        optionFilterProp="label"
-                        filterOption={(input, option) =>
-                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={Object.entries(periodo).map(([key, value]) => ({  
-                            key,                          
-                            value: value,
-                            label: value,
-                        }))}
-                    />
+                            placeholder="Selecciona un periodo"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={Object.entries(periodo).map(([key, value]) => ({  
+                                key,                          
+                                value: value,
+                                label: value,
+                            }))}
+                        />
                     </Form.Item>
                     <Form.Item name="fecha_publicacion" label="Fecha de Publicación" rules={[{ required: false, message: 'Por favor ingresa la fecha de publicación' }]}>
                         <Input type="date" />

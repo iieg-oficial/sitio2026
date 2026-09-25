@@ -33,7 +33,7 @@ export default function Reportes() {
         fetchPeriocidad();
         fetchMeses();
         fetchReportes('', 1, 10);
-    }, []);
+    }, [fetchReportes]);
 
     const getDynamicFolder = () => {
         let folderPath = '/reportes';
@@ -132,7 +132,7 @@ export default function Reportes() {
                 const month = parseInt(parts[1], 10);
                 if (!preAnyo) preAnyo = year;
                 if (!preMes && month >= 1 && month <= 12) {
-                    const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+                    const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
                     preMes = monthNames[month - 1];
                 }
             }
@@ -188,7 +188,7 @@ export default function Reportes() {
             setModalVisible(false);
             
         } catch {
-            console.error("Error al guardar:", error);
+            console.error('Error al guardar:', error);
             message.error(editingReporte ? 'Error al actualizar reporte' : 'Error al crear reporte');
         }
     };

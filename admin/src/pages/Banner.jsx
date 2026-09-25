@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Checkbox} from 'antd';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { CamposBannerFull, CamposBannerMin } from '@components/campos/banner';
@@ -26,10 +26,10 @@ export default function Banner() {
     const fetchBanners = async () => {
         setLoading(true);
         try {
-        const response = await api.get('/banner');
+            const response = await api.get('/banner');
             // El endpoint administrativo responde: { banners: [...], total: X }
-            setBanners(response.data.banners || []); 
-        } catch (error) {
+            setBanners(response.data.banners || []);
+        } catch {
             message.error('Error al cargar los banners');
         } finally {
             setLoading(false);
@@ -60,13 +60,13 @@ export default function Banner() {
                     await api.delete(`/banner/${record.id}`);
                     message.success('Banner eliminado correctamente');
                     fetchBanners();
-                } catch (error) {
+                } catch {
                     message.error('Error al eliminar el banner');
                 }
             },
         });
     };
-            
+
     const handleSubmit = async (values) => {
         try {
             if (editingBanner) {
@@ -78,7 +78,7 @@ export default function Banner() {
             }
             setModalVisible(false);
             fetchBanners();
-        } catch (error) {
+        } catch {
             message.error('Error al guardar el banner');
         }
     };
@@ -168,9 +168,10 @@ export default function Banner() {
                     dataSource={filteredData}
                     loading={loading}
                     rowKey="id"
-                    pagination={{ 
-                        pageSize: 10, showSizeChanger: true, 
-                        showTotal: (total) => `Total ${total} banners` }}
+                    pagination={{
+                        pageSize: 10, showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} banners`
+                    }}
                 />
             </Card>
             <Modal
@@ -188,13 +189,13 @@ export default function Banner() {
                     <Form.Item name="descripcion" label="Descripción" rules={[{ required: true }]}>
                         <RichTextEditor />
                     </Form.Item>
-                    <Form.Item 
-                        name="full_screen" 
+                    <Form.Item
+                        name="full_screen"
                         valuePropName="checked"
-                        >
+                    >
                         <Checkbox>Activar banner completo</Checkbox>
                     </Form.Item>
-                    
+
                     {isFullScreen ? SECCIONES['banner_full'] : SECCIONES['banner_min']}
 
                     <Form.Item name="link" label="Link" rules={[{ required: true }]}>
@@ -202,11 +203,10 @@ export default function Banner() {
                     </Form.Item>
                     <Form.Item name="boton" label="Botón" rules={[{ required: true }]}>
                         <Input />
-                    </Form.Item>                   
-                    
+                    </Form.Item>
+
                 </Form>
             </Modal>
         </div>
     );
 }
-        

@@ -33,7 +33,7 @@ export default function Instituciones() {
             
             // CORREGIDO: Actualizar el estado de instituciones (no directorio)
             setInstituciones(sortedData);
-        } catch (error) {
+        } catch {
             message.error('Error al cargar instituciones');
         } finally {
             setLoading(false);

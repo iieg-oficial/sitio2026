@@ -29,7 +29,7 @@ export default function Subject() {
             
             // CORREGIDO: Se cambia la llamada recursiva errónea por el setter de React
             setSubjects(sortedData);
-        } catch (error) {
+        } catch {
             message.error('Error al cargar temas');
         } finally {
             setLoading(false);

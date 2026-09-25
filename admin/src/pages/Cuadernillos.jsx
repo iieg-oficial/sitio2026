@@ -17,7 +17,7 @@ export default function Cuadernillos() {
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
     const watchAnyo = Form.useWatch('anyo', form);
-    
+
     useEffect(() => {
         fetchCuadernillos('', 1, pagination.pageSize);
         fetchMunicipios();
@@ -38,7 +38,7 @@ export default function Cuadernillos() {
         try {
             const response = await api.get('/cuadernillos/municipios');
             setMunicipios(response.data.municipios || {});
-        } catch (error) {
+        } catch {
             message.error('Error al obtener los municipios');
         }
     }
@@ -61,12 +61,12 @@ export default function Cuadernillos() {
                 pageSize,
                 total: response.data.total
             }));
-        } catch (error) {
+        } catch {
             message.error('Error al obtener los cuadernillos');
         } finally {
             setLoading(false);
         }
-    };  
+    };
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchCuadernillos(text, 1, pagination.pageSize);
@@ -99,7 +99,7 @@ export default function Cuadernillos() {
                     await api.delete(`/cuadernillos/${record.id}/`);
                     message.success('Cuadernillo eliminado');
                     fetchCuadernillos(searchText, pagination.current, pagination.pageSize);
-                } catch (error) {
+                } catch {
                     message.error('Error al eliminar el cuadernillo');
                 }
             },
@@ -122,7 +122,7 @@ export default function Cuadernillos() {
                 // Redirige automáticamente a la página 1 sin filtro para que aparezca arriba de primero
                 await fetchCuadernillos('', 1, pagination.pageSize);
             }
-        } catch (error) {
+        } catch {
             message.error('Error al guardar el cuadernillo');
         }
     };
@@ -135,16 +135,16 @@ export default function Cuadernillos() {
             key: 'acciones',
             render: (_, record) => (
                 <Space>
-                    <Button 
-                        type="link" 
-                        icon={<EditOutlined />} 
+                    <Button
+                        type="link"
+                        icon={<EditOutlined />}
                         onClick={() => handleEdit(record)} >
-                            Editar
+                        Editar
                     </Button>
-                    <Button 
-                        type="link" 
-                        icon={<DeleteOutlined />} 
-                        onClick={() => handleDelete(record)} 
+                    <Button
+                        type="link"
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleDelete(record)}
                         danger
                     >
                         Eliminar
@@ -161,83 +161,83 @@ export default function Cuadernillos() {
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
                     Nuevo Cuadernillo
                 </Button>
-        </div>
+            </div>
 
-        <Card>
-            <TableSearch
+            <Card>
+                <TableSearch
                     value={searchText}
                     onChange={setSearchText}
                     placeholder="Buscar por título..."
                     loading={loading}
                 />
-            <Table
-                dataSource={cuadernillos}
-                columns={columns}
-                rowKey="id"
-                loading={loading}
-                pagination={{
-                    current: pagination.current,
-                    pageSize: pagination.pageSize,
-                    total: pagination.total,
-                    showSizeChanger: true,
-                    showTotal: (total) => `Total ${total} cuadernillos`
-                }}
-                onChange={handleTableChange}
-            />
-        </Card>
+                <Table
+                    dataSource={cuadernillos}
+                    columns={columns}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                        current: pagination.current,
+                        pageSize: pagination.pageSize,
+                        total: pagination.total,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} cuadernillos`
+                    }}
+                    onChange={handleTableChange}
+                />
+            </Card>
 
-        <Modal
-            title={editingCuadernillo ? 'Editar Cuadernillo' : 'Nuevo Cuadernillo'}
-            open={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            onOk={() => form.submit()}
-            okText={editingCuadernillo ? 'Actualizar' : 'Crear'}
-            cancelText="Cancelar"
-        >
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-                <Form.Item name="titulo" label="Título" rules={[{ required: true, message: 'Por favor ingresa el título' }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name="archivo" label="Archivo" rules={[{ required: true, message: 'Por favor sube el archivo' }]}>
-                    <Space direction="vertical" style={{ width: '100%' }}>
-                        <UploadAcervo 
-                            bucket="portal"
-                            folder={getDynamicFolder()}
-                            label="Subir Archivo"
-                            onUploaded={(media) =>
-                                form.setFieldsValue({ archivo: media.url })
+            <Modal
+                title={editingCuadernillo ? 'Editar Cuadernillo' : 'Nuevo Cuadernillo'}
+                open={modalVisible}
+                onCancel={() => setModalVisible(false)}
+                onOk={() => form.submit()}
+                okText={editingCuadernillo ? 'Actualizar' : 'Crear'}
+                cancelText="Cancelar"
+            >
+                <Form form={form} layout="vertical" onFinish={handleSubmit}>
+                    <Form.Item name="titulo" label="Título" rules={[{ required: true, message: 'Por favor ingresa el título' }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="archivo" label="Archivo" rules={[{ required: true, message: 'Por favor sube el archivo' }]}>
+                        <Space direction="vertical" style={{ width: '100%' }}>
+                            <UploadAcervo
+                                bucket="portal"
+                                folder={getDynamicFolder()}
+                                label="Subir Archivo"
+                                onUploaded={(media) =>
+                                    form.setFieldsValue({ archivo: media.url })
+                                }
+                            />
+                            <Form.Item name="archivo" noStyle>
+                                <Input placeholder="URL del archivo" />
+                            </Form.Item>
+                            {form.getFieldValue('archivo') ? (
+                                <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">
+                                    Ver Archivo
+                                </a>
+                            ) : null}
+                        </Space>
+                    </Form.Item>
+                    <Form.Item name="municipio" label="Municipio" rules={[{ required: true, message: 'Por favor selecciona el municipio' }]}>
+                        <Select
+                            placeholder="Selecciona un municipio"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={Array.isArray(municipios)
+                                ? municipios.map((m) => ({ value: m, label: m }))
+                                : Object.entries(municipios).map(([key, value]) => ({ value: value, label: value }))
                             }
                         />
-                        <Form.Item name="archivo" noStyle>
-                            <Input placeholder="URL del archivo" />
-                        </Form.Item>
-                        {form.getFieldValue('archivo') ? (
-                            <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">
-                                Ver Archivo
-                            </a>
-                        ) : null}
-                    </Space>
-                </Form.Item>
-                <Form.Item name="municipio" label="Municipio" rules={[{ required: true, message: 'Por favor selecciona el municipio' }]}>
-                    <Select
-                        placeholder="Selecciona un municipio"
-                        allowClear
-                        showSearch
-                        optionFilterProp="label"
-                        filterOption={(input, option) =>
-                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={Array.isArray(municipios) 
-                            ? municipios.map((m) => ({ value: m, label: m }))
-                            : Object.entries(municipios).map(([key, value]) => ({ value: value, label: value }))
-                        }
-                    />
-                </Form.Item>
-                <Form.Item name="anyo" label="Año" rules={[{ required: true, message: 'Por favor ingresa el año' }]}>
-                    <Input />
-                </Form.Item>
-            </Form>
-        </Modal>
-    </div>
+                    </Form.Item>
+                    <Form.Item name="anyo" label="Año" rules={[{ required: true, message: 'Por favor ingresa el año' }]}>
+                        <Input />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </div>
     );
 }

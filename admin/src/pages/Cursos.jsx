@@ -36,7 +36,7 @@ export default function Cursos() {
       // Aseguramos el orden descendente por ID en el cliente como respaldo
       const sorted = [...dataCursos].sort((a, b) => (b.id || 0) - (a.id || 0));
       setCursos(sorted);
-    } catch (error) {
+    } catch {
       console.error('Error al obtener:', error);
     } finally {
       setLoading(false);
@@ -65,7 +65,7 @@ export default function Cursos() {
     try {
       const response = await api.get('/instituciones');
       setInstituciones(response.data.instituciones);
-    } catch (error) {
+    } catch {
       console.error('Error al obtener instituciones:', error);
     }
   };
@@ -74,7 +74,7 @@ export default function Cursos() {
     try {
       const response = await api.get('/modulos');
       setModulos(response.data.modulos);
-    } catch (error) {
+    } catch {
       console.error('Error al obtener modulos:', error);
     }
   };
@@ -109,7 +109,7 @@ export default function Cursos() {
   const handleCreate = () => {
     setEditingCurso(null);
     setSelectedTemas([]);
-    setTipoCurso(null);    
+    setTipoCurso(null);
     form.resetFields();
     setModalVisible(true);
   };
@@ -155,7 +155,7 @@ export default function Cursos() {
 
   const handleSubmit = async (values) => {
     try {
-      const payload = { ...values, tema_ids: selectedTemas };      
+      const payload = { ...values, tema_ids: selectedTemas };
       if (editingCurso) {
         await api.patch(`/cursos/${editingCurso.id}`, payload);
         message.success('Actualizado exitosamente');
@@ -253,10 +253,10 @@ export default function Cursos() {
 
       <Card>
         <TableSearch
-            value={searchText}
-            onChange={setSearchText}
-            placeholder="Buscar por título..."
-            loading={loading}
+          value={searchText}
+          onChange={setSearchText}
+          placeholder="Buscar por título..."
+          loading={loading}
         />
         <Table
           columns={columns}
@@ -313,9 +313,9 @@ export default function Cursos() {
             name="vigencia"
             label="Vigencia"
             rules={[{ required: false, message: 'Por favor seleccione una vigencia' }]}
-        >
+          >
             <Input />
-        </Form.Item>
+          </Form.Item>
 
           <Form.Item
             name="contacto"
@@ -324,11 +324,11 @@ export default function Cursos() {
           >
             <Input />
           </Form.Item>
-        
+
           <TemaSelector
-              temas={temas}
-              seleccionados={selectedTemas}
-              onChange={(ids) => setSelectedTemas(ids)}
+            temas={temas}
+            seleccionados={selectedTemas}
+            onChange={(ids) => setSelectedTemas(ids)}
           />
 
         </Form>

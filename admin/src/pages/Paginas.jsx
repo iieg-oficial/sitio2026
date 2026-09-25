@@ -50,7 +50,7 @@ export default function Paginas() {
             const normalizedPages = (res.data.pages || []).map(({ subpages, ...rest }) => rest);
             setPages(normalizedPages);
         } catch (err) {
-            console.error("Error fetching pages:", err);
+            console.error('Error fetching pages:', err);
         }
         finally {
             setLoading(false);
@@ -62,7 +62,7 @@ export default function Paginas() {
             const res = await api.get('/paginas/tree');
             setPagesTree(flattenTree(res.data));
         } catch (err) {
-            console.error("Error fetching pages tree:", err);
+            console.error('Error fetching pages tree:', err);
         }
     };
 
@@ -93,94 +93,94 @@ export default function Paginas() {
 
 
     const handleCreate = () => {
-            setEditingPage(null);
-            form.resetFields();
-            setModalVisible(true);
-        };
+        setEditingPage(null);
+        form.resetFields();
+        setModalVisible(true);
+    };
     
-        const handleEdit = (record) => {
-            setEditingPage(record);
-            const formattedRecord = { ...record };
-            if (formattedRecord.updated_at) {
-                // Format "YYYY-MM-DDTHH:mm:ss" to "YYYY-MM-DD" for the date input
-                formattedRecord.updated_at = formattedRecord.updated_at.split('T')[0];
-            }
-            form.setFieldsValue(formattedRecord);
-            setModalVisible(true);
-        };
+    const handleEdit = (record) => {
+        setEditingPage(record);
+        const formattedRecord = { ...record };
+        if (formattedRecord.updated_at) {
+            // Format "YYYY-MM-DDTHH:mm:ss" to "YYYY-MM-DD" for the date input
+            formattedRecord.updated_at = formattedRecord.updated_at.split('T')[0];
+        }
+        form.setFieldsValue(formattedRecord);
+        setModalVisible(true);
+    };
     
-        const handleDelete = (record) => {
-            Modal.confirm({
-                title: '¿Está seguro de eliminar esta página?',
-                content: `Se eliminará la página: ${record.title}`,
-                okText: 'Eliminar',
-                okType: 'danger',
-                cancelText: 'Cancelar',
-                onOk: async () => {
-                    try {
-                        await api.delete(`/paginas/${record.id}`);
-                        message.success('Página eliminada exitosamente');
-                        fetchPages();
-                        fetchPagesTree();
-                    } catch {
-                        message.error('Error al eliminar página');
-                    }
+    const handleDelete = (record) => {
+        Modal.confirm({
+            title: '¿Está seguro de eliminar esta página?',
+            content: `Se eliminará la página: ${record.title}`,
+            okText: 'Eliminar',
+            okType: 'danger',
+            cancelText: 'Cancelar',
+            onOk: async () => {
+                try {
+                    await api.delete(`/paginas/${record.id}`);
+                    message.success('Página eliminada exitosamente');
+                    fetchPages();
+                    fetchPagesTree();
+                } catch {
+                    message.error('Error al eliminar página');
                 }
-            });
-        };
+            }
+        });
+    };
     
-        const handleSubmit = async (values) => {
-            try {
-                if (editingPage) {
-                    await api.put(`/paginas/${editingPage.id}`, values);
-                    message.success('Página actualizada exitosamente');
-                } else {
-                    await api.post('/paginas/create', values);
-                    message.success('Página creada exitosamente');
-                }
-                setModalVisible(false);
-                fetchPages();
-                fetchPagesTree();
-            } catch (error) {
-                const detail = error.response?.data?.detail;
-                message.error(detail || (editingPage ? 'Error al actualizar página' : 'Error al crear página'));
+    const handleSubmit = async (values) => {
+        try {
+            if (editingPage) {
+                await api.put(`/paginas/${editingPage.id}`, values);
+                message.success('Página actualizada exitosamente');
+            } else {
+                await api.post('/paginas/create', values);
+                message.success('Página creada exitosamente');
             }
-        };
+            setModalVisible(false);
+            fetchPages();
+            fetchPagesTree();
+        } catch (error) {
+            const detail = error.response?.data?.detail;
+            message.error(detail || (editingPage ? 'Error al actualizar página' : 'Error al crear página'));
+        }
+    };
 
-        const persistOrder = async (nextPages) => {
-            const items = normalizeOrderPayload(nextPages);
-            await api.put('/paginas/reorder', { items });
-        };
+    const persistOrder = async (nextPages) => {
+        const items = normalizeOrderPayload(nextPages);
+        await api.put('/paginas/reorder', { items });
+    };
 
-        const handleDragEnd = async ({ active, over }) => {
-            if (!over || active.id === over.id) return;
+    const handleDragEnd = async ({ active, over }) => {
+        if (!over || active.id === over.id) return;
 
-            const activePage = flatOrderedPages.find((page) => page.id === active.id);
-            const overPage = flatOrderedPages.find((page) => page.id === over.id);
+        const activePage = flatOrderedPages.find((page) => page.id === active.id);
+        const overPage = flatOrderedPages.find((page) => page.id === over.id);
 
-            if (!activePage || !overPage) return;
+        if (!activePage || !overPage) return;
 
-            if (activePage.parent_id !== overPage.parent_id) {
-                message.warning('Solo puedes reordenar páginas del mismo nivel');
-                return;
-            }
+        if (activePage.parent_id !== overPage.parent_id) {
+            message.warning('Solo puedes reordenar páginas del mismo nivel');
+            return;
+        }
 
-            const siblings = flatOrderedPages.filter(
-                (page) => page.parent_id === activePage.parent_id
-            );
+        const siblings = flatOrderedPages.filter(
+            (page) => page.parent_id === activePage.parent_id
+        );
 
-            const oldIndex = siblings.findIndex((page) => page.id === active.id);
-            const newIndex = siblings.findIndex((page) => page.id === over.id);
+        const oldIndex = siblings.findIndex((page) => page.id === active.id);
+        const newIndex = siblings.findIndex((page) => page.id === over.id);
 
-            if (oldIndex === -1 || newIndex === -1) return;
+        if (oldIndex === -1 || newIndex === -1) return;
 
-            const reorderedSiblings = arrayMove(siblings, oldIndex, newIndex);
-            const siblingIds = new Set(siblings.map((page) => page.id));
+        const reorderedSiblings = arrayMove(siblings, oldIndex, newIndex);
+        const siblingIds = new Set(siblings.map((page) => page.id));
 
-            const nextPages = pages.map((page) => {
-                if (!siblingIds.has(page.id)) return page;
+        const nextPages = pages.map((page) => {
+            if (!siblingIds.has(page.id)) return page;
 
-                const nextOrder = reorderedSiblings.findIndex((item) => item.id === page.id);
+            const nextOrder = reorderedSiblings.findIndex((item) => item.id === page.id);
                 return {
                     ...page,
                     order: nextOrder,

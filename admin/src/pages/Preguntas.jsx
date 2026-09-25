@@ -118,15 +118,18 @@ export default function Preguntas() {
             dataIndex: 'pregunta',
             key: 'pregunta',
             sorter: (a, b) => (a.pregunta || '').localeCompare(b.pregunta || ''),
-            render:  <SafeHtml htmlContent={pregunta} className='mt-5 prose max-w-none'/>
+            render: (pregunta) => (
+                <SafeHtml htmlContent={pregunta} className='mt-5 prose max-w-none'/>
+            ),
         },
         {
             title: 'Respuesta',
             dataIndex: 'respuesta',
             key: 'respuesta',
             sorter: (a, b) => (a.respuesta || '').localeCompare(b.respuesta || ''),
-            render: 
+            render: (respuesta) => (
                 <SafeHtml htmlContent={respuesta} className='mt-5 prose max-w-none'/>
+            ),
         },
         {
             title: 'Tema',

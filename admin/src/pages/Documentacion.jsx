@@ -26,12 +26,12 @@ export default function Documentacion() {
 
     const watchAnyo = Form.useWatch('anyo', form);
 
-    useEffect(() => {        
+    useEffect(() => {
         fetchSubjects();
         fetchTipo();
         fetchSistemas();
         fetchDocumentaciones('', 1, pagination.pageSize);
-    }, []);
+    }, [fetchDocumentaciones]);
 
     const getDynamicFolder = () => {
         let folderPath = '/documentacion';
@@ -44,10 +44,10 @@ export default function Documentacion() {
     };
 
     const fetchTipo = async () => {
-        try{
+        try {
             const response = await api.get('/documentacion/tipos');
             setTipo(response.data.tipos || []);
-        } catch (error){
+        } catch {
             message.error('Error al obtener los tipos');
         }
     }
@@ -67,9 +67,9 @@ export default function Documentacion() {
             const response = await api.get('/documentacion', {
                 params: {
                     ...(search ? { search } : {}),
-                    page,        
-                    pageSize,    
-                    _t: new Date().getTime() 
+                    page,
+                    pageSize,
+                    _t: new Date().getTime()
                 }
             });
             setDocumentaciones(response.data.documentaciones || []);
@@ -104,7 +104,7 @@ export default function Documentacion() {
         }
     };
 
-    const handleCreate = () => {        
+    const handleCreate = () => {
         setEditingDocumentacion(null);
         setSelectedSubjects([]);
         setSelectedSistemas([]);
@@ -119,7 +119,7 @@ export default function Documentacion() {
         setSelectedSubjects(ids);
 
         const idsp = (record.sistemas ?? []).map((t) => t.id);
-        setSelectedSistemas(idsp);  
+        setSelectedSistemas(idsp);
 
         form.setFieldsValue({
             ...record,
@@ -127,7 +127,7 @@ export default function Documentacion() {
             temas: undefined,
             sistemas: undefined
         });
-        
+
         setModalVisible(true);
     };
 
@@ -165,10 +165,10 @@ export default function Documentacion() {
                 setSearchText('');
                 await fetchDocumentaciones('', 1, pagination.pageSize);
             }
-            
+
             setModalVisible(false);
-            
-        } catch (error) {            
+
+        } catch {
             message.error(editingDocumentacion ? 'Error al actualizar documentación' : 'Error al crear documentación');
         }
     };
@@ -245,12 +245,12 @@ export default function Documentacion() {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                            current: pagination.current,
-                            pageSize: pagination.pageSize,
-                            total: pagination.total,
-                            showSizeChanger: true,
-                            showTotal: (total) => `Total ${total} documentacion`
-                        }}
+                        current: pagination.current,
+                        pageSize: pagination.pageSize,
+                        total: pagination.total,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} documentacion`
+                    }}
                     onChange={handleTableChange}
                 />
             </Card>
@@ -308,25 +308,25 @@ export default function Documentacion() {
                     </Form.Item>
                     <Form.Item name="tipo" label="Tipo" rules={[{ required: false, message: 'Por favor ingresa el tipo ' }]}>
                         <Select
-                        placeholder="Selecciona un tipo"
-                        allowClear
-                        showSearch
-                        optionFilterProp="label"
-                        filterOption={(input, option) =>
-                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={(tipo || []).map((value) => ({
-                            key: value,
-                            value: value,
-                            label: value,
-                        }))}
-                    />
+                            placeholder="Selecciona un tipo"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={(tipo || []).map((value) => ({
+                                key: value,
+                                value: value,
+                                label: value,
+                            }))}
+                        />
                     </Form.Item>
                     <TemaSelector
                         temas={subjects}
                         seleccionados={selectedSubjects}
-                        onChange={(ids) => {                                    
-                        setSelectedSubjects(ids);
+                        onChange={(ids) => {
+                            setSelectedSubjects(ids);
                         }}
                     />
                     <Form.Item label="Proyectos">
@@ -347,14 +347,14 @@ export default function Documentacion() {
                             }))}
                         />
                     </Form.Item>
-                    
+
                     <Form.Item name="claves"
                         label="Palabras clave"
                         rules={[{ required: true, message: 'Por favor ingrese las palabras clave' }]}
                     >
                         <Input />
                     </Form.Item>
-                    
+
                 </Form>
             </Modal>
         </div>

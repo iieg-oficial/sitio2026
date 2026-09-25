@@ -58,31 +58,31 @@ export const buildMediaUrl = (filename, { bucket = 'portal', folder = '/' } = {}
 };
 
 export const sanitizeFolderPath = (folder) => {
-  if (!folder || folder === '/') return '';
+    if (!folder || folder === '/') return '';
 
-  let clean = String(folder).trim();
+    let clean = String(folder).trim();
 
-  // Normaliza separadores y quita espacios raross
-  clean = clean.replace(/\\/g, '/');
+    // Normaliza separadores y quita espacios raross
+    clean = clean.replace(/\\/g, '/');
 
-  // Quita slashes al inicio/fin
-  clean = clean.replace(/^\/+|\/+$/g, '');
+    // Quita slashes al inicio/fin
+    clean = clean.replace(/^\/+|\/+$/g, '');
 
-  // Descompón por segmentos y filtra basura
-  const segments = clean
-    .split('/')
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0 && s !== '.' && s !== '..');
+    // Descompón por segmentos y filtra basura
+    const segments = clean
+        .split('/')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0 && s !== '.' && s !== '..');
 
-  // Sanitiza cada segmento: minúsculas, sin acentos, sin caracteres raros
-  const safeSegments = segments.map((s) =>
-    s
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
-      .toLowerCase()
-      .replace(/[^a-z0-9\-_.]/g, '-')
-  );
+    // Sanitiza cada segmento: minúsculas, sin acentos, sin caracteres raros
+    const safeSegments = segments.map((s) =>
+        s
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+        .toLowerCase()
+        .replace(/[^a-z0-9\-_.]/g, '-')
+    );
 
-  return safeSegments.join('/');
+    return safeSegments.join('/');
 }
 
 const initDB = () => {

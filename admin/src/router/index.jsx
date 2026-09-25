@@ -8,28 +8,28 @@ import { ProtectedRoute } from '../components/ProtectedRoute';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
 export const router = createBrowserRouter([
-  {
-    path: '/login',
-    element: <Login />,
-    errorElement: <ErrorBoundary />,
-  },
-  {
-    element: (
-      <ProtectedRoute>
-        <MainProvider />
-      </ProtectedRoute>
-    ),
-    errorElement: <ErrorBoundary />,
-    children: [
-      {
-        element: <MainLayout />,
+    {
+        path: '/login',
+        element: <Login />,
+        errorElement: <ErrorBoundary />,
+    },
+    {
+        element: (
+            <ProtectedRoute>
+              <MainProvider />
+            </ProtectedRoute>
+        ),
         errorElement: <ErrorBoundary />,
         children: [
-          { index: true, element: <Navigate to="menu" replace /> },
-          ...adminRoutes,
-          ...editorRoutes,
+          {
+              element: <MainLayout />,
+              errorElement: <ErrorBoundary />,
+              children: [
+                { index: true, element: <Navigate to="menu" replace /> },
+                ...adminRoutes,
+                ...editorRoutes,
+              ],
+          },
         ],
-      },
-    ],
-  },
+    },
 ]);
