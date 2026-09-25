@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
+from main import limiter
 
 from app.api.deps import get_current_user
 from app.core.database import get_db
@@ -15,6 +16,7 @@ settings = get_settings()
 
 
 @router.post("/iniciar-sesion", response_model=LoginResponse)
+@limiter.limit("5/minute")
 async def login(
     credentials: LoginRequest,
     response: Response,

@@ -6,7 +6,7 @@ import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
-import { SafeHtml } from '@components/SafeHtml';
+import { SafeHtml } from '../../components/SafeHtml.jsx';
 
 const { Title } = Typography;
 
