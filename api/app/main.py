@@ -58,6 +58,7 @@ from app.api.routes import (
     subject,
     subject_public,
     users,
+    seo_public,
 )
 from app.core.settings import get_settings
 
@@ -143,6 +144,7 @@ def create_app() -> FastAPI:
     app.include_router(cuadernillos.router,prefix=settings.admin_prefix)
     app.include_router(cuadernillos_public.router,prefix=settings.web_prefix)
     app.include_router(search_public.router,prefix=settings.web_prefix)
+    app.include_router(seo_public.router,prefix=settings.web_prefix)
 
 
 
