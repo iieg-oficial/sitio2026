@@ -342,7 +342,12 @@ export default function Documentacion() {
                     >
                         <Input />
                     </Form.Item>
-                    
+                    <Form.Item name="slug"
+                        label="Url"
+                        rules={[{ required: false, message: 'Por favor ingrese la url' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>

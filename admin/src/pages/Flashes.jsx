@@ -327,6 +327,12 @@ export default function Flashes() {
                     >
                         <Input />
                     </Form.Item>
+                    <Form.Item name="slug"
+                        label="Url"
+                        rules={[{ required: false, message: 'Por favor ingrese la url' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>

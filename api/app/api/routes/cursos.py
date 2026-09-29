@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Cursos, Instituciones, Modulos, Perfiles, Profesores, Subject, Usuario
 from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 
@@ -266,6 +267,13 @@ def update_cursos(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
+    elif "slug" in update_data:
+            if update_data["slug"]:
+                update_data["slug"] = make_unique_slug(
+                    db, Cursos, update_data["slug"], exclude_id=db_cursos.id
+                )
+            else:
+                del update_data["slug"]
 
     # Actualizar solo campos escalares (NO incluir las relaciones many-to-many)
     campos_escalares = [
@@ -277,6 +285,9 @@ def update_cursos(
         valor = getattr(cursos, campo, None)
         if valor is not None:
             setattr(db_cursos, campo, valor)
+
+    if "slug" in update_data:
+        db_cursos.slug = update_data["slug"]
 
     db.commit()
     db.refresh(db_cursos)
