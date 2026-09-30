@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
 from sqlalchemy import func, or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db, verify_csrf
 from app.core.slugs import make_unique_slug
@@ -41,15 +41,18 @@ def read_flashes(
             )
         )
 
+    # 1. Obtener el total exacto antes de paginar
     total = db.execute(
         select(func.count()).select_from(query.subquery())
     ).scalar_one()
 
     flashes = db.execute(
-        query.order_by(Flashes.anyo.desc(), Flashes.id.desc())
+        query
+        .options(joinedload(Flashes.temas))
+        .order_by(Flashes.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
-    ).scalars().all()
+    ).scalars().unique().all()
 
     return {"flashes": flashes, "total": total}
 

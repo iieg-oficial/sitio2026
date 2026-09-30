@@ -23,14 +23,21 @@ export default function Capacitaciones() {
         return false
     }
 
-    const fetchCapacitaciones = useCallback( async () => {
+    const fetchCapacitaciones = useCallback(async () => {
         try {
             const response = await api.get('/cursos-public', {
-                params: { tipo_curso: 'capacitacion' },
+                params: { 
+                    tipo_curso: 'capacitacion',
+                    _t: new Date().getTime() // Parámetro anti-caché
+                },
             })
 
             const cursos = response.data?.cursos ?? []
-            const capacitacionesSolo = cursos.filter(isCapacitacion)
+            
+            // Reordenar localmente por ID descendente como respaldo
+            const sortedCursos = [...cursos].sort((a, b) => (b.id || 0) - (a.id || 0))
+            const capacitacionesSolo = sortedCursos.filter(isCapacitacion)
+            
             const destacadas = capacitacionesSolo.filter(curso => curso.destacado === true).slice(0, 1)
             const noDestacadas = capacitacionesSolo.filter(curso => curso.destacado !== true)
 
@@ -45,6 +52,16 @@ export default function Capacitaciones() {
 
     useEffect(() => {
         fetchCapacitaciones()
+
+        // Escuchador de evento focus para recarga inmediata
+        const handleFocus = () => {
+            fetchCapacitaciones()
+        }
+        window.addEventListener('focus', handleFocus)
+
+        return () => {
+            window.removeEventListener('focus', handleFocus)
+        }
     }, [fetchCapacitaciones]);
 
     const [itemOffset, setItemOffset] = useState(0)

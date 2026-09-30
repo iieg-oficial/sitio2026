@@ -9,34 +9,26 @@ from app.schemas.profesores import ProfesoresCreate, ProfesoresOut, ProfesoresRe
 
 router = APIRouter(prefix="/profesores", tags=["profesores"])
 
+
 @router.get("", response_model=ProfesoresResponse)
-async def listar_profesores(
+def listar_profesores(
     db: Session = Depends(get_db),
 ):
-    profesores = db.query(Profesores).all()
+    """Obtener todos los profesores"""
+    profesores = db.query(Profesores).order_by(Profesores.id.desc()).all()
     return {
         "profesores": profesores,
         "total": len(profesores),
     }
 
-@router.get("/{profesor_id}", response_model=ProfesoresOut)
-async def obtener_profesor(
-    profesor_id: int,
-    db: Session = Depends(get_db),
-):
-    profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
-    if not profesor:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Profesor no encontrado"
-        )
-    return profesor
 
 @router.post("/create", response_model=ProfesoresOut, status_code=status.HTTP_201_CREATED)
-async def crear_profesor(
+def crear_profesor(
     profesor_in: ProfesoresCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(verify_csrf)
+    current_user: Usuario = Depends(verify_csrf),
 ):
+    """Crear un nuevo profesor"""
     slug = slugify(profesor_in.nombre)
     base_slug = slug
     contador = 1
@@ -56,16 +48,48 @@ async def crear_profesor(
     db.refresh(nuevo)
     return nuevo
 
+
+@router.get("/slug/{slug}", response_model=ProfesoresOut)
+def get_profesor_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un profesor por su slug (se coloca antes de /{profesor_id} para evitar colisión)"""
+    profesor = db.query(Profesores).filter(Profesores.slug == slug).first()
+    if not profesor:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Profesor no encontrado"
+        )
+    return profesor
+
+
+@router.get("/{profesor_id}", response_model=ProfesoresOut)
+def obtener_profesor(
+    profesor_id: int,
+    db: Session = Depends(get_db),
+):
+    """Obtener un profesor por ID"""
+    profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
+    if not profesor:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Profesor no encontrado"
+        )
+    return profesor
+
+
 @router.patch("/{profesor_id}", response_model=ProfesoresOut)
-async def actualizar_profesor(
+def actualizar_profesor(
     profesor_id: int,
     profesor_in: ProfesoresCreate,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(verify_csrf)
+    current_user: Usuario = Depends(verify_csrf),
 ):
+    """Actualizar un profesor existente"""
     profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
     if not profesor:
-        raise HTTPException(status_code=404, detail="Profesor no encontrado")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Profesor no encontrado"
+        )
 
     update_data = profesor_in.model_dump(exclude_unset=True)
 
@@ -92,12 +116,14 @@ async def actualizar_profesor(
     db.refresh(profesor)
     return profesor
 
+
 @router.delete("/{profesor_id}")
-async def eliminar_profesor(
+def eliminar_profesor(
     profesor_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(verify_csrf)
+    current_user: Usuario = Depends(verify_csrf),
 ):
+    """Eliminar un profesor"""
     profesor = db.query(Profesores).filter(Profesores.id == profesor_id).first()
     if not profesor:
         raise HTTPException(
@@ -106,16 +132,3 @@ async def eliminar_profesor(
     db.delete(profesor)
     db.commit()
     return {"message": "Profesor eliminado exitosamente"}
-
-@router.get("/slug/{slug}", response_model=ProfesoresOut)
-def get_profesor_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener un profesor por slug"""
-    profesor = db.query(Profesores).filter(Profesores.slug == slug).first()
-    if not profesor:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Profesor no encontrado"
-        )
-    return profesor

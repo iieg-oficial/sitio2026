@@ -43,6 +43,7 @@ async def listar_posts(
     page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
+
     query = select(Posts)
 
     if search:
@@ -58,8 +59,9 @@ async def listar_posts(
         select(func.count()).select_from(query.subquery())
     ).scalar_one()
 
+    # Ordenar por ID descendente (el más reciente capturado primero)
     posts = db.execute(
-        query.order_by(Posts.fecha.desc(), Posts.id.desc())
+        query.order_by(Posts.id.desc(), Posts.fecha.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()

@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from slugify import slugify
 from sqlalchemy import select
@@ -12,24 +13,19 @@ router = APIRouter(prefix="/subject", tags=["temas"])
 
 
 @router.get("/tree", response_model=list[SubjectOut])
-async def obtener_temas_tree(
-    db: Session = Depends(get_db)):
+async def obtener_temas_tree(db: Session = Depends(get_db)):
     temas = db.execute(select(Subject).where(Subject.parent_id.is_(None))).scalars().all()
     return temas
 
+
 @router.get("", response_model=list[SubjectFlat])
-async def listar_subjects(
-    db: Session = Depends(get_db)
-):
-    subjects = db.execute(select(Subject)).scalars().all()
+async def listar_subjects(db: Session = Depends(get_db)):
+    subjects = db.execute(select(Subject).order_by(Subject.id.desc())).scalars().all()
     return subjects
 
 
 @router.get("/{subject_id}", response_model=SubjectOut)
-async def obtener_subject(
-    subject_id: int,
-    db: Session = Depends(get_db)
-):
+async def obtener_subject(subject_id: int, db: Session = Depends(get_db)):
     subject = db.execute(select(Subject).where(Subject.id == subject_id)).scalar_one_or_none()
     if not subject:
         raise HTTPException(
@@ -77,7 +73,7 @@ async def actualizar_subject(
     if not subject:
         raise HTTPException(status_code=404, detail="Subject no encontrado")
 
-    if(subject_in.parent_id == subject.id):
+    if subject_in.parent_id == subject.id:
         raise HTTPException(status_code=400, detail="No se puede asignar un subject como su propio padre")
 
     update_data = subject_in.model_dump(exclude_unset=True)
@@ -105,6 +101,7 @@ async def actualizar_subject(
     db.commit()
     db.refresh(subject)
     return subject
+
 
 @router.delete("/{subject_id}")
 async def eliminar_subject(

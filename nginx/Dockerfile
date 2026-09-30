@@ -1,10 +1,11 @@
 FROM node:24-alpine AS web-builder
 WORKDIR /app
+
+# 1. Instalar dependencias (se aprovecha la caché de capas)
 COPY ./web/package*.json ./
 RUN npm install --no-audit --no-fund
-COPY ./web/ .
 
-# Argumentos de compilación
+# 2. DECLARAR TODOS LOS ARGUMENTOS
 ARG VITE_NODE_ENV=production
 ARG VITE_APP_ENV=production
 ARG VITE_GOOGLE_TAG_MANAGER_ID
@@ -15,8 +16,9 @@ ARG VITE_MEDIA_BASE_URL
 ARG VITE_MAPALAB_BASE_URL
 ARG VITE_MAPALAB_API_KEY
 ARG VITE_GOOGLE_ANALYTICS_ID
+ARG VITE_RECAPTCHA_SITE_KEY
 
-# Exportar variables para Node.js / Vite / postbuild
+# 3. EXPORTAR COMO VARIABLES DE ENTORNO PARA VITE
 ENV VITE_NODE_ENV=$VITE_NODE_ENV
 ENV VITE_APP_ENV=$VITE_APP_ENV
 ENV VITE_GOOGLE_TAG_MANAGER_ID=$VITE_GOOGLE_TAG_MANAGER_ID
@@ -27,14 +29,18 @@ ENV VITE_APP_NAME=$VITE_APP_NAME
 ENV VITE_MEDIA_BASE_URL=$VITE_MEDIA_BASE_URL
 ENV VITE_MAPALAB_BASE_URL=$VITE_MAPALAB_BASE_URL
 ENV VITE_MAPALAB_API_KEY=$VITE_MAPALAB_API_KEY
+ENV VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY
 
+# 4. Copiar código fuente y compilar
+COPY ./web/ .
 RUN npm run build
+
 
 FROM node:24-alpine AS admin-builder
 WORKDIR /app
+
 COPY ./admin/package*.json ./
 RUN npm install --no-audit --no-fund
-COPY ./admin/ .
 
 ARG VITE_NODE_ENV=production
 ARG VITE_ADMIN_API_URL
@@ -43,6 +49,7 @@ ARG VITE_ADMIN_APP_NAME
 ARG VITE_MEDIA_BASE_URL
 ARG VITE_GOOGLE_ANALYTICS_ID
 ARG VITE_GOOGLE_TAG_MANAGER_ID
+ARG VITE_RECAPTCHA_SITE_KEY
 
 ENV VITE_NODE_ENV=$VITE_NODE_ENV
 ENV VITE_GOOGLE_TAG_MANAGER_ID=$VITE_GOOGLE_TAG_MANAGER_ID
@@ -51,20 +58,19 @@ ENV VITE_ADMIN_API_URL=$VITE_ADMIN_API_URL
 ENV VITE_ADMIN_API_TIMEOUT=$VITE_ADMIN_API_TIMEOUT
 ENV VITE_ADMIN_APP_NAME=$VITE_ADMIN_APP_NAME
 ENV VITE_MEDIA_BASE_URL=$VITE_MEDIA_BASE_URL
+ENV VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY
 
-# Nota: Si admin no tiene script de CSP, asegurarse que admin/package.json no ejecute postbuild con el script de web
+COPY ./admin/ .
 RUN npm run build
 
+
 FROM nginx:alpine
-# Limpiar configuraciones por defecto
 RUN rm -f /etc/nginx/conf.d/default.conf
 
-# Copiar configuraciones globales y plantillas
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./nginx/templates/portal.conf.template /etc/nginx/templates/portal.conf.template
 COPY ./nginx/static /usr/share/nginx/static
 
-# Copia de artefactos compilados (incluye /usr/share/nginx/html/csp-header.conf)
 COPY --from=web-builder /app/dist /usr/share/nginx/html
 COPY --from=admin-builder /app/dist /usr/share/nginx/html/portal-admin
 

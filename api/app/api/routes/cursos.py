@@ -23,7 +23,7 @@ def _load_temas(db: Session, tema_ids: list[int] | None) -> list[Subject]:
 def get_cursos(
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los cursos con sus relaciones"""
+    """Obtener todos los cursos con sus relaciones ordenados del más reciente al más antiguo"""
     cursos = (
         db.query(Cursos)
         .options(
@@ -33,6 +33,7 @@ def get_cursos(
             joinedload(Cursos.profesores),
             joinedload(Cursos.temas),
         )
+        .order_by(Cursos.id.desc())  # <-- ORDENAR DESCENDENTE POR ID
         .all()
     )
     return {"cursos": cursos, "total": len(cursos)}
@@ -141,6 +142,7 @@ def create_cursos(
             joinedload(Cursos.instituciones),
             joinedload(Cursos.perfiles),
             joinedload(Cursos.profesores),
+            joinedload(Cursos.temas),
         )
         .filter(Cursos.id == db_cursos.id)
         .first()
@@ -267,7 +269,6 @@ def update_cursos(
             contador += 1
         update_data["slug"] = slug
 
-    # Actualizar solo campos escalares (NO incluir las relaciones many-to-many)
     campos_escalares = [
         "titulo", "descripcion", "img_portada", "inicio", "fin", "formato", "Horario", "Objetivo",
         "p_ingreso", "p_egreso", "tipo_curso", "inscripcion", "acreditacion",
@@ -281,7 +282,6 @@ def update_cursos(
     db.commit()
     db.refresh(db_cursos)
 
-    # Recargar con joinedload para serializar correctamente
     db_cursos = (
         db.query(Cursos)
         .options(

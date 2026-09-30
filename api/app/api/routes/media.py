@@ -3,7 +3,6 @@ from pathlib import Path
 import re
 import unicodedata
 import uuid
-
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile, status
 from sqlalchemy.orm import Session
 
@@ -13,8 +12,26 @@ from app.core.settings import get_settings
 from app.models.media import Media, MediaFolder
 from app.models.user import Usuario
 from app.schemas.media import FolderCreate, FolderResponse
-from app.services.acervo import IIEG_BUCKET, PORTAL_BUCKET, get_acervo_service
+from app.services.acervo import PORTAL_BUCKET, get_acervo_service
 from pathlib import PurePosixPath
+
+MAX_FILE_SIZE = 100 * 1024 * 1024 # 100 MB
+ALLOWED_EXTENSIONS = {
+    "jpg":  {"mime": "image/jpeg",      "bytes": b"\xFF\xD8\xFF"},
+    "jpeg": {"mime": "image/jpeg",      "bytes": b"\xFF\xD8\xFF"},
+    "png":  {"mime": "image/png",       "bytes": b"\x89PNG\r\n\x1a\n"},
+    "gif":  {"mime": "image/gif",       "bytes": b"GIF8"},
+    "pdf":  {"mime": "application/pdf", "bytes": b"%PDF"},
+    "zip":  {"mime": "application/zip", "bytes": b"PK\x03\x04"},
+    "doc":  {"mime": "application/msword", "bytes": b"\xD0\xCF\x11\xE0"},
+    "docx": {"mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "bytes": b"PK\x03\x04"},
+    "xls":  {"mime": "application/vnd.ms-excel", "bytes": b"\xD0\xCF\x11\xE0"},
+    "xlsx": {"mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "bytes": b"PK\x03\x04"},
+    # Archivos de texto/estructurados (sin comprobación binaria estricta)
+    "xml":  {"mime": "application/xml", "text": True},
+    "json": {"mime": "application/json", "text": True},
+    "csv":  {"mime": "text/csv",        "text": True},
+}
 
 MAX_FILE_SIZE = 100 * 1024 * 1024 # 100 MB
 ALLOWED_EXTENSIONS = {
@@ -38,7 +55,7 @@ router = APIRouter(prefix="/multimedia", tags=["media"])
 
 settings = get_settings()
 
-ALLOWED_BUCKETS = {PORTAL_BUCKET, IIEG_BUCKET}
+ALLOWED_BUCKETS = {PORTAL_BUCKET}
 _SAFE_NAME_RE = re.compile(r"[^a-zA-Z0-9._-]+")
 
 def _validate_bucket(bucket: str) -> str:

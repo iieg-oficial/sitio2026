@@ -3,6 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Tag, Space, Button } from 'antd';
 import { EditOutlined, FileTextOutlined, HolderOutlined, EyeOutlined, EyeInvisibleOutlined, StopOutlined } from '@ant-design/icons';
 import { getIconComponent } from '@utils/menuUtils';
+import { SafeHtml } from '@components/SafeHtml';
 
 const STYLES = {
     dragHandle: {
@@ -61,7 +62,7 @@ export default function SortableTreeItem({
         if (item.iconId) {
             const customIcon = customIcons.find(icon => icon.id === item.iconId);
             return customIcon ? (
-                <span dangerouslySetInnerHTML={{ __html: customIcon.svg }} style={{ fontSize: 16, display: 'flex', color: '#1890ff' }} />
+                <SafeHtml htmlContent={customIcon.svg} style={{ fontSize: 16, display: 'flex', color: '#1890ff' }} className="inline-icon"/>                
             ) : null;
         } else if (item.icon) {
             const IconComponent = getIconComponent(item.icon);

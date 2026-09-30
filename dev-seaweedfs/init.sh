@@ -10,7 +10,7 @@ set -e
 
 TEMPLATE=/init-template/identities.json.template
 TARGET=/tmp/identities.json
-BUCKETS="${ACERVO_BUCKETS:-portal iieg}"
+BUCKETS="${ACERVO_BUCKETS:-portal}"
 
 if [ ! -s "$TEMPLATE" ]; then
     echo "[seaweedfs-dev] ERROR: $TEMPLATE missing or empty" >&2

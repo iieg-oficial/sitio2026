@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db, verify_csrf
 from app.core.search import escape_like
@@ -28,27 +28,41 @@ async def listar_reportes(
     page_size: int = Query(10, ge=1, le=100, alias="pageSize"),
     db: Session = Depends(get_db),
 ):
-    query = select(Reportes)
+    
 
+    # 1. Crear consulta base para contar
+    query_count = select(func.count()).select_from(Reportes)
     if search:
         like = f"%{escape_like(search)}%"
-        query = query.where(
+        query_count = query_count.where(
+            or_(
+                Reportes.titulo.ilike(like, escape='\\'),
+                Reportes.claves.ilike(like, escape='\\'),
+            )
+        )
+    total = db.execute(query_count).scalar_one()
+
+    # 2. Realizar consulta paginada directamente en la tabla principal
+    query_main = select(Reportes)
+    if search:
+        like = f"%{escape_like(search)}%"
+        query_main = query_main.where(
             or_(
                 Reportes.titulo.ilike(like, escape='\\'),
                 Reportes.claves.ilike(like, escape='\\'),
             )
         )
 
-    # total antes de paginar
-    total = db.execute(
-        select(func.count()).select_from(query.subquery())
-    ).scalar_one()
-
+    # Forzar ORDER BY por ID DESC
     reportes = db.execute(
-        query.order_by(Reportes.titulo, Reportes.id.desc())
+        query_main
+        .options(joinedload(Reportes.temas))
+        .order_by(Reportes.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
-    ).scalars().all()
+    ).scalars().unique().all()
+
+    
 
     return {
         "reportes": reportes,

@@ -35,7 +35,7 @@ else
 	MSG_ENV       := Desarrollo
 endif
 
-.PHONY: help up build rebuild build-clean-cache deploy _up-prod down logs restart clean prune prune-all backup shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one clear-model import-mapa import-reportes import-posts install-api-dep install-slugify setup
+.PHONY: help up build build-up rebuild build-clean-cache deploy _up-prod down logs restart clean prune prune-all backup shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one clear-model import-mapa import-reportes import-posts install-api-dep install-slugify setup
 
 help:
 	@echo ''
@@ -51,7 +51,8 @@ help:
 	@echo ''
 	@echo '${GREEN}Comandos:${RESET}'
 	@echo '  ${YELLOW}make up${RESET}               - Inicia el entorno (en segundo plano)'
-	@echo '  ${YELLOW}make build${RESET}            - Reconstruye e inicia el entorno'
+	@echo '  ${YELLOW}make build${RESET}            - Construye las imágenes sin iniciar contenedores ni tocar la BD'
+	@echo '  ${YELLOW}make build-up${RESET}         - Construye las imágenes e inicia el entorno'
 	@echo '  ${YELLOW}make build-clean-cache${RESET} - Hace build sin caché y borra caché local de Docker para el ENV activo'
 	@echo '  ${YELLOW}make deploy [DEPLOY_ENV=gcp|prod]${RESET} - git pull + rebuild. gcp en monolito, prod en nodo propio'
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
@@ -89,18 +90,20 @@ up:
 
 build:
 	@echo "${GREEN}Reconstruyendo entorno: $(MSG_ENV)${RESET}"
+	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) build
+
+build-up:
+	@echo "${GREEN}Reconstruyendo e iniciando entorno: $(MSG_ENV)${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d --build
 
 build-clean-cache:
 	@echo "${GREEN}Reconstruyendo SIN caché y borrando caché Docker: $(MSG_ENV)${RESET}"
 	docker builder prune -af
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) build --no-cache
-	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
 
 rebuild:
 	@echo "${GREEN}Reconstruyendo SIN caché: $(MSG_ENV)${RESET}"
 	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) build --no-cache
-	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
 
 down:
 	@echo "${YELLOW}Deteniendo entorno: $(MSG_ENV)${RESET}"
@@ -180,7 +183,7 @@ deploy:
 			echo "${YELLOW}Git: $$branch sin actualizar, se despliega el árbol actual${RESET}"; \
 		fi; \
 	fi
-	$(MAKE) build ENV=$(DEPLOY_ENV)
+	$(MAKE) build-up ENV=$(DEPLOY_ENV)
 
 _up-prod:
 	$(MAKE) up ENV=$(DEPLOY_ENV)

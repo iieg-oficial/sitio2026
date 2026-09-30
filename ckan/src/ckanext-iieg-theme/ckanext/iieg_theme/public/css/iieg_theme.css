@@ -422,3 +422,27 @@ body, .main {
 .recent-datasets-list li a:hover{
   color: var(--iieg-secondary) !important;
 }
+
+.navbar{
+  flex-wrap: nowrap;
+}
+.lateral{
+  display: inline-flex;
+}
+.datos-logo{
+  width: 75%;
+}
+.iieg-logo{
+  width: 75%;  
+}
+
+@media (min-width: 576px) {}
+@media (min-width: 768px) { 
+  .datos-logo, .iieg-logo{
+    width: auto;
+    margin-left: 110px;
+  }
+}
+@media (min-width: 992px) {}
+@media (min-width: 1200px) {}
+@media (min-width: 1400px) {}

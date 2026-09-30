@@ -58,13 +58,15 @@ async def listar_documentaciones(
     ).scalar_one()
 
     documentaciones = db.execute(
-        query.order_by(
-            Documentacion.anyo.desc().nulls_last(),
-            Documentacion.id.desc(),
+        query
+        .options(
+            joinedload(Documentacion.temas),
+            joinedload(Documentacion.sistemas),
         )
+        .order_by(Documentacion.id.desc()) 
         .offset((page - 1) * page_size)
         .limit(page_size)
-    ).scalars().all()
+    ).scalars().unique().all()
 
     return {"documentaciones": documentaciones, "total": total}
 

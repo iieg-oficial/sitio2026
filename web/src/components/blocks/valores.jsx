@@ -1,40 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useState, useCallback } from 'react';
 import api from '@services/apiService';
 import { SafeHtml } from '@components/SafeHtml';
+import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 export default function Valores() {
     const [valores, setValores] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        let isMounted = true;
+    const fetchValores = useCallback(async () => {
+        try {
+            const response = await api.get('/docs_iieg/tipo/valor');
+            const docs = response.data?.docs_iieg;
+            const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
+            setValores(sorted);
+        } catch (error) {
+            console.error("Error al obtener los valores:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
-        const fetchValores = async () => {
-            try {
-                const response = await api.get('/docs_iieg/tipo/valor');
-                const docs = response.data?.docs_iieg;
-                if (isMounted) {
-                    setValores(Array.isArray(docs) ? docs : []);
-                }
-            } catch (error) {
-                console.error("Error al obtener los valores:", error);
-            } finally {
-                if (isMounted) setLoading(false);
-            }
-        };
+    // Carga inicial y actualización automática al enfocar la pestaña/ventana
+    useFetchOnFocus(fetchValores);
 
-        fetchValores();
-
-        return () => {
-            isMounted = false;
-        };
-    }, []); // ⚠️ Se ejecuta únicamente al montar el componente
-
-    if (loading) {
+    if (loading && valores.length === 0) {
         return <p className="text-center py-6">Cargando Valores...</p>;
     }
 
-    // Si la base de datos está vacía, mostramos un mensaje amigable en lugar de romper
     if (!valores || valores.length === 0) {
         return (
             <div className="container-fluid py-10 text-center">

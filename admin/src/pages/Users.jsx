@@ -94,7 +94,7 @@ export default function Users() {
                         ),
                         width: 400
                     });
-                } catch (error) {
+                } catch {
                     message.error('Error al resetear contraseña');
                 }
             }

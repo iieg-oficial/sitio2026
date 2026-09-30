@@ -8,13 +8,18 @@ from app.schemas import CuadernilloOut, CuadernilloResponse
 router = APIRouter(prefix="/cuadernillos", tags=["public - cuadernillos"])
 
 @router.get("", response_model=CuadernilloResponse)
-def read_cuadernillos(
+def read_cuadernillos(    
     db: Session = Depends(get_db),
-    order_by: str = "anyo",
     skip: int = 0,
 ):
-    """Obtener todos los cuadernillos"""
-    cuadernillos = db.query(Cuadernillo).order_by(Cuadernillo.anyo.desc(), Cuadernillo.id.desc()).offset(skip).all()
+
+    # 1. Año más reciente primero -> 2. Alfabético por Titulo (A-Z)
+    cuadernillos = (
+        db.query(Cuadernillo)
+        .order_by(Cuadernillo.anyo.desc(), Cuadernillo.titulo.asc())
+        .offset(skip)
+        .all()
+    )
 
     return {
         "cuadernillos": cuadernillos,

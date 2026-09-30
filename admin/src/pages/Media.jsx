@@ -14,7 +14,7 @@ const { Search } = Input;
 const { Option } = Select;
 
 const BUCKET_PORTAL = 'portal';
-const BUCKET_IIEG = 'iieg';
+
 
 const Media = () => {
     const [loading, setLoading] = useState(false);
@@ -366,8 +366,7 @@ const Media = () => {
                         <span>Media Manager</span>
                         <Segmented
                             options={[
-                                { label: 'Portal', value: BUCKET_PORTAL },
-                                { label: 'IIEG', value: BUCKET_IIEG }
+                                { label: 'Portal', value: BUCKET_PORTAL }
                             ]}
                             value={bucket}
                             onChange={setBucket}

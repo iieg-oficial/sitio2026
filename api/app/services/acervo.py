@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import magic
 import boto3
 from botocore.client import Config
 from botocore.exceptions import ClientError
@@ -10,8 +10,23 @@ from app.core.settings import get_settings
 settings = get_settings()
 
 PORTAL_BUCKET = "portal"
-IIEG_BUCKET = "iieg"
 
+ALLOWED_MIME_TYPES = {
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'application/pdf',
+    'application/zip',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/xml',
+    'text/xml',
+    'application/json',
+    'text/csv',
+    'text/plain',
+}
 
 class AcervoService:
     def __init__(self):
@@ -70,21 +85,47 @@ class AcervoService:
             raise ValueError(f"Bucket no configurado: {bucket}")
         return self._clients[bucket], bucket
 
+    @staticmethod
+    def get_validated_content_type(file_bytes: bytes) -> str:
+        """Analiza los magic bytes del archivo e identifica el Content-Type real."""
+        mime = magic.Magic(mime=True)
+        detected_type = mime.from_buffer(file_bytes)
+        
+        if detected_type not in ALLOWED_MIME_TYPES:
+            raise ValueError(f"Tipo de archivo no permitido o no soportado: {detected_type}")
+            
+        return detected_type
+    
     async def upload_file(
         self, file: UploadFile, object_name: str, bucket: str | None = None
-    ) -> str:
+    ) -> tuple[str, str]:
+        """
+        Sube un archivo desinfectado/validado a S3.
+        Devuelve una tupla (url, validated_content_type).
+        """
         client, bucket_name = self._client_for(bucket)
         try:
             file_data = await file.read()
+            
+            # 1. Obtener y validar el tipo MIME real leyendo los bytes
+            validated_content_type = self.get_validated_content_type(file_data)
+
+            # 2. Subir a S3 asignando el ContentType validado
             client.put_object(
                 Bucket=bucket_name,
                 Key=object_name,
                 Body=file_data,
-                ContentType=file.content_type or "application/octet-stream",
+                ContentType=validated_content_type
             )
-            return self.get_file_url(object_name, bucket=bucket_name)
+            
+            # Resetear el puntero del archivo UploadFile por buena práctica
+            await file.seek(0)
+            
+            file_url = self.get_file_url(object_name, bucket=bucket_name)
+            return file_url, validated_content_type
+
         except ClientError as e:
-            raise Exception(f"Error uploading file: {str(e)}")
+            raise Exception(f"Error uploading file to S3: {str(e)}")
 
     def delete_file(self, object_name: str, bucket: str | None = None) -> bool:
         client, bucket_name = self._client_for(bucket)
