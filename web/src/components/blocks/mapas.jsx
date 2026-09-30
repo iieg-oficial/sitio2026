@@ -7,7 +7,6 @@ import Searcher from '../pageComponents/searcher';
 
 const BASE_MEDIA_URL = import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo'
 const THUMB_BASE_URL = `${BASE_MEDIA_URL}/thumb/portal/mapas`
-const DEFAULT_IMAGE = `${BASE_MEDIA_URL}/portal/img_postlink.png`
 
 // ─── Utilidad: mezcla aleatoria (Fisher-Yates) ────────────────────────────────
 function shuffleArray(arr) {
@@ -206,21 +205,18 @@ export default function Mapas() {
                         const thumb = original.substring(original.lastIndexOf('/') + 1);
                         const titulo = mapa?.titulo ?? '';
 
-                        const srcImagen = thumb 
-                            ? `${THUMB_BASE_URL}/${thumb}?w=560` 
-                            : DEFAULT_IMAGE;
+                        const srcImagen = `${THUMB_BASE_URL}/${thumb}?w=560`
 
                         return (
                             <a href={`/galeria-de-mapas/${mapa.slug}`} key={mapa.id}>
-                                                <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl">                    
+                                                <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl bg-card">                    
                                                     
 
-                                                    {mapa.imagen && (
-                                                        <img src={srcImagen} alt={titulo} className='w-full h-full object-cover image-mapa' loading='lazy' decoding='async'
+                                                    <span className='mynaui--map-pin absolute inset-0 m-auto w-12 h-12 opacity-15' />
+                                                    {thumb && (
+                                                        <img src={srcImagen} alt={titulo} className='relative w-full h-full object-cover image-mapa' loading='lazy' decoding='async'
                                                             onError={(e) => {
-                                                                if (e.target.dataset.fallback) return
-                                                                e.target.dataset.fallback = 'true'
-                                                                e.target.src = DEFAULT_IMAGE
+                                                                e.currentTarget.style.display = 'none'
                                                             }}
                                                         />
                                                     )}
