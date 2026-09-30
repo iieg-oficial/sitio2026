@@ -33,7 +33,7 @@ async def login(
 
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = crear_access_token(
-        data={"sub": usuario.username}, expires_delta=access_token_expires
+        data={"sub": usuario.id}, expires_delta=access_token_expires
     )
 
     response.set_cookie(

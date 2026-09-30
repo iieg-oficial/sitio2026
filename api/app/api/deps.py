@@ -20,24 +20,29 @@ async def get_current_user(
     )
 
     if access_token is None:
-        print(f"DEBUG: access_token is None for cookie {settings.cookie_name}")
-        print(f"DEBUG: Cookies in request: {request.cookies}")
         raise credentials_exception
 
     payload = decodificar_token(access_token)
     if payload is None:
-        print(f"DEBUG: payload is None for token {access_token[:10]}...")
         raise credentials_exception
 
-    username: str | None = payload.get("sub")
-    if username is None:
-        print("DEBUG: username is None in payload")
+    # 1. CORREGIDO: El 'sub' ahora es el ID del usuario (coincide con tu login)
+    user_id: int | None = payload.get("sub")
+    if user_id is None:
         raise credentials_exception
 
-    usuario = db.query(Usuario).filter(Usuario.username == username).first()
+    # 2. CORREGIDO: Buscamos por ID en la base de datos, no por username
+    usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
     if usuario is None:
-        print(f"DEBUG: usuario {username} not found in DB")
         raise credentials_exception
+
+    # 3. NUEVO (Solución al reporte): Validar el cambio de contraseña obligatorio en el backend
+    # (Asegúrate de que tu modelo Usuario tenga este campo o atributo)
+    if getattr(usuario, "must_change_password", False):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Debe cambiar su contraseña antes de realizar esta acción.",
+        )
 
     return usuario
 
