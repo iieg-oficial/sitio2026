@@ -60,6 +60,7 @@ export default defineConfig(({ mode }) => {
             outDir: 'dist',
             sourcemap: mode === 'development',
         },
+        envDir: path.resolve(__dirname, './'),
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src'),

@@ -50,7 +50,7 @@ export default function Paginas() {
             const normalizedPages = (res.data.pages || []).map(({ subpages, ...rest }) => rest);
             setPages(normalizedPages);
         } catch (err) {
-            console.error("Error fetching pages:", err);
+            console.error('Error fetching pages:', err);
         }
         finally {
             setLoading(false);
@@ -62,7 +62,7 @@ export default function Paginas() {
             const res = await api.get('/paginas/tree');
             setPagesTree(flattenTree(res.data));
         } catch (err) {
-            console.error("Error fetching pages tree:", err);
+            console.error('Error fetching pages tree:', err);
         }
     };
 
@@ -93,111 +93,111 @@ export default function Paginas() {
 
 
     const handleCreate = () => {
-            setEditingPage(null);
-            form.resetFields();
-            setModalVisible(true);
-        };
-    
-        const handleEdit = (record) => {
-            setEditingPage(record);
-            const formattedRecord = { ...record };
-            if (formattedRecord.updated_at) {
-                // Format "YYYY-MM-DDTHH:mm:ss" to "YYYY-MM-DD" for the date input
-                formattedRecord.updated_at = formattedRecord.updated_at.split('T')[0];
-            }
-            form.setFieldsValue(formattedRecord);
-            setModalVisible(true);
-        };
-    
-        const handleDelete = (record) => {
-            Modal.confirm({
-                title: '¿Está seguro de eliminar esta página?',
-                content: `Se eliminará la página: ${record.title}`,
-                okText: 'Eliminar',
-                okType: 'danger',
-                cancelText: 'Cancelar',
-                onOk: async () => {
-                    try {
-                        await api.delete(`/paginas/${record.id}`);
-                        message.success('Página eliminada exitosamente');
-                        fetchPages();
-                        fetchPagesTree();
-                    } catch {
-                        message.error('Error al eliminar página');
-                    }
+        setEditingPage(null);
+        form.resetFields();
+        setModalVisible(true);
+    };
+
+    const handleEdit = (record) => {
+        setEditingPage(record);
+        const formattedRecord = { ...record };
+        if (formattedRecord.updated_at) {
+            // Format "YYYY-MM-DDTHH:mm:ss" to "YYYY-MM-DD" for the date input
+            formattedRecord.updated_at = formattedRecord.updated_at.split('T')[0];
+        }
+        form.setFieldsValue(formattedRecord);
+        setModalVisible(true);
+    };
+
+    const handleDelete = (record) => {
+        Modal.confirm({
+            title: '¿Está seguro de eliminar esta página?',
+            content: `Se eliminará la página: ${record.title}`,
+            okText: 'Eliminar',
+            okType: 'danger',
+            cancelText: 'Cancelar',
+            onOk: async () => {
+                try {
+                    await api.delete(`/paginas/${record.id}`);
+                    message.success('Página eliminada exitosamente');
+                    fetchPages();
+                    fetchPagesTree();
+                } catch {
+                    message.error('Error al eliminar página');
                 }
-            });
-        };
-    
-        const handleSubmit = async (values) => {
-            try {
-                if (editingPage) {
-                    await api.put(`/paginas/${editingPage.id}`, values);
-                    message.success('Página actualizada exitosamente');
-                } else {
-                    await api.post('/paginas/create', values);
-                    message.success('Página creada exitosamente');
-                }
-                setModalVisible(false);
-                fetchPages();
-                fetchPagesTree();
-            } catch (error) {
-                const detail = error.response?.data?.detail;
-                message.error(detail || (editingPage ? 'Error al actualizar página' : 'Error al crear página'));
             }
-        };
+        });
+    };
 
-        const persistOrder = async (nextPages) => {
-            const items = normalizeOrderPayload(nextPages);
-            await api.put('/paginas/reorder', { items });
-        };
-
-        const handleDragEnd = async ({ active, over }) => {
-            if (!over || active.id === over.id) return;
-
-            const activePage = flatOrderedPages.find((page) => page.id === active.id);
-            const overPage = flatOrderedPages.find((page) => page.id === over.id);
-
-            if (!activePage || !overPage) return;
-
-            if (activePage.parent_id !== overPage.parent_id) {
-                message.warning('Solo puedes reordenar páginas del mismo nivel');
-                return;
+    const handleSubmit = async (values) => {
+        try {
+            if (editingPage) {
+                await api.put(`/paginas/${editingPage.id}`, values);
+                message.success('Página actualizada exitosamente');
+            } else {
+                await api.post('/paginas/create', values);
+                message.success('Página creada exitosamente');
             }
+            setModalVisible(false);
+            fetchPages();
+            fetchPagesTree();
+        } catch (error) {
+            const detail = error.response?.data?.detail;
+            message.error(detail || (editingPage ? 'Error al actualizar página' : 'Error al crear página'));
+        }
+    };
 
-            const siblings = flatOrderedPages.filter(
-                (page) => page.parent_id === activePage.parent_id
-            );
+    const persistOrder = async (nextPages) => {
+        const items = normalizeOrderPayload(nextPages);
+        await api.put('/paginas/reorder', { items });
+    };
 
-            const oldIndex = siblings.findIndex((page) => page.id === active.id);
-            const newIndex = siblings.findIndex((page) => page.id === over.id);
+    const handleDragEnd = async ({ active, over }) => {
+        if (!over || active.id === over.id) return;
 
-            if (oldIndex === -1 || newIndex === -1) return;
+        const activePage = flatOrderedPages.find((page) => page.id === active.id);
+        const overPage = flatOrderedPages.find((page) => page.id === over.id);
 
-            const reorderedSiblings = arrayMove(siblings, oldIndex, newIndex);
-            const siblingIds = new Set(siblings.map((page) => page.id));
+        if (!activePage || !overPage) return;
 
-            const nextPages = pages.map((page) => {
-                if (!siblingIds.has(page.id)) return page;
+        if (activePage.parent_id !== overPage.parent_id) {
+            message.warning('Solo puedes reordenar páginas del mismo nivel');
+            return;
+        }
 
-                const nextOrder = reorderedSiblings.findIndex((item) => item.id === page.id);
-                return {
-                    ...page,
-                    order: nextOrder,
-                };
-            });
+        const siblings = flatOrderedPages.filter(
+            (page) => page.parent_id === activePage.parent_id
+        );
 
-            setPages(nextPages);
+        const oldIndex = siblings.findIndex((page) => page.id === active.id);
+        const newIndex = siblings.findIndex((page) => page.id === over.id);
 
-            try {
-                await persistOrder(nextPages);
-                message.success('Orden actualizado');
-            } catch (error) {
-                console.error('Error updating order:', error);
-                message.error('No se pudo actualizar el orden');
-                fetchPages();
-            }
-        };
+        if (oldIndex === -1 || newIndex === -1) return;
+
+        const reorderedSiblings = arrayMove(siblings, oldIndex, newIndex);
+        const siblingIds = new Set(siblings.map((page) => page.id));
+
+        const nextPages = pages.map((page) => {
+            if (!siblingIds.has(page.id)) return page;
+
+            const nextOrder = reorderedSiblings.findIndex((item) => item.id === page.id);
+            return {
+                ...page,
+                order: nextOrder,
+            };
+        });
+
+        setPages(nextPages);
+
+        try {
+            await persistOrder(nextPages);
+            message.success('Orden actualizado');
+        } catch (error) {
+            console.error('Error updating order:', error);
+            message.error('No se pudo actualizar el orden');
+            fetchPages();
+        }
+    };
 
     return (
         <div>
@@ -271,18 +271,18 @@ export default function Paginas() {
                     >
                         <RichTextEditor />
                     </Form.Item>
-                    <Form.Item 
-                        name="link_interno" 
+                    <Form.Item
+                        name="link_interno"
                         valuePropName="checked"
                         initialValue={true}
-                        >
+                    >
                         <Checkbox>¿Es link interno?</Checkbox>
                     </Form.Item>
-                    <Form.Item 
-                        name="activar" 
+                    <Form.Item
+                        name="activar"
                         valuePropName="checked"
                         initialValue={true}
-                        >
+                    >
                         <Checkbox>¿Activar página?</Checkbox>
                     </Form.Item>
                     <Form.Item
@@ -320,8 +320,8 @@ export default function Paginas() {
                         rules={[{ required: false, message: 'Por favor seleccione el padre' }]}
                     >
                         <Select
-                        value={pagesTree?.parent_id}
-                        onChange={(value) => form.setFieldValue('parent_id', value)}
+                            value={pagesTree?.parent_id}
+                            onChange={(value) => form.setFieldValue('parent_id', value)}
                         >
                             <Select.Option value={null}>Sin Padre</Select.Option>
                             {pagesTree.map((p) => (
@@ -331,7 +331,7 @@ export default function Paginas() {
                             ))}
                         </Select>
                     </Form.Item>
-                        
+
 
                 </Form>
             </Modal>

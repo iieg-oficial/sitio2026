@@ -1,9 +1,17 @@
+import os 
 from contextlib import asynccontextmanager
-
-from fastapi import FastAPI
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
+from fastapi import FastAPI, Depends, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
+from app.api.deps import get_current_user
+from app.core.limiter import limiter
+from app.core.settings import get_settings
+
+# Importación de routers
 from app.api.routes import (
     archivos,
     archivos_public,
@@ -60,7 +68,6 @@ from app.api.routes import (
     users,
     seo_public,
 )
-from app.core.settings import get_settings
 
 settings = get_settings()
 
@@ -80,6 +87,20 @@ def create_app() -> FastAPI:
         openapi_url=settings.openapi_url,
     )
 
+    raw_trusted_hosts = os.getenv(
+            "FORWARDED_ALLOW_IPS", 
+            "127.0.0.1, 172.28.0.10, 10.0.0.0/8"
+    )
+    # Procesa la lista limpia separada por comas
+    trusted_hosts = [ip.strip() for ip in raw_trusted_hosts.split(",") if ip.strip()]
+
+    app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=trusted_hosts)
+
+    # 2. Registrar Slowapi en la aplicación
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+    # Configuración de CORS
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins_list,
@@ -88,16 +109,21 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-
     app.mount("/static", StaticFiles(directory="static"), name="static")
+
+    # -------------------------------------------------------------------------
+    # ROUTERS PÚBLICOS (Sin autenticación)
+    # -------------------------------------------------------------------------
+    
+    # Auth (Login) DEBE ser público para poder autenticarse
     app.include_router(auth.router, prefix=settings.admin_prefix)
-    app.include_router(users.router, prefix=settings.admin_prefix)
-    app.include_router(pages.router, prefix=settings.admin_prefix)
+    
+    # Formulario de contacto público
+    app.include_router(contacto.router, prefix=settings.web_prefix, tags=["contacto"])
+
+    # Rutas públicas del sitio web
+    app.include_router(public.router, prefix=settings.web_prefix)
     app.include_router(pages_public.router, prefix=settings.web_prefix)
-    app.include_router(menu.router, prefix=settings.admin_prefix)
-    app.include_router(media.router, prefix=settings.admin_prefix)
-    app.include_router(borradores.router, prefix=settings.admin_prefix)
-    app.include_router(preview.admin_router, prefix=settings.admin_prefix)
     app.include_router(preview.public_router, prefix=settings.web_prefix)
     app.include_router(public.router, prefix=settings.web_prefix)
     app.include_router(posts.router,prefix=settings.admin_prefix)

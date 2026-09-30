@@ -54,7 +54,7 @@ export default function PageEditor() {
         openPreview
     } = usePageDraft(id, { reviewMode, borradorId });
 
-    const isAdmin2 = isAdmin;
+    
     const [jsonEditorVisible, setJsonEditorVisible] = useState(false);
 
     if (loading) {

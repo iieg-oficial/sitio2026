@@ -45,7 +45,7 @@ async def listar_archivos(
     ).scalar_one()
 
     archivos = db.execute(
-        query.order_by(Archivos.fecha.desc(), Archivos.id.desc())
+        query.order_by(Archivos.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()

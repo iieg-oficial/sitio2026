@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -17,21 +17,36 @@ export default function Subject() {
     
     const { searchText, setSearchText, filteredData } = useSearchFilter(subjects, ['titulo']);
 
-    useEffect(() => {
-        fetchSubjects();
-    }, []);
-    
-    const fetchSubjects = async () => {
+    const fetchSubjects = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/subject');
-            setSubjects((flattenTree(response.data)));
+            const response = await api.get('/subject', {
+                params: { _t: new Date().getTime() }
+            });
+            const data = Array.isArray(response.data) ? response.data : [];
+            // Ordena del ID más alto (más reciente) al más bajo
+            const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            
+            // CORREGIDO: Se cambia la llamada recursiva errónea por el setter de React
+            setSubjects(sortedData);
         } catch {
-            message.error('Error al cargar subjects');
+            message.error('Error al cargar temas');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchSubjects();
+
+        const handleFocus = () => {
+            fetchSubjects();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchSubjects]);
 
     const handleCreate = () => {
         setEditingSubject(null);
@@ -56,7 +71,7 @@ export default function Subject() {
                 try {
                     await api.delete(`/subject/${record.id}`);
                     message.success('Tema eliminado exitosamente');
-                    fetchSubjects();
+                    await fetchSubjects();
                 } catch {
                     message.error('Error al eliminar tema');
                 }
@@ -74,7 +89,7 @@ export default function Subject() {
                 message.success('Tema creado exitosamente');
             }
             setModalVisible(false);
-            fetchSubjects();
+            await fetchSubjects();
         } catch {
             message.error(editingSubject ? 'Error al actualizar tema' : 'Error al crear tema');
         }
@@ -82,23 +97,26 @@ export default function Subject() {
 
     const columns = [
         {
-            title: 'Titulo',
+            title: 'Título',
             dataIndex: 'titulo',
             key: 'titulo',
-            sorter: (a, b) => a.titulo.localeCompare(b.titulo)
+            sorter: (a, b) => (a.titulo || '').localeCompare(b.titulo || '')
         },
         {
             title: 'Padre',
             dataIndex: 'parent_id',
             key: 'parent_id',
-            render: (parent_id) => subjects.find((s) => s.id === parent_id)?.titulo,
-            sorter: (a, b) => a.parent_id.localeCompare(b.parent_id)
+            render: (parent_id) => {
+                const padre = subjects.find((s) => s.id === parent_id);
+                return padre ? padre.titulo : '-';
+            },
+            sorter: (a, b) => (a.parent_id || 0) - (b.parent_id || 0)
         },
         {
             title: 'Slug',
             dataIndex: 'slug',
             key: 'slug',
-            sorter: (a, b) => a.slug.localeCompare(b.slug)
+            sorter: (a, b) => (a.slug || '').localeCompare(b.slug || '')
         },
         {
             title: 'Acciones',
@@ -172,9 +190,9 @@ export default function Subject() {
                     onFinish={handleSubmit}
                 >
                     <Form.Item
-                        label="Titulo"
+                        label="Título"
                         name="titulo"
-                        rules={[{ required: true, message: 'Por favor ingrese el titulo' }]}
+                        rules={[{ required: true, message: 'Por favor ingrese el título' }]}
                     >
                         <Input />
                     </Form.Item>
@@ -188,30 +206,26 @@ export default function Subject() {
                     <Form.Item
                         label="Padre"
                         name="parent_id"
-                        rules={[{ required: false, message: 'Por favor ingrese el padre' }]}
+                        rules={[{ required: false }]}
                     >
                         <Select
-                            value={editingSubject?.parent_id}
-                            onChange={(value) => form.setFieldsValue({ parent_id: value })}
-                        >
-                            <Option value={null}>Sin padre</Option>
-                            {subjects.map((s) => (
-                                <Option key={s.id} value={s.id}>
-                                    {"   ".repeat(s.depth) + s.titulo}
-                                </Option>
-                            ))}
-                        </Select>
+                            placeholder="Seleccione un tema padre (Opcional)"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            options={[
+                                { value: null, label: 'Sin padre' },
+                                ...subjects
+                                    .filter((s) => s.id !== editingSubject?.id) // Evitar asignarse a sí mismo como padre
+                                    .map((s) => ({
+                                        value: s.id,
+                                        label: s.titulo
+                                    }))
+                            ]}
+                        />
                     </Form.Item>
-
                 </Form>
             </Modal>
         </div>
-    )
-}
-
-function flattenTree(subjects, depth = 0) {
-    return subjects.flatMap( t => [
-        {...t, depth},
-        ...flattenTree(t.subtemas ?? [], depth + 1),
-    ]);
+    );
 }

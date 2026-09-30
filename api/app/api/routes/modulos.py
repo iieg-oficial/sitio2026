@@ -9,16 +9,18 @@ from app.schemas.modulos import ModulosCreate, ModulosOut, ModulosResponse
 
 router = APIRouter(prefix="/modulos", tags=["modulos"])
 
+
 @router.get("", response_model=ModulosResponse)
 def read_modulo(
     db: Session = Depends(get_db),
 ):
     """Obtener todos los modulos"""
-    modulos = db.query(Modulos).all()
+    modulos = db.query(Modulos).order_by(Modulos.id.desc()).all()
     return {
         "modulos": modulos,
         "total": len(modulos),
     }
+
 
 @router.get("/{id}", response_model=ModulosOut)
 def read_modulo_by_id(
@@ -31,12 +33,14 @@ def read_modulo_by_id(
         raise HTTPException(status_code=404, detail="Modulo no encontrado")
     return db_modulo
 
+
 @router.post("/create", response_model=ModulosOut, status_code=status.HTTP_201_CREATED)
 def create_modulo(
     modulo: ModulosCreate,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
+    """Crear un nuevo modulo"""
     slug = slugify(modulo.nombre)
     base_slug = slug
     contador = 1
@@ -44,7 +48,6 @@ def create_modulo(
         slug = f"{base_slug}-{contador}"
         contador += 1
 
-    """Crear un nuevo modulo"""
     db_modulo = Modulos(
         nombre=modulo.nombre,
         descripcion=modulo.descripcion,
@@ -54,6 +57,7 @@ def create_modulo(
     db.commit()
     db.refresh(db_modulo)
     return db_modulo
+
 
 @router.patch("/{id}", response_model=ModulosOut)
 def update_modulo(
@@ -87,9 +91,11 @@ def update_modulo(
 
     for campo, valor in update_data.items():
         setattr(db_modulo, campo, valor)
+
     db.commit()
     db.refresh(db_modulo)
     return db_modulo
+
 
 @router.delete("/{id}", response_model=ModulosOut)
 def delete_modulo(
@@ -104,6 +110,7 @@ def delete_modulo(
     db.delete(db_modulo)
     db.commit()
     return db_modulo
+
 
 @router.get("/slug/{slug}", response_model=ModulosOut)
 def get_modulos_slug(

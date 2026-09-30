@@ -21,9 +21,9 @@ export default defineConfig(({ mode }) => {
             react(),
             {
                 name: 'html-transform',
-                    transformIndexHtml(html) {
-                        return html.replace(/%VITE_MEDIA_BASE_URL%/g, VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo');
-                    },
+                transformIndexHtml(html) {
+                    return html.replace(/%VITE_MEDIA_BASE_URL%/g, VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo');
+                },
             }
         ],
         root: '.',

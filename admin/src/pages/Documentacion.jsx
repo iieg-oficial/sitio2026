@@ -27,11 +27,11 @@ export default function Documentacion() {
     const watchAnyo = Form.useWatch('anyo', form);
 
     useEffect(() => {
-        fetchDocumentaciones();
         fetchSubjects();
         fetchTipo();
         fetchSistemas();
-    }, []);
+        fetchDocumentaciones('', 1, pagination.pageSize);
+    }, [fetchDocumentaciones]);
 
     const getDynamicFolder = () => {
         let folderPath = '/documentacion';
@@ -44,10 +44,10 @@ export default function Documentacion() {
     };
 
     const fetchTipo = async () => {
-        try{
+        try {
             const response = await api.get('/documentacion/tipos');
             setTipo(response.data.tipos || []);
-        } catch (error){
+        } catch {
             message.error('Error al obtener los tipos');
         }
     }
@@ -61,23 +61,25 @@ export default function Documentacion() {
         }
     };
 
-    const fetchDocumentaciones = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchDocumentaciones = async (search = '', page = 1, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
             const response = await api.get('/documentacion', {
                 params: {
                     ...(search ? { search } : {}),
                     page,
-                    pageSize
+                    pageSize,
+                    _t: new Date().getTime()
                 }
             });
-            setDocumentaciones(response.data.documentaciones);
-            setPagination((prev) => ({
-                ...prev,
+            setDocumentaciones(response.data.documentaciones || []);
+
+            setPagination({
                 current: page,
-                pageSize,
-                total: response.data.total
-            }));
+                pageSize: pageSize,
+                total: response.data.total || 0
+            });
+
         } catch (error) {
             console.error('Error al obtener documentaciones:', error);
         } finally {
@@ -102,7 +104,7 @@ export default function Documentacion() {
         }
     };
 
-    const handleCreate = () => {        
+    const handleCreate = () => {
         setEditingDocumentacion(null);
         setSelectedSubjects([]);
         setSelectedSistemas([]);
@@ -114,13 +116,18 @@ export default function Documentacion() {
         setEditingDocumentacion(record);
         // Pre-cargar los temas seleccionados desde el registro
         const ids = (record.temas ?? []).map((t) => Number(t.id || t));
+        setSelectedSubjects(ids);
+
         const idsp = (record.sistemas ?? []).map((t) => t.id);
-        const formValues = { 
-            ...record
-        };
-        setSelectedSubjects(ids);        
-        setSelectedSistemas(idsp);  
-        form.setFieldsValue(formValues);
+        setSelectedSistemas(idsp);
+
+        form.setFieldsValue({
+            ...record,
+            // Evita enviar los objetos poblados dentro de los valores planos del form
+            temas: undefined,
+            sistemas: undefined
+        });
+
         setModalVisible(true);
     };
 
@@ -147,16 +154,21 @@ export default function Documentacion() {
     const handleSubmit = async (values) => {
         try {
             const payload = { ...values, tema_ids: selectedSubjects, sistema_ids: selectedSistemas };
+
             if (editingDocumentacion) {
                 await api.patch(`/documentacion/${editingDocumentacion.id}`, payload);
                 message.success('Documentación actualizada exitosamente');
+                await fetchDocumentaciones(searchText, pagination.current, pagination.pageSize);
             } else {
                 await api.post('/documentacion/create', payload);
                 message.success('Documentación creada exitosamente');
+                setSearchText('');
+                await fetchDocumentaciones('', 1, pagination.pageSize);
             }
+
             setModalVisible(false);
-            fetchDocumentaciones(searchText, pagination.current, pagination.pageSize);
-        } catch (error) {            
+
+        } catch {
             message.error(editingDocumentacion ? 'Error al actualizar documentación' : 'Error al crear documentación');
         }
     };
@@ -233,12 +245,12 @@ export default function Documentacion() {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                            current: pagination.current,
-                            pageSize: pagination.pageSize,
-                            total: pagination.total,
-                            showSizeChanger: true,
-                            showTotal: (total) => `Total ${total} documentacion`
-                        }}
+                        current: pagination.current,
+                        pageSize: pagination.pageSize,
+                        total: pagination.total,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} documentacion`
+                    }}
                     onChange={handleTableChange}
                 />
             </Card>
@@ -296,46 +308,46 @@ export default function Documentacion() {
                     </Form.Item>
                     <Form.Item name="tipo" label="Tipo" rules={[{ required: false, message: 'Por favor ingresa el tipo ' }]}>
                         <Select
-                        placeholder="Selecciona un tipo"
-                        allowClear
-                        showSearch
-                        optionFilterProp="label"
-                        filterOption={(input, option) =>
-                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={(tipo || []).map((value) => ({
-                            key: value,
-                            value: value,
-                            label: value,
-                        }))}
-                    />
+                            placeholder="Selecciona un tipo"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={(tipo || []).map((value) => ({
+                                key: value,
+                                value: value,
+                                label: value,
+                            }))}
+                        />
                     </Form.Item>
                     <TemaSelector
                         temas={subjects}
                         seleccionados={selectedSubjects}
-                        onChange={(ids) => {                                    
-                        setSelectedSubjects(ids);
+                        onChange={(ids) => {
+                            setSelectedSubjects(ids);
                         }}
                     />
-                    <Form.Item name="sistemas" label="Proyectos" rules={[{ required: false, message: 'Selecciona un  proyecto' }]}>
+                    <Form.Item label="Proyectos">
                         <Select
-                        mode="multiple"
-                        placeholder="Selecciona uno o más proyectos"
-                        allowClear
-                        showSearch
-                        optionFilterProp="label"
-                        filterOption={(input, option) =>
-                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        value={selectedSistemas}
-                        onChange={(ids) => setSelectedSistemas(ids)}
-                        options={sistemasOptions.map((s) => ({
-                            value: s.id,
-                            label: s.titulo,
-                        }))}
-                    />
+                            mode="multiple"
+                            placeholder="Selecciona uno o más proyectos"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            value={selectedSistemas}
+                            onChange={(ids) => setSelectedSistemas(ids)}
+                            options={sistemasOptions.map((s) => ({
+                                value: s.id,
+                                label: s.titulo,
+                            }))}
+                        />
                     </Form.Item>
-                    
+
                     <Form.Item name="claves"
                         label="Palabras clave"
                         rules={[{ required: true, message: 'Por favor ingrese las palabras clave' }]}

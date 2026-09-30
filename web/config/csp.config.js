@@ -31,7 +31,9 @@ const BASE_POLICY = {
     "'unsafe-inline'", // Permite la ejecución del snippet inline de GTM
     "https://*.googletagmanager.com",
     "https://www.google-analytics.com",
-    "https://ssl.google-analytics.com"
+    "https://ssl.google-analytics.com",
+    "https://www.google.com/recaptcha/",
+    "https://www.gstatic.com/recaptcha/"
   ],
 
   "style-src": ["'self'", "'unsafe-inline'"],
@@ -48,13 +50,16 @@ const BASE_POLICY = {
     "https://*.googletagmanager.com",
     "https://*.cartocdn.com",
     "https://iieg.jalisco.gob.mx",
+    "https://www.google.com/recaptcha/"
   ],
 
-  // Permite incrustar reproductores de YouTube (estándar y no-cookie)
+  // Permite incrustar reproductores de YouTube y el iframe del widget de reCAPTCHA
   "frame-src": [
     "'self'",
     "https://www.youtube.com",
-    "https://www.youtube-nocookie.com"
+    "https://www.youtube-nocookie.com",
+    "https://www.google.com/recaptcha/",
+    "https://recaptcha.google.com/"
   ],
 
   "object-src": ["'none'"],
@@ -63,8 +68,17 @@ const BASE_POLICY = {
 };
 
 const DEV_OVERRIDES = {
-  "script-src": ["'unsafe-inline'", "'unsafe-eval'", "http://localhost:*", "ws://localhost:*"],
-  "connect-src": ["http://localhost:*", "ws://localhost:*"],
+  "script-src": [
+    "'self'",
+    "'unsafe-inline'",
+    "'unsafe-eval'",
+    "http://localhost:*",
+    "ws://localhost:*"
+  ],
+  "connect-src": [
+    "http://localhost:*",
+    "ws://localhost:*"
+  ],
 };
 
 const PROD_OVERRIDES = {

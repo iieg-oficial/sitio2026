@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
@@ -23,23 +23,37 @@ export default function Convocatorias() {
         return false
     }
 
-    const fetchConvocatorias = async () => {
+    const fetchConvocatorias = useCallback(async () => {
         try {
             const response = await api.get('/cursos-public', {
-                params: { tipo_curso: 'convocatoria' },
+                params: { 
+                    tipo_curso: 'convocatoria',
+                    _t: new Date().getTime() // Parámetro anti-caché
+                },
             })
             const cursos = response.data?.cursos ?? response.data ?? []
-            const convocatoriaSolo = cursos.filter(isConvocatoria)
+            // Ordenar por ID desc por respaldo
+            const sorted = [...cursos].sort((a, b) => (b.id || 0) - (a.id || 0))
+            const convocatoriaSolo = sorted.filter(isConvocatoria)
             setConvocatorias(convocatoriaSolo)
         } catch (error) {
             console.error('Error al cargar convocatorias:', error)
             setConvocatorias([])
         }
-    }
+    }, [])
 
     useEffect(() => {
         fetchConvocatorias()
-    }, [])
+
+        const handleFocus = () => {
+            fetchConvocatorias()
+        }
+        window.addEventListener('focus', handleFocus)
+
+        return () => {
+            window.removeEventListener('focus', handleFocus)
+        }
+    }, [fetchConvocatorias])
 
     const [itemOffset, setItemOffset] = useState(0)
     const itemsPerPage = 12

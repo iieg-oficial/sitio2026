@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate';
 import TrackedLink from '@components/blocks/boton'
@@ -14,14 +14,38 @@ export default function Documentacion() {
     const [selectedProyecto, setSelectedProyecto] = useState("");
     const keys = ['titulo', 'descripcion', 'claves', 'subject.titulo', 'temas.titulo'];
 
-    const fetchDocumentaciones = async () => {
-        const response = await api.get('/documentacion')
-        setDocumentaciones(response.data.documentaciones)        
-    }
+    const fetchDocumentaciones = useCallback(async (isMounted = true) => {
+        try {
+            // Se envía _t timestamp para bypass de caché
+            const response = await api.get('/documentacion', {
+                params: { _t: new Date().getTime() }
+            });
+            if (isMounted) {
+                const data = Array.isArray(response.data)
+                    ? response.data
+                    : (response.data.documentaciones || []);
+                setDocumentaciones(data);
+            }
+        } catch (error) {
+            console.error("Error al cargar documentación:", error);
+        }
+    }, []);
 
     useEffect(() => {
-        fetchDocumentaciones()
-    }, []);
+        let isMounted = true;
+        
+        // Carga inicial
+        fetchDocumentaciones(isMounted);
+
+        // Re-consultar la API automáticamente cuando el usuario regresa a la pestaña
+        const handleFocus = () => fetchDocumentaciones(isMounted);
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            isMounted = false;
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchDocumentaciones]);
 
     const tipos = useMemo(() => (
         [...new Set(
@@ -85,13 +109,13 @@ export default function Documentacion() {
     const filteredDocumentaciones = useMemo(() => {
         const normalizedSearch = searchTerm.toLowerCase().trim();
 
-        return documentaciones.filter(post => {
+        const result = documentaciones.filter(post => {
             const matchesSearch = !normalizedSearch || keys.some(key => {
-                const value = getValuesByPath(post, key)
+                const value = getValuesByPath(post, key);
                 if (Array.isArray(value)) {
-                    return value.some(item => item?.toString().toLowerCase().includes(normalizedSearch))
+                    return value.some(item => item?.toString().toLowerCase().includes(normalizedSearch));
                 }
-                return value?.toString().toLowerCase().includes(normalizedSearch)
+                return value?.toString().toLowerCase().includes(normalizedSearch);
             });
 
             const matchesTema = !selectedTemaId || post.temas?.some(tema => !tema.parent_id && tema.id === Number(selectedTemaId));
@@ -100,7 +124,19 @@ export default function Documentacion() {
             const matchesProyecto = !selectedProyecto || post.sistemas?.some(proyecto => proyecto.id === Number(selectedProyecto));
 
             return matchesSearch && matchesTema && matchesSubtema && matchesTipo && matchesProyecto;
-        })
+        });
+
+        // Ordenar de forma segura en JS: 1° Año (Mayor a Menor) -> 2° ID (Más nuevo al más viejo)
+        return result.sort((a, b) => {
+            const yearA = a.anyo ? parseInt(a.anyo, 10) : 0;
+            const yearB = b.anyo ? parseInt(b.anyo, 10) : 0;
+
+            if (yearB !== yearA) {
+                return yearB - yearA;
+            }
+
+            return (b.id || 0) - (a.id || 0);
+        });
     }, [documentaciones, searchTerm, selectedTemaId, selectedSubtemaId, selectedTipo, selectedProyecto]);
 
     const itemsPerPage = 12;

@@ -33,7 +33,7 @@ function Footer() {
                                     <span className="pajamas--twitter"></span>
                                 </a>
                                 
-                                <a href="www.linkedin.com/company/iiegjalisco/" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
+                                <a href="https://mx.linkedin.com/company/iiegjalisco" target="_blank" className='rounded-full bg-tertiary hover:bg-medio rsicon'>
                                     <span className="ri--linkedin-fill"></span>
                                 </a>
                                 

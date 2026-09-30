@@ -9,19 +9,19 @@ const DEFAULT_MAX_SIZE = 100 * 1024 * 1024; // 10 MB
 const MEDIA_BASE_URL = (import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo').replace(/\/+$/, '');
 
 const ALLOWED_MIME_MAP = {
-    'jpg':  { mime: 'image/jpeg',      bytes: [0xFF, 0xD8, 0xFF] },
-    'jpeg': { mime: 'image/jpeg',      bytes: [0xFF, 0xD8, 0xFF] },
-    'png':  { mime: 'image/png',       bytes: [0x89, 0x50, 0x4E, 0x47] },
-    'gif':  { mime: 'image/gif',       bytes: [0x47, 0x49, 0x46, 0x38] },
-    'pdf':  { mime: 'application/pdf', bytes: [0x25, 0x50, 0x44, 0x46] },
-    'zip':  { mime: 'application/zip', bytes: [0x50, 0x4B, 0x03, 0x04] },
-    'doc':  { mime: 'application/msword', bytes: [0xD0, 0xCF, 0x11, 0xE0] },
+    'jpg': { mime: 'image/jpeg', bytes: [0xFF, 0xD8, 0xFF] },
+    'jpeg': { mime: 'image/jpeg', bytes: [0xFF, 0xD8, 0xFF] },
+    'png': { mime: 'image/png', bytes: [0x89, 0x50, 0x4E, 0x47] },
+    'gif': { mime: 'image/gif', bytes: [0x47, 0x49, 0x46, 0x38] },
+    'pdf': { mime: 'application/pdf', bytes: [0x25, 0x50, 0x44, 0x46] },
+    'zip': { mime: 'application/zip', bytes: [0x50, 0x4B, 0x03, 0x04] },
+    'doc': { mime: 'application/msword', bytes: [0xD0, 0xCF, 0x11, 0xE0] },
     'docx': { mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', bytes: [0x50, 0x4B, 0x03, 0x04] },
-    'xls':  { mime: 'application/vnd.ms-excel', bytes: [0xD0, 0xCF, 0x11, 0xE0] },
+    'xls': { mime: 'application/vnd.ms-excel', bytes: [0xD0, 0xCF, 0x11, 0xE0] },
     'xlsx': { mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', bytes: [0x50, 0x4B, 0x03, 0x04] },
-    'xml':  { mime: 'application/xml', textFallback: true },
+    'xml': { mime: 'application/xml', textFallback: true },
     'json': { mime: 'application/json', textFallback: true },
-    'csv':  { mime: 'text/csv',        textFallback: true }
+    'csv': { mime: 'text/csv', textFallback: true }
 };
 
 let dbInstance = null;
@@ -58,31 +58,31 @@ export const buildMediaUrl = (filename, { bucket = 'portal', folder = '/' } = {}
 };
 
 export const sanitizeFolderPath = (folder) => {
-  if (!folder || folder === '/') return '';
+    if (!folder || folder === '/') return '';
 
-  let clean = String(folder).trim();
+    let clean = String(folder).trim();
 
-  // Normaliza separadores y quita espacios raross
-  clean = clean.replace(/\\/g, '/');
+    // Normaliza separadores y quita espacios raross
+    clean = clean.replace(/\\/g, '/');
 
-  // Quita slashes al inicio/fin
-  clean = clean.replace(/^\/+|\/+$/g, '');
+    // Quita slashes al inicio/fin
+    clean = clean.replace(/^\/+|\/+$/g, '');
 
-  // Descompón por segmentos y filtra basura
-  const segments = clean
-    .split('/')
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0 && s !== '.' && s !== '..');
+    // Descompón por segmentos y filtra basura
+    const segments = clean
+        .split('/')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0 && s !== '.' && s !== '..');
 
-  // Sanitiza cada segmento: minúsculas, sin acentos, sin caracteres raros
-  const safeSegments = segments.map((s) =>
-    s
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
-      .toLowerCase()
-      .replace(/[^a-z0-9\-_.]/g, '-')
-  );
+    // Sanitiza cada segmento: minúsculas, sin acentos, sin caracteres raros
+    const safeSegments = segments.map((s) =>
+        s
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+            .toLowerCase()
+            .replace(/[^a-z0-9\-_.]/g, '-')
+    );
 
-  return safeSegments.join('/');
+    return safeSegments.join('/');
 }
 
 const initDB = () => {
