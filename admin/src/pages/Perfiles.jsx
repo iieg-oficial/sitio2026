@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -16,21 +16,34 @@ export default function Perfiles() {
     const [editingPerfil, setEditingPerfil] = useState(null);
     const { searchText, setSearchText, filteredData } = useSearchFilter(perfiles, ['nombre']);
 
-    useEffect(() => {
-        fetchPerfiles();
-    }, []);
-
-    const fetchPerfiles = async () => {
+    const fetchPerfiles = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/perfiles');
-            setPerfiles(response.data.perfiles);
-        } catch (error) {
-            console.error('Error al obtener perfiles:', error);
+            const response = await api.get('/perfiles', {
+                params: { _t: new Date().getTime() }
+            });
+            const data = Array.isArray(response.data?.perfiles) ? response.data.perfiles : [];
+            const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            // CORREGIDO: Usar setPerfiles para evitar bucle recursivo
+            setPerfiles(sortedData);
+        } catch {
+            message.error('Error al cargar directorio');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchPerfiles();
+
+        const handleFocus = () => {
+            fetchPerfiles();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchPerfiles]);
 
     const handleCreate = () => {
         setEditingPerfil(null);
@@ -47,7 +60,7 @@ export default function Perfiles() {
     const handleDelete = (record) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar este perfil?',
-            content: `Se eliminará el perfil: ${record.nombre}`,
+            content: `Se eliminará el perfil: ${record.nombre || ''}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
@@ -55,9 +68,8 @@ export default function Perfiles() {
                 try {
                     await api.delete(`/perfiles/${record.id}`);
                     message.success('Perfil eliminado exitosamente');
-                    fetchPerfiles();
-                } catch (error) {
-                    console.error('Error al eliminar perfil:', error);
+                    await fetchPerfiles();
+                } catch {
                     message.error('Error al eliminar perfil');
                 }
             }
@@ -74,30 +86,30 @@ export default function Perfiles() {
                 message.success('Perfil creado exitosamente');
             }
             setModalVisible(false);
-            fetchPerfiles();
-        } catch (error) {
+            await fetchPerfiles();
+        } catch {
             message.error(editingPerfil ? 'Error al actualizar perfil' : 'Error al crear perfil');
         }
     };
 
     const columns = [
         {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => (a.id || 0) - (b.id || 0)
+        },
+        {
             title: 'Nombre',
             dataIndex: 'nombre',
             key: 'nombre',
-            sorter: (a, b) => a.nombre.localeCompare(b.nombre)
+            sorter: (a, b) => (a.nombre || '').localeCompare(b.nombre || '')
         },
         {
             title: 'Área',
             dataIndex: 'area',
             key: 'area',
-            sorter: (a, b) => a.area.localeCompare(b.area)
-        },
-        {
-            title: 'Id',
-            dataIndex: 'id',
-            key: 'id',
-            sorter: (a, b) => a.id - b.id         
+            sorter: (a, b) => (a.area || '').localeCompare(b.area || '')
         },
         {
             title: 'Acciones',
@@ -141,7 +153,7 @@ export default function Perfiles() {
                 <TableSearch
                     value={searchText}
                     onChange={setSearchText}
-                    placeholder="Buscar por título..."
+                    placeholder="Buscar por nombre..."
                     loading={loading}
                 />
                 <Table
@@ -183,16 +195,19 @@ export default function Perfiles() {
                     <Form.Item
                         name="area"
                         label="Área"
-                        rules={[{ required: true, message: 'Por favor ingrese el área del perfil' }]}
+                        rules={[{ required: true, message: 'Por favor seleccione el área del perfil' }]}
                     >
-                        <Select placeholder="Seleccione el área" options={[
-                            { value: 'desarrollo', label: 'Desarrollador' },
-                            { value: 'analisis', label: 'Análisis estadistico' },
-                            { value: 'geoespacial', label: 'Análisis geoespacial' },
-                            { value: 'grafico', label: 'Diseño gráfico' },
-                            { value: 'juridico', label: 'Apoyo jurídico' },
-                            { value: 'administracion', label: 'Apoyo administrativo' },
-                        ]} />
+                        <Select 
+                            placeholder="Seleccione el área" 
+                            options={[
+                                { value: 'desarrollo', label: 'Desarrollador' },
+                                { value: 'analisis', label: 'Análisis estadístico' },
+                                { value: 'geoespacial', label: 'Análisis geoespacial' },
+                                { value: 'grafico', label: 'Diseño gráfico' },
+                                { value: 'juridico', label: 'Apoyo jurídico' },
+                                { value: 'administracion', label: 'Apoyo administrativo' },
+                            ]} 
+                        />
                     </Form.Item>
                 </Form>
             </Modal>

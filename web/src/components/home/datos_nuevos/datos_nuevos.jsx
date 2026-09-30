@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useLocation } from 'react-router'
 import api from '@services/apiService'
 import './datos_nuevos.css'
@@ -8,13 +8,36 @@ export default function DatosNuevos() {
     const [datosNuevos, setDatosNuevos] = useState([])
     const location = useLocation()
 
-    useEffect(() => {
-        const fetchDatosNuevos = async () => {
-            const response = await api.get('/datos-nuevos')
-            setDatosNuevos(response.data.datos_nuevos)
+    const fetchDatosNuevos = useCallback(async (isMounted = true) => {
+        try {
+            const response = await api.get('/datos-nuevos', {
+                params: { _t: new Date().getTime() }
+            });
+            if (isMounted) {
+                const data = Array.isArray(response.data)
+                    ? response.data
+                    : (response.data.datos_nuevos || []);
+                setDatosNuevos(data);
+            }
+        } catch (error) {
+            console.error("Error al cargar datos nuevos:", error);
         }
-        fetchDatosNuevos()
-    }, [location])
+    }, []);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        fetchDatosNuevos(isMounted);
+
+        // Re-consultar automáticamente cuando el usuario regresa a la pestaña
+        const handleFocus = () => fetchDatosNuevos(isMounted);
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            isMounted = false;
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [location, fetchDatosNuevos]);
 
     {/*const imagenes = {
     sube:   "/ico_flecha_positivo.png",

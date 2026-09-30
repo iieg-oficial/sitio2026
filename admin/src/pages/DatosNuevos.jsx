@@ -5,6 +5,7 @@ import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
+import { SafeHtml } from '@components/SafeHtml';
 
 const { Title } = Typography;
 
@@ -25,8 +26,8 @@ export default function DatosNuevos() {
     const fetchTipos = async () => {
         try {
             const response = await api.get('/datos-nuevos/tipo');
-            setTipos(response.data.tipos);
-        } catch (error) {
+            setTipos(response.data.tipos || []);
+        } catch  {
             message.error('Error al cargar los tipos');
         } finally {
             setLoading(false);
@@ -36,9 +37,11 @@ export default function DatosNuevos() {
     const fetchDatosNuevos = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/datos-nuevos');
-            setDatosNuevos(response.data.datos_nuevos);
-        } catch (error) {
+            const response = await api.get('/datos-nuevos', {
+                params: { _t: new Date().getTime() }
+            });
+            setDatosNuevos(response.data.datos_nuevos || []);
+        } catch {
             message.error('Error al cargar los datos nuevos');
         }
         finally {
@@ -70,7 +73,7 @@ export default function DatosNuevos() {
                     await api.delete(`/datos-nuevos/${record.id}`);
                     message.success('Dato nuevo eliminado exitosamente');
                     fetchDatosNuevos();
-                } catch (error) {
+                } catch {
                     message.error('Error al eliminar el dato nuevo');
                 }
             }
@@ -85,10 +88,11 @@ export default function DatosNuevos() {
             } else {
                 await api.post('/datos-nuevos/create', values);
                 message.success('Dato nuevo creado exitosamente');
+                setSearchText('');
             }
             setIsModalVisible(false);
-            fetchDatosNuevos();
-        } catch (error) {
+            await fetchDatosNuevos();
+        } catch {
             message.error(editingData ? 'Error al actualizar el dato nuevo' : 'Error al crear el dato nuevo');
         }
     };
@@ -105,11 +109,8 @@ export default function DatosNuevos() {
             dataIndex: 'descripcion',
             key: 'descripcion',
             sorter: (a, b) => a.descripcion.localeCompare(b.descripcion),
-            render: (text) => (
-                <div
-                className="tiptap-content"
-                dangerouslySetInnerHTML={{ __html: text }}
-                />
+            render: (descripcion) => (
+                <SafeHtml htmlContent={descripcion} className='mt-5 prose max-w-none'/>
             ),
         },
         {

@@ -21,7 +21,11 @@ router = APIRouter(prefix="/posts", tags=["portal - posts"])
 async def listar_posts(
     db: Session = Depends(get_db),
 ):
-    posts = db.execute(select(Posts)).scalars().all()
+
+    # Ordenar por ID descendente (creación más reciente primero)
+    stmt = select(Posts).order_by(Posts.id.desc())
+    posts = db.execute(stmt).scalars().all()
+
     return {
         "posts": posts,
         "total": len(posts),

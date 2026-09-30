@@ -3,6 +3,7 @@ import mec from '@/config/mapalab-embed-content.json';
 
 const BASE_URL = (import.meta.env.VITE_MAPALAB_BASE_URL || '').replace(/\/$/, '');
 const API_KEY = import.meta.env.VITE_MAPALAB_API_KEY || '';
+const WIDGET_VERSION = '1.5.0';
 
 const CHIP_STYLE_BY_COLOR = { morado: 'solid', naranja: 'accent' };
 
@@ -23,7 +24,7 @@ const MARKER_CARD = JSON.stringify({
 
 export default function MapaContacto() {
     const configurado = Boolean(BASE_URL && API_KEY);
-    const status = useScript(configurado ? `${BASE_URL}/widget/v1/mapalab.js` : null);
+    const status = useScript(configurado ? `${BASE_URL}/widget/v1/mapalab.js?v=${WIDGET_VERSION}` : null);
 
     if (configurado && status === 'ready') {
         return (

@@ -11,8 +11,9 @@ router = APIRouter(prefix="/datos-nuevos", tags=["datos-nuevos-public"])
 def read_datos_nuevos(
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los datos nuevos"""
-    datos_nuevos = db.query(DatosNuevos).all()
+
+    
+    datos_nuevos = db.query(DatosNuevos).order_by(DatosNuevos.id.desc()).all()
     return {
         "datos_nuevos": datos_nuevos,
         "total": len(datos_nuevos),

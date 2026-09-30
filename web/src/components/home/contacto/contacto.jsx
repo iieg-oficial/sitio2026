@@ -1,26 +1,43 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import api from "../../../services/apiService";
 import MapaContacto from './mapaContacto';
 import mec from '@/config/mapalab-embed-content.json';
 
+// Asignar clave con valor por defecto
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
 export default function Contacto() {
+
     const [form, setForm] = useState({
         name: "",
         email: "",
         message: "",
     });
     const [status, setStatus] = useState("");
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const recaptchaRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!captchaToken) {
+            setStatus("captcha_error");
+            return;
+        }
+
         setStatus("Enviando...");
         try {
-            // Usamos el servicio de API configurado que ya tiene la baseURL adecuada
-            const response = await api.post("/contacto/", form);
+            const response = await api.post("/contacto/", {
+                ...form,
+                recaptcha_token: captchaToken
+            });
             
             if (response.data.status === "ok") {
                 setStatus("ok");
                 setForm({ name: "", email: "", message: "" });
+                setCaptchaToken(null);
+                recaptchaRef.current?.reset();
             } else {
                 setStatus("error");
             }
@@ -70,6 +87,15 @@ export default function Contacto() {
                             required
                         ></textarea>
                     </div>
+
+                    <div className="my-4 min-h-[78px]">
+                        <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey={RECAPTCHA_SITE_KEY}
+                            onChange={(token) => setCaptchaToken(token)}
+                            onExpired={() => setCaptchaToken(null)}
+                        />
+                    </div>
                     
                     <button 
                         type="submit" 
@@ -82,20 +108,26 @@ export default function Contacto() {
                     </button>
 
                     {status === "ok" && (
-                        <div className="p-4 bg-green-50 border-l-4 border-exito text-exito animate-fade-in">
+                        <div className="p-4 border-l-4 border-exito text-exito animate-fade-in">
                             <p className="font-bold">✓ ¡Éxito!</p>
                             <p className="text-sm">Tu mensaje ha sido enviado correctamente.</p>
                         </div>
                     )}
+                    {status === "captcha_error" && (
+                        <div className="p-4 border-l-4 border-tertiary text-body animate-fade-in">
+                            <p className="font-bold">⚠ Verificación requerida</p>
+                            <p className="text-sm">Por favor, completa la casilla del Captcha antes de enviar.</p>
+                        </div>
+                    )}
                     {status === "error" && (
-                        <div className="p-4 bg-red-50 border-l-4 border-negativo text-negativo animate-fade-in">
+                        <div className="p-4 border-l-4 border-negativo text-negativo animate-fade-in">
                             <p className="font-bold">⚠ Error</p>
                             <p className="text-sm">No pudimos enviar tu mensaje. Por favor intenta de nuevo.</p>
                         </div>
                     )}
                 </form>
+
                 <div className="my-6 text-20 font-bold text-titulo">
-                    
                     <a href={`tel:+52${mec.telefono.replace(/\s+/g, '')}`} className="text-titulo hover:text-tertiary flex items-center">
                         <span className="et--phone mr-4 w-[26px] h-[26px] flex-none"></span> 
                         <span className="flex-1">{mec.telefono}</span>

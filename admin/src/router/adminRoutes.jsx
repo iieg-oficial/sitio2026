@@ -6,6 +6,6 @@ import Paginas from '../pages/Paginas';
 const ADMIN = ['tetlamamakani'];
 
 export const adminRoutes = [
-  protectedRoute('users', <Users />, ADMIN),
-  protectedRoute('paginas', <Paginas />, ADMIN),
+    protectedRoute('users', <Users />, ADMIN),
+    protectedRoute('paginas', <Paginas />, ADMIN),
 ];

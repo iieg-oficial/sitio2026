@@ -207,20 +207,6 @@ def delete_page(
     return {"ok": True}
 
 
-@router.get("/slug/{slug}", response_model=PageResponse)
-def get_page_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener una página por slug"""
-    page = db.query(Page).filter(Page.slug == slug).first()
-    if not page:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Página no encontrada"
-        )
-    return page
-
-
 @router.get("/tree", response_model=list[PageFlat])
 def get_pages_tree(
     db: Session = Depends(get_db),
@@ -245,4 +231,18 @@ def get_page_admin(
     page = db.query(Page).get(page_id)
     if not page:
         raise HTTPException(404)
+    return page
+
+
+@router.get("/slug/{slug}", response_model=PageResponse)
+def get_page_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener una página por slug"""
+    page = db.query(Page).filter(Page.slug == slug).first()
+    if not page:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Página no encontrada"
+        )
     return page

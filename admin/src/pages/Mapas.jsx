@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, DatePicker, Image, Select } from 'antd';
+import { useState, useEffect, useCallback } from 'react';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Image, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
@@ -18,34 +18,64 @@ export default function Mapas() {
     const [tipoMapa, setTipoMapa] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
-    useEffect(() => {
-        fetchMapas();
-        fetchTipoMapa();
-    }, []);
+    // Reactividad para campos de media
+    const imagenUrl = Form.useWatch('imagen', form);
+    const archivoUrl = Form.useWatch('archivo', form);
 
-    const fetchMapas = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchMapas = useCallback(async (search = '', page, pageSize) => {
         setLoading(true);
-        try {
-            const response = await api.get('/mapas/', {
+        setPagination((prevPagination) => {
+            const currentPage = page ?? prevPagination.current;
+            const currentPageSize = pageSize ?? prevPagination.pageSize;
+
+            api.get('/mapas', {
                 params: {
                     ...(search ? { search } : {}),
-                    page,
-                    pageSize
+                    page: currentPage,
+                    pageSize: currentPageSize
                 }
+            }).then((response) => {
+                const rawData = Array.isArray(response.data?.mapas) ? response.data.mapas : [];
+                const sortedMapas = [...rawData].sort((a, b) => (b.id || 0) - (a.id || 0));
+
+                setMapas(sortedMapas);
+                setPagination((prev) => ({
+                    ...prev,
+                    current: currentPage,
+                    pageSize: currentPageSize,
+                    total: response.data?.total || sortedMapas.length
+                }));
+            }).catch(() => {
+                message.error('Error al cargar mapas');
+            }).finally(() => {
+                setLoading(false);
             });
-            setMapas(Array.isArray(response.data?.mapas) ? response.data.mapas : []);
-            setPagination((prev) => ({
-                ...prev,
-                current: page,
-                pageSize,
-                total: response.data.total
-            }));
+
+            return prevPagination;
+        });
+    }, []);
+
+    const fetchTipoMapa = useCallback(async () => {
+        try {
+            const response = await api.get('/mapas/tipos');
+            setTipoMapa(response.data?.tipos || []);
         } catch {
-            message.error('Error al cargar mapas');
-        } finally {
-            setLoading(false);
+            message.error('Error al cargar tipos de mapa');
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchMapas('', 1);
+        fetchTipoMapa();
+
+        const handleFocus = () => {
+            fetchMapas('');
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchMapas, fetchTipoMapa]);
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchMapas(text, 1, pagination.pageSize);
@@ -54,17 +84,6 @@ export default function Mapas() {
     const handleTableChange = (newPagination) => {
         fetchMapas(searchText, newPagination.current, newPagination.pageSize);
     };
-
-    const fetchTipoMapa = async () => {
-        try {
-            const response = await api.get('/mapas/tipos');
-            setTipoMapa(response.data.tipos);
-        } catch {
-            message.error('Error al cargar tipos de mapa');
-        }finally {
-            setLoading(false);
-        }
-    }
 
     const handleCreate = () => {
         setEditingMapa(null);
@@ -89,8 +108,8 @@ export default function Mapas() {
                 try {
                     await api.delete(`/mapas/${record.id}`);
                     message.success('Mapa eliminado exitosamente');
-                    fetchMapas(searchText, pagination.current, pagination.pageSize);
-                } catch (error) {
+                    await fetchMapas(searchText, pagination.current, pagination.pageSize);
+                } catch {
                     message.error('Error al eliminar el mapa');
                 }
             }
@@ -107,8 +126,8 @@ export default function Mapas() {
                 message.success('Mapa creado exitosamente');
             }
             setModalVisible(false);
-            fetchMapas(searchText, pagination.current, pagination.pageSize);
-        } catch (error) {
+            await fetchMapas(searchText, 1, pagination.pageSize);
+        } catch {
             message.error('Error al guardar el mapa');
         }
     };
@@ -118,13 +137,13 @@ export default function Mapas() {
             title: 'Título', 
             dataIndex: 'titulo', 
             key: 'titulo',
-            sorter: (a, b) => a.titulo.localeCompare(b.titulo)
+            sorter: (a, b) => (a.titulo || '').localeCompare(b.titulo || '')
         },
         { 
             title: 'Año', 
             dataIndex: 'anyo', 
             key: 'anyo',
-            sorter: (a, b) => a.anyo - b.anyo
+            sorter: (a, b) => (a.anyo || 0) - (b.anyo || 0)
         },
         {
             title: 'Tipo',
@@ -143,8 +162,12 @@ export default function Mapas() {
             key: 'actions',
             render: (_, record) => (
                 <Space>
-                    <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} />Editar
-                    <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDelete(record)} danger />Eliminar
+                    <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
+                        Editar
+                    </Button>
+                    <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDelete(record)} danger>
+                        Eliminar
+                    </Button>
                 </Space>
             )
         }
@@ -152,8 +175,8 @@ export default function Mapas() {
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }} >
-                <Title level={2}>Mapas</Title>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+                <Title level={2} style={{ margin: 0 }}>Mapas</Title>
                 <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
                     Nuevo Mapa
                 </Button>
@@ -171,12 +194,12 @@ export default function Mapas() {
                     loading={loading} 
                     rowKey="id" 
                     pagination={{
-                            current: pagination.current,
-                            pageSize: pagination.pageSize,
-                            total: pagination.total,
-                            showSizeChanger: true,
-                            showTotal: (total) => `Total ${total} mapas`
-                        }}
+                        current: pagination.current,
+                        pageSize: pagination.pageSize,
+                        total: pagination.total,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} mapas`
+                    }}
                     onChange={handleTableChange}
                 />
             </Card>
@@ -193,99 +216,61 @@ export default function Mapas() {
                     <Form.Item 
                         name="titulo" 
                         label="Título" 
-                        rules={[{ required: true, message: 'Por favor ingresa el título' }]}>
+                        rules={[{ required: true, message: 'Por favor ingresa el título' }]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name="tipo" label="Tipo de Mapa" rules={[{ required: false, message: 'Por favor selecciona el tipo de mapa' }]}>
+                    <Form.Item name="tipo" label="Tipo de Mapa">
                         <Select 
-                        placeholder="Selecciona el tipo de mapa" 
-                        allowClear
-                        showSearch
-                        optionFilterProp="label"
-                        filterOption={(input, option) =>
-                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={Object.entries(tipoMapa).map(([key, value]) => ({ 
-                            key,
-                            value,
-                            label: value, 
-                        }))} />
+                            placeholder="Selecciona el tipo de mapa" 
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={Object.entries(tipoMapa).map(([key, value]) => ({ 
+                                key,
+                                value: key,
+                                label: value, 
+                            }))} 
+                        />
                     </Form.Item>
-                    <Form.Item
-                        name="autor"
-                        label="Autor"
-                        rules={[{ required: false, message: 'Por favor selecciona el autor' }]}
-                    >
+                    <Form.Item name="autor" label="Autor">
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        name="anyo"
-                        label="Año"
-                        rules={[{ required: false, message: 'Por favor ingresa el año' }]}
-                    >
+                    <Form.Item name="anyo" label="Año">
                         <Input type="number" min={0} />
                     </Form.Item>
-                    <Form.Item
-                        name="area"
-                        label="Área"
-                        rules={[{ required: false, message: 'Por favor ingresa el área' }]}
-                    >
+                    <Form.Item name="area" label="Área">
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        name="editor"
-                        label="Editor"
-                        rules={[{ required: false, message: 'Por favor selecciona el editor' }]}
-                    >
+                    <Form.Item name="editor" label="Editor">
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        name="medida"
-                        label="Medidas"
-                        rules={[{ required: false, message: 'Por favor selecciona las medidas' }]}
-                    >
+                    <Form.Item name="medida" label="Medidas">
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        name="escala"
-                        label="Escala"
-                        rules={[{ required: false, message: 'Por favor selecciona la escala' }]}
-                    >
+                    <Form.Item name="escala" label="Escala">
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        name="edicion"
-                        label="Edición"
-                        rules={[{ required: false, message: 'Por favor selecciona la edición' }]}
-                    >
+                    <Form.Item name="edicion" label="Edición">
                         <RichTextEditor />
                     </Form.Item>
                     <Form.Item 
                         name="ubicacion" 
                         label="Ubicación"
                         rules={[{ required: true, message: 'Por favor ingresa la ubicación' }]}
-                        >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="sitio_web"
-                        label="Sitio Web"
-                        rules={[{ required: false, message: 'Por favor selecciona el sitio web' }]}
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        name="informacion"
-                        label="Información"
-                        rules={[{ required: false, message: 'Por favor ingresa la información' }]}
-                    >
+                    <Form.Item name="sitio_web" label="Sitio Web">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="informacion" label="Información">
                         <RichTextEditor />
-                     </Form.Item>
-                    <Form.Item
-                        name="imagen"
-                        label="Imagen"
-                        rules={[{ required: false, message: 'Por favor selecciona la imagen' }]}
-                    >
+                    </Form.Item>
+                    <Form.Item label="Imagen">
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
@@ -298,16 +283,12 @@ export default function Mapas() {
                             <Form.Item name="imagen" noStyle>
                                 <Input placeholder="URL de la imagen" />
                             </Form.Item>
-                            {form.getFieldValue('imagen') ? (
-                                <Image src={form.getFieldValue('imagen')} alt="Vista previa" style={{ maxWidth: 260, borderRadius: 6 }} />
-                            ) : null}
+                            {imagenUrl && (
+                                <Image src={imagenUrl} alt="Vista previa" style={{ maxWidth: 260, borderRadius: 6 }} />
+                            )}
                         </Space>
                     </Form.Item>
-                    <Form.Item
-                        name="archivo"
-                        label="Archivo"
-                        rules={[{ required: false, message: 'Por favor selecciona el archivo' }]}
-                    >
+                    <Form.Item label="Archivo">
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <UploadAcervo
                                 bucket="portal"
@@ -318,13 +299,13 @@ export default function Mapas() {
                                 }}
                             />
                             <Form.Item name="archivo" noStyle>
-                                <Input placeholder="Subir archivo" />
+                                <Input placeholder="URL del archivo" />
                             </Form.Item>
-                            {form.getFieldValue('archivo') ? (
-                                <a href={form.getFieldValue('archivo')} target="_blank" rel="noopener noreferrer">
-                                    Ver archivo
+                            {archivoUrl && (
+                                <a href={archivoUrl} target="_blank" rel="noopener noreferrer">
+                                    Ver archivo subido
                                 </a>
-                            ) : null}
+                            )}
                         </Space>
                     </Form.Item>
                 </Form>
@@ -332,4 +313,3 @@ export default function Mapas() {
         </div>
     );
 }
-  

@@ -39,16 +39,6 @@ async def obtener_arbol_menu(db: Session = Depends(get_db)):
     return construir_arbol_menu(items)
 
 
-@router.get("/paginas/{slug:path}", response_model=PageResponse)
-async def obtener_pagina_por_slug(slug: str, db: Session = Depends(get_db)):
-    pagina = db.query(Page).filter(Page.slug == slug).first()
-
-    if not pagina:
-        raise HTTPException(status_code=404, detail="Página no encontrada")
-
-    return pagina
-
-
 @router.get("/menu")
 def get_menu(db: Session = Depends(get_db)):
     return db.query(MenuItem).order_by(MenuItem.order).all()

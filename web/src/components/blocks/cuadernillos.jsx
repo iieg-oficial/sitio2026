@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import api from '@services/apiService'
 import Searcher from '../pageComponents/searcher';
 import ReactPaginate from 'react-paginate';
@@ -12,20 +12,38 @@ export default function Cuadernillos() {
     const [municipioFilter, setMunicipioFilter] = useState("");
     const [yearFilter, setYearFilter] = useState("");
 
-    const fetchCuadernillos = async () => {
+    const fetchCuadernillos = useCallback(async (isMounted = true) => {
         try {
             setLoadError(false);
-            const response = await api.get('/cuadernillos')
-            setCuadernillos(Array.isArray(response.data?.cuadernillos) ? response.data.cuadernillos : [])
+            const response = await api.get('/cuadernillos', {
+                params: { _t: new Date().getTime() }
+            });
+            if (isMounted){
+                const data = Array.isArray(response.data) 
+                    ? response.data.cuadernillos 
+                    : (response.data.cuadernillos || []);
+                setCuadernillos(data);
+            }
         } catch (error) {
             setLoadError(true);
             setCuadernillos([]);
         }
-    }
+    }, []);
 
     useEffect(() => {
-        fetchCuadernillos()
-    }, []);
+        let isMounted = true;
+
+        fetchCuadernillos(isMounted);
+
+        const handleFocus = () => fetchCuadernillos(isMounted);
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            isMounted = false;
+            window.removeEventListener('focus', handleFocus);
+        };
+
+    }, [fetchCuadernillos]);
 
     // Ya no hace falta transformar nada: anyo y municipio ya vienen del backend.
     // Si necesitas un fallback de año a partir de una fecha, dime el nombre real
@@ -51,7 +69,7 @@ export default function Cuadernillos() {
     );
 
     const filteredCuadernillos = useMemo(() => {
-        return cuadernillosFilter.filter(cuaderno => {
+        const filtered = cuadernillosFilter.filter(cuaderno => {
             const matchesSearch = !searchTerm || keys.some(key => {
                 const value = key.split('.').reduce((obj, part) => obj?.[part], cuaderno);
                 return value?.toString().toLowerCase().includes(searchTerm.toLowerCase());
@@ -60,6 +78,25 @@ export default function Cuadernillos() {
             const matchesMunicipio = !municipioFilter || cuaderno.municipio === municipioFilter;
 
             return matchesSearch && matchesYear && matchesMunicipio;
+        });
+
+        // Ordenamiento: 1° Año (Mayor a Menor) -> 2° Título alfabético (A-Z) -> 3° ID (Backup)
+        return filtered.sort((a, b) => {
+            const yearA = a.anyo ? parseInt(a.anyo, 10) : 0;
+            const yearB = b.anyo ? parseInt(b.anyo, 10) : 0;
+
+            if (yearB !== yearA) {
+                return yearB - yearA;
+            }
+
+            const tituloA = a.titulo || "";
+            const tituloB = b.titulo || "";
+            
+            if (tituloA !== tituloB) {
+                return tituloA.localeCompare(tituloB, 'es', { sensitivity: 'base' });
+            }
+
+            return (b.id || 0) - (a.id || 0);
         });
     }, [cuadernillosFilter, searchTerm, yearFilter, municipioFilter]);
 

@@ -1,36 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useState, useCallback } from 'react';
 import api from '@services/apiService';
 import TrackedLink from '@components/blocks/boton';
+import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
 export default function PlanInstitucional() {
     const [planInstitucional, setPlanInstitucional] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        let isMounted = true;
-
-        const fetchPlanInstitucional = async () => {
-            try {
-                const response = await api.get('/docs_iieg/tipo/plan_institucional');
-                const docs = response.data?.docs_iieg;
-                if (isMounted) {
-                    setPlanInstitucional(Array.isArray(docs) ? docs : []);
-                }
-            } catch (error) {
-                console.error("Error al obtener el plan institucional:", error);
-            } finally {
-                if (isMounted) setLoading(false);
-            }
-        };
-
-        fetchPlanInstitucional();
-
-        return () => {
-            isMounted = false;
-        };
+    const fetchPlanInstitucional = useCallback(async () => {
+        try {
+            const response = await api.get('/docs_iieg/tipo/plan_institucional');
+            const docs = response.data?.docs_iieg;
+            const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
+            setPlanInstitucional(sorted);
+        } catch (error) {
+            console.error("Error al obtener el plan institucional:", error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
-    if (loading) {
+    // Carga inicial y actualización automática al volver a la pestaña/ventana
+    useFetchOnFocus(fetchPlanInstitucional);
+
+    if (loading && planInstitucional.length === 0) {
         return <p className="text-center py-6">Cargando Plan Institucional...</p>;
     }
 

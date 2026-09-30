@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_db, verify_csrf
 from app.core.slugs import make_unique_slug
@@ -19,26 +19,88 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
         select(Subject).where(Subject.id.in_(tema_ids))
     ).scalars().all()
 
-@router.get("/tree", response_model=list[SistemasOut])
-async def obtener_sistemas_tree(
-    db: Session = Depends(get_db)):
-    sistemas = db.execute(select(Sistemas).where(Sistemas.parent_id.is_(None))).scalars().all()
-    return sistemas
 
-
-@router.get("/", response_model=SistemasList)
+@router.get("", response_model=SistemasList)
 def read_sistemas(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
 ):
     """Obtener todos los sistemas"""
-    sistemas = db.execute(select(Sistemas).offset(skip).limit(limit)).scalars().all()
+    sistemas = db.execute(
+        select(Sistemas)
+        .options(selectinload(Sistemas.temas))
+        .order_by(Sistemas.id.desc())
+    ).scalars().all()
 
     return {
         "sistemas": sistemas,
         "total": len(sistemas),
     }
+
+
+@router.get("/tipos")
+def get_tipos():
+    """Obtener los tipos de sistemas disponibles (Colocado ANTES de /{id})"""
+    return {
+        "tipos": {
+            tipo.name: tipo.value for tipo in TipoSistemaEnum
+        }
+    }
+
+
+@router.get("/tree", response_model=list[SistemasOut])
+def obtener_sistemas_tree(
+    db: Session = Depends(get_db)
+):
+    """Obtener árbol de sistemas principales (Colocado ANTES de /{id})"""
+    sistemas = db.execute(
+        select(Sistemas)
+        .options(selectinload(Sistemas.temas))
+        .where(Sistemas.parent_id.is_(None))
+    ).scalars().all()
+    return sistemas
+
+
+@router.get("/slug/{slug}", response_model=SistemasResponse)
+def get_sistemas_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un sistema por slug (Colocado ANTES de /{id})"""
+    sistema = db.execute(
+        select(Sistemas)
+        .options(selectinload(Sistemas.temas))
+        .where(Sistemas.slug == slug)
+    ).scalar_one_or_none()
+
+    if not sistema:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sistema no encontrado",
+        )
+    return sistema
+
+
+@router.get("/{id}", response_model=SistemasOut)
+def get_sistemas_id(
+    id: int,
+    db: Session = Depends(get_db),
+):
+    """Obtener un sistema por ID"""
+    db_sistemas = db.execute(
+        select(Sistemas)
+        .options(selectinload(Sistemas.temas))
+        .where(Sistemas.id == id)
+    ).scalar_one_or_none()
+
+    if not db_sistemas:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sistema no encontrado",
+        )
+    return db_sistemas
+
 
 @router.post("/create", response_model=SistemasOut, status_code=status.HTTP_201_CREATED)
 def create_sistemas(
@@ -46,9 +108,9 @@ def create_sistemas(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
+    """Crear un nuevo sistema"""
     slug = make_unique_slug(db, Sistemas, sistemas.titulo)
 
-    """Crear un nuevo sistema"""
     db_sistemas = Sistemas(
         titulo=sistemas.titulo,
         descripcion=sistemas.descripcion,
@@ -69,27 +131,6 @@ def create_sistemas(
     db.refresh(db_sistemas)
     return db_sistemas
 
-@router.get("/tipos")
-def get_tipos():
-    return{
-        "tipos": {
-            tipo.name: tipo.value for tipo in TipoSistemaEnum
-        }
-    }
-
-@router.get("/{id}", response_model=SistemasOut)
-def get_sistemas_id(
-    id: int,
-    db: Session = Depends(get_db),
-):
-    """Obtener un sistema por ID"""
-    db_sistemas = db.get(Sistemas, id)
-    if not db_sistemas:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Sistema no encontrado",
-        )
-    return db_sistemas
 
 @router.patch("/{id}", response_model=SistemasOut)
 def update_sistemas(
@@ -106,7 +147,7 @@ def update_sistemas(
             detail="Sistema no encontrado",
         )
 
-    update_data = sistemas.dict(exclude_unset=True)
+    update_data = sistemas.model_dump(exclude_unset=True)
 
     if "titulo" in update_data and update_data["titulo"] != db_sistemas.titulo:
         update_data["slug"] = make_unique_slug(
@@ -123,13 +164,13 @@ def update_sistemas(
     if "tema_ids" in update_data:
         db_sistemas.temas = _load_temas(db, update_data.pop("tema_ids") or [])
 
-
     for campo, valor in update_data.items():
         setattr(db_sistemas, campo, valor)
 
     db.commit()
     db.refresh(db_sistemas)
     return db_sistemas
+
 
 @router.delete("/{id}", response_model=SistemasOut)
 def delete_sistemas(
@@ -147,16 +188,3 @@ def delete_sistemas(
     db.delete(db_sistemas)
     db.commit()
     return db_sistemas
-@router.get("/slug/{slug}", response_model=SistemasResponse)
-def get_sistemas_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener un sistema por slug"""
-    sistema = db.execute(select(Sistemas).where(Sistemas.slug == slug)).scalar_one_or_none()
-    if not sistema:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Sistema no encontrado",
-        )
-    return sistema

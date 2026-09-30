@@ -9,20 +9,23 @@ from app.schemas.organos import OrganosCreate, OrganosOut, OrganosResponse
 
 router = APIRouter(prefix="/organos", tags=["organos"])
 
-@router.get("/", response_model=OrganosResponse)
+
+@router.get("", response_model=OrganosResponse)
 def read_organos(
     db: Session = Depends(get_db),
-    ):
-    organos = db.query(Organos).all()
+):
+    """Obtener todos los organos"""
+    organos = db.query(Organos).order_by(Organos.id.desc()).all()
     return {"organos": organos, "total": len(organos)}
 
 
-@router.post("/create", response_model=OrganosOut)
+@router.post("/create", response_model=OrganosOut, status_code=status.HTTP_201_CREATED)
 def create_organos(
     organos: OrganosCreate,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
-    ):
+):
+    """Crear un nuevo organo"""
     slug = slugify(organos.titulo)
     base_slug = slug
     contador = 1
@@ -41,13 +44,15 @@ def create_organos(
     db.refresh(db_organos)
     return db_organos
 
+
 @router.patch("/{id}", response_model=OrganosOut)
 def update_organos(
     id: int,
     organos: OrganosCreate,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
-    ):
+):
+    """Actualizar un organo"""
     db_organos = db.query(Organos).filter(Organos.id == id).first()
     if not db_organos:
         raise HTTPException(
@@ -79,12 +84,14 @@ def update_organos(
     db.refresh(db_organos)
     return db_organos
 
+
 @router.delete("/{id}")
 def delete_organos(
     id: int,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
-    ):
+):
+    """Eliminar un organo"""
     db_organos = db.query(Organos).filter(Organos.id == id).first()
     if not db_organos:
         raise HTTPException(
@@ -94,6 +101,7 @@ def delete_organos(
     db.delete(db_organos)
     db.commit()
     return {"message": "Organo eliminado correctamente"}
+
 
 @router.get("/slug/{slug}", response_model=OrganosOut)
 def get_organos_slug(
