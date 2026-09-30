@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
     Card,
     Typography,
@@ -43,7 +43,7 @@ export default function Paginas() {
     const [editingPage, setEditingPage] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const fetchPages = async () => {
+    async function fetchPages() {
         setLoading(true);
         try {
             const res = await api.get('/paginas');
@@ -51,20 +51,19 @@ export default function Paginas() {
             setPages(normalizedPages);
         } catch (err) {
             console.error('Error fetching pages:', err);
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
-    };
+    }
 
-    const fetchPagesTree = async () => {
+    async function fetchPagesTree() {
         try {
             const res = await api.get('/paginas/tree');
             setPagesTree(flattenTree(res.data));
         } catch (err) {
             console.error('Error fetching pages tree:', err);
         }
-    };
+    }
 
     useEffect(() => {
         fetchPages();
@@ -91,7 +90,6 @@ export default function Paginas() {
     const flatOrderedPages = useMemo(() => flattenOrderedPages(pages), [pages]);
     const sortableIds = useMemo(() => flatOrderedPages.map((page) => page.id), [flatOrderedPages]);
 
-
     const handleCreate = () => {
         setEditingPage(null);
         form.resetFields();
@@ -102,7 +100,6 @@ export default function Paginas() {
         setEditingPage(record);
         const formattedRecord = { ...record };
         if (formattedRecord.updated_at) {
-            // Format "YYYY-MM-DDTHH:mm:ss" to "YYYY-MM-DD" for the date input
             formattedRecord.updated_at = formattedRecord.updated_at.split('T')[0];
         }
         form.setFieldsValue(formattedRecord);
@@ -320,7 +317,6 @@ export default function Paginas() {
                         rules={[{ required: false, message: 'Por favor seleccione el padre' }]}
                     >
                         <Select
-                            value={pagesTree?.parent_id}
                             onChange={(value) => form.setFieldValue('parent_id', value)}
                         >
                             <Select.Option value={null}>Sin Padre</Select.Option>
@@ -331,16 +327,14 @@ export default function Paginas() {
                             ))}
                         </Select>
                     </Form.Item>
-
-
                 </Form>
             </Modal>
         </div>
-    )
+    );
 }
 
 function flattenTree(pagesTree, depth = 0) {
-    return pagesTree.flatMap((page) => {
+    return (pagesTree || []).flatMap((page) => {
         const { subpages = [], ...rest } = page;
         return [{ ...rest, depth }, ...flattenTree(subpages, depth + 1)];
     });

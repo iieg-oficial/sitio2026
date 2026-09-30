@@ -31,7 +31,7 @@ export default function Documentacion() {
         fetchTipo();
         fetchSistemas();
         fetchDocumentaciones('', 1, pagination.pageSize);
-    }, [fetchDocumentaciones]);
+    }, []);
 
     const getDynamicFolder = () => {
         let folderPath = '/documentacion';

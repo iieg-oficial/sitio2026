@@ -28,7 +28,7 @@ export default function Flashes() {
         fetchPeriodo();
         fetchMeses();
         fetchFlashes('', 1, pagination.pageSize);
-    }, [fetchFlashes]);
+    }, []);
 
     const fetchPeriodo = async () => {
         try{

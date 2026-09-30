@@ -18,7 +18,6 @@ from app.api.routes import (
     auth,
     banner,
     banner_public,
-    borradores,
     contacto,
     cuadernillos,
     cuadernillos_public,
@@ -39,7 +38,6 @@ from app.api.routes import (
     mapa,
     mapa_public,
     media,
-    menu,
     modulos,
     modulos_public,
     organos,
@@ -65,7 +63,6 @@ from app.api.routes import (
     snieg_public,
     subject,
     subject_public,
-    users,
     seo_public,
 )
 
@@ -124,6 +121,7 @@ def create_app() -> FastAPI:
     # Rutas públicas del sitio web
     app.include_router(public.router, prefix=settings.web_prefix)
     app.include_router(pages_public.router, prefix=settings.web_prefix)
+    app.include_router(pages.router,prefix=settings.admin_prefix)
     app.include_router(preview.public_router, prefix=settings.web_prefix)
     app.include_router(public.router, prefix=settings.web_prefix)
     app.include_router(posts.router,prefix=settings.admin_prefix)
