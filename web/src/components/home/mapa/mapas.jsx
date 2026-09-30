@@ -6,6 +6,7 @@ import TrackedLink from '@components/blocks/boton'
 
 const BASE_MEDIA_URL = import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo'
 const THUMB_BASE_URL = `${BASE_MEDIA_URL}/thumb/portal/mapas`
+const DEFAULT_IMAGE = `${BASE_MEDIA_URL}/portal/img_postlink.png`
 
 export default function Mapas() {
     const [mapas, setMapas] = useState([])
@@ -57,23 +58,28 @@ export default function Mapas() {
 
                 const srcImagen = thumb 
                     ? `${THUMB_BASE_URL}/${thumb}?w=560` 
-                    : null;
+                    : DEFAULT_IMAGE;
 
                 return (
                 <TrackedLink to={`/galeria-de-mapas/${mapa.slug}`} key={mapa.id}>
-                    <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl bg-card">  
+                    <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl">  
                 
-                        <span className='mynaui--map-pin absolute inset-0 m-auto w-12 h-12 opacity-15' />
-                        {srcImagen && <img 
+                        <img 
                             src={srcImagen}
                             alt={titulo} 
-                            className='relative w-full h-full object-cover image-mapa'
-                            loading='lazy'
-                            decoding='async'
+                            className='w-full h-full object-cover image-mapa'
                             onError={(e) => {
-                                e.currentTarget.style.display = 'none'
-                            }}
-                            />}
+                                    if (!e.target.dataset.triedFallback) {
+                                        e.target.dataset.triedFallback = 'true';
+                                        e.target.src = mapa.imagen 
+                                            ? mapa.imagen 
+                                            : DEFAULT_IMAGE;
+                                    } else {                                        
+                                        e.target.onerror = null;
+                                        e.target.src = DEFAULT_IMAGE;
+                                    }
+                                }}
+                            />
                         <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
                             
                                 {titulo && <h3 className='text-white text-22 font-garet-bold font-800'>{titulo}</h3>}
