@@ -1,21 +1,32 @@
-from fastapi import APIRouter, Query, Depends
+import os
+import logging
+import html
+from fastapi import APIRouter, Query, Depends, Header, HTTPException, status
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import select
-import logging
 
 from app.core.database import get_db
 from app.models.page import Page
 from app.models.cursos import Cursos
 from app.models.flashes import Flashes
 from app.models.mapa import Mapa
-from app.models.posts import Posts, GalleryImage
+from app.models.posts import Posts
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/seo-preview", tags=["seo-public"])
 
-@router.get("", response_class=HTMLResponse)
+INTERNAL_SEO_SECRET = os.getenv("INTERNAL_SEO_SECRET")
+
+def verify_internal_request(x_internal_token: str = Header(None, alias="X-Internal-Token")):
+    if not INTERNAL_SEO_SECRET or x_internal_token != INTERNAL_SEO_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acceso no autorizado a endpoint interno"
+        )
+
+@router.get("", response_class=HTMLResponse, dependencies=[Depends(verify_internal_request)])
 def seo_preview(
     path: str = Query("/", description="Ruta enviada por Nginx"),
     db: Session = Depends(get_db)
@@ -29,7 +40,7 @@ def seo_preview(
     seo_keywords = "estadistica, jalisco, iieg"
 
     try:
-        # --- CASO 1: Ruta de 1 nivel (ej. /preguntas-frecuentes o /nuestros-productos) ---
+        # --- CASO 1: Ruta de 1 nivel ---
         if len(segments) == 1:
             slug = segments[0]
             stmt = select(Page).where((Page.slug == slug) | (Page.slug == f"/{slug}"))
@@ -86,9 +97,10 @@ def seo_preview(
     except Exception as e:
         logger.error(f"Error procesando metadata SEO para la ruta '{path}': {e}", exc_info=True)
 
-    # Sanitizar valores
+    # Sanitizar valores por defecto
     seo_title = seo_title or "IIEG Jalisco"
     seo_desc = seo_desc or "Instituto de Información Estadística y Geográfica de Jalisco"
+    seo_keywords = seo_keywords or "estadistica, jalisco, iieg"
     seo_image = seo_image or "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"
 
     # Convertir a URL absoluta si es relativa
@@ -96,29 +108,36 @@ def seo_preview(
         base_domain = "https://iieg.jalisco.gob.mx"
         seo_image = f"{base_domain}/{seo_image.lstrip('/')}"
 
+    # Escapar contra Reflected XSS / HTML Injection (quote=True escapa las comillas simples y dobles)
+    safe_title = html.escape(str(seo_title), quote=True)
+    safe_desc = html.escape(str(seo_desc), quote=True)
+    safe_keywords = html.escape(str(seo_keywords), quote=True)
+    safe_image = html.escape(str(seo_image), quote=True)
+    safe_path = html.escape(str(path), quote=True)
+
     html_content = f"""<!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>{seo_title}</title>
-    <meta name="description" content="{seo_desc}" />
-    <meta name="keywords" content="{seo_keywords}" />
+    <title>{safe_title}</title>
+    <meta name="description" content="{safe_desc}" />
+    <meta name="keywords" content="{safe_keywords}" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="{seo_title}" />
-    <meta property="og:description" content="{seo_desc}" />
-    <meta property="og:image" content="{seo_image}" />
-    <meta property="og:image:secure_url" content="{seo_image}" />
+    <meta property="og:title" content="{safe_title}" />
+    <meta property="og:description" content="{safe_desc}" />
+    <meta property="og:image" content="{safe_image}" />
+    <meta property="og:image:secure_url" content="{safe_image}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:url" content="https://iieg.jalisco.gob.mx{path}" />
+    <meta property="og:url" content="https://iieg.jalisco.gob.mx{safe_path}" />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{seo_title}" />
-    <meta name="twitter:description" content="{seo_desc}" />
-    <meta name="twitter:image" content="{seo_image}" />
+    <meta name="twitter:title" content="{safe_title}" />
+    <meta name="twitter:description" content="{safe_desc}" />
+    <meta name="twitter:image" content="{safe_image}" />
 </head>
 <body></body>
 </html>"""

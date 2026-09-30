@@ -27,7 +27,7 @@ services:
     environment:
       ACERVO_UPSTREAM_URL: ${ACERVO_UPSTREAM_URL:?ACERVO_UPSTREAM_URL is required}
       ACERVO_UPSTREAM_HOST: ${ACERVO_UPSTREAM_HOST:?ACERVO_UPSTREAM_HOST is required}
-      NGINX_ENVSUBST_FILTER: "^ACERVO_"
+      NGINX_ENVSUBST_FILTER: "^(ACERVO_|INTERNAL_SEO_)"
     depends_on:
       - api
       - ckan
