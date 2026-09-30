@@ -68,17 +68,13 @@ export default function Mapas() {
                             src={srcImagen}
                             alt={titulo} 
                             className='w-full h-full object-cover image-mapa'
+                            loading='lazy'
+                            decoding='async'
                             onError={(e) => {
-                                    if (!e.target.dataset.triedFallback) {
-                                        e.target.dataset.triedFallback = 'true';
-                                        e.target.src = mapa.imagen 
-                                            ? mapa.imagen 
-                                            : DEFAULT_IMAGE;
-                                    } else {                                        
-                                        e.target.onerror = null;
-                                        e.target.src = DEFAULT_IMAGE;
-                                    }
-                                }}
+                                if (e.target.dataset.fallback) return
+                                e.target.dataset.fallback = 'true'
+                                e.target.src = DEFAULT_IMAGE
+                            }}
                             />
                         <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
                             

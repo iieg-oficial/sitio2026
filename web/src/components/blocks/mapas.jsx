@@ -216,17 +216,11 @@ export default function Mapas() {
                                                     
 
                                                     {mapa.imagen && (
-                                                        <img src={srcImagen} alt={titulo} className='w-full h-full object-cover image-mapa' 
+                                                        <img src={srcImagen} alt={titulo} className='w-full h-full object-cover image-mapa' loading='lazy' decoding='async'
                                                             onError={(e) => {
-                                                                if (!e.target.dataset.triedFallback) {
-                                                                    e.target.dataset.triedFallback = 'true';
-                                                                    e.target.src = mapa.imagen 
-                                                                        ? mapa.imagen 
-                                                                        : DEFAULT_IMAGE;
-                                                                } else {                                        
-                                                                    e.target.onerror = null;
-                                                                    e.target.src = DEFAULT_IMAGE;
-                                                                }
+                                                                if (e.target.dataset.fallback) return
+                                                                e.target.dataset.fallback = 'true'
+                                                                e.target.src = DEFAULT_IMAGE
                                                             }}
                                                         />
                                                     )}
