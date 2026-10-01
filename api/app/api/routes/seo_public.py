@@ -1,6 +1,8 @@
 import os
-import logging
+import secrets
 import html
+import logging
+from typing import Annotated
 from fastapi import APIRouter, Query, Depends, Header, HTTPException, status
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session, selectinload
@@ -17,13 +19,23 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/seo-preview", tags=["seo-public"])
 
-INTERNAL_SEO_SECRET = os.getenv("INTERNAL_SEO_SECRET")
+def verify_internal_request(
+    x_internal_token: Annotated[
+        str | None, Header(alias="X-Internal-Token")
+    ] = None,
+):
+    internal_seo_secret = os.getenv("INTERNAL_SEO_SECRET")
 
-def verify_internal_request(x_internal_token: str = Header(None, alias="X-Internal-Token")):
-    if not INTERNAL_SEO_SECRET or x_internal_token != INTERNAL_SEO_SECRET:
+    if not internal_seo_secret or not x_internal_token:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Acceso no autorizado a endpoint interno"
+            detail="Acceso no autorizado a endpoint interno",
+        )
+
+    if not secrets.compare_digest(x_internal_token, internal_seo_secret):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Acceso no autorizado a endpoint interno",
         )
 
 @router.get("", response_class=HTMLResponse, dependencies=[Depends(verify_internal_request)])
