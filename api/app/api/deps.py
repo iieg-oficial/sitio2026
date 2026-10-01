@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import decodificar_token, verificar_csrf_token
 from app.core.settings import get_settings
+from app.core.token_blacklist import es_token_revocado
 from app.models.user import Usuario
 
 settings = get_settings()
@@ -26,50 +27,69 @@ async def get_current_user(
     if payload is None:
         raise credentials_exception
 
-    # 1. CORREGIDO: El 'sub' ahora es el ID del usuario (coincide con tu login)
-    user_id: int | None = payload.get("sub")
-    if user_id is None:
+    jti = payload.get("jti")
+    sub = payload.get("sub")
+    if jti is None or sub is None:
         raise credentials_exception
 
-    # 2. CORREGIDO: Buscamos por ID en la base de datos, no por username
-    usuario = db.query(Usuario).filter(Usuario.id == user_id).first()
+    try:
+        user_id = int(sub)
+    except (TypeError, ValueError):
+        raise credentials_exception
+
+    if await es_token_revocado(jti):
+        raise credentials_exception
+
+    usuario = db.get(Usuario, user_id)
     if usuario is None:
         raise credentials_exception
 
-    # 3. NUEVO (Solución al reporte): Validar el cambio de contraseña obligatorio en el backend
-    # (Asegúrate de que tu modelo Usuario tenga este campo o atributo)
-    if getattr(usuario, "must_change_password", False):
+    if payload.get("tv") != usuario.token_version:
+        raise credentials_exception
+
+    request.state.token_payload = payload
+    return usuario
+
+async def get_active_user(
+    current_user: Usuario = Depends(get_current_user),
+) -> Usuario:
+    if current_user.must_change_password:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Debe cambiar su contraseña antes de realizar esta acción.",
         )
+    return current_user
 
-    return usuario
 
+def _check_csrf(request: Request, user: Usuario) -> None:
+    if request.method in ("POST", "PUT", "DELETE", "PATCH"):
+        csrf_token = request.headers.get("X-CSRF-Token")
+        if not csrf_token:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, "CSRF token requerido")
+        if not verificar_csrf_token(csrf_token, user.id):
+            raise HTTPException(status.HTTP_403_FORBIDDEN, "CSRF token inválido")
+
+        
 
 async def verify_csrf(
     request: Request,
+    current_user: Usuario = Depends(get_active_user),
+) -> Usuario:
+    _check_csrf(request, current_user)
+    return current_user
+
+
+async def verify_csrf_allow_pending(
+    request: Request,
     current_user: Usuario = Depends(get_current_user),
-):
-    if request.method in ["POST", "PUT", "DELETE", "PATCH"]:
-        csrf_token = request.headers.get("X-CSRF-Token")
-        if not csrf_token:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="CSRF token requerido",
-            )
-
-        if not verificar_csrf_token(csrf_token, current_user.username):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="CSRF token inválido",
-            )
-
+) -> Usuario:
+    """Para cambio de contraseña y logout: CSRF sí, bloqueo must_change no."""
+    _check_csrf(request, current_user)
     return current_user
 
 
 def require_role(allowed_roles: list[str]):
-    async def role_checker(current_user: Usuario = Depends(get_current_user)) -> Usuario:
+    async def role_checker(current_user: Usuario = Depends(get_active_user)) -> Usuario:
         if current_user.role not in allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -78,3 +98,6 @@ def require_role(allowed_roles: list[str]):
         return current_user
 
     return role_checker
+
+
+

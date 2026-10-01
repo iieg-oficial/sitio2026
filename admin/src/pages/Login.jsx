@@ -19,7 +19,7 @@ export default function Login() {
 
             if (data.user.must_change_password) {
                 navigate('/change-password');
-            } else {
+            } else {zzz
                 navigate('/');
             }
         } catch (error) {

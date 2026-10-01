@@ -1,7 +1,7 @@
 import json
 from functools import lru_cache
-from typing import Annotated
 from urllib.parse import quote_plus
+from typing import Literal
 
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -18,9 +18,10 @@ class Settings(BaseSettings):
     database_max_overflow: int = 20
     database_pool_timeout: int = 10
     secret_key: str
-    algorithm: str
+    algorithm: Literal["HS256"]
     access_token_expire_minutes: int
     redis_url: str
+    redis_blacklist_url: str
     acervo_endpoint: str
     acervo_public_endpoint: str
     acervo_s3_url: str
@@ -43,7 +44,7 @@ class Settings(BaseSettings):
     cookie_domain: str | None = None
     cookie_secure: bool
     cookie_httponly: bool
-    cookie_samesite: str
+    cookie_samesite: Literal["lax", "strict", "none"]
     csrf_secret_key: str
     csrf_token_expire_minutes: int
     docs_url: str | None = None

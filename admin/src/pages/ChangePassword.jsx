@@ -32,11 +32,12 @@ export default function ChangePassword() {
             });
             message.success('Contraseña actualizada exitosamente');
 
-            if (user?.must_change_password) {
-                await refreshUser();
-                navigate('/');
+            const loggedUser = await refreshUser(); // o el usuario que devuelve la respuesta del login
+
+            if (loggedUser?.must_change_password) {
+              navigate('/cambiar-contrasena', { replace: true });
             } else {
-                navigate(-1);
+              navigate('/reportes', { replace: true });
             }
         } catch (error) {
             console.error(error);

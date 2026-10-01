@@ -1,12 +1,12 @@
-from datetime import timedelta
-
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy.orm import Session
 
+from app.core.token_blacklist import revocar_token
+from app.core.cookies import borrar_sesion, emitir_sesion
 from app.api.deps import get_current_user
 from app.core.database import get_db
 from app.core.limiter import get_login_username_key, limiter
-from app.core.security import crear_access_token, crear_csrf_token, verify_password
+from app.core.security import crear_csrf_token, verify_password
 from app.core.settings import get_settings
 from app.models.user import Usuario
 from app.schemas.user import LoginRequest, LoginResponse, UsuarioResponse
@@ -31,43 +31,24 @@ async def login(
             detail="Credenciales inválidas",
         )
 
-    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
-    access_token = crear_access_token(
-        data={"sub": usuario.id}, expires_delta=access_token_expires
-    )
-
-    response.set_cookie(
-        key=settings.cookie_name,
-        value=access_token,
-        max_age=settings.cookie_max_age,
-        httponly=settings.cookie_httponly,
-        secure=settings.cookie_secure,
-        samesite=settings.cookie_samesite,
-        domain=settings.cookie_domain,
-        path="/",
-    )
-
-    csrf_token = crear_csrf_token(usuario.username)
+    emitir_sesion(response, usuario)
 
     return LoginResponse(
-        csrf_token=csrf_token,
+        csrf_token=crear_csrf_token(usuario.id),
         user=UsuarioResponse.model_validate(usuario),
     )
 
 
 @router.post("/cerrar-sesion")
 async def logout(
+    request: Request,
     response: Response,
     current_user: Usuario = Depends(get_current_user),
 ):
-    response.delete_cookie(
-        key=settings.cookie_name,
-        httponly=settings.cookie_httponly,
-        secure=settings.cookie_secure,
-        samesite=settings.cookie_samesite,
-        domain=settings.cookie_domain,
-        path="/",
-    )
+    
+    payload = request.state.token_payload
+    await revocar_token(payload["jti"], payload["exp"])
+    borrar_sesion(response)
     return {"message": "Sesión cerrada exitosamente"}
 
 
@@ -78,7 +59,7 @@ async def get_current_user_info(current_user: Usuario = Depends(get_current_user
 
 @router.get("/csrf")
 async def refresh_csrf_token(current_user: Usuario = Depends(get_current_user)):
-    return {"csrf_token": crear_csrf_token(current_user.username)}
+    return {"csrf_token": crear_csrf_token(current_user.id)}
 
 
 @router.get("/verificar")
