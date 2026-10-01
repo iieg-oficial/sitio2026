@@ -370,6 +370,13 @@ export default function Posts() {
                             ))}
                         </Space>
                     </Form.Item>
+
+                    <Form.Item name="slug"
+                        label="Url"
+                        rules={[{ required: false, message: 'Por favor ingrese la url' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>

@@ -31,7 +31,7 @@ export default function Documentacion() {
         fetchTipo();
         fetchSistemas();
         fetchDocumentaciones('', 1, pagination.pageSize);
-    }, [fetchDocumentaciones]);
+    }, []);
 
     const getDynamicFolder = () => {
         let folderPath = '/documentacion';
@@ -354,7 +354,12 @@ export default function Documentacion() {
                     >
                         <Input />
                     </Form.Item>
-
+                    <Form.Item name="slug"
+                        label="Url"
+                        rules={[{ required: false, message: 'Por favor ingrese la url' }]}
+                    >
+                        <Input />
+                    </Form.Item>
                 </Form>
             </Modal>
         </div>
