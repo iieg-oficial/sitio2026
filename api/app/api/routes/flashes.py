@@ -106,6 +106,20 @@ def listar_meses():
         }
     }
 
+@router.get("/slug/{slug}", response_model=FlashesOut)
+def get_flashes_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un flash por slug"""
+    flash = db.execute(select(Flashes).where(Flashes.slug == slug)).scalar_one_or_none()
+    if not flash:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Flash no encontrado",
+        )
+    return flash
+
 @router.get("/{id}", response_model=FlashesResponse)
 def get_flashes_by_id(
     id: int,
@@ -159,6 +173,9 @@ def update_flashes(
     for campo, valor in update_data.items():
         setattr(db_flashes, campo, valor)
 
+    if "slug" in update_data:
+        db_flashes.slug = update_data["slug"]
+
     db.commit()
     db.refresh(db_flashes)
     return db_flashes
@@ -180,16 +197,4 @@ def delete_flashes(
     db.commit()
     return db_flashes
 
-@router.get("/slug/{slug}", response_model=FlashesOut)
-def get_flashes_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener un flash por slug"""
-    flash = db.execute(select(Flashes).where(Flashes.slug == slug)).scalar_one_or_none()
-    if not flash:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Flash no encontrado",
-        )
-    return flash
+

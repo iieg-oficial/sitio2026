@@ -34,6 +34,24 @@ def _slug_from_menu_item(page_id: str, db: Session) -> tuple[str, str]:
     return f"pagina-{page_id}", "Nueva Página"
 
 
+@router.get("/tree", response_model=list[PageFlat])
+def get_pages_tree(
+    db: Session = Depends(get_db),
+):
+    """Obtener páginas en formato tree"""
+    pages = db.execute(select(Page).where(Page.parent_id.is_(None))).scalars().all()
+    return pages
+
+
+@router.get("/padres", response_model=list[PageFlat])
+async def obtener_paginas_padres(
+    db: Session = Depends(get_db)
+):
+    pages = db.execute(select(Page)).scalars().all()
+    return pages
+
+
+
 @router.get("", response_model=PageResponseList)
 def list_pages(
     db: Session = Depends(get_db),
@@ -153,6 +171,30 @@ def reorder_pages(
     return {"ok": True}
 
 
+@router.get("/slug/{slug}", response_model=PageResponse)
+def get_page_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener una página por slug"""
+    page = db.query(Page).filter(Page.slug == slug).first()
+    if not page:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Página no encontrada"
+        )
+    return page
+
+
+@router.get("/{page_id:int}", response_model=PageResponse)
+def get_page_admin(
+    page_id: int, db: Session = Depends(get_db),
+):
+    page = db.query(Page).get(page_id)
+    if not page:
+        raise HTTPException(404)
+    return page
+
+
 @router.put("/{page_id:int}", response_model=PageUpdate)
 def update_page(
     page_id: int,
@@ -207,42 +249,7 @@ def delete_page(
     return {"ok": True}
 
 
-@router.get("/tree", response_model=list[PageFlat])
-def get_pages_tree(
-    db: Session = Depends(get_db),
-):
-    """Obtener páginas en formato tree"""
-    pages = db.execute(select(Page).where(Page.parent_id.is_(None))).scalars().all()
-    return pages
 
 
-@router.get("/padres", response_model=list[PageFlat])
-async def obtener_paginas_padres(
-    db: Session = Depends(get_db)
-):
-    pages = db.execute(select(Page)).scalars().all()
-    return pages
 
 
-@router.get("/{page_id:int}", response_model=PageResponse)
-def get_page_admin(
-    page_id: int, db: Session = Depends(get_db),
-):
-    page = db.query(Page).get(page_id)
-    if not page:
-        raise HTTPException(404)
-    return page
-
-
-@router.get("/slug/{slug}", response_model=PageResponse)
-def get_page_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener una página por slug"""
-    page = db.query(Page).filter(Page.slug == slug).first()
-    if not page:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Página no encontrada"
-        )
-    return page

@@ -22,7 +22,7 @@ from app.api.routes import (
     pages, pages_public, perfiles, perfiles_public, posts, posts_public,
     preguntas, preguntas_public, preview, profesores, profesores_public,
     public, reportes, reportes_public, search_public, sistemas, sistemas_public,
-    snieg, snieg_public, subject, subject_public, users
+    snieg, snieg_public, subject, subject_public, users, seo_public
 )
 
 settings = get_settings()
@@ -103,6 +103,7 @@ def create_app() -> FastAPI:
     app.include_router(banner_public.router, prefix=settings.web_prefix)
     app.include_router(cuadernillos_public.router, prefix=settings.web_prefix)
     app.include_router(search_public.router, prefix=settings.web_prefix)
+    app.include_router(seo_public.router,prefix=settings.web_prefix)
 
     # -------------------------------------------------------------------------
     # ROUTERS PRIVADOS / ADMINISTRACIÓN (Requieren token)
@@ -144,7 +145,6 @@ def create_app() -> FastAPI:
     # Incluir el super-router de administración en la app principal
     app.include_router(admin_router)
 
-    # Healthchecks
     @app.get("/", tags=["health"])
     async def healthcheck():
         return {
