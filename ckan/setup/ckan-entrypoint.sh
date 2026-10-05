@@ -31,7 +31,12 @@ service cron start
 echo "Corriendo chequeos y migraciones (prerun)..."
 python3 /srv/app/prerun.py
 
-# 4. Pasar el control al proceso original de CKAN (uWSGI)
+# 4. Arrancar CKAN con uWSGI (servidor de producción)
 echo "Arrancando servidor web de CKAN..."
-# Usamos ckan-uwsgi que es el estándar de las imágenes 2.11 oficiales
-exec ckan -c /srv/app/ckan.ini run -H 0.0.0.0 -p 5000
+exec uwsgi \
+  --http-socket 0.0.0.0:5000 \
+  --wsgi-file /srv/app/wsgi.py --callable application \
+  --master --enable-threads --lazy-apps --need-app \
+  --processes 2 --threads 2 \
+  --harakiri 60 --vacuum --die-on-term \
+  --buffer-size 32768

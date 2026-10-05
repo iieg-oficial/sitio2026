@@ -232,4 +232,10 @@ server {
         include /usr/share/nginx/html/csp-header.conf;
         add_header Cache-Control "no-store" always;
     }
+
+    # Bloquear consola y recursos del depurador de Werkzeug
+    location ^~ /datos-abiertos/console { return 404; }
+    location = /console { return 404; }
+
+    if ($arg___debugger__) { return 403; }
 }
