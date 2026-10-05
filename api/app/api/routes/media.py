@@ -283,7 +283,7 @@ async def subir_archivo(
     object_key = f"{folder_clean}/{safe_name}" if folder_clean else safe_name
 
     try:
-        url = await acervo_service.upload_file(file, object_key, bucket=bucket)
+        url, _ = await acervo_service.upload_file(file, object_key, bucket=bucket)
 
         if bucket == PORTAL_BUCKET:
             folder = _ensure_folder_path_exists(db, folder)
