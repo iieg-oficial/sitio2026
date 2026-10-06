@@ -12,7 +12,7 @@ export default function Galeria({ images }) {
 
     return (
         <div className="galeria-imagenes">
-            {images.length === 1 ? (
+            {images.length === 2 ? (
                 <>
                 {images.map((imagen) => (
                         <img src={imagen.url} alt={`Imagen ${imagen.id}`} />                    
