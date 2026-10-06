@@ -12,7 +12,7 @@ export default function Galeria({ images }) {
 
     return (
         <div className="galeria-imagenes">            
-            {images && images.length >= 2 ? (
+            {images && images.length >= 3 ? (
                 <>
                     <Swiper
                         style={{
