@@ -154,6 +154,7 @@ services:
       CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
       CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
       LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?file:///srv/app/licenses.json}
+      CKAN__DATASETS_PER_PAGE: ${CKAN_DATASETS_PER_PAGE:-20}
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme
