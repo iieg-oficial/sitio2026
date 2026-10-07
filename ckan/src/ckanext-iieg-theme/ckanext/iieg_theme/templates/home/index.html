@@ -16,7 +16,7 @@
 
                 <div class="datasets">
                     <h3 class="title">{{ _('Recientes') }}</h3>
-                    {% set recent_datasets = h.recently_changed_packages(5) %}
+                    {% set recent_datasets = h.recently_changed_packages(8) %}
                     {% if recent_datasets %}
                         <ul class="recent-datasets-list" style="list-style: none; padding-left: 0; margin-top: 15px;">
                         {% for dataset in recent_datasets %}
@@ -33,7 +33,7 @@
                             </li>
                         {% endfor %}
                         </ul>
-                        {% if recent_datasets|length >= 5 %}
+                        {% if recent_datasets|length >= 8 %}
                             <div style="margin-top: 20px;">
                                 <a href="{{ h.url_for('dataset.search') }}" class="btn btn-primary">
                                     {{ _('Ver todos los datasets') }}
