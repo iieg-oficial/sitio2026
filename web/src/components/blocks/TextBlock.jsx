@@ -1,5 +1,7 @@
+import { SafeHtml } from '@components/SafeHtml';
+
 export default function TextBlock({ content }) {
   return (
-    <div dangerouslySetInnerHTML={{ __html: content }} />
+    <SafeHtml htmlContent={content} />
   )
 }

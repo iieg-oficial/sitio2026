@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
                     sessionStorage.setItem('csrf_token', csrfResponse.data.csrf_token);
                 }
             }
-        } catch (error) {
+        } catch {
             setUser(null);
         } finally {
             setLoading(false);

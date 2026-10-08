@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db, verify_csrf
+from app.core.slugs import make_unique_slug
 from app.models import Cursos, Instituciones, Modulos, Perfiles, Profesores, Subject, Usuario
 from app.schemas.cursos import CursosCreate, CursosOut, CursosResponse
 
@@ -23,7 +24,7 @@ def _load_temas(db: Session, tema_ids: list[int] | None) -> list[Subject]:
 def get_cursos(
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los cursos con sus relaciones"""
+    """Obtener todos los cursos con sus relaciones ordenados del más reciente al más antiguo"""
     cursos = (
         db.query(Cursos)
         .options(
@@ -33,6 +34,7 @@ def get_cursos(
             joinedload(Cursos.profesores),
             joinedload(Cursos.temas),
         )
+        .order_by(Cursos.id.desc())  # <-- ORDENAR DESCENDENTE POR ID
         .all()
     )
     return {"cursos": cursos, "total": len(cursos)}
@@ -141,6 +143,7 @@ def create_cursos(
             joinedload(Cursos.instituciones),
             joinedload(Cursos.perfiles),
             joinedload(Cursos.profesores),
+            joinedload(Cursos.temas),
         )
         .filter(Cursos.id == db_cursos.id)
         .first()
@@ -266,8 +269,14 @@ def update_cursos(
             slug = f"{base_slug}-{contador}"
             contador += 1
         update_data["slug"] = slug
+    elif "slug" in update_data:
+            if update_data["slug"]:
+                update_data["slug"] = make_unique_slug(
+                    db, Cursos, update_data["slug"], exclude_id=db_cursos.id
+                )
+            else:
+                del update_data["slug"]
 
-    # Actualizar solo campos escalares (NO incluir las relaciones many-to-many)
     campos_escalares = [
         "titulo", "descripcion", "img_portada", "inicio", "fin", "formato", "Horario", "Objetivo",
         "p_ingreso", "p_egreso", "tipo_curso", "inscripcion", "acreditacion",
@@ -278,10 +287,12 @@ def update_cursos(
         if valor is not None:
             setattr(db_cursos, campo, valor)
 
+    if "slug" in update_data:
+        db_cursos.slug = update_data["slug"]
+
     db.commit()
     db.refresh(db_cursos)
 
-    # Recargar con joinedload para serializar correctamente
     db_cursos = (
         db.query(Cursos)
         .options(

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -17,21 +17,36 @@ export default function Profesores() {
     const [editingProfesor, setEditingProfesor] = useState(null);
     const { searchText, setSearchText, filteredData } = useSearchFilter(profesores, ['nombre']);
 
-    useEffect(() => {
-        fetchProfesores();
-    }, []);
+    // Observar reactivamente la propiedad 'foto' para refrescar la vista previa dentro del modal
+    const fotoUrl = Form.useWatch('foto', form);
 
-    const fetchProfesores = async () => {
+    const fetchProfesores = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/profesores/');
-            setProfesores(response.data.profesores);
+            const response = await api.get('/profesores', {
+                params: { _t: new Date().getTime() }
+            });
+            const data = Array.isArray(response.data?.profesores) ? response.data.profesores : [];
+            const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            setProfesores(sortedData);
         } catch {
             message.error('Error al cargar profesores');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchProfesores();
+
+        const handleFocus = () => {
+            fetchProfesores();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchProfesores]);
 
     const handleCreate = () => {
         setEditingProfesor(null);
@@ -48,15 +63,15 @@ export default function Profesores() {
     const handleDelete = (record) => {
         Modal.confirm({
             title: '¿Está seguro de eliminar este profesor?',
-            content: `Se eliminará el profesor: ${record.nombre}`,
+            content: `Se eliminará el profesor: ${record.nombre || ''}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
-                    await api.delete(`/profesores/${record.id}/`);
+                    await api.delete(`/profesores/${record.id}`);
                     message.success('Profesor eliminado exitosamente');
-                    fetchProfesores();
+                    await fetchProfesores();
                 } catch {
                     message.error('Error al eliminar profesor');
                 }
@@ -67,14 +82,14 @@ export default function Profesores() {
     const handleSubmit = async (values) => {
         try {
             if (editingProfesor) {
-                await api.patch(`/profesores/${editingProfesor.id}/`, values);
+                await api.patch(`/profesores/${editingProfesor.id}`, values);
                 message.success('Profesor actualizado exitosamente');
             } else {
-                await api.post('/profesores/create/', values);
+                await api.post('/profesores/create', values);
                 message.success('Profesor creado exitosamente');
             }
             setModalVisible(false);
-            fetchProfesores();
+            await fetchProfesores();
         } catch {
             message.error(editingProfesor ? 'Error al actualizar profesor' : 'Error al crear profesor');
         }
@@ -82,22 +97,22 @@ export default function Profesores() {
 
     const columns = [
         {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => (a.id || 0) - (b.id || 0)
+        },
+        {
             title: 'Nombre',
             dataIndex: 'nombre',
             key: 'nombre',
-            sorter: (a, b) => a.nombre.localeCompare(b.nombre)
+            sorter: (a, b) => (a.nombre || '').localeCompare(b.nombre || '')
         },
         {
             title: 'Foto',
             dataIndex: 'foto',
             key: 'foto',
-            render: (url) => url ? <Image src={url} alt="Foto del profesor" style={{ maxWidth: 100 }} /> : 'Sin foto'
-        },
-        {
-            title: 'Id',
-            dataIndex: 'id',
-            key: 'id',
-            sorter: (a, b) => a.id - b.id
+            render: (url) => (url ? <Image src={url} alt="Foto del profesor" style={{ maxWidth: 80, borderRadius: 4 }} /> : 'Sin foto')
         },
         {
             title: 'Acciones',
@@ -141,7 +156,7 @@ export default function Profesores() {
                 <TableSearch
                     value={searchText}
                     onChange={setSearchText}
-                    placeholder="Buscar por título..."
+                    placeholder="Buscar por nombre..."
                     loading={loading}
                 />
                 <Table
@@ -208,10 +223,14 @@ export default function Profesores() {
                             <Form.Item name="foto" noStyle>
                                 <Input placeholder="URL de la foto" />
                             </Form.Item>
-                            {form.getFieldValue('foto') ? (
-                                <Image src={form.getFieldValue('foto')} alt="Foto del profesor" style={{ maxWidth: 200, borderRadius: 6 }} />
+                            {fotoUrl ? (
+                                <Image
+                                    src={fotoUrl}
+                                    alt="Foto del profesor"
+                                    style={{ maxWidth: 200, borderRadius: 6, marginTop: 8 }}
+                                />
                             ) : null}
-                        </Space>    
+                        </Space>
                     </Form.Item>
                 </Form>
             </Modal>

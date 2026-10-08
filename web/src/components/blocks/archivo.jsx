@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import api from '@services/apiService';
 import Searcher from '../pageComponents/searcher';
 import { format } from 'date-fns';
@@ -13,15 +13,31 @@ export default function Archivo() {
     const [itemOffset, setItemOffset] = useState(0);
     const itemsPerPage = 12;
 
-    const showData = async () => {
-        const response = await api.get('/archivos/institucionales');
-        setArchivos(response.data);
-    };
+    const showData = useCallback(async () => {
+        try {
+            const response = await api.get('/archivos/institucionales', {
+                params: { _t: new Date().getTime() }
+            });
+            const data = response.data || [];
+            // Ordenar respaldo por id descendente
+            const sorted = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            setArchivos(sorted);
+        } catch (error) {
+            console.error('Error al cargar archivos institucionales:', error);
+        }
+    }, []);
 
-     
     useEffect(() => {
         showData();
-    }, []);
+
+        const handleFocus = () => {
+            showData();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [showData]);
 
     const normalizeText = (text) =>
         text

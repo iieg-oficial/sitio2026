@@ -19,6 +19,7 @@ class FlashesCreate(BaseModel):
     link: Optional[str] = None
     tema_ids: Optional[List[int]] = None
     claves: Optional[str] = None
+    slug: Optional[str] = None
 
     @field_validator('tema_ids', mode='before')
     @classmethod

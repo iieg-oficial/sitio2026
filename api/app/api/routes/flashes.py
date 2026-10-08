@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from slugify import slugify
 from sqlalchemy import func, or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db, verify_csrf
 from app.core.slugs import make_unique_slug
@@ -41,15 +41,18 @@ def read_flashes(
             )
         )
 
+    # 1. Obtener el total exacto antes de paginar
     total = db.execute(
         select(func.count()).select_from(query.subquery())
     ).scalar_one()
 
     flashes = db.execute(
-        query.order_by(Flashes.anyo.desc(), Flashes.id.desc())
+        query
+        .options(joinedload(Flashes.temas))
+        .order_by(Flashes.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
-    ).scalars().all()
+    ).scalars().unique().all()
 
     return {"flashes": flashes, "total": total}
 
@@ -102,6 +105,20 @@ def listar_meses():
             mes.name: mes.value for mes in MesEnum
         }
     }
+
+@router.get("/slug/{slug}", response_model=FlashesOut)
+def get_flashes_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un flash por slug"""
+    flash = db.execute(select(Flashes).where(Flashes.slug == slug)).scalar_one_or_none()
+    if not flash:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Flash no encontrado",
+        )
+    return flash
 
 @router.get("/{id}", response_model=FlashesResponse)
 def get_flashes_by_id(
@@ -156,6 +173,9 @@ def update_flashes(
     for campo, valor in update_data.items():
         setattr(db_flashes, campo, valor)
 
+    if "slug" in update_data:
+        db_flashes.slug = update_data["slug"]
+
     db.commit()
     db.refresh(db_flashes)
     return db_flashes
@@ -177,16 +197,4 @@ def delete_flashes(
     db.commit()
     return db_flashes
 
-@router.get("/slug/{slug}", response_model=FlashesOut)
-def get_flashes_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener un flash por slug"""
-    flash = db.execute(select(Flashes).where(Flashes.slug == slug)).scalar_one_or_none()
-    if not flash:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Flash no encontrado",
-        )
-    return flash
+

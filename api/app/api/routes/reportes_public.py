@@ -11,7 +11,14 @@ router = APIRouter(prefix="/reportes", tags=["reportes - public"])
 async def listar_reportes(
     db: Session = Depends(get_db),
 ):
-    reportes = db.query(Reportes).options(joinedload(Reportes.temas)).all()
+
+    reportes = (
+        db.query(Reportes)
+        .options(joinedload(Reportes.temas))
+        .order_by(Reportes.id.desc())
+        .all()
+    )
+
     return {
         "reportes": reportes,
         "total": len(reportes),

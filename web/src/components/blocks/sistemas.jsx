@@ -1,44 +1,44 @@
-import { useEffect, useMemo, useState } from 'react'
-import api from '@services/apiService'
-import ReactPaginate from 'react-paginate'
-import { useLocation } from 'react-router'
+import { useState, useMemo, useCallback } from 'react';
+import api from '@services/apiService';
+import ReactPaginate from 'react-paginate';
 import Searcher from '../pageComponents/searcher';
 import { SafeHtml } from '@components/SafeHtml';
+import { useFetchOnFocus } from '@hooks/useFetchOnFocus';
 
-const ITEMS_PER_PAGE = 12
+const ITEMS_PER_PAGE = 12;
 
 export default function Sistemas() {
-    const [sistemas, setSistemas] = useState([])
-    const location = useLocation()
-    const [loading, setLoading] = useState(true)
-    const [loadError, setLoadError] = useState(false)
-    const [activeTab, setActiveTab] = useState(0)
-    const [itemOffset, setItemOffset] = useState(0)
+    const [sistemas, setSistemas] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState(false);
+    const [activeTab, setActiveTab] = useState(0);
+    const [itemOffset, setItemOffset] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
 
-    useEffect(() => {
-        const fetchSistemas = async () => {
-            try {
-                setLoadError(false)
-                const response = await api.get('/sistemas')
-                const data = Array.isArray(response.data?.sistemas) ? response.data.sistemas : []
-                
-                // Ordenar inicialmente por 'orden' de menor a mayor (nulls al final)
-                const sortedData = data.sort((a, b) => {
-                    const ordA = a.orden != null ? a.orden : Infinity
-                    const ordB = b.orden != null ? b.orden : Infinity
-                    return ordA - ordB
-                })
-                
-                setSistemas(sortedData)
-            } catch {
-                setLoadError(true)
-            } finally {
-                setLoading(false)
-            }
+    const fetchSistemas = useCallback(async () => {
+        try {
+            setLoadError(false);
+            const response = await api.get('/sistemas');
+            const data = Array.isArray(response.data?.sistemas) ? response.data.sistemas : [];
+            
+            // Ordenar por 'orden' de menor a mayor (valores nulos al final)
+            const sortedData = data.sort((a, b) => {
+                const ordA = a.orden != null ? a.orden : Infinity;
+                const ordB = b.orden != null ? b.orden : Infinity;
+                return ordA - ordB;
+            });
+            
+            setSistemas(sortedData);
+        } catch (error) {
+            console.error('Error al obtener sistemas:', error);
+            setLoadError(true);
+        } finally {
+            setLoading(false);
         }
-        fetchSistemas()
-    }, [location])
+    }, []);
+
+    // Carga inicial y actualización automática al regresar a la pestaña/ventana
+    useFetchOnFocus(fetchSistemas);
 
     const filteredPosts = useMemo(() => (
         !searchTerm 
@@ -60,14 +60,14 @@ export default function Sistemas() {
     const tabs = useMemo(() => ['Todo', ...subjects], [subjects]);
     const activeSubject = activeTab > 0 ? subjects[activeTab - 1] : null;
 
-    useEffect(() => {
+    useMemo(() => {
         if (activeTab > subjects.length) {
             setActiveTab(0);
         }
     }, [subjects.length, activeTab]);
 
-    useEffect(() => {
-        setItemOffset(0)
+    useMemo(() => {
+        setItemOffset(0);
     }, [searchTerm, activeTab]);
 
     const filteredByTab = useMemo(() => {
@@ -75,134 +75,142 @@ export default function Sistemas() {
         return filteredPosts.filter(post => post.temas?.some(t => t.titulo === activeSubject));
     }, [activeTab, activeSubject, filteredPosts]);
 
-    const endOffset = itemOffset + ITEMS_PER_PAGE
-    const currentSystems = filteredByTab.slice(itemOffset, endOffset)
-    const pageCount = Math.ceil(filteredByTab.length / ITEMS_PER_PAGE)
+    const endOffset = itemOffset + ITEMS_PER_PAGE;
+    const currentSystems = filteredByTab.slice(itemOffset, endOffset);
+    const pageCount = Math.ceil(filteredByTab.length / ITEMS_PER_PAGE);
 
     const handlePageClick = (event) => {
-        const newOffset = (event.selected * ITEMS_PER_PAGE) % filteredByTab.length
-        setItemOffset(newOffset)
-    }
+        const newOffset = (event.selected * ITEMS_PER_PAGE) % filteredByTab.length;
+        setItemOffset(newOffset);
+    };
 
     const TabButton = ({ children, active, ...props }) => (
         <button
             type="button"
             {...props}
-            className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-bold text-18 transition-colors flex-shrink-0 snap-start min-w-[120px] ${active
-                ? 'bg-etiqueta-sec text-tertiary border-tertiary font-garet-extrabold'
-                : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec font-garet-extrabold'}`}
+            className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-bold text-18 transition-colors flex-shrink-0 snap-start min-w-[120px] ${
+                active
+                    ? 'bg-etiqueta-sec text-tertiary border-tertiary font-garet-extrabold'
+                    : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec font-garet-extrabold'
+            }`}
         >
             {children}
         </button>
     );
 
+    if (loading && sistemas.length === 0) {
+        return <p className="text-center py-6 text-gray-500">Cargando sistemas...</p>;
+    }
 
     return (
         <div className='container mx-auto px-2'>
             <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" />
 
             <div className="relative container mx-auto px-2 mt-15">
-                    <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
-                    <div
-                        className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto snap-x snap-mandatory"
-                        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: '5px' }}
-                    >
-                        {tabs.map((tab, index) => (
-                            <TabButton
-                                key={`${tab}-${index}`}
-                                active={activeTab === index}
-                                onClick={() => setActiveTab(index)}
-                            >
-                                {tab}
-                            </TabButton>
-                        ))}
-                    </div>
-                    <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 sm:hidden!"></span>
+                <span className="material-symbols--chevron-left absolute z-10 bottom-5 left-0 sm:hidden!"></span>
+                <div
+                    className="flex gap-5 mb-2 lg:ml-15 overflow-x-auto snap-x snap-mandatory"
+                    style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: '5px' }}
+                >
+                    {tabs.map((tab, index) => (
+                        <TabButton
+                            key={`${tab}-${index}`}
+                            active={activeTab === index}
+                            onClick={() => setActiveTab(index)}
+                        >
+                            {tab}
+                        </TabButton>
+                    ))}
+                </div>
+                <span className="material-symbols--chevron-right absolute z-10 bottom-5 right-0 sm:hidden!"></span>
             </div>
 
             <div className='flex flex-col gap-6 mb-4'>
-                    {filteredByTab.length === 0 && <p>No hay sistemas</p>}
+                {loadError && (
+                    <p className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 my-5">
+                        No se pudieron cargar los sistemas. Intenta nuevamente.
+                    </p>
+                )}
 
-                    {filteredByTab.length > 0 && (
-                        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                            {currentSystems.map((sistema) => {
-                                const original = sistema.imagen;                                
-                                
-                                const hasLink = Boolean(sistema.link);
-                                const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);
-                                const content = (
-                                    <div 
-                                        className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 md:min-h-[640px] lg:min-h-[485px] xl:min-h-[445px] ${
-                                            hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
-                                        }`}
-                                    >
-                                        <div className='sm:w-[150px] md:h-[115px] lg:h-auto lg:w-full lg:col-span-2'>
-                                            <img
-                                                src={sistema.imagen ? sistema.imagen : 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png'}                                                
-                                                alt={sistema.titulo}
-                                                className="mb-3 h-auto w-full rounded-lg object-cover md:h-full lg:h-auto md:w-auto lg:w-full"
-                                            />
-                                        </div>
-                                        <div className='lg:col-span-4'>
-                                            <h3 className="mb-3 text-primary text-28 font-garet-extrabold">
-                                                {sistema.titulo}
-                                            </h3>
-                                            <SafeHtml htmlContent={sistema.descripcion || ''} className='diez text-18 font-garet' />
-                                        </div>
-                                        <div className='lg:col-span-6 mt-5'>
-                                            {sistema.tipo && (
-                                                <span className={`e${sistema.tipo} rounded-xl px-4 py-2 text-14 font-garet-bold`}>
-                                                    {sistema.tipo_label || sistema.tipo.replace('-', ' ')}
-                                                </span>
-                                            )}
-                                            
-                                            {hasLink && (
-                                                <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
-                                                    <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
-                                                </div>
-                                            )}
-                                        </div>
+                {!loadError && filteredByTab.length === 0 && <p className="text-center text-gray-500 my-8">No hay sistemas disponibles</p>}
+
+                {!loadError && filteredByTab.length > 0 && (
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                        {currentSystems.map((sistema) => {
+                            const hasLink = Boolean(sistema.link);
+                            const isExternal = hasLink && /^https?:\/\//i.test(sistema.link);
+                            const content = (
+                                <div 
+                                    className={`mb-5 w-full rounded-2xl bg-card p-8 my-5 grid lg:grid-cols-6 gap-5 md:min-h-[640px] lg:min-h-[485px] xl:min-h-[445px] ${
+                                        hasLink ? 'cursor-pointer hover:border-primary hover:border group' : ''
+                                    }`}
+                                >
+                                    <div className='sm:w-[150px] md:h-[115px] lg:h-auto lg:w-full lg:col-span-2'>
+                                        <img
+                                            src={sistema.imagen ? sistema.imagen : 'https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png'}                                                
+                                            alt={sistema.titulo}
+                                            className="mb-3 h-auto w-full rounded-lg object-cover md:h-full lg:h-auto md:w-auto lg:w-full"
+                                        />
                                     </div>
-                                );
+                                    <div className='lg:col-span-4'>
+                                        <h3 className="mb-3 text-primary text-28 font-garet-extrabold">
+                                            {sistema.titulo}
+                                        </h3>
+                                        <SafeHtml htmlContent={sistema.descripcion || ''} className='diez text-18 font-garet' />
+                                    </div>
+                                    <div className='lg:col-span-6 mt-5'>
+                                        {sistema.tipo && (
+                                            <span className={`e${sistema.tipo} rounded-xl px-4 py-2 text-14 font-garet-bold`}>
+                                                {sistema.tipo_label || sistema.tipo.replace('-', ' ')}
+                                            </span>
+                                        )}
+                                        
+                                        {hasLink && (
+                                            <div className='bg-white shadow-lg h-[25px] w-[25px] rounded-full float-right transition-shadow duration-300 group-hover:shadow-2xl group-hover:bg-primary'>
+                                                <span className="material-symbols--chevron-right text-primary group-hover:!bg-white"></span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            );
 
-                                if (hasLink) {
-                                    return (
-                                        <a 
-                                            key={sistema.id}
-                                            href={sistema.link} 
-                                            target={isExternal ? "_blank" : "_self"}
-                                            rel={isExternal ? "noopener noreferrer" : undefined}
-                                        >
-                                            {content}
-                                        </a>
-                                    );
-                                }
-
+                            if (hasLink) {
                                 return (
-                                    <div key={sistema.id}>
+                                    <a 
+                                        key={sistema.id}
+                                        href={sistema.link} 
+                                        target={isExternal ? "_blank" : "_self"}
+                                        rel={isExternal ? "noopener noreferrer" : undefined}
+                                    >
                                         {content}
-                                    </div>
+                                    </a>
                                 );
-                            })}
-                        </div>
-                    )}
+                            }
 
-                    {pageCount > 1 && (
-                        <ReactPaginate
-                            previousLabel={'<'}
-                            nextLabel={'>'}
-                            breakLabel={'...'}
-                            pageCount={pageCount}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
-                            onPageChange={handlePageClick}
-                            containerClassName={'pagination'}
-                            activeClassName={'active'}
-                            forcePage={Math.floor(itemOffset / ITEMS_PER_PAGE)}
-                        />
-                    )}
+                            return (
+                                <div key={sistema.id}>
+                                    {content}
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+
+                {pageCount > 1 && (
+                    <ReactPaginate
+                        previousLabel={'<'}
+                        nextLabel={'>'}
+                        breakLabel={'...'}
+                        pageCount={pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={handlePageClick}
+                        containerClassName={'pagination'}
+                        activeClassName={'active'}
+                        forcePage={Math.floor(itemOffset / ITEMS_PER_PAGE)}
+                    />
+                )}
             </div>
         </div>
-        
-    )
-}   
+    );
+}

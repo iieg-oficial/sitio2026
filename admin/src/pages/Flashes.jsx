@@ -7,6 +7,7 @@ import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
+import { SafeHtml } from '@components/SafeHtml';
 
 const { Title } = Typography;
 
@@ -22,18 +23,18 @@ export default function Flashes() {
     const [meses, setMeses] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
-    useEffect(() => {
-        fetchFlashes();
+    useEffect(() => {        
         fetchSubjects();
         fetchPeriodo();
         fetchMeses();
+        fetchFlashes('', 1, pagination.pageSize);
     }, []);
 
     const fetchPeriodo = async () => {
         try{
             const response = await api.get('/flashes/periocidad');
             setPeriodo(response.data.periodo || {});            
-        } catch (error) {
+        } catch {
             message.error('Error al obtener los periocidad');
         }
     }
@@ -47,24 +48,28 @@ export default function Flashes() {
         } 
     };
 
-    const fetchFlashes = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
+    const fetchFlashes = async (search = '', page = 1, pageSize = pagination.pageSize) => {
         setLoading(true);
         try {
             const response = await api.get('/flashes', {
                 params: {
                     ...(search ? { search } : {}),
-                    page,
-                    pageSize
+                    page,        
+                    pageSize,    
+                    _t: new Date().getTime() 
                 }
             });
-            setFlashes(response.data.flashes);
-            setPagination((prev) => ({
-                ...prev,
+
+            setFlashes(response.data.flashes || []);
+
+            setPagination({
                 current: page,
-                pageSize,
-                total: response.data.total
-            }));
-        } catch {
+                pageSize: pageSize,
+                total: response.data.total || 0
+            });
+
+        } catch (error){
+            console.error('Error al cargar flashes:', error);
             message.error('Error al cargar flashes');
         } finally {
             setLoading(false);
@@ -101,8 +106,8 @@ export default function Flashes() {
         const ids = (record.temas ?? []).map((t) => Number(t.id || t));
         setSelectedSubjects(ids);
         const fechaFormateada = record.fecha_publicacion
-        ? new Date(record.fecha_publicacion).toISOString().split('T')[0]
-        : null;
+            ? new Date(record.fecha_publicacion).toISOString().split('T')[0]
+            : null;
         form.setFieldsValue({
             ...record,
             fecha_publicacion: fechaFormateada,
@@ -129,27 +134,30 @@ export default function Flashes() {
         });
     };
 
-    const handleSubmit = async (values) => {
+    const handleSubmit = async (values) => {        
         try {
-            // TemaSelector vive fuera del Form, hay que agregar los IDs manualmente
+
+            // TemaSelector vive fuera del Form, se asigna manualmente al payload
             const payload = { ...values, tema_ids: selectedSubjects };
+
             if (editingFlash) {
                 await api.patch(`/flashes/${editingFlash.id}`, payload);
-                message.success('actualizado exitosamente');
+                message.success('Actualizado exitosamente');
+                await fetchFlashes(searchText, pagination.current, pagination.pageSize);
             } else {
                 await api.post('/flashes/create', payload);
-                message.success('creado exitosamente');
+                message.success('Creado exitosamente');
+                setSearchText('');
+                await fetchFlashes('', 1, pagination.pageSize);
             }
             setModalVisible(false);
-            fetchFlashes(searchText, pagination.current, pagination.pageSize);
         } catch {
             message.error(editingFlash ? 'Error al actualizar' : 'Error al crear');
         }
     }
 
-    useEffect(() => {
-    
-}, [periodo]);
+    useEffect(() => {    
+    }, [periodo]);
 
     const columns = [
         { 
@@ -163,11 +171,8 @@ export default function Flashes() {
             dataIndex: 'desc_jal', 
             key: 'desc_jal',
             sorter: (a, b) => a.desc_jal.localeCompare(b.desc_jal),
-            render: (text) => (
-                <div
-                className="tiptap-content"
-                dangerouslySetInnerHTML={{ __html: text }}
-                />
+            render: (desc_jal) => (
+                <SafeHtml htmlContent={desc_jal} className='mt-5 prose max-w-none'/>
             ),
         },
         {
@@ -178,11 +183,10 @@ export default function Flashes() {
             
         },
         {
-            title: "Fecha de publicación",
-            dataIndex: "fecha_publicacion",
-            key: "fecha_publicacion",
-            render: (date) => new Date(date).toLocaleDateString('es-MX'),
-            sorter: (a, b) => new Date(a.fecha_publicacion) - new Date(b.fecha_publicacion)
+            title: 'Fecha de publicación',
+            dataIndex: 'fecha_publicacion',
+            key: 'fecha_publicacion',
+            render: (date) => date ? new Date(date).toLocaleDateString('es-MX') : '-',
         },
         {
             title: 'Link',
@@ -226,12 +230,12 @@ export default function Flashes() {
                     rowKey="id"
                     loading={loading}
                     pagination={{
-                            current: pagination.current,
-                            pageSize: pagination.pageSize,
-                            total: pagination.total,
-                            showSizeChanger: true,
-                            showTotal: (total) => `Total ${total} datos`
-                        }}
+                        current: pagination.current,
+                        pageSize: pagination.pageSize,
+                        total: pagination.total,
+                        showSizeChanger: true,
+                        showTotal: (total) => `Total ${total} datos`
+                    }}
                     onChange={handleTableChange}    
                 />
             </Card> 
@@ -256,19 +260,19 @@ export default function Flashes() {
                     </Form.Item>
                     <Form.Item name="periocidad" label="Periocidad" rules={[{ required: true, message: 'Por favor ingresa la periocidad' }]}>
                         <Select
-                        placeholder="Selecciona un periodo"
-                        allowClear
-                        showSearch
-                        optionFilterProp="label"
-                        filterOption={(input, option) =>
-                            (option?.label || '').toLowerCase().includes(input.toLowerCase())
-                        }
-                        options={Object.entries(periodo).map(([key, value]) => ({  
-                            key,                          
-                            value: value,
-                            label: value,
-                        }))}
-                    />
+                            placeholder="Selecciona un periodo"
+                            allowClear
+                            showSearch
+                            optionFilterProp="label"
+                            filterOption={(input, option) =>
+                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={Object.entries(periodo).map(([key, value]) => ({  
+                                key,                          
+                                value: value,
+                                label: value,
+                            }))}
+                        />
                     </Form.Item>
                     <Form.Item name="fecha_publicacion" label="Fecha de Publicación" rules={[{ required: false, message: 'Por favor ingresa la fecha de publicación' }]}>
                         <Input type="date" />
@@ -324,6 +328,12 @@ export default function Flashes() {
                     <Form.Item name="claves"
                         label="Palabras clave"
                         rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="slug"
+                        label="Url"
+                        rules={[{ required: false, message: 'Por favor ingrese la url' }]}
                     >
                         <Input />
                     </Form.Item>

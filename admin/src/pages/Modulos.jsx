@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
+import { useState, useEffect, useCallback } from 'react';
+import { Table, Card, Typography, Space, Button, Modal, Form, Input, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
@@ -14,23 +14,41 @@ export default function Modulos() {
     const [form] = Form.useForm();
     const [modalVisible, setModalVisible] = useState(false);
     const [editingModulo, setEditingModulo] = useState(null);
+    
     const { searchText, setSearchText, filteredData } = useSearchFilter(modulos, ['nombre']);
 
-    useEffect(() => {
-        fetchModulos();
-    }, []);
-
-    const fetchModulos = async () => {
+    const fetchModulos = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/modulos');
-            setModulos(response.data.modulos);
-        } catch (error) {
-            console.error('Error al obtener modulos:', error);
+            const response = await api.get('/modulos', {
+                params: { _t: new Date().getTime() }
+            });
+            // CORREGIDO: Extraer el arreglo del objeto response.data.modulos
+            const rawData = response.data?.modulos;
+            const data = Array.isArray(rawData) ? rawData : [];
+            
+            const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            
+            // CORREGIDO: Usar el setter del estado en vez de la llamada recursiva a fetchModulos
+            setModulos(sortedData);
+        } catch {
+            message.error('Error al cargar módulos');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchModulos();
+
+        const handleFocus = () => {
+            fetchModulos();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchModulos]);
 
     const handleCreate = () => {
         setEditingModulo(null);
@@ -46,19 +64,18 @@ export default function Modulos() {
 
     const handleDelete = (record) => {
         Modal.confirm({
-            title: '¿Está seguro de eliminar este modulo?',
-            content: `Se eliminará el modulo: ${record.titulo}`,
+            title: '¿Está seguro de eliminar este módulo?',
+            content: `Se eliminará el módulo: ${record.nombre || ''}`,
             okText: 'Eliminar',
             okType: 'danger',
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
                     await api.delete(`/modulos/${record.id}`);
-                    message.success('Modulo eliminado exitosamente');
-                    fetchModulos();
-                } catch (error) {
-                    console.error('Error al eliminar modulo:', error);
-                    message.error('Error al eliminar modulo');
+                    message.success('Módulo eliminado exitosamente');
+                    await fetchModulos();
+                } catch {
+                    message.error('Error al eliminar módulo');
                 }
             }
         });
@@ -68,15 +85,15 @@ export default function Modulos() {
         try {
             if (editingModulo) {
                 await api.patch(`/modulos/${editingModulo.id}`, values);
-                message.success('Modulo actualizado exitosamente');
+                message.success('Módulo actualizado exitosamente');
             } else {
                 await api.post('/modulos/create', values);
-                message.success('Modulo creado exitosamente');
+                message.success('Módulo creado exitosamente');
             }
             setModalVisible(false);
-            fetchModulos();
-        } catch (error) {
-            message.error(editingModulo ? 'Error al actualizar modulo' : 'Error al crear modulo');
+            await fetchModulos();
+        } catch {
+            message.error(editingModulo ? 'Error al actualizar módulo' : 'Error al crear módulo');
         }
     };
 
@@ -85,13 +102,13 @@ export default function Modulos() {
             title: 'Módulo',
             dataIndex: 'nombre',
             key: 'nombre',
-            sorter: (a, b) => a.nombre.localeCompare(b.nombre)
+            sorter: (a, b) => (a.nombre || '').localeCompare(b.nombre || '')
         },
         {
-            title: 'Id',
+            title: 'ID',
             dataIndex: 'id',
             key: 'id',
-            sorter: (a, b) => a.id - b.id
+            sorter: (a, b) => (a.id || 0) - (b.id || 0)
         },
         {
             title: 'Acciones',
@@ -135,7 +152,7 @@ export default function Modulos() {
                 <TableSearch
                     value={searchText}
                     onChange={setSearchText}
-                    placeholder="Buscar por título..."
+                    placeholder="Buscar por módulo..."
                     loading={loading}
                 />
                 <Table
@@ -146,7 +163,7 @@ export default function Modulos() {
                     pagination={{
                         pageSize: 10,
                         showSizeChanger: true,
-                        showTotal: (total) => `Total ${total} modulos`
+                        showTotal: (total) => `Total ${total} módulos`
                     }}
                 />
             </Card>

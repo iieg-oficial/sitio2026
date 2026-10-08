@@ -7,15 +7,15 @@
         {% if g.site_logo.startswith('http://') or g.site_logo.startswith('https://') %}
           {# Caso 1: URL remota externa #}
           <img src="{{ h.url_for_static('/images/ico_IIEG_header.svg') }}" alt="{{ g.site_title }}"
-            aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
+            aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}" class="datos-logo"/>
         {% elif g.site_logo.startswith('/datos-abiertos') %}
           {# Caso 2: La ruta almacenada ya trae la ruta base del portal #}
           <img src="{{ g.site_logo.replace('/datos-abiertos', '', 1) if g.site_logo.startswith('/datos-abiertos/datos-abiertos') else g.site_logo }}" alt="{{ g.site_title }}"
-            aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
+            aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}" class="datos-logo"/>
         {% else %}
           {# Caso 3: Archivo relativo estático estándar #}
           <img src="{{ h.url_for_static('/images/ico_IIEG_header.svg') }}" alt="{{ g.site_title }}"
-            aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}"/>
+            aria-label="{{ _('Navigate to Home - {site_title}').format(site_title=g.site_title) }}" class="datos-logo"/>
         {% endif %}
       </a>
   {% else %}
@@ -27,9 +27,9 @@
     {% endif %}
   {% endif %}
 
-  <a class="logo ml-3" href="https://iieg.jalisco.gob.mx">
+  <a class="logo" href="https://iieg.jalisco.gob.mx">
     <img src="{{ h.url_for_static('/images/ico_IIEG_header.svg') }}" alt="Sitio IIEG"
-            aria-label="{{ _('Navigate to IIEG') }}" alt="IIEG"/>
+            aria-label="{{ _('Navigate to IIEG') }}" alt="IIEG" class="iieg-logo"/>
   </a>
 {% endblock %}
 
@@ -69,4 +69,7 @@
 {% endblock %}
 
 {% block header_site_search %}
+{% endblock %}
+
+{% block header_account_notlogged %}
 {% endblock %}

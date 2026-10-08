@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -13,24 +13,36 @@ export default function Directorio() {
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const [editingDirectorio, setEditingDirectorio] = useState(null);
-    const { searchText, setSearchText, filteredData } = useSearchFilter(directorio, ['nombre']);
+    const { searchText, setSearchText, filteredData } = useSearchFilter(directorio, ['nombre', 'cargo']);
+
+    const fetchDirectorio = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await api.get('/directorio', {
+                params: { _t: new Date().getTime() }
+            });
+            const data = Array.isArray(response.data) ? response.data : [];
+            // Ordenamiento estricto por ID descendente
+            const sortedData = [...data].sort((a, b) => (b.id || 0) - (a.id || 0));
+            setDirectorio(sortedData);
+        } catch {
+            message.error('Error al cargar directorio');
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
         fetchDirectorio();
-    }, []);
 
-    const fetchDirectorio = async () => {
-        setLoading(true);
-        try {
-            const response = await api.get('/directorio');
-            setDirectorio(response.data);
-        } catch (error) {
-            message.error('Error al cargar directorio');
-        }
-        finally {
-            setLoading(false);
-        }
-    };
+        const handleFocus = () => {
+            fetchDirectorio();
+        };
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchDirectorio]);
 
     const handleCreate = () => {
         setEditingDirectorio(null);
@@ -55,8 +67,8 @@ export default function Directorio() {
                 try {
                     await api.delete(`/directorio/${record.id}`);
                     message.success('Directorio eliminado exitosamente');
-                    fetchDirectorio();
-                } catch (error) {
+                    await fetchDirectorio();
+                } catch {
                     message.error('Error al eliminar directorio');
                 }
             }
@@ -73,8 +85,8 @@ export default function Directorio() {
                 message.success('Directorio creado exitosamente');
             }
             setModalVisible(false);
-            fetchDirectorio();
-        } catch (error) {
+            await fetchDirectorio();
+        } catch {
             message.error(editingDirectorio ? 'Error al actualizar directorio' : 'Error al crear directorio');
         }
     };
@@ -84,13 +96,13 @@ export default function Directorio() {
             title: 'Nombre',
             dataIndex: 'nombre',
             key: 'nombre',
-            sorter: (a, b) => a.nombre.localeCompare(b.nombre)
+            sorter: (a, b) => (a.nombre || '').localeCompare(b.nombre || '')
         },
         {
             title: 'Cargo',
             dataIndex: 'cargo',
             key: 'cargo',
-            sorter: (a, b) => a.cargo.localeCompare(b.cargo)
+            sorter: (a, b) => (a.cargo || '').localeCompare(b.cargo || '')
         },
         {
             title: 'Acciones',
@@ -134,7 +146,7 @@ export default function Directorio() {
                 <TableSearch
                     value={searchText}
                     onChange={setSearchText}
-                    placeholder="Buscar por título..."
+                    placeholder="Buscar por nombre o cargo..."
                     loading={loading}
                 />
                 <Table
@@ -154,11 +166,11 @@ export default function Directorio() {
                 title={editingDirectorio ? 'Editar Directorio' : 'Nuevo Directorio'}
                 open={modalVisible}
                 onCancel={() => setModalVisible(false)}
-                onOk={form.submit}
+                onOk={() => form.submit()}
                 okText={editingDirectorio ? 'Actualizar' : 'Crear'}
                 cancelText="Cancelar"
             >
-                <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{ director: false, orden: 0 }}>
+                <Form form={form} onFinish={handleSubmit} layout="vertical" initialValues={{ director: false }}>
                     <Form.Item
                         name="nombre"
                         label="Nombre"
@@ -175,7 +187,6 @@ export default function Directorio() {
                     </Form.Item>
                     <Form.Item
                         name="director"
-                        label="Director"
                         valuePropName="checked"
                     >
                         <Checkbox>¿Es director?</Checkbox>
@@ -189,6 +200,7 @@ export default function Directorio() {
                     <Form.Item
                         name="email"
                         label="Email"
+                        rules={[{ type: 'email', message: 'Por favor ingrese un email válido' }]}
                     >
                         <Input />
                     </Form.Item>

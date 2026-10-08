@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
@@ -6,6 +6,7 @@ import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import { UploadAcervo } from '@components/UploadAcervo';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
+
 const { Title } = Typography;
 
 export default function Reportes() {
@@ -22,18 +23,12 @@ export default function Reportes() {
 
     const watchMes = Form.useWatch('mes', form);
     const watchAnyo = Form.useWatch('anyo', form);
+
     const MESES_MAP = {
         enero: '01', febrero: '02', marzo: '03', abril: '04',
         mayo: '05', junio: '06', julio: '07', agosto: '08',
         septiembre: '09', octubre: '10', noviembre: '11', diciembre: '12'
     };
-
-    useEffect(() => {
-        fetchSubjects();
-        fetchPeriocidad();
-        fetchMeses();
-        fetchReportes();
-    }, []);
 
     const getDynamicFolder = () => {
         let folderPath = '/reportes';
@@ -45,38 +40,97 @@ export default function Reportes() {
         return folderPath;
     };
 
-    const fetchSubjects = async () => {
+    const fetchSubjects = useCallback(async () => {
         try {
             const response = await api.get('/subject/tree');
-            setSubjects(response.data);
+            setSubjects(response.data || []);
         } catch {
             message.error('Error al cargar temas');
         }
-    };
+    }, []);
 
-    const fetchReportes = async (search = '', page = pagination.current, pageSize = pagination.pageSize) => {
-        setLoading(true);
+    const fetchPeriocidad = useCallback(async () => {
         try {
-            const response = await api.get('/reportes', {
+            const response = await api.get('/reportes/periocidad');
+            setPeriocidad(response.data?.periocidad || {});
+        } catch (error) {
+            console.error('Error al cargar periocidad:', error);
+            message.error('Error al cargar periocidad');
+        }
+    }, []);
+
+    const fetchMeses = useCallback(async () => {
+        try {
+            const response = await api.get('/reportes/meses');
+            setMeses(response.data?.meses || {});
+        } catch {
+            message.error('Error al cargar meses');
+        }
+    }, []);
+
+    const fetchReportes = useCallback(async (search = '', page, pageSize) => {
+        setLoading(true);
+        setPagination((prevPagination) => {
+            const currentPage = page ?? prevPagination.current;
+            const currentPageSize = pageSize ?? prevPagination.pageSize;
+
+            api.get('/reportes', {
                 params: {
                     ...(search ? { search } : {}),
-                    page,
-                    pageSize
+                    page: currentPage,
+                    pageSize: currentPageSize
                 }
+            }).then((response) => {
+                setReportes(response.data?.reportes || []);
+                setPagination((prev) => ({
+                    ...prev,
+                    current: currentPage,
+                    pageSize: currentPageSize,
+                    total: response.data?.total || 0
+                }));
+            }).catch(() => {
+                message.error('Error al cargar reportes');
+            }).finally(() => {
+                setLoading(false);
             });
-            setReportes(response.data.reportes);
-            setPagination((prev) => ({
-                ...prev,
-                current: page,
-                pageSize,
-                total: response.data.total
-            }));
-        } catch {
-            message.error('Error al cargar reportes');
-        } finally {
-            setLoading(false);
-        }
-    };
+
+            return prevPagination;
+        });
+    }, []);
+
+    // Carga inicial de datos complementarios y reportes
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadInitialData = async () => {
+            if (isMounted) {
+                await Promise.all([
+                    fetchReportes('', 1),
+                    fetchSubjects(),
+                    fetchPeriocidad(),
+                    fetchMeses()
+                ]);
+            }
+        };
+
+        loadInitialData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [fetchReportes, fetchSubjects, fetchPeriocidad, fetchMeses]);
+
+    // Re-sincronización nativa al enfocar ventana/pestaña sin requerir 'useFetchOnFocus'
+    useEffect(() => {
+        const handleFocus = () => {
+            fetchReportes('');
+        };
+
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [fetchReportes]);
 
     const { searchText, setSearchText } = useDebouncedSearch((text) => {
         fetchReportes(text, 1, pagination.pageSize);
@@ -84,25 +138,6 @@ export default function Reportes() {
 
     const handleTableChange = (newPagination) => {
         fetchReportes(searchText, newPagination.current, newPagination.pageSize);
-    };
-
-    const fetchPeriocidad = async () => {
-        try {
-            const response = await api.get('/reportes/periocidad');
-            setPeriocidad(response.data.periocidad || {});
-        } catch (error) {
-            message.error('Error al cargar periocidad');
-            console.log(error);
-        }
-    };
-
-    const fetchMeses = async () => {
-        try {
-            const response = await api.get('/reportes/meses');
-            setMeses(response.data.meses || {});
-        } catch {
-            message.error('Error al cargar meses');
-        }
     };
 
     const handleCreate = () => {
@@ -127,7 +162,7 @@ export default function Reportes() {
                 const month = parseInt(parts[1], 10);
                 if (!preAnyo) preAnyo = year;
                 if (!preMes && month >= 1 && month <= 12) {
-                    const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+                    const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
                     preMes = monthNames[month - 1];
                 }
             }
@@ -165,16 +200,21 @@ export default function Reportes() {
     const handleSubmit = async (values) => {
         try {
             const payload = { ...values, tema_ids: selectedSubjects };
+
             if (editingReporte) {
                 await api.patch(`/reportes/${editingReporte.id}`, payload);
                 message.success('Reporte actualizado exitosamente');
+                await fetchReportes(searchText, pagination.current, pagination.pageSize);
             } else {
                 await api.post('/reportes/create', payload);
                 message.success('Reporte creado exitosamente');
+                setSearchText('');
+                await fetchReportes('', 1, pagination.pageSize);
             }
+
             setModalVisible(false);
-            fetchReportes(searchText, pagination.current, pagination.pageSize);
-        } catch {
+        } catch (error) {
+            console.error('Error al guardar:', error);
             message.error(editingReporte ? 'Error al actualizar reporte' : 'Error al crear reporte');
         }
     };
@@ -185,13 +225,13 @@ export default function Reportes() {
             title: 'Tema',
             dataIndex: 'temas',
             key: 'temas',
-            render: (temas) => temas.map((t) => t.titulo).join(', ')
+            render: (temas) => (temas || []).map((t) => t.titulo).join(', ')
         },
         {
             title: 'Fecha',
             dataIndex: 'fecha',
             key: 'fecha',
-            render: (date) => new Date(date).toLocaleDateString('es-MX')
+            render: (date) => (date ? new Date(date).toLocaleDateString('es-MX') : '-')
         },
         {
             title: 'Acciones',
@@ -295,6 +335,12 @@ export default function Reportes() {
                         </Space>
                     </Form.Item>
                     <Form.Item name="claves" label="Palabras clave" rules={[{ required: false }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="slug"
+                        label="Url"
+                        rules={[{ required: false, message: 'Por favor ingrese la url' }]}
+                    >
                         <Input />
                     </Form.Item>
                 </Form>

@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import api from '@services/apiService'
 import ReactPaginate from 'react-paginate'
 import TrackedLink from '@components/blocks/boton'
 import Searcher from '../pageComponents/searcher';
+import { useFetchOnFocus } from '@hooks/useFetchOnFocus'
 
 const BASE_MEDIA_URL = import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo'
 const THUMB_BASE_URL = `${BASE_MEDIA_URL}/thumb/portal/mapas`
@@ -24,9 +25,10 @@ const DEBOUNCE_MS = 350
 const SEARCH_KEYS = ['titulo', 'autor', 'area','escala', 'ubicacion', 'informacion', 'editor', 'edicion', 'medida']
 
 export default function Mapas() {
-    const [mapas, setMapas] = useState([])        // todos los mapas (orden aleatorio)
+    const [mapas, setMapas] = useState([])        // todos los mapas
     const [loading, setLoading] = useState(true)
     const [loadError, setLoadError] = useState(false)
+    const isFirstLoad = useRef(true)
 
     // ── Filtros ───────────────────────────────────────────────────────────────
     const [keyword, setKeyword] = useState('')
@@ -45,22 +47,30 @@ export default function Mapas() {
         debounceTimer.current = setTimeout(() => setDebouncedKeyword(value), DEBOUNCE_MS)
     }
 
-    // ── Carga de datos ────────────────────────────────────────────────────────
-    useEffect(() => {
-        const fetchMapas = async () => {
-            try {
-                setLoadError(false)
-                const response = await api.get('/mapas')
-                const data = Array.isArray(response.data?.mapas) ? response.data.mapas : []
-                setMapas(shuffleArray(data))    // orden aleatorio inicial
-            } catch {
-                setLoadError(true)
-            } finally {
-                setLoading(false)
+    // ── Carga de datos con actualización inmediata / focus ─────────────────────
+    const fetchMapas = useCallback(async () => {
+        try {
+            setLoadError(false)
+            const response = await api.get('/mapas')
+            const data = Array.isArray(response.data?.mapas) ? response.data.mapas : []
+
+            if (isFirstLoad.current) {
+                // Solo realizamos el orden aleatorio en la primera carga inicial
+                setMapas(shuffleArray(data))
+                isFirstLoad.current = false
+            } else {
+                // En re-focus o actualizaciones posteriores mantenemos los datos sincronizados
+                setMapas(data)
             }
+        } catch {
+            setLoadError(true)
+        } finally {
+            setLoading(false)
         }
-        fetchMapas()
     }, [])
+
+    // Hook para ejecutar al montar y ante evento focus
+    useFetchOnFocus(fetchMapas)
 
     // ── Opciones únicas para selects (derivadas de los datos) ─────────────────
     const anyoOptions = useMemo(() => {
@@ -71,7 +81,6 @@ export default function Mapas() {
     const tipoOptions = useMemo(() => {
         return [...new Set(mapas.map(m => m.tipo).filter(Boolean))].sort()
     }, [mapas])
-
 
     // ── Filtrado combinado ────────────────────────────────────────────────────
     const filtered = useMemo(() => {
@@ -126,60 +135,58 @@ export default function Mapas() {
 
             <div className="mx-auto container mb-15">
                  <Searcher searchTerm={keyword} setSearchTerm={handleKeywordChange} placeholder="¿Qué quieres buscar?" />
-              </div>
+            </div>
             
-                <div className="flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5">
+            <div className="flex flex-col lg:flex-wrap lg:flex-row gap-5 mb-5">
 
-                    {/* Filtro: Año */}
-                    <div className="">
-                        <label className='block text-14 text-primary'>
-                            Año
-                        </label>
-                        <select
-                            value={filterAnyo}
-                            onChange={e => setFilterAnyo(e.target.value)}
-                            className='w-full rounded-lg bg-card text-titulo px-4 py-2'
-                        >
-                            <option value="" className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
-                            {anyoOptions.map(y => (
-                                <option key={y} value={y}className='w-full rounded-lg bg-card text-titulo px-4 py-2'>{y}</option>
-                            ))}
-                        </select>
-                    </div>
+                {/* Filtro: Año */}
+                <div className="">
+                    <label className='block text-14 text-primary'>
+                        Año
+                    </label>
+                    <select
+                        value={filterAnyo}
+                        onChange={e => setFilterAnyo(e.target.value)}
+                        className='w-full rounded-lg bg-card text-titulo px-4 py-2'
+                    >
+                        <option value="" className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
+                        {anyoOptions.map(y => (
+                            <option key={y} value={y} className='w-full rounded-lg bg-card text-titulo px-4 py-2'>{y}</option>
+                        ))}
+                    </select>
+                </div>
 
-                    {/* Filtro: Tipo */}
-                    <div className="">
-                        <label className='block text-14 text-primary'>
-                            Tipo
-                        </label>
-                        <select
-                            value={filterTipo}
-                            onChange={e => setFilterTipo(e.target.value)}
-                            className='w-full rounded-lg bg-card text-titulo px-4 py-2'
-                        >
-                            <option value="" className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
-                            {tipoOptions.map(tipo => (
-                                <option key={tipo} value={tipo} className='w-full rounded-lg bg-card text-titulo px-4 py-2'>
-                                    {tipo}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                {/* Filtro: Tipo */}
+                <div className="">
+                    <label className='block text-14 text-primary'>
+                        Tipo
+                    </label>
+                    <select
+                        value={filterTipo}
+                        onChange={e => setFilterTipo(e.target.value)}
+                        className='w-full rounded-lg bg-card text-titulo px-4 py-2'
+                    >
+                        <option value="" className='w-full rounded-lg bg-card text-titulo px-4 py-2'>Todos</option>
+                        {tipoOptions.map(tipo => (
+                            <option key={tipo} value={tipo} className='w-full rounded-lg bg-card text-titulo px-4 py-2'>
+                                {tipo}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-                    {/* Botón limpiar filtros */}
-                    {hasActiveFilters && (
-                         <div className='flex items-end'>
+                {/* Botón limpiar filtros */}
+                {hasActiveFilters && (
+                    <div className='flex items-end'>
                         <button
                             onClick={clearFilters}
                             className='w-full rounded-lg border border-titulo bg-card px-4 py-2 text-sm text-titulo cursor-pointer hover:text-tertiary'
                         >
                             Limpiar filtros
                         </button>
-                        </div>
-                    )}
-                </div>
-
-            
+                    </div>
+                )}
+            </div>
 
             {/* ── Estados: cargando / error / sin resultados ── */}
             {loading && (
@@ -209,32 +216,29 @@ export default function Mapas() {
 
                         return (
                             <a href={`/galeria-de-mapas/${mapa.slug}`} key={mapa.id}>
-                                                <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl bg-card">                    
-                                                    
-
-                                                    <span className='mynaui--map-pin absolute inset-0 m-auto w-12 h-12 opacity-15' />
-                                                    {thumb && (
-                                                        <img src={srcImagen} alt={titulo} className='relative w-full h-full object-cover image-mapa' loading='lazy' decoding='async'
-                                                            onError={(e) => {
-                                                                e.currentTarget.style.display = 'none'
-                                                            }}
-                                                        />
-                                                    )}
-                                                    <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
-                                                        <TrackedLink to={`/galeria-de-mapas/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
-                                                            <h3 className='text-white text-22 font-garet-bold font-800'>{mapa.titulo}</h3>
-                                                            <div className='flex mb-5 mt-5 gap-2'> 
-                                                                {mapa.anyo ? (
-                                                                    <p className='text-14 font-bold rounded-xl py-2 px-5 bg-[#FFF2E5] text-tertiary border border-[#FF83004D]'>{mapa.anyo}</p>
-                                                                ) : null}
-                                                                {mapa.tipo ? (
-                                                                    <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>{mapa.tipo}</p>
-                                                                ) : null}
-                                                            </div>
-                                                            
-                                                        </TrackedLink>
-                                                    </div>
-                                                </div>
+                                <div key={mapa.id} className="overflow-hidden mapa h-60 sm:h-96 md:h-40 lg:h-60 xl:h-69 2xl:h-96 relative rounded-4xl bg-card">
+                                    <span className='mynaui--map-pin absolute inset-0 m-auto w-12 h-12 opacity-15' />
+                                    {thumb && (
+                                        <img src={srcImagen} alt={titulo} className='relative w-full h-full object-cover image-mapa' loading='lazy' decoding='async'
+                                            onError={(e) => {
+                                                e.currentTarget.style.display = 'none'
+                                            }}
+                                        />
+                                    )}
+                                    <div className='info px-5 mt-2 inline-block text-sm text-[#6618a2]'>
+                                        <TrackedLink to={`/galeria-de-mapas/${mapa.slug}`} className="mt-2 inline-block text-sm text-[#6618a2]">
+                                            <h3 className='text-white text-22 font-garet-bold font-800'>{mapa.titulo}</h3>
+                                            <div className='flex mb-5 mt-5 gap-2'>
+                                                {mapa.anyo ? (
+                                                    <p className='text-14 font-bold rounded-xl py-2 px-5 bg-[#FFF2E5] text-tertiary border border-[#FF83004D]'>{mapa.anyo}</p>
+                                                ) : null}
+                                                {mapa.tipo ? (
+                                                    <p className='text-14 font-bold rounded-xl py-2 px-5 bg-etiqueta-ter text-titulo border border-[#162A554D]'>{mapa.tipo}</p>
+                                                ) : null}
+                                            </div>
+                                        </TrackedLink>
+                                    </div>
+                                </div>
                             </a>
                         );
                     })}     
@@ -244,19 +248,18 @@ export default function Mapas() {
             {/* ── Paginación ── */}
             {!loading && pageCount > 1 && (
                 <ReactPaginate
-                previousLabel={"<"}
-                nextLabel={">"}
-                breakLabel={"..."}
-                breakClassName={"break-me"}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination"}
-                activeClassName={"active"}
-                forcePage={Math.floor(itemOffset / ITEMS_PER_PAGE
-)}
-            />
+                    previousLabel={"<"}
+                    nextLabel={">"}
+                    breakLabel={"..."}
+                    breakClassName={"break-me"}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination"}
+                    activeClassName={"active"}
+                    forcePage={Math.floor(itemOffset / ITEMS_PER_PAGE)}
+                />
             )}
         </div>
     )

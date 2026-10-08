@@ -62,39 +62,50 @@ function HomePage() {
         );
     }
 
-
-    if (page && page.sections && page.sections.length > 0) {
-        return (
-            <div className="min-h-screen">
-                {previewToken && (
-                    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999, background: '#faad14', color: '#000', textAlign: 'center', padding: '8px 16px', fontWeight: 600, fontSize: 14 }}>
-                        Modo vista previa — este contenido no está publicado
-                    </div>
-                )}
-                <div style={previewToken ? { paddingTop: 37 } : undefined}>
-                    {page.sections.map((block, index) => (
-                        <BlockRenderer key={block.id || index} block={block} />
-                    ))}
-                </div>
-            </div>
-        )
-    }
-
-    return (
-        <>  
+        const seo = (
             <Helmet>
                 <title>{page?.title || 'Inicio - IIEG'}</title>
-                {page?.description_meta && <meta name="description" content={page.description_meta} />}
-                {page?.keywords_meta && <meta name="keywords" content={page.keywords_meta} />}
+                <meta property="og:title" content={page?.title || 'Inicio - IIEG'} />
+                <meta property="og:description" content={page?.description_meta || 'Consulta información estadística y geográfica de Jalisco: datos, indicadores, estudios, mapas y herramientas del IIEG para conocer y analizar el estado.'} />                
+                <meta name="keywords" content={page?.keywords_meta || 'estadísticas, Jalisco, economía, mapas, datos, IIEG'} />
                 <meta property="og:image" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
+                <meta property="og:image:secure_url" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
                 <meta property="og:url" content={window.location.href} />
                 <meta property="og:type" content="article" />
                 {/* Twitter Cards (Específico para X / Twitter) */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={page?.title || 'Instituto de Información Estadística y Geográfica - IIEG'} />
-                <meta name="twitter:description" content={page?.description_meta || 'Conoce Jalisco, nuestro territorio y sus recursos naturales; las características de su población y las condiciones en las que vive; así como su situación económica y las oportunidades que ofrece nuestro estado, sus municipios y los diferentes ordenes de gobierno.'} />
+                <meta name="twitter:description" content={page?.description_meta || 'Consulta información estadística y geográfica de Jalisco: datos, indicadores, estudios, mapas y herramientas del IIEG para conocer y analizar el estado.'} />
                 <meta name="twitter:image" content="https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png" />
             </Helmet>
+    )
+
+    if (page && page.sections && page.sections.length > 0) {
+        return (
+            <>
+                {seo}
+                <div className="min-h-screen">
+                    {previewToken && (
+                        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999, background: '#faad14', color: '#000', textAlign: 'center', padding: '8px 16px', fontWeight: 600, fontSize: 14 }}>
+                            Modo vista previa — este contenido no está publicado
+                        </div>
+                    )}
+                    <div style={previewToken ? { paddingTop: 37 } : undefined}>
+                        {page.sections.map((block, index) => (
+                            <BlockRenderer key={block.id || index} block={block} />
+                        ))}
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+
+    return (
+        <>  
+            {seo}
             <section className="h-auto md:h-[565px] lg:h-[580px] xl:h-[592px]  2xl:h-[600px] " role="banner">                
                 <BlockRenderer block={{ type: 'banners' }} />
             </section>            

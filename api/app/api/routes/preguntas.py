@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from slugify import slugify
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.api.deps import get_db, verify_csrf
 from app.core.slugs import make_unique_slug
@@ -9,6 +9,7 @@ from app.models import Preguntas, Subject, Usuario
 from app.schemas.preguntas import PreguntasCreate, PreguntasList, PreguntasOut, PreguntasResponse
 
 router = APIRouter(prefix="/preguntas", tags=["preguntas"])
+
 
 def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
     """Carga los objetos Subject dado una lista de IDs, ignorando IDs inválidos."""
@@ -18,15 +19,23 @@ def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
         select(Subject).where(Subject.id.in_(tema_ids))
     ).scalars().all()
 
+
 @router.get("", response_model=PreguntasList)
 def listar_preguntas(
     db: Session = Depends(get_db),
 ):
-    preguntas = db.execute(select(Preguntas)).scalars().all()
+    """Obtener todas las preguntas con sus temas pre-cargados"""
+    preguntas = db.execute(
+        select(Preguntas)
+        .options(selectinload(Preguntas.temas))
+        .order_by(Preguntas.id.desc())
+    ).scalars().all()
+
     return {
         "preguntas": preguntas,
         "total": len(preguntas),
     }
+
 
 @router.post("/create", response_model=PreguntasOut, status_code=status.HTTP_201_CREATED)
 def crear_pregunta(
@@ -34,6 +43,7 @@ def crear_pregunta(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
+    """Crear una nueva pregunta"""
     slug = slugify(pregunta_in.pregunta)
     base_slug = slug
     contador = 1
@@ -54,17 +64,44 @@ def crear_pregunta(
     db.refresh(db_pregunta)
     return db_pregunta
 
-@router.get("/{pregunta_id}", response_model=PreguntasResponse)
-def obtener_pregunta(
-    pregunta_id: int,
+
+@router.get("/slug/{slug}", response_model=PreguntasOut)
+def get_pregunta_slug(
+    slug: str,
     db: Session = Depends(get_db),
 ):
-    pregunta = db.get(Preguntas, pregunta_id)
+    """Obtener una pregunta por slug (Definido antes de /{pregunta_id} para evitar colisión de tipos)"""
+    pregunta = db.execute(
+        select(Preguntas)
+        .options(selectinload(Preguntas.temas))
+        .where(Preguntas.slug == slug)
+    ).scalar_one_or_none()
+    
     if not pregunta:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Pregunta no encontrada"
         )
     return pregunta
+
+
+@router.get("/{pregunta_id}", response_model=PreguntasResponse)
+def obtener_pregunta(
+    pregunta_id: int,
+    db: Session = Depends(get_db),
+):
+    """Obtener una pregunta por ID"""
+    pregunta = db.execute(
+        select(Preguntas)
+        .options(selectinload(Preguntas.temas))
+        .where(Preguntas.id == pregunta_id)
+    ).scalar_one_or_none()
+
+    if not pregunta:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Pregunta no encontrada"
+        )
+    return pregunta
+
 
 @router.patch("/{pregunta_id}", response_model=PreguntasOut)
 def actualizar_pregunta(
@@ -73,6 +110,7 @@ def actualizar_pregunta(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
+    """Actualizar una pregunta existente"""
     pregunta = db.get(Preguntas, pregunta_id)
     if not pregunta:
         raise HTTPException(
@@ -107,12 +145,14 @@ def actualizar_pregunta(
     db.refresh(pregunta)
     return pregunta
 
+
 @router.delete("/{pregunta_id}")
 def eliminar_pregunta(
     pregunta_id: int,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
+    """Eliminar una pregunta por ID"""
     pregunta = db.get(Preguntas, pregunta_id)
     if not pregunta:
         raise HTTPException(
@@ -121,16 +161,3 @@ def eliminar_pregunta(
     db.delete(pregunta)
     db.commit()
     return {"message": "Pregunta eliminada exitosamente"}
-
-@router.get("/slug/{slug}", response_model=PreguntasOut)
-def get_pregunta_slug(
-    slug: str,
-    db: Session = Depends(get_db),
-):
-    """Obtener una pregunta por slug"""
-    pregunta = db.execute(select(Preguntas).where(Preguntas.slug == slug)).scalar_one_or_none()
-    if not pregunta:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Pregunta no encontrada"
-        )
-    return pregunta
