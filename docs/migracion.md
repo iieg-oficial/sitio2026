@@ -76,7 +76,7 @@ make build ENV=prod
 Detén los servicios que escriben datos:
 
 ```bash
-docker compose --env-file .env.production -f docker-compose.yml stop api ckan ckan-solr redis
+docker compose --env-file .env.production -f docker-compose.yml stop api ckan ckan-solr redisgit br
 ```
 
 Restaura `ckan_storage` usando el volumen real montado por el servicio. El nombre puede incluir el prefijo del proyecto; obténlo con `docker volume ls` y reemplaza `<VOLUMEN_CKAN_STORAGE>`:
