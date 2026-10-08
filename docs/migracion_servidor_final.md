@@ -60,7 +60,7 @@ Configura tambien:
 - `ACERVO_S3_URL` para que API y CKAN puedan escribir y leer desde el Acervo.
 - `ACERVO_PUBLIC_ENDPOINT` para que las imagenes y archivos del portal tengan una URL publica valida.
 - `ACERVO_UPSTREAM_URL` y `ACERVO_UPSTREAM_HOST` para que Nginx pueda servir `/acervo/`.
-- La misma red externa `iieg-network` solamente si se usara `ENV=gcp` y el Acervo vive en esa red.
+- La misma red externa `iieg-network` solamente si se usara `ENV=monolito` y el Acervo vive en esa red.
 
 El archivo `.env.production` actual contiene valores de prueba (`localhost`) y un proxy basado en IP. No debe usarse sin reemplazarlos por los valores finales.
 

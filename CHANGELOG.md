@@ -8,6 +8,35 @@ Todos los cambios notables se documentan en este archivo. Formato basado en [Kee
 - El mapa de contacto pide el widget de MapaLab como `mapalab.js?v=1.5.0`. Los navegadores que guardaron la versión vieja, con caché de un año, no mostraban la tarjeta de la sede y pintaban el pie «Fuente: IIEG».
 - `cuadernillos.municipio` conserva en PostgreSQL los nombres minúsculos de `MunicipioEnum`, mientras la API sigue validando y devolviendo sus valores capitalizados. Antes de desplegar sobre otra base, comprobar que no existan filas con etiquetas capitalizadas; si las hay, normalizarlas antes de publicar el código para evitar errores al leer cuadernillos.
 
+### Corregido
+- La galería de mapas y la portada ya no cargan el escaneo original cuando falla la miniatura: caen en la imagen por defecto. Las cartas municipales de 2021 no tenían miniatura, así que una página de la galería bajaba unos 30 MB en originales; ahora baja 1.4 MB. Las imágenes de ambas cargan de forma diferida.
+
+## [1.10.0] - 2026-08-28
+
+### Cambiado
+- El entorno `gcp` pasa a llamarse `monolito` y `docker-compose.gcp.yml` a
+  `docker-compose.monolito.yml`. El overlay nunca tuvo nada de GCP: lo único que hace es meter
+  `nginx`, `api` y `ckan` en `iieg-network` con sus aliases, que es lo que hace falta cuando el
+  portal comparte máquina con el gateway y el acervo. El nombre viejo ataba a un proveedor una
+  capacidad que en realidad es «todo en una sola VM», y que se usa igual para probar en local.
+  Alcanza a `DEPLOY_ENV`, a los atajos `up-seed-*` / `build-seed-*` y a los docs.
+- `ENV` con un valor desconocido ahora **aborta** en vez de caer en silencio a `dev`. Antes
+  cualquier typo —`ENV=gcp` incluido, después de este rename— entraba al `else` y levantaba el
+  entorno de desarrollo con `.env.development`, lo que en una VM de producción es un fallo mudo.
+
+---
+
+## [1.9.1] - 2026-08-05
+
+### Corregido
+- El «Aviso de privacidad» del footer apuntaba a `/aviso-de-privacidad`, una ruta que no está
+  declarada en `main.jsx` y que solo resolvía si existía una página con ese slug en el CMS. Ahora
+  enlaza a `https://iieg.jalisco.gob.mx/aviso-de-privacidad`, el PDF vigente servido
+  desde acervo, y abre en pestaña nueva. La URL no contiene la versión ni la ruta del objeto, así
+  que publicar un aviso nuevo o moverlo dentro del bucket no obliga a tocar este repo.
+
+---
+
 ## [1.9.0] - 2026-07-31
 
 Preparación para colgar el portal de la raíz del dominio, detrás de gateway-hub.

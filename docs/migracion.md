@@ -17,7 +17,7 @@ Desde la raiz del repositorio, usa el entorno correspondiente:
 
 ```bash
 make backup ENV=prod
-# o: make backup ENV=gcp
+# o: make backup ENV=monolito
 # o: make backup ENV=dev
 ```
 
