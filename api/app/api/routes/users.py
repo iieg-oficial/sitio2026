@@ -103,7 +103,6 @@ async def actualizar_usuario(
             status_code=status.HTTP_403_FORBIDDEN, detail="Permisos insuficientes"
         )
 
-    # Check if username or email is being changed to an existing one
     if (
         usuario_in.username
         and usuario_in.username != usuario.username

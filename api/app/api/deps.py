@@ -82,8 +82,7 @@ async def verify_csrf(
 async def verify_csrf_allow_pending(
     request: Request,
     current_user: Usuario = Depends(get_current_user),
-) -> Usuario:
-    """Para cambio de contraseña y logout: CSRF sí, bloqueo must_change no."""
+) -> Usuario:    
     _check_csrf(request, current_user)
     return current_user
 

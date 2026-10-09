@@ -102,6 +102,20 @@ services:
       portal_network_dev:
       ckan_network_dev:
 
+  redis-api:
+    image: redis:8-alpine
+    container_name: portal-redis-api-dev
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_api_data_dev:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      portal_network_dev:
+
   ckan-db:
     image: postgres:16-alpine
     container_name: portal-ckan-db-dev
@@ -220,7 +234,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
+      redis-api:
         condition: service_healthy
       seaweedfs:
         condition: service_healthy
@@ -244,7 +258,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis-api:6379/0
+      REDIS_BLACKLIST_URL: redis://redis-api:6379/1
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
       CSRF_SECRET_KEY: ${CSRF_SECRET_KEY:?CSRF_SECRET_KEY is required}
       COOKIE_SECURE: ${COOKIE_SECURE:?COOKIE_SECURE is required}
@@ -314,6 +329,7 @@ services:
 volumes:
   postgres_data_dev:
   redis_data_dev:
+  redis_api_data_dev:
   web_node_modules:
   admin_node_modules:
   ckan_db_data_dev:
