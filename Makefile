@@ -37,11 +37,7 @@ else
 $(error ENV=$(ENV) no existe. Usa dev, prod, prod-local o monolito)
 endif
 
-<<<<<<< HEAD
-.PHONY: help up build build-up rebuild build-clean-cache deploy _up-prod down logs restart clean prune prune-all backup shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one clear-model import-mapa import-reportes import-posts install-api-dep install-slugify setup
-=======
-.PHONY: help up build rebuild deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-monolito build-seed-monolito
->>>>>>> 7bb327b4 (refactor(compose): el entorno gcp pasa a llamarse monolito)
+.PHONY: help up build build-up rebuild build-clean-cache deploy _up-prod down logs restart clean prune prune-all shell-api shell-web shell-admin shell-ckan ckan-exec bucket-ls import-data import-one import-mapa import-reportes import-posts install-api-dep install-slugify setup seed up-seed build-seed up-seed-prod-local build-seed-prod-local up-seed-prod build-seed-prod up-seed-monolito build-seed-monolito
 
 help:
 	@echo ''
@@ -288,56 +284,3 @@ import-posts:
 setup:
 	@./scripts/init-env.sh
 
-<<<<<<< HEAD
-=======
-# ── Seed / Carga de datos de ejemplo ────────────────────────────────────────
-# Construye los argumentos opcionales para import_all_examples.py
-SEED_ARGS := --mode $(if $(MODE),$(MODE),upsert)
-ifdef DRY_RUN
-	SEED_ARGS += --dry-run
-endif
-ifdef ONLY
-	SEED_ARGS += --only $(ONLY)
-endif
-ifdef SKIP
-	SEED_ARGS += --skip $(SKIP)
-endif
-
-## seed: Ejecuta la importación de CSVs en el contenedor api ya levantado.
-##       Útil cuando el ambiente está corriendo y quieres poblar/repoblar la BD.
-##       Opciones: MODE=upsert|insert  DRY_RUN=1  ONLY=page,menu_item  SKIP=mapa
-seed:
-	@echo "${GREEN}Importando datos de ejemplo (CSVs) → $(MSG_ENV)${RESET}"
-	docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) exec -T api \
-		python scripts/import_all_examples.py $(SEED_ARGS)
-
-## up-seed: Levanta el entorno (sin rebuild) y activa la carga de CSVs al iniciar.
-up-seed:
-	@echo "${GREEN}Levantando entorno con seed: $(MSG_ENV)${RESET}"
-	SEED_EXAMPLES=true docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d
-
-## build-seed: Reconstruye el entorno y activa la carga de CSVs al iniciar.
-##             Equivalente a: SEED_EXAMPLES=true docker compose up --build
-build-seed:
-	@echo "${GREEN}Reconstruyendo entorno con seed: $(MSG_ENV)${RESET}"
-	SEED_EXAMPLES=true docker compose --env-file $(ENV_FILE) $(COMPOSE_FILES) up -d --build
-
-## Atajos rápidos por entorno
-up-seed-prod:
-	$(MAKE) up-seed ENV=prod
-
-build-seed-prod:
-	$(MAKE) build-seed ENV=prod
-
-up-seed-prod-local:
-	$(MAKE) up-seed ENV=prod-local
-
-build-seed-prod-local:
-	$(MAKE) build-seed ENV=prod-local
-
-up-seed-monolito:
-	$(MAKE) up-seed ENV=monolito
-
-build-seed-monolito:
-	$(MAKE) build-seed ENV=monolito
->>>>>>> 7bb327b4 (refactor(compose): el entorno gcp pasa a llamarse monolito)
