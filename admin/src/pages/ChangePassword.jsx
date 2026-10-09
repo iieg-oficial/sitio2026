@@ -26,16 +26,16 @@ export default function ChangePassword() {
 
         setLoading(true);
         try {
-            await api.post('/usuarios/cambiar-contrasena', {
+            await api.post('/usuarios/change-password', {
                 current_password: values.current_password,
                 new_password: values.new_password
             });
             message.success('Contraseña actualizada exitosamente');
 
-            const loggedUser = await refreshUser(); // o el usuario que devuelve la respuesta del login
+            const loggedUser = await refreshUser();
 
             if (loggedUser?.must_change_password) {
-              navigate('/cambiar-contrasena', { replace: true });
+              navigate('/change-password', { replace: true });
             } else {
               navigate('/reportes', { replace: true });
             }

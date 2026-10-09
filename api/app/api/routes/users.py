@@ -186,9 +186,9 @@ async def cambiar_password(
     current_user.must_change_password = False
     current_user.token_version = Usuario.token_version + 1
     db.commit()
-    db.refresh(current_user)  # necesario para leer el nuevo token_version
+    db.refresh(current_user)
 
-    emitir_sesion(response, current_user)  # sesión nueva en este dispositivo
+    emitir_sesion(response, current_user)
 
     return {"message": "Contraseña actualizada exitosamente"}
 
