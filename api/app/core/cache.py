@@ -7,7 +7,12 @@ from .settings import get_settings
 
 settings = get_settings()
 
-redis_client = redis.from_url(settings.redis_url, decode_responses=True)
+redis_client = redis.from_url(
+    settings.redis_url, 
+    decode_responses=True,
+    socket_connect_timeout=1,
+    socket_timeout=1, 
+)
 
 
 def get_cache(key: str) -> Any | None:

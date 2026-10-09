@@ -20,7 +20,7 @@ export default function Login() {
             if (data.user.must_change_password) {
                 navigate('/change-password');
             } else {
-                navigate('/');
+                navigate('/sistemas');
             }
         } catch (error) {
             console.error(error);
