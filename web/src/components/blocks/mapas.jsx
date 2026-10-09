@@ -8,7 +8,6 @@ import { useFetchOnFocus } from '@hooks/useFetchOnFocus'
 
 const BASE_MEDIA_URL = import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo'
 const THUMB_BASE_URL = `${BASE_MEDIA_URL}/thumb/portal/mapas`
-const DEFAULT_IMAGE = `${BASE_MEDIA_URL}/portal/img_postlink.png`
 
 // ─── Utilidad: mezcla aleatoria (Fisher-Yates) ────────────────────────────────
 function shuffleArray(arr) {
@@ -213,9 +212,7 @@ export default function Mapas() {
                         const thumb = original.substring(original.lastIndexOf('/') + 1);
                         const titulo = mapa?.titulo ?? '';
 
-                        const srcImagen = thumb 
-                            ? `${THUMB_BASE_URL}/${thumb}?w=560` 
-                            : DEFAULT_IMAGE;
+                        const srcImagen = `${THUMB_BASE_URL}/${thumb}?w=560`
 
                         return (
                             <a href={`/galeria-de-mapas/${mapa.slug}`} key={mapa.id}>
