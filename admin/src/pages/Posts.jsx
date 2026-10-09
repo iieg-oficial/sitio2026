@@ -163,7 +163,7 @@ export default function Posts() {
             key: 'url_completa',
             render: (slug) => {
                 if (!slug) return null;
-                const fullUrl = `${SITE_URL}/comunicacion/${slug}`;
+                const fullUrl = `${SITE_URL}/comunicacion-institucional/${slug}`;
                 return (
                     <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1890ff' }}>
                         {fullUrl}
@@ -369,6 +369,13 @@ export default function Posts() {
                                 </div>
                             ))}
                         </Space>
+                    </Form.Item>
+
+                    <Form.Item name="slug"
+                        label="Url"
+                        rules={[{ required: false, message: 'Por favor ingrese la url' }]}
+                    >
+                        <Input />
                     </Form.Item>
                 </Form>
             </Modal>

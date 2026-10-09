@@ -28,7 +28,7 @@ export default function Flashes() {
         fetchPeriodo();
         fetchMeses();
         fetchFlashes('', 1, pagination.pageSize);
-    }, [fetchFlashes]);
+    }, []);
 
     const fetchPeriodo = async () => {
         try{
@@ -328,6 +328,12 @@ export default function Flashes() {
                     <Form.Item name="claves"
                         label="Palabras clave"
                         rules={[{ required: false, message: 'Por favor ingrese las palabras clave' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item name="slug"
+                        label="Url"
+                        rules={[{ required: false, message: 'Por favor ingrese la url' }]}
                     >
                         <Input />
                     </Form.Item>

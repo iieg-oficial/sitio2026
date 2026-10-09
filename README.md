@@ -44,7 +44,7 @@ Detalle de URLs, puertos y credenciales por defecto en [docs/ambientes.md](./doc
 ## Comandos
 
 ```bash
-make up [ENV=dev|prod|gcp]   # arranca
+make up [ENV=dev|prod|monolito]   # arranca
 make build                    # rebuild + arranca
 make down                     # detiene
 make logs                     # tail logs
