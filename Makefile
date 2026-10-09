@@ -57,15 +57,10 @@ help:
 	@echo ''
 	@echo '${GREEN}Comandos:${RESET}'
 	@echo '  ${YELLOW}make up${RESET}               - Inicia el entorno (en segundo plano)'
-<<<<<<< HEAD
-	@echo '  ${YELLOW}make build${RESET}            - Construye las imágenes sin iniciar contenedores ni tocar la BD'
-	@echo '  ${YELLOW}make build-up${RESET}         - Construye las imágenes e inicia el entorno'
-	@echo '  ${YELLOW}make build-clean-cache${RESET} - Hace build sin caché y borra caché local de Docker para el ENV activo'
-	@echo '  ${YELLOW}make deploy [DEPLOY_ENV=gcp|prod]${RESET} - git pull + rebuild. gcp en monolito, prod en nodo propio'
-=======
 	@echo '  ${YELLOW}make build${RESET}            - Reconstruye e inicia el entorno'
 	@echo '  ${YELLOW}make deploy [DEPLOY_ENV=monolito|prod]${RESET} - git pull + rebuild. monolito en una VM, prod en nodo propio'
->>>>>>> 7bb327b4 (refactor(compose): el entorno gcp pasa a llamarse monolito)
+	@echo '  ${YELLOW}make build-up${RESET}         - Construye las imágenes e inicia el entorno'
+	@echo '  ${YELLOW}make build-clean-cache${RESET} 
 	@echo '  ${YELLOW}make down${RESET}             - Detiene los contenedores'
 	@echo '  ${YELLOW}make logs${RESET}             - Muestra logs en tiempo real'
 	@echo '  ${YELLOW}make restart${RESET}          - Reinicia el entorno'
