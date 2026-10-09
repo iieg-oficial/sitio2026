@@ -19,5 +19,6 @@ class Usuario(Base):
     )
     must_change_password = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    token_version = Column(Integer, default=0, server_default="0", nullable=False)
 
     media_uploads = relationship("Media", back_populates="uploaded_by_user")

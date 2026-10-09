@@ -1,10 +1,11 @@
 import secrets
 import string
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Response
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, verify_csrf
+from app.api.deps import get_active_user, get_db, verify_csrf, verify_csrf_allow_pending
+from app.core.cookies import emitir_sesion
 from app.core.security import hash_password, verify_password
 from app.models.user import Usuario
 from app.schemas.user import (
@@ -27,7 +28,7 @@ async def listar_usuarios(
     db: Session = Depends(get_db),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(get_active_user),
 ):
     usuarios = db.query(Usuario).offset(skip).limit(limit).all()
     return usuarios
@@ -37,7 +38,7 @@ async def listar_usuarios(
 async def obtener_usuario(
     usuario_id: int,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(get_active_user),
 ):
     usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
     if not usuario:
@@ -102,7 +103,6 @@ async def actualizar_usuario(
             status_code=status.HTTP_403_FORBIDDEN, detail="Permisos insuficientes"
         )
 
-    # Check if username or email is being changed to an existing one
     if (
         usuario_in.username
         and usuario_in.username != usuario.username
@@ -120,7 +120,9 @@ async def actualizar_usuario(
             status_code=status.HTTP_409_CONFLICT, detail="El email ya está registrado"
         )
 
-    update_data = usuario_in.model_dump(exclude_unset=True)
+    CAMPOS_EDITABLES = {"username", "email", "name", "role"}
+
+    update_data = usuario_in.model_dump(exclude_unset=True, exclude_none=True)
 
     if "role" in update_data and current_user.role != "tetlamamakani":
         raise HTTPException(
@@ -129,7 +131,8 @@ async def actualizar_usuario(
         )
 
     for field, value in update_data.items():
-        setattr(usuario, field, value)
+        if field in CAMPOS_EDITABLES:
+            setattr(usuario, field, value)
 
     db.commit()
     db.refresh(usuario)
@@ -157,6 +160,7 @@ async def resetear_password(
     temp_password = generate_temp_password()
     usuario.hashed_password = hash_password(temp_password)
     usuario.must_change_password = True
+    usuario.token_version = Usuario.token_version + 1
     db.commit()
 
     return {
@@ -167,19 +171,24 @@ async def resetear_password(
 
 @router.post("/cambiar-contrasena")
 async def cambiar_password(
-    password_data: PasswordChange,
+     password_data: PasswordChange,
+    response: Response,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(verify_csrf),
+    current_user: Usuario = Depends(verify_csrf_allow_pending),
 ):
     if not verify_password(password_data.current_password, current_user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Contraseña actual incorrecta"
+            detail="Contraseña actual incorrecta",
         )
 
     current_user.hashed_password = hash_password(password_data.new_password)
     current_user.must_change_password = False
+    current_user.token_version = Usuario.token_version + 1
     db.commit()
+    db.refresh(current_user)
+
+    emitir_sesion(response, current_user)
 
     return {"message": "Contraseña actualizada exitosamente"}
 
