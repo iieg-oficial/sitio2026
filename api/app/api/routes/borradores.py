@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
-from app.api.deps import get_current_user, get_db, require_role, verify_csrf
+from app.api.deps import get_active_user, get_db, require_role, verify_csrf
 from app.models.borrador import Borrador
 from app.models.user import Usuario
 from app.schemas.borrador import BorradorResponse, BorradorUpsert, RechazarIn
@@ -88,7 +88,7 @@ async def obtener_borrador(
     resource_type: str,
     resource_id: str,
     db: Session = Depends(get_db),
-    current_user: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(get_active_user),
 ):
     borrador = (
         db.query(Borrador)
