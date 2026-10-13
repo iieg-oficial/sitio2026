@@ -20,23 +20,18 @@ for name, value in urls.items():
 PY
 )"
 
-# 1. Volcar las variables de entorno de Docker para el Cron
-declare -p | grep -v -e BASH -e WINDOWS -e _= > /etc/environment
+if [ "$#" -gt 0 ]; then
+  exec "$@"
+fi
 
-# 2. Arrancar el demonio de cron en segundo plano (como root)
-echo "Iniciando servicio de Cron..."
-service cron start
-
-# 3. Ejecutar la inicialización oficial de la base de datos de CKAN
 echo "Corriendo chequeos y migraciones (prerun)..."
 python3 /srv/app/prerun.py
 
-# 4. Arrancar CKAN con uWSGI (servidor de producción)
 echo "Arrancando servidor web de CKAN..."
 exec uwsgi \
-  --http-socket 0.0.0.0:5000 \
-  --wsgi-file /srv/app/wsgi.py --callable application \
-  --master --enable-threads --lazy-apps --need-app \
-  --processes 2 --threads 2 \
-  --harakiri 60 --vacuum --die-on-term \
-  --buffer-size 32768
+--http-socket 0.0.0.0:5000 \
+--wsgi-file /srv/app/wsgi.py --callable application \
+--master --enable-threads --lazy-apps --need-app \
+--processes 2 --threads 2 \
+--harakiri 60 --vacuum --die-on-term \
+--buffer-size 32768
