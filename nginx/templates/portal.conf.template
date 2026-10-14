@@ -100,7 +100,7 @@ server {
         rewrite ^/datos-abiertos/(.*)$ /datos-abiertos/es/$1 redirect;
     }
 
-    location ^~ /datos-abiertos {
+    location ^~ /datos-abiertos/ {
         rewrite ^/datos-abiertos/?(.*)$ /$1 break; 
         proxy_pass http://ckan_backend;
         proxy_http_version 1.1;
@@ -172,6 +172,7 @@ server {
     location ^~ /portal-admin {
         alias /usr/share/nginx/html/portal-admin;
         try_files $uri $uri/ /portal-admin/index.html;
+        add_header X-Robots-Tag "noindex, nofollow" always;
     }
 
     # -----------------------------------------------------------------------
