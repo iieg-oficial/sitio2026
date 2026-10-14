@@ -13,5 +13,6 @@ export const pageMap = {
     "documentacion": ['documentacion'],
     "educacion-continua": ['capacitaciones'],
     "convocatorias": ['convocatorias'],
-    "cuadernillos": ['cuadernillos']
+    "cuadernillos": ['cuadernillos'],
+    "servicios": ['servicios']
 };
