@@ -142,7 +142,9 @@ server {
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
 
-    location ^~ /acervo/ {
+    location ^~ /acervo/portal/ {
+        limit_except GET HEAD { deny all; }
+
         set $acervo_upstream ${ACERVO_UPSTREAM_URL};
         rewrite ^/acervo/(.*)$ /$1 break;
         proxy_pass $acervo_upstream;
@@ -152,11 +154,14 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $forwarded_proto;
-        add_header Content-Disposition "attachment; filename=\"\$request_filename\"" always;
         proxy_connect_timeout 60;
         proxy_send_timeout 60;
         proxy_read_timeout 60;
-        client_max_body_size 100M;
+        client_max_body_size 0;
+    }
+
+    location ^~ /acervo/ {
+        return 404;
     }
 
     location = /robots.txt {
