@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /sextante/web/
+Disallow: /sextante/rest/
+Disallow: /mariachi/
+Disallow: /huachicol/
 
 Sitemap: https://iieg.jalisco.gob.mx/sitemap.xml
