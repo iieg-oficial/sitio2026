@@ -145,6 +145,8 @@ server {
     location ^~ /acervo/portal/ {
         limit_except GET HEAD { deny all; }
 
+        if ($uri ~ /$) { return 404; }
+
         set $acervo_upstream ${ACERVO_UPSTREAM_URL};
         rewrite ^/acervo/(.*)$ /$1 break;
         proxy_pass $acervo_upstream;
