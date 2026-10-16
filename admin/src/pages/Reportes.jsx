@@ -234,6 +234,14 @@ export default function Reportes() {
             render: (date) => (date ? new Date(date).toLocaleDateString('es-MX') : '-')
         },
         {
+            title: 'Url archivo',
+            dataIndex: 'archivo',
+            key: 'archivo',
+            render: (archivo) => {
+                return archivo ? <a href={archivo} target="_blank" rel="noopener noreferrer">{archivo}</a> : '-';
+            }
+        },
+        {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (
