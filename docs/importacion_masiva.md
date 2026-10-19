@@ -47,7 +47,7 @@ Parámetros soportados por convención:
 
 - `SCRIPT`: script de importacion a ejecutar
 - `SOURCE`: archivo CSV o JSON a procesar
-- `ENV`: `dev`, `prod` o `gcp`
+- `ENV`: `dev`, `prod` o `monolito`
 - `MODE`: `upsert` o `insert`
 - `LIMIT`: procesa solo los primeros N registros
 - `DRY_RUN=1`: valida sin guardar cambios

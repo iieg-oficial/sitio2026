@@ -14,7 +14,7 @@ sitio2026/
 ├── docs/                  # Esta documentación
 ├── docker-compose.yml         # Producción "administración"
 ├── docker-compose.dev.yml     # Desarrollo
-├── docker-compose.gcp.yml     # Overlay producción GCP (iieg-network)
+├── docker-compose.monolito.yml # Overlay producción monolito (iieg-network)
 ├── Makefile                   # Atajos make up | down | clean | shell-* | setup
 ├── .env.development.example   # Plantilla dev
 └── .env.production.example    # Plantilla prod
@@ -63,7 +63,7 @@ sitio2026/
 
 ### Acervo (S3-compatible)
 - **dev:** SeaweedFS 4.23 embebido en este compose (`dev-seaweedfs/`).
-- **prod:** SeaweedFS externo del repo `/IIEG/acervo/`, accedido via `iieg-network` (GCP) o URL pública (administración).
+- **prod:** SeaweedFS externo del repo `/IIEG/acervo/`, accedido via `iieg-network` (monolito) o URL pública (nodo propio).
 
 ## Diagrama
 
@@ -101,7 +101,7 @@ flowchart LR
 - `ckan_network` — ckan stack
 - El Acervo se accede vía URL pública (no por red Docker).
 
-### Prod GCP (`docker-compose.yml` + `docker-compose.gcp.yml`)
+### Prod monolito (`docker-compose.yml` + `docker-compose.monolito.yml`)
 - Igual que admin **+** `iieg-network` (external).
 - Aliases declarados: `portal-nginx`, `portal-api`, `portal-ckan` para no colisionar con otros proyectos en `iieg-network` (mariachi, mapalab, etc. también tienen servicios `api`/`nginx`).
 

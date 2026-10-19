@@ -102,7 +102,7 @@ Pasos concretos.
 ## Checklist
 - [ ] Lint OK
 - [ ] Probado en dev (`make up`)
-- [ ] Probado en prod local (`make up ENV=gcp`) si aplica
+- [ ] Probado en prod local (`make up ENV=monolito`) si aplica
 - [ ] Docs actualizados
 ```
 

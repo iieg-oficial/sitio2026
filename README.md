@@ -44,7 +44,7 @@ Detalle de URLs, puertos y credenciales por defecto en [docs/ambientes.md](./doc
 ## Comandos
 
 ```bash
-make up [ENV=dev|prod|gcp]   # arranca
+make up [ENV=dev|prod|monolito]   # arranca
 make build                    # rebuild + arranca
 make down                     # detiene
 make logs                     # tail logs
@@ -60,7 +60,7 @@ make shell-admin              # sh en admin (solo dev)
 
 | Documento | Descripción |
 |---|---|
-| [Ambientes](./docs/ambientes.md) | Levantar dev / prod / gcp, URLs, troubleshooting |
+| [Ambientes](./docs/ambientes.md) | Levantar dev / prod / monolito, URLs, troubleshooting |
 | [Infraestructura](./docs/infraestructura.md) | Stack, arquitectura, redes Docker, convenciones |
 | [Media y Acervo](./docs/media_acervo.md) | Cómo subir/leer archivos al S3, MediaSelector, buckets |
 | [Flow de componente](./docs/flow_componente.md) | Crear un componente end-to-end (DB → API → CMS → web) |
