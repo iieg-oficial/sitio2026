@@ -22,7 +22,7 @@ from app.api.routes import (
     pages, pages_public, perfiles, perfiles_public, posts, posts_public,
     preguntas, preguntas_public, preview, profesores, profesores_public,
     public, reportes, reportes_public, search_public, sistemas, sistemas_public,
-    snieg, snieg_public, subject, subject_public, users, seo_public
+    snieg, snieg_public, subject, subject_public, users, seo_public, sitemap_public
 )
 
 settings = get_settings()
@@ -104,6 +104,7 @@ def create_app() -> FastAPI:
     app.include_router(cuadernillos_public.router, prefix=settings.web_prefix)
     app.include_router(search_public.router, prefix=settings.web_prefix)
     app.include_router(seo_public.router,prefix=settings.web_prefix)
+    app.include_router(sitemap_public.router, prefix=settings.web_prefix)
 
     # -------------------------------------------------------------------------
     # ROUTERS PRIVADOS / ADMINISTRACIÓN (Requieren token)
