@@ -1,63 +1,90 @@
-from xml.sax.saxutils import escape
+from fastapi import APIRouter, Depends, HTTPException, status
 
-from fastapi import APIRouter, Depends, Response
+# pyrefly: ignore [missing-import]
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
-from app.models.page import Page
+from app.models import Sistemas, Subject
+from app.schemas.sistemas import SistemasList, SistemasOut
 
-router = APIRouter(tags=["seo"])
+router = APIRouter(prefix="/sistemas", tags=["sistemas-public"])
 
-DOMAIN = "https://iieg.jalisco.gob.mx"
+def _load_temas(db: Session, tema_ids: list[int]) -> list[Subject]:
+    """Carga los objetos Subject dado una lista de IDs, ignorando IDs inválidos."""
+    if not tema_ids:
+        return []
+    return db.execute(
+        select(Subject).where(Subject.id.in_(tema_ids))
+    ).scalars().all()
 
-FIXED_PATHS = [
-    "/",
-    "/comunicacion-institucional",
-    "/clasificador-de-cultivos",
-    "/landing-sieej",
-    "/aviso-de-privacidad",
-]
+@router.get("", response_model=SistemasList)
+def read_sistemas(
+    db: Session = Depends(get_db),
+    destacado: bool | None = None,
+    slider: bool | None = None,
+    skip: int = 0,
+    limit: int = 100,
+):
+    """Obtener todos los sistemas con filtro opcional de destacado"""
+    query = select(Sistemas)
+    if destacado is not None:
+        query = query.where(Sistemas.destacado == destacado)
+    if slider is not None:
+        query = query.where(Sistemas.slider == slider)
 
-EXTRA_PATHS = ["/mapalab/", "/mapalab/mapa"]
+    sistemas = db.execute(query.offset(skip).limit(limit)).scalars().all()
+    total = db.query(Sistemas)
 
-EXCLUDED_PREFIXES = ("/datos-abiertos", "/api", "/portal-admin", "/acervo", "/proximamente")
+    if destacado is not None:
+        total = total.filter(Sistemas.destacado == destacado)
+    if slider is not None:
+        total = total.filter(Sistemas.slider == slider)
+    total = total.count()
 
-
-def _clean_slug(slug: str | None) -> str:
-    if not slug:
-        return ""
-    s = str(slug).strip()
-    if s.startswith(("http://", "https://")):
-        return ""  # enlaces externos: fuera del sitemap
-    s = s.split("#", 1)[0].split("?", 1)[0]  # sin ancla ni query
-    s = "/" + s.lstrip("/")
-    return s.rstrip("/") if len(s) > 1 else s
-
-
-def _is_excluded(path: str) -> bool:
-    return any(path == p or path.startswith(p + "/") for p in EXCLUDED_PREFIXES)
+    return {
+        "sistemas": sistemas,
+        "total": total,
+    }
 
 
-@router.api_route("/sitemap.xml", methods=["GET", "HEAD"], response_class=Response)
-def generate_sitemap(db: Session = Depends(get_db)):
-    paths: set[str] = set(FIXED_PATHS) | set(EXTRA_PATHS)
+@router.get("/destacados", response_model=SistemasList)
+def read_sistemas_destacados(
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 4,
+):
+    """Obtener todos los sistemas destacados"""
+    sistemas = db.query(Sistemas).filter(Sistemas.destacado).offset(skip).limit(limit).all()
+    total = db.query(Sistemas).filter(Sistemas.destacado).count()
+    return {
+        "sistemas": sistemas,
+        "total": total,
+    }
 
-    pages = db.execute(select(Page).where(Page.activar.is_(True))).scalars().all()
-    for page in pages:
-        path = _clean_slug(getattr(page, "slug_custom", None) or page.slug)
-        if path and not _is_excluded(path):
-            paths.add(path)
+@router.get("/{id}", response_model=SistemasOut)
+def get_sistemas_id(
+    id: int,
+    db: Session = Depends(get_db),
+):
+    """Obtener un sistema por ID"""
+    db_sistemas = db.get(Sistemas, id)
+    if not db_sistemas:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sistema no encontrado",
+        )
+    return db_sistemas
 
-    lines = [
-        '<?xml version="1.0" encoding="UTF-8"?>',
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ]
-    lines += [f"  <url><loc>{escape(DOMAIN + p)}</loc></url>" for p in sorted(paths)]
-    lines.append("</urlset>")
-
-    return Response(
-        content="\n".join(lines),
-        media_type="application/xml",
-        headers={"Cache-Control": "public, max-age=3600"},
-    )
+@router.get("/slug/{slug}", response_model=SistemasOut)
+def get_sistemas_slug(
+    slug: str,
+    db: Session = Depends(get_db),
+):
+    """Obtener un sistema por slug"""
+    sistema = db.query(Sistemas).filter(Sistemas.slug == slug).first()
+    if not sistema:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Sistema no encontrado"
+        )
+    return sistema
