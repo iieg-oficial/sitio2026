@@ -1,5 +1,50 @@
 name: portal
 
+x-ckan-build: &ckan-build
+  context: ./ckan
+  dockerfile: Dockerfile
+  args:
+    CKAN_BASE_IMAGE: ckan/ckan-base:2.11.5
+
+x-ckan-env: &ckan-env
+  CKAN_SITE_URL: ${CKAN_SITE_URL:?CKAN_SITE_URL is required}
+  CKAN_SQLALCHEMY_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/ckan_default
+  CKAN_DB_PASSWORD: ${CKAN_DB_PASSWORD:?CKAN_DB_PASSWORD is required}
+  DATASTORE_RO_PASSWORD: ${DATASTORE_RO_PASSWORD:?DATASTORE_RO_PASSWORD is required}
+  CKAN_SOLR_URL: http://ckan-solr:8983/solr/ckan
+  CKAN_REDIS_URL: redis://redis:6379/1
+  CKAN___DEBUG: "False"
+  CKAN__UPLOADS_ENABLED: "True"
+  CKAN___BEAKER__SESSION__SECRET: ${CKAN_BEAKER_SESSION_SECRET:?CKAN_BEAKER_SESSION_SECRET is required}
+  CKAN___API_TOKEN__JWT__ENCODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET:?CKAN_API_TOKEN_JWT_SECRET is required}
+  CKAN___API_TOKEN__JWT__DECODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET}
+  CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME:?CKAN_SYSADMIN_NAME is required}
+  CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD:?CKAN_SYSADMIN_PASSWORD is required}
+  CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
+  CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg_theme stats tracking
+  CKAN__ROOT_PATH: /datos-abiertos/{{LANG}}
+  CKAN___FAVICON: /images/iieg_logo-32x32.png
+  CKAN___SITE_TITLE: "Datos Abiertos - IIEG"
+  CKAN___SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
+  CKAN__TRACKING_ENABLED: "true"
+  CKANEXT__S3FILESTORE__SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
+  CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
+  CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
+  CKANEXT__S3FILESTORE__REGION_NAME: us-east-1
+  CKANEXT__S3FILESTORE__AWS_ACCESS_KEY_ID: ${ACERVO_ACCESS_KEY:?ACERVO_ACCESS_KEY is required}
+  CKANEXT__S3FILESTORE__AWS_SECRET_ACCESS_KEY: ${ACERVO_SECRET_KEY:?ACERVO_SECRET_KEY is required}
+  CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
+  CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:?CKAN_S3_STORAGE_PATH is required}
+  CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
+  CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
+  CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
+  LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:-file:///srv/app/licenses.json}
+  CKAN__AUTH__CREATE_USER_VIA_WEB: "false"
+  CKAN__AUTH__CREATE_UNOWNED_DATASET: "false"
+  CKAN__AUTH__CREATE_DATASET_IF_NOT_IN_ORGANIZATION: "false"
+  CKAN__AUTH__ANON_CREATE_DATASET: "false"
+  CKAN__DATASETS_PER_PAGE: ${CKAN_DATASETS_PER_PAGE:-20}
+
 services:
 
   nginx:
@@ -121,11 +166,7 @@ services:
       ckan_network:
 
   ckan:
-    build:
-      context: ./ckan
-      dockerfile: Dockerfile
-      args:
-        CKAN_BASE_IMAGE: ckan/ckan-base:2.11.5
+    build: *ckan-build
     container_name: portal-ckan
     restart: unless-stopped
     depends_on:
@@ -135,40 +176,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    environment:
-      CKAN_SITE_URL: ${CKAN_SITE_URL:?CKAN_SITE_URL is required}
-      CKAN_SQLALCHEMY_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/ckan_default
-      CKAN_DB_PASSWORD: ${CKAN_DB_PASSWORD:?CKAN_DB_PASSWORD is required}
-      DATASTORE_RO_PASSWORD: ${DATASTORE_RO_PASSWORD:?DATASTORE_RO_PASSWORD is required}
-      CKAN_SOLR_URL: http://ckan-solr:8983/solr/ckan
-      CKAN_REDIS_URL: redis://redis:6379/1
-      CKAN___DEBUG: "False"
-      CKAN__UPLOADS_ENABLED: "True"
-      CKAN___BEAKER__SESSION__SECRET: ${CKAN_BEAKER_SESSION_SECRET:?CKAN_BEAKER_SESSION_SECRET is required}
-      CKAN___API_TOKEN__JWT__ENCODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET:?CKAN_API_TOKEN_JWT_SECRET is required}
-      CKAN___API_TOKEN__JWT__DECODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET}
-      CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME:?CKAN_SYSADMIN_NAME is required}
-      CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD:?CKAN_SYSADMIN_PASSWORD is required}
-      CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
-      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg_theme stats
-      CKAN__ROOT_PATH: /datos-abiertos/{{LANG}}
-      CKAN___FAVICON: /images/iieg_logo-32x32.png
-      CKAN___SITE_TITLE: "Datos Abiertos - IIEG"
-      CKAN_TRACKING_ENABLED: "True"
-      CKAN___SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
-      CKANEXT__S3FILESTORE__SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
-      CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
-      CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
-      CKANEXT__S3FILESTORE__REGION_NAME: us-east-1
-      CKANEXT__S3FILESTORE__AWS_ACCESS_KEY_ID: ${ACERVO_ACCESS_KEY:?ACERVO_ACCESS_KEY is required}
-      CKANEXT__S3FILESTORE__AWS_SECRET_ACCESS_KEY: ${ACERVO_SECRET_KEY:?ACERVO_SECRET_KEY is required}
-      CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
-      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:?CKAN_S3_STORAGE_PATH is required}
-      CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
-      CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
-      CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
-      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?file:///srv/app/licenses.json}
-      CKAN__DATASETS_PER_PAGE: ${CKAN_DATASETS_PER_PAGE:-20}
+    environment: *ckan-env
     volumes:
       - ckan_storage:/var/lib/ckan
       - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme
@@ -184,6 +192,27 @@ services:
         aliases:
           - portal-ckan
       ckan_network:
+
+  ckan-tracking:
+    build: *ckan-build
+    container_name: portal-ckan-tracking
+    restart: unless-stopped
+    depends_on:
+      ckan:
+        condition: service_healthy
+    environment: *ckan-env
+    volumes:
+      - ./ckan/licenses.json:/srv/app/licenses.json
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while true; do
+          ckan -c /srv/app/ckan.ini tracking update
+          sleep 259200
+        done
+    networks:
+      - ckan_network
 
   api:
     build:
