@@ -51,9 +51,16 @@ def seo_preview(
     seo_image = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"
     seo_keywords = "estadistica, jalisco, iieg"
 
+    segments = [s for s in path.strip("/").split("/") if s]
+
+    
+    FIXED_ROUTES = {"comunicacion-institucional", "clasificador-de-cultivos",
+                    "landing-sieej", "aviso-de-privacidad", "resultados", "busqueda"}
+    found = True 
+
     try:
         # --- CASO 1: Ruta de 1 nivel ---
-        if len(segments) == 1:
+        if len(segments) == 1 and segments[0] not in FIXED_ROUTES:
             slug = segments[0]
             stmt = select(Page).where((Page.slug == slug) | (Page.slug == f"/{slug}"))
             pages = db.execute(stmt).scalars().first()
@@ -64,6 +71,7 @@ def seo_preview(
                 seo_keywords = getattr(pages, "keywords_meta", None) or getattr(pages, "keywords", None) or getattr(pages, "claves", None) or seo_keywords
                 seo_image = getattr(pages, "image", None) or getattr(pages, "imagen", None) or seo_image
             else:
+                found = False
                 logger.warning(f"No se encontró registro en 'Page' para slug='{slug}'")
 
         # --- CASO 2: Ruta de 2 niveles ---
@@ -77,6 +85,8 @@ def seo_preview(
                     seo_title = f"{getattr(item, 'titulo', 'Curso')} - IIEG"
                     seo_desc = getattr(item, "descripcion", None) or getattr(item, "resumen", None) or seo_desc
                     seo_image = getattr(item, "img_portada", None) or getattr(item, "imagen", None) or seo_image
+                else:
+                    found = False
 
             elif tipo_contenido == "datos-expres":
                 stmt = select(Flashes).where((Flashes.slug == item_slug) | (Flashes.slug == f"/{item_slug}"))
@@ -85,6 +95,8 @@ def seo_preview(
                     seo_title = f"{getattr(item, 'titulo', 'Flash')} - IIEG"
                     seo_desc = getattr(item, "desc_jal", None) or getattr(item, "resumen", None) or seo_desc
                     seo_keywords = getattr(item, "claves", None) or seo_keywords
+                else:
+                    found = False
 
             elif tipo_contenido == "comunicacion-institucional":
                 stmt = select(Posts).where((Posts.slug == item_slug) | (Posts.slug == f"/{item_slug}")).options(selectinload(Posts.gallery_images))
@@ -97,6 +109,8 @@ def seo_preview(
 
                     if item.gallery_images and len(item.gallery_images) > 0:
                         seo_image = item.gallery_images[0].url
+                else:
+                    found = False
 
             elif tipo_contenido == "galeria-de-mapas":
                 stmt = select(Mapa).where((Mapa.slug == item_slug) | (Mapa.slug == f"/{item_slug}"))
@@ -105,6 +119,8 @@ def seo_preview(
                     seo_title = f"{getattr(item, 'titulo', 'Mapa')} - IIEG"
                     seo_desc = getattr(item, "informacion", None) or getattr(item, "resumen", None) or seo_desc
                     seo_image = getattr(item, "imagen", None) or seo_image
+                else:
+                    found = False
 
     except Exception as e:
         logger.error(f"Error procesando metadata SEO para la ruta '{path}': {e}", exc_info=True)
@@ -154,4 +170,4 @@ def seo_preview(
 <body></body>
 </html>"""
 
-    return HTMLResponse(content=html_content, status_code=200)
+    return HTMLResponse(content=html_content, status_code=200 if found else 404)

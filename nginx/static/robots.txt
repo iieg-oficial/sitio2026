@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
-Disallow: /administrador/
-Disallow: /api/
+Disallow: /sextante/web/
+Disallow: /sextante/rest/
+Disallow: /mariachi/
+Disallow: /huachicol/
 
-Sitemap: https://iieg.gob.mx/sitemap.xml
+Sitemap: https://iieg.jalisco.gob.mx/sitemap.xml
