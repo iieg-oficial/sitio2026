@@ -17,6 +17,11 @@ EXCLUDED_EXACT_PATHS = {"/datos-abiertos"}
 RAW_FIXED_PATHS = {
     "/",
     "/mapalab/mapa",
+    "/mapalab/",
+    "/comunicacion-institucional/",
+    "/clasificador-de-cultivos",
+    "/landing-sieej",
+    "/aviso-de-privacidad",
 }
 
 
