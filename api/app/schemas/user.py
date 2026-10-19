@@ -36,10 +36,6 @@ class PasswordChange(BaseModel):
     new_password: str = Field(..., min_length=8)
 
 
-class PasswordReset(BaseModel):
-    new_password: str
-
-
 class LoginRequest(BaseModel):
     username: str
     password: str
@@ -48,8 +44,3 @@ class LoginRequest(BaseModel):
 class LoginResponse(BaseModel):
     csrf_token: str
     user: UsuarioResponse
-
-
-class TokenPayload(BaseModel):
-    sub: str
-    exp: int

@@ -181,6 +181,12 @@ export default function Documentacion() {
             sorter: (a, b) => a.titulo.localeCompare(b.titulo)
         },
         {
+            title: 'url archivo',
+            dataIndex: 'archivo',
+            key: 'archivo',
+            render: (url) => url ? <a href={url} target="_blank" rel="noopener noreferrer">{url}</a> : '-'
+        },
+        {
             title: 'Tema',
             dataIndex: 'temas',
             key: 'temas',

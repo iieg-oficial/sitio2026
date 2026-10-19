@@ -1,0 +1,27 @@
+{% ckan_extends %}
+
+
+
+{% block secondary_content %}
+
+  {% block secondary_help_content %}{% endblock %}
+
+  {% block package_info %}
+    {% snippet 'package/snippets/info.html', pkg=pkg, am_following=am_following %}
+  {% endblock %}
+
+  {% block package_organization %}
+    {% if pkg.organization %}
+      {% set org = h.get_organization(pkg.organization.id) %}
+      {% snippet "organization/snippets/info.html", organization=org, show_nums=false, am_following=am_following, image_link=true %}
+    {% endif %}
+  {% endblock %}
+
+  {% block package_social %}
+  {% endblock %}
+
+  {% block package_license %}
+    {% snippet "snippets/license.html", pkg_dict=pkg %}
+  {% endblock %}
+
+{% endblock %}

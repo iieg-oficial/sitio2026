@@ -1,0 +1,14 @@
+{% ckan_extends %}
+
+{% block package_list %}
+  {% if packages %}
+    <ul class="{{ list_class or 'dataset-list list-unstyled' }}">
+        {% block package_list_inner %}
+          {# Dibuja TODOS los paquetes que devolvió la consulta para esa página #}
+          {% for package in packages %}
+            {% snippet 'snippets/package_item.html', package=package, item_class=item_class, hide_resources=hide_resources %}
+          {% endfor %}
+        {% endblock %}
+    </ul>
+  {% endif %}
+{% endblock %}

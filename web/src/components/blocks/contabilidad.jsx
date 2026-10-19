@@ -10,6 +10,7 @@ export default function Contabilidad() {
     const [activeTab, setActiveTab] = useState(null);
     const [openSubjects, setOpenSubjects] = useState({});
     const [itemOffset, setItemOffset] = useState(0);
+    const [activeSubtema, setActiveSubtema] = useState({});
     const itemsPerPage = 12;
 
     const showData = useCallback(async () => {
@@ -42,18 +43,29 @@ export default function Contabilidad() {
 
     const getPrimaryTema = (archivo) => {
         const temas = archivo.temas ?? [];
-        const parentTema = temas.find(t => !t.parent_id);
-        return parentTema?.titulo ?? temas[0]?.titulo ?? 'Sin tema';
+        if (temas.length === 0) return null;
+
+        const temaPadre = temas.find((tema) => {
+            const parentId = Number(tema?.parent_id ?? 0);
+            return !tema?.parent_id || parentId === 0 || Number.isNaN(parentId);
+        });
+
+        return temaPadre ?? temas[0];
     }
 
     const getSubtema = (archivo) => {
         const temas = archivo.temas ?? [];
-        const subtema = temas.find(t => t.parent_id);
-        return subtema?.titulo ?? null;
+        const temaPadre = getPrimaryTema(archivo);
+        if (!temaPadre) return [];
+
+        return temas.filter((tema) => {
+            if (!tema?.parent_id) return false;
+            return Number(tema.parent_id) === Number(temaPadre.id);
+        });
     }
 
-    const filteredPosts = !searchTerm 
-        ? contabilidad 
+    const filteredPosts = !searchTerm
+        ? contabilidad
         : contabilidad.filter(post => {
             const term = searchTerm.toLowerCase();
             if (post.titulo?.toLowerCase().includes(term)) return true;
@@ -77,11 +89,11 @@ export default function Contabilidad() {
     );
 
     const groupedBySubject = postsByYear.reduce((grupos, itemContabilidad) => {
-        const tema = getPrimaryTema(itemContabilidad);
+        const tema = getPrimaryTema(itemContabilidad)?.titulo ?? 'Sin tema';
         if (!grupos[tema]) grupos[tema] = [];
         grupos[tema].push(itemContabilidad);
         return grupos;
-    }, {});   
+    }, {});
 
     const normalizeTema = (tema) =>
         tema
@@ -120,7 +132,7 @@ export default function Contabilidad() {
         <div>
             <div>
                 <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué archivo quieres buscar?" />
-                
+
                 <div className='mx-auto px-2 container my-15'>
                     <div className="flex gap-2 mb-5 overflow-x-auto">
                         {years.map(year => (
@@ -128,14 +140,14 @@ export default function Contabilidad() {
                                 key={year}
                                 onClick={() => { setActiveTab(year); setItemOffset(0); }}
                                 className={`px-10 py-3 cursor-pointer rounded-3xl border font-garet-bold text-28 transition-colors flex-shrink-0 snap-start min-w-[120px] ${activeTab === year
-                                        ? 'bg-etiqueta-sec text-tertiary border-tertiary'
-                                        : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
+                                    ? 'bg-etiqueta-sec text-tertiary border-tertiary'
+                                    : 'bg-etiqueta-ter text-titulo border border-titulo hover:border-tertiary hover:text-tertiary hover:bg-etiqueta-sec'}`}
                             >
                                 {year}
                             </button>
                         ))}
                     </div>
-                    
+
                     <div className='border-card rounded-2xl p-5'>
                         {currentSubjects.length === 0 && (
                             <p>No hay resultados.</p>
@@ -144,6 +156,18 @@ export default function Contabilidad() {
                         {currentSubjects.map((tema) => {
                             const items = groupedBySubject[tema];
                             const isOpen = openSubjects[tema] ?? false;
+
+                            const groupedBySubtema = items.reduce((grupos, archivo) => {
+                                const subtemas = getSubtema(archivo);
+                                const subtema = subtemas[0]?.titulo ?? 'Sin subtema';
+
+                                if (!grupos[subtema]) grupos[subtema] = [];
+                                grupos[subtema].push(archivo);
+                                return grupos;
+                            }, {});
+
+                            const subtemas = Object.keys(groupedBySubtema);
+                            const selectedSubtema = activeSubtema[tema] ?? subtemas[0] ?? null;
 
                             return (
                                 <div key={tema} className='bg-card rounded-2xl mb-4 p-4'>
@@ -164,20 +188,45 @@ export default function Contabilidad() {
 
                                     {isOpen && (
                                         <div className="px-4 pb-3 space-y-4">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {items.map((itemContabilidad) => (
-                                                    <TrackedLink key={itemContabilidad.id} to={itemContabilidad.archivo} className="" target="_blank" rel="noopener noreferrer">
-                                                        <div className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
-                                                            <div className='flex'>
-                                                                <div className="col-span-1 group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
-                                                                    <span className="material-symbols--download group-hover:bg-white!"></span>
-                                                                </div> 
-                                                                <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{itemContabilidad.titulo}</p>
+                                            {subtemas.length > 0 && (
+                                                <div className="flex flex-wrap gap-2 mb-4">
+                                                    {subtemas.map((subtema) => (
+                                                        <button
+                                                            key={subtema}
+                                                            type="button"
+                                                            onClick={() => setActiveSubtema(prev => ({ ...prev, [tema]: subtema }))}
+                                                            className={`px-4 py-2 rounded-full border font-bold text-18 transition-colors cursor-pointer ${selectedSubtema === subtema
+                                                                ? 'bg-[#FFF2E5] text-tertiary border-tertiary'
+                                                                : 'bg-[#F3EAFF] text-primary border-primary hover:border-tertiary hover:text-tertiary hover:bg-[#FFF2E5]'
+                                                                }`}
+                                                        >
+                                                            {subtema}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {selectedSubtema && (
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {(groupedBySubtema[selectedSubtema] || []).map((archivo) => (
+                                                        <TrackedLink
+                                                            key={archivo.id}
+                                                            to={archivo.archivo}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        >
+                                                            <div className='bg-white border border-card rounded-2xl p-5 group bg-etiqueta-sec hover:border-tertiary'>
+                                                                <div className='flex'>
+                                                                    <div className="col-span-1 group-hover:bg-tertiary bg-[#FF83004D] rounded-full w-[32px] h-[32px] p-1 flex items-center justify-center">
+                                                                        <span className="material-symbols--download group-hover:bg-white!"></span>
+                                                                    </div>
+                                                                    <p className='ml-5 text-22 text-titulo group-hover:text-tertiary'>{archivo.titulo}</p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </TrackedLink>
-                                                ))}
-                                            </div>
+                                                        </TrackedLink>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>

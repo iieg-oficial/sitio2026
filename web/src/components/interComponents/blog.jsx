@@ -73,6 +73,9 @@ export default function Blog() {
             <div className='md:col-span-1'><Backlink /></div>
             <main className='md:col-span-11'>
                 <h1 className='text-44 font-garet-extra mb-4 text-primary'>{singlePost.titulo}</h1>
+                {singlePost.gallery_images && singlePost.gallery_images.length > 0 && (
+                    <img src={singlePost.gallery_images[0].url} alt={singlePost.titulo} className="object-cover w-full h-auto my-3" />
+                )}
                 <div className="flex gap-4 my-5 flex-wrap">
                     <p className='bg-[#DDE7FF] text-titulo rounded-3xl px-4 py-2 text-14 border border-[#162A554D]'>{format(new Date(singlePost.fecha), "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
                     {singlePost.subject ?
@@ -87,29 +90,12 @@ export default function Blog() {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen />
                 )}
-                {singlePost.gallery_images && singlePost.gallery_images.length > 0 ? (
+                {singlePost.gallery_images && singlePost.gallery_images.length >= 3 && (
                     <section className='my-5'>
                         <h2 className='text-28 font-garet-extra text-primary text-center mb-4'>Galería de Imágenes</h2>
                         <Galeria images={singlePost.gallery_images} />
-                    </section> 
-                ) : 
-                    <section className='my-5'>
-                        <h2 className='text-28 font-garet-extra text-primary text-center mb-4'>Galería de Imágenes</h2>
-                        <img className='w-full h-auto mx-auto' src={singlePost.gallery_images && singlePost.gallery_images.length > 0 ? singlePost.gallery_images[0].url : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png"} alt="" 
-                            onError={(e) => {
-                                    if (!e.target.dataset.triedFallback) {
-                                        e.target.dataset.triedFallback = 'true';
-                                        e.target.src = singlePost.gallery_images[0].url 
-                                            ? singlePost.gallery_images[0].url 
-                                            : "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
-                                    } else {                                        
-                                        e.target.onerror = null;
-                                        e.target.src = "https://iieg.jalisco.gob.mx/acervo/portal/img_postlink.png";
-                                    }
-                                }}
-                            /> 
-                    </section> 
-                }
+                    </section>
+                )}              
                 <div>
                 <ShareButtons
                     url={postUrl}
