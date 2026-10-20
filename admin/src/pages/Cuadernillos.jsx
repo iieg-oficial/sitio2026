@@ -147,7 +147,14 @@ export default function Cuadernillos() {
 
     const columns = [
         { title: 'Título', dataIndex: 'titulo', key: 'titulo' },
-        { title: 'Municipio', dataIndex: 'municipio', key: 'municipio' },
+        { 
+            title: 'Url archivo', 
+            dataIndex: 'archivo', 
+            key: 'archivo', 
+            render: (archivo) => {
+                return archivo ? <a href={archivo} target="_blank" rel="noopener noreferrer">{archivo}</a> : '-';
+            }
+        },
         {
             title: 'Acciones',
             key: 'acciones',
