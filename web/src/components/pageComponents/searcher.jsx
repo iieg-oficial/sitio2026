@@ -1,12 +1,12 @@
 
 
-const Searcher = ({ searchTerm = '', setSearchTerm, placeholder }) => {
+const Searcher = ({ searchTerm = '', setSearchTerm, placeholder, className }) => {
     const isSearching = searchTerm.length > 0;
 
     return (
         <div className="w-full">
             {/* Contenedor principal que controla el ancho en móvil y escritorio */}
-            <div className="mx-auto w-full px-2 md:w-3/6 max-w-[1000px]">
+            <div className={`${className} ? ${className} : 'mx-auto w-full px-2 md:w-3/6 max-w-[1000px]'}`}>
                 
                 {/* Contenedor/Simulador del Input:
                   Mantiene el fondo 'bg-card', los bordes redondeados 'rounded-3xl' y el centrado 'justify-center'.

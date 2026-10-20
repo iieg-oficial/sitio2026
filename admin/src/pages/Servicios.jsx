@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
+import RichTextEditor from '@components/campos/RichTextEditor';
 
 const { Title } = Typography;
 
@@ -67,7 +68,7 @@ export default function Servicios() {
         return () => { isMounted = false; };
     }, [fetchTipos, fetchServicios]);
 
-    const { searchText, setSSearchText } = useDebouncedSearch(texto => {
+    const { searchText, setSearchText } = useDebouncedSearch(texto => {
         fetchServicios(texto, 1, pagination.pageSize);
     });
 
