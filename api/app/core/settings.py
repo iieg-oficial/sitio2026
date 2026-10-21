@@ -39,7 +39,8 @@ class Settings(BaseSettings):
     cors_origins: str
     admin_prefix: str
     web_prefix: str
-    cookie_name: str
+    cookie_name: str = "sitio_access_token"
+    cookie_path: str = "/api/sitio-admin"
     cookie_max_age: int
     cookie_domain: str | None = None
     cookie_secure: bool
