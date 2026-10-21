@@ -88,7 +88,7 @@ export default function Servicios() {
                 <div className="col-span-11 w-full px-2 md:px-0">
                     <div className="mb-6 mx-auto w-11/12 md:w-full lg:w-10/12 xl:w-8/12 grid md:flex justify-center items-center">
                         <Searcher searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="¿Qué quieres buscar?" className="w-full md:w-full" />
-                        <TrackedLink to="/admin/servicios/nuevo" className="bg-[#8838AB] border-[#8837AA] text-white hover:bg-white hover:text-[#8838AB] border rounded-3xl px-6 py-2 md:mt-0 mx-auto mt-5 md:ml-4 w-[330px] text-center">
+                        <TrackedLink to="https://iieg.jalisco.gob.mx/acervo/portal/catalogo_costo_productos_y_servicios_iieg_2026.pdf" className="bg-[#8838AB] border-[#8837AA] text-white hover:bg-white hover:text-[#8838AB] border rounded-3xl px-6 py-2 md:mt-0 mx-auto mt-5 md:ml-4 w-[330px] text-center">
                             Descargar catálogo
                         </TrackedLink>
                     </div>
