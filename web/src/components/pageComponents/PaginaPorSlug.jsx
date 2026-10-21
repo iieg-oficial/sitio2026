@@ -67,7 +67,7 @@ export default function PaginaPorSlug({ slug }) {
     );
   }
 
-  const interno = ["flashes", "reportes"].includes(page.slug_custom);
+  const interno = ["flashes", "reportes", "catalogo-de-servicios"].includes(page.slug_custom);
 
   return (
     <>    

@@ -14,7 +14,7 @@ class ServiciosCreate(BaseModel):
     slug: Optional[str] = None
 
 class ServiciosOut(BaseModel):
-    id: str
+    id: int
     codigo: Optional[str] = None
     tipo: TipoServicioEnum
     titulo: str

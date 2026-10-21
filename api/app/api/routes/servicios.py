@@ -29,19 +29,26 @@ def listar_servicios(
         select(func.count()).select_from(query.subquery())
     ).scalar_one()
 
+    # La consulta SQL ya realiza el offset y limit de forma eficiente
     servicios_list = db.execute(
         query.order_by(Servicios.id.desc())
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).scalars().all()
 
-    start = (page - 1) * page_size
-    end = start + page_size
-    paginated_servicios = servicios_list[start:end]
+    # Retornar directamente los registros paginados desde la BD
+    return ServiciosResponse(servicios=servicios_list, total=total)
 
-    return ServiciosResponse(servicios=paginated_servicios, total=total)
+# Definir la ruta antes de /{slug} para evitar colisiones
+@router.get("/tipos-servicio")
+def get_tipos_servicio():
+    return {
+        "tipos_servicio": [
+            {"id": tipo.name, "nombre": tipo.value} for tipo in TipoServicioEnum
+        ]
+    }
 
-@router.post("/", response_model=ServiciosOut, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ServiciosOut, status_code=status.HTTP_201_CREATED)
 def crear_servicio(
     servicio: ServiciosCreate,
     db: Session = Depends(get_db),
@@ -70,9 +77,11 @@ def crear_servicio(
     db.refresh(nuevo_servicio)
     return nuevo_servicio
 
+
+@router.put("/{servicio_id}", response_model=ServiciosOut)
 @router.patch("/{servicio_id}", response_model=ServiciosOut)
 def actualizar_servicio(
-    servicio_id: str,
+    servicio_id: int,
     servicio: ServiciosCreate,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
@@ -103,7 +112,7 @@ def actualizar_servicio(
 
 @router.delete("/{servicio_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_servicio(
-    servicio_id: str,
+    servicio_id: int,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
@@ -113,16 +122,6 @@ def eliminar_servicio(
 
     db.delete(db_servicio)
     db.commit()
-    return {"detail": "Servicio eliminado exitosamente"}
-
-@router.get("/tipos-servicio")
-def get_tipos_servicio():
-    return {
-        "tipos_servicio": {
-            tipo.name: tipo.value for tipo in TipoServicioEnum
-        }
-    }
-
 
 @router.get("/{slug}", response_model=ServiciosOut)
 def obtener_servicio_por_slug(

@@ -16,55 +16,53 @@ export default function Servicios() {
     const [editingServicio, setEditingServicio] = useState(null);
     const [tipoServicioOptions, setTipoServicioOptions] = useState([]);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
-    
+
     const fetchTipos = useCallback(async () => {
         try {
-            const response = await api.get('/tipos-servicio');
-            setTipoServicioOptions(response.data.tipoServicio || {});
+            // Incluir /servicios antes de /tipos-servicio
+            const response = await api.get('/servicios/tipos-servicio');
+            setTipoServicioOptions(response.data?.tipos_servicio || []);
         } catch {
             message.error('Error al cargar los tipos de servicio');
         }
     }, []);
 
-    const fetchServicios = useCallback(async (search = '', page, pageSize) => {
+    const fetchServicios = useCallback(async (search = '', page = 1, pageSize = 10) => {
         setLoading(true);
-        setPagination((prevPagination) => {
-            const currentPage = page ?? prevPagination.current;
-            const currentPageSize = pageSize ?? prevPagination.pageSize;
-
-            api.get('/servicios', {
+        try {
+            const response = await api.get('/servicios', {
                 params: {
-                    ...(search ? {search} : {}),
-                    page: currentPage,
-                    pageSize: currentPageSize
+                    ...(search ? { search } : {}),
+                    page,
+                    pageSize
                 }
-            }).then( (response) => {
-                setServicios(response.data.servicios || {});
-                setPagination((prevPagination) => {
-                    return { ...prevPagination, current: currentPage, pageSize: currentPageSize, total: response.data.total };
-                });
-                setLoading(false);
-            }).catch(() => {
-                message.error('Error al cargar los servicios');
-                setLoading(false);
-            }).finally(() => {
-                setLoading(false);
             });
-            return prevPagination;  
-        });
+
+            const listaServicios = Array.isArray(response.data)
+                ? response.data
+                : (response.data?.servicios || []);
+
+            setServicios(listaServicios);
+            setPagination(prev => ({
+                ...prev,
+                current: page,
+                pageSize,
+                total: response.data?.total || listaServicios.length
+            }));
+        } catch {
+            message.error('Error al cargar los servicios');
+            setServicios([]);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
     useEffect(() => {
         let isMounted = true;
-        const loadInitialData = async () => {
-            if(isMounted) {
-                await Promise.all([
-                    fetchTipos(), 
-                    fetchServicios('', 1)
-                ]);
-            }
-        };
-        loadInitialData();
+        if (isMounted) {
+            fetchTipos();
+            fetchServicios('', 1, pagination.pageSize);
+        }
         return () => { isMounted = false; };
     }, [fetchTipos, fetchServicios]);
 
@@ -72,8 +70,8 @@ export default function Servicios() {
         fetchServicios(texto, 1, pagination.pageSize);
     });
 
-    const handleTableChange = (pagination) => {
-        fetchServicios(searchText, pagination.current, pagination.pageSize);
+    const handleTableChange = (newPagination) => {
+        fetchServicios(searchText, newPagination.current, newPagination.pageSize);
     };
 
     const handleCreate = () => {
@@ -84,15 +82,19 @@ export default function Servicios() {
 
     const handleEdit = (servicio) => {
         setEditingServicio(servicio);
-        form.setFieldsValue(servicio);
+        form.setFieldsValue({
+            ...servicio,
+            // Extrae el ID si 'tipo' viene como objeto relacional
+            tipo: servicio.tipo?.id || servicio.tipo_servicio?.id || servicio.tipo
+        });
         setIsModalVisible(true);
     };
 
     const handleDelete = (servicio) => {
         Modal.confirm({
             title: 'Confirmar eliminación',
-            content: `¿Está seguro de que desea eliminar el servicio "${servicio.nombre}"?`,
-            okText: 'Eliminar', 
+            content: `¿Está seguro de que desea eliminar el servicio "${servicio.titulo || servicio.nombre}"?`,
+            okText: 'Eliminar',
             cancelText: 'Cancelar',
             onOk: async () => {
                 try {
@@ -111,15 +113,13 @@ export default function Servicios() {
             if (editingServicio) {
                 await api.put(`/servicios/${editingServicio.id}`, values);
                 message.success('Servicio actualizado correctamente');
-                setIsModalVisible(false);
-                await fetchServicios(searchText, pagination.current, pagination.pageSize);
-            }else {
+            } else {
                 await api.post('/servicios', values);
                 message.success('Servicio creado correctamente');
-                setIsModalVisible(false);
                 setSearchText('');
-                await fetchServicios('', 1, pagination.pageSize);
             }
+            setIsModalVisible(false);
+            fetchServicios(searchText, pagination.current, pagination.pageSize);
         } catch {
             message.error('Error al guardar el servicio');
         }
@@ -128,37 +128,43 @@ export default function Servicios() {
     const columns = [
         {
             title: 'Nombre',
-            dataIndex: 'nombre',
-            key: 'nombre',
-            sorter: (a, b) => a.nombre.localeCompare(b.nombre),
+            dataIndex: 'titulo',
+            key: 'titulo',
+            sorter: (a, b) => (a.titulo || '').localeCompare(b.titulo || ''),
         },
         {
             title: 'Tipo de Servicio',
             dataIndex: 'tipo_servicio',
             key: 'tipo_servicio',
-            render: (tipo) => tipo?.nombre || '',
-            sorter: (a, b) => a.tipo_servicio?.nombre.localeCompare(b.tipo_servicio?.nombre),
+            render: (tipo, record) => tipo?.nombre || record.tipo || '',
+            sorter: (a, b) => {
+                const nameA = a.tipo_servicio?.nombre || a.tipo || '';
+                const nameB = b.tipo_servicio?.nombre || b.tipo || '';
+                return nameA.localeCompare(nameB);
+            },
         },
         {
             title: 'Descripción',
             dataIndex: 'descripcion',
             key: 'descripcion',
             ellipsis: true,
+            render: (text) => text?.replace(/<[^>]*>?/gm, '') || '' // Limpia etiquetas HTML del RichText
         },
-        {   
+        {
             title: 'Acciones',
             key: 'acciones',
             render: (_, servicio) => (
                 <Space>
-                    <Button 
+                    <Button
                         type="link"
                         icon={<EditOutlined />}
                         onClick={() => handleEdit(servicio)}
                     >
                         Editar
                     </Button>
-                    <Button 
+                    <Button
                         type="link"
+                        danger
                         icon={<DeleteOutlined />}
                         onClick={() => handleDelete(servicio)}
                     >
@@ -201,7 +207,6 @@ export default function Servicios() {
                 />
             </Card>
 
-
             <Modal
                 title={editingServicio ? 'Editar Servicio' : 'Nuevo Servicio'}
                 open={isModalVisible}
@@ -225,7 +230,6 @@ export default function Servicios() {
                     <Form.Item
                         name="codigo"
                         label="Código"
-                        rules={[{ required: false, message: 'Por favor ingrese el código del servicio' }]}
                     >
                         <Input />
                     </Form.Item>
@@ -238,26 +242,21 @@ export default function Servicios() {
                             placeholder="Selecciona un tipo"
                             allowClear
                             showSearch
-                            optionFilterProp="label"
-                            filterOption={(input, option) =>
-                                (option?.label || '').toLowerCase().includes(input.toLowerCase())
-                            }
-                            options={Array.isArray(tipoServicioOptions)
-                                ? tipoServicioOptions.map((t) => ({ value: t.id, label: t.nombre }))
-                                : Object.values(tipoServicioOptions).map((value) => ({ value: value.id, label: value.nombre }))
-                            }
+                            options={tipoServicioOptions.map((t) => ({
+                                value: t.nombre || t.value || t.id, 
+                                label: t.nombre || t.value
+                            }))}
                         />
                     </Form.Item>
                     <Form.Item
                         name="formato_entrega"
                         label="Formato de entrega"
-                        rules={[{ required: false, message: 'Por favor ingrese el formato del servicio' }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        label="descripción"
                         name="descripcion"
+                        label="Descripción"
                         rules={[{ required: true, message: 'Por favor ingrese la descripción del servicio' }]}
                     >
                         <RichTextEditor />
@@ -265,33 +264,29 @@ export default function Servicios() {
                     <Form.Item
                         name="unidad_medida"
                         label="Unidad de medida"
-                        rules={[{ required: false, message: 'Por favor ingrese la unidad de medida' }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
                         name="costos"
                         label="Costos"
-                        rules={[{ required: false, message: 'Por favor ingrese los costos' }]}
                     >
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        label="politicas"
                         name="politicas"
-                        rules={[{ required: false, message: 'Por favor ingrese las políticas del servicio' }]}
+                        label="Políticas"
                     >
                         <RichTextEditor />
                     </Form.Item>
-                    <Form.Item name="slug"
-                        label="Url"
-                        rules={[{ required: false, message: 'Por favor ingrese la url' }]}
+                    <Form.Item
+                        name="slug"
+                        label="URL"
                     >
                         <Input />
                     </Form.Item>
                 </Form>
             </Modal>
-
         </div>
     );
 }

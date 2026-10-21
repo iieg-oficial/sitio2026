@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, String, Text
+from sqlalchemy import Column, String, Text, Integer
 from sqlalchemy import Enum as SQLEnum
 from app.core.database import Base
 
@@ -11,7 +11,7 @@ class TipoServicioEnum(str, enum.Enum):
 class Servicios(Base):
     __tablename__ = "servicios"
 
-    id = Column(String(200), primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     codigo = Column(String(200), nullable=True)
     tipo = Column(SQLEnum(TipoServicioEnum), nullable=False)
     titulo = Column(String(200), nullable=False)
