@@ -146,6 +146,12 @@ export default function MainLayout() {
                     icon: <MenuOutlined />,
                     label: 'Preguntas',
                     onClick: () => navigate('/preguntas')
+                },
+                {
+                    key: '/servicios',
+                    icon: <MenuOutlined />,
+                    label: 'Servicios',
+                    onClick: () => navigate('/servicios')
                 }
                 
             ],
