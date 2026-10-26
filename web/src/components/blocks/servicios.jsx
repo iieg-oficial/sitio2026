@@ -99,11 +99,18 @@ export default function Servicios() {
                 {currentServicios.map((servicio) => (
                     <TrackedLink key={servicio.id || servicio.titulo} to={servicio.archivo} target="_blank" download>
                         <div className="p-4 group sm:min-h-[170px] 2xl:min-h-[150px] border-[#E6EEFF] border rounded-xl">
-                            {servicio.costos && (
-                                <p className='inline font-garet-extra text-tertiary text-[14px] capitalize border border-[#FF83004D] bg-[#FFF2E5] p-2 rounded-xl'>
-                                    {servicio.costos}
-                                </p>
-                            )}
+                            <div className='flex flex-wrap gap-2 mb-4'>
+                                {servicio.costos && (
+                                    <p className='inline font-garet-extra text-tertiary text-[14px] capitalize border border-[#FF83004D] bg-[#FFF2E5] p-2 rounded-xl'>
+                                        {servicio.costos}
+                                    </p>
+                                )}
+                                {servicio.unidad_medida && (
+                                    <p className='inline font-garet-extra text-tertiary text-[14px] capitalize border border-[#FF83004D] bg-[#FFF2E5] p-2 rounded-xl'>
+                                        {servicio.unidad_medida}
+                                    </p>
+                                )}
+                            </div>                            
                             <h3 className='text-primary text-[25px] mt-4 mb-5'>{servicio.titulo}</h3>
                             <SafeHtml htmlContent={servicio.descripcion} className='mt-5 prose max-w-none mb-4 text-body servicio1'/>                            
                             <div className='flex flex-wrap gap-2 mt-4'>
