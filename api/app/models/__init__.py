@@ -26,6 +26,7 @@ from app.models.sistemas import Sistemas
 from app.models.snieg import Snieg
 from app.models.subject import Subject
 from app.models.user import Usuario
+from app.models.servicios import Servicios
 
 __all__ = [
     "Base",
@@ -59,4 +60,5 @@ __all__ = [
     "Banner",
     "Contacto",
     "Cuadernillo",
+    "Servicios",
 ]
