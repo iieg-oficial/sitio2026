@@ -31,7 +31,7 @@ ENV VITE_MAPALAB_API_KEY=$VITE_MAPALAB_API_KEY
 ENV VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY
 
 COPY ./web/ .
-RUN npm run build
+RUN node -v && npm run build
 
 FROM node:24.22.1-alpine AS admin-builder
 WORKDIR /app
@@ -58,7 +58,7 @@ ENV VITE_MEDIA_BASE_URL=$VITE_MEDIA_BASE_URL
 ENV VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY
 
 COPY ./admin/ .
-RUN npm run build
+RUN node -v && npm run build
 
 FROM nginx:alpine
 RUN rm -f /etc/nginx/conf.d/default.conf
