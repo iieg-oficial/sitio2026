@@ -6,7 +6,6 @@ Create Date: 2026-10-20
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
 
 # --- DECLARACIÓN OBLIGATORIA (DEBEN IR EXACTAMENTE ASÍ) ---
 revision = '4606b018ca46'
@@ -18,7 +17,6 @@ depends_on = None
 tipo_servicio_enum = sa.Enum("Servicio", "Certificación", "Transparencia", name="tiposervicioenum")
 
 def upgrade() -> None:
-    # 1. Crear la tabla 'servicios' con id Integer autoincrementable
     op.create_table(
         "servicios",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
@@ -33,17 +31,17 @@ def upgrade() -> None:
         sa.Column("slug", sa.String(length=200), nullable=False),
         sa.PrimaryKeyConstraint("id")
     )
-    # 2. Crear índices
     op.create_index(op.f("ix_servicios_id"), "servicios", ["id"], unique=False)
-
-def upgrade() -> None:
     op.execute("CREATE SEQUENCE IF NOT EXISTS servicios_id_seq;")
     op.execute("ALTER TABLE servicios ALTER COLUMN id TYPE INTEGER USING id::integer;")
     op.execute("ALTER TABLE servicios ALTER COLUMN id SET DEFAULT nextval('servicios_id_seq');")
     op.execute("ALTER SEQUENCE servicios_id_seq OWNED BY servicios.id;")
-    op.execute("SELECT setval('servicios_id_seq', COALESCE((SELECT MAX(id) FROM servicios), 1));")
+    op.execute(
+        "SELECT setval('servicios_id_seq', COALESCE((SELECT MAX(id) FROM servicios), 1), "
+        "EXISTS (SELECT 1 FROM servicios));"
+    )
 
 def downgrade() -> None:
-    op.execute("ALTER TABLE servicios ALTER COLUMN id DROP DEFAULT;")
-    op.execute("DROP SEQUENCE IF EXISTS servicios_id_seq;")
-    op.execute("ALTER TABLE servicios ALTER COLUMN id TYPE VARCHAR(200) USING id::varchar;")
+    op.drop_index(op.f("ix_servicios_id"), table_name="servicios")
+    op.drop_table("servicios")
+    tipo_servicio_enum.drop(op.get_bind(), checkfirst=True)

@@ -1,4 +1,4 @@
-FROM node:24-alpine AS web-builder
+FROM node:24.22.1-alpine AS web-builder
 WORKDIR /app
 
 # 1. Instalar dependencias (se aprovecha la caché de capas)
@@ -18,7 +18,6 @@ ARG VITE_MAPALAB_API_KEY
 ARG VITE_GOOGLE_ANALYTICS_ID
 ARG VITE_RECAPTCHA_SITE_KEY
 
-# 3. EXPORTAR COMO VARIABLES DE ENTORNO PARA VITE
 ENV VITE_NODE_ENV=$VITE_NODE_ENV
 ENV VITE_APP_ENV=$VITE_APP_ENV
 ENV VITE_GOOGLE_TAG_MANAGER_ID=$VITE_GOOGLE_TAG_MANAGER_ID
@@ -31,12 +30,10 @@ ENV VITE_MAPALAB_BASE_URL=$VITE_MAPALAB_BASE_URL
 ENV VITE_MAPALAB_API_KEY=$VITE_MAPALAB_API_KEY
 ENV VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY
 
-# 4. Copiar código fuente y compilar
 COPY ./web/ .
-RUN npm run build
+RUN node -v && npm run build
 
-
-FROM node:24-alpine AS admin-builder
+FROM node:24.22.1-alpine AS admin-builder
 WORKDIR /app
 
 COPY ./admin/package*.json ./
@@ -61,8 +58,7 @@ ENV VITE_MEDIA_BASE_URL=$VITE_MEDIA_BASE_URL
 ENV VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY
 
 COPY ./admin/ .
-RUN npm run build
-
+RUN node -v && npm run build
 
 FROM nginx:alpine
 RUN rm -f /etc/nginx/conf.d/default.conf
