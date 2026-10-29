@@ -28,7 +28,7 @@ const MainLayout = () => {
                 </div>
             )}
             <Navbardinamic />
-            <main id="main" className={`min-h-[58dvh] ${pageSlugClass} `}>
+            <main id="main" className={`min-h-[64dvh] ${pageSlugClass} `}>
                 <Suspense fallback={<div className="text-center py-20">Cargando sección...</div>}>
                  <Outlet />
                 </Suspense>
