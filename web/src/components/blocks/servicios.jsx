@@ -69,7 +69,7 @@ export default function Servicios() {
             return matchesSearchTerm;
         });
 
-        return matchedServicios; // Corrección: Se agrega el return
+        return matchedServicios.sort((a, b) => (a.id || 0) - (b.id || 0));
     }, [serviciosFilter, searchTerm]);
 
     const endOffset = itemOffset + itemsPerPage;
