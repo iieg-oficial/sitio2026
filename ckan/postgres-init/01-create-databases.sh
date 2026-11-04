@@ -24,7 +24,6 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "datastore_default"
 
     GRANT CREATE ON SCHEMA public TO ${CKAN_DB_USER};
     GRANT USAGE ON SCHEMA public TO ${CKAN_DB_USER};
-
-    GRANT CREATE ON SCHEMA public TO ${DATASTORE_RO_USER};
+    
     GRANT USAGE ON SCHEMA public TO ${DATASTORE_RO_USER};
 EOSQL
