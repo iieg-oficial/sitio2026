@@ -432,3 +432,6 @@ ul.pagination li:hover{
 .page-organigrama .page-header{
   padding-bottom: 0px !important;
 }
+
+.servicio1 p{font-size:14px !important;}
+.servicio2 p{font-size:12px !important;}
