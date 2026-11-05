@@ -5,7 +5,7 @@ description = "FastAPI backend for CMS and portal frontends."
 authors = [{name = "IIEG", email = "dev@iieg.gob.mx"}]
 requires-python = ">=3.10"
 dependencies = [
-    "fastapi>=0.111,<0.113",
+    "fastapi>=0.115.0",
     "uvicorn[standard]>=0.23,<1.0",
     "gunicorn>=22.0,<24.0",
     "pydantic>=2.5,<3.0",
