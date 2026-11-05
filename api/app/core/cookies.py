@@ -21,7 +21,7 @@ def emitir_sesion(response: Response, usuario) -> None:
         secure=settings.cookie_secure,
         samesite=settings.cookie_samesite,
         domain=settings.cookie_domain,
-        path="/",
+        path=settings.cookie_path
     )
 
 
@@ -32,5 +32,5 @@ def borrar_sesion(response: Response) -> None:
         secure=settings.cookie_secure,
         samesite=settings.cookie_samesite,
         domain=settings.cookie_domain,
-        path="/",
+        path=settings.cookie_path
     )
