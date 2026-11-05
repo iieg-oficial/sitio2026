@@ -1,3 +1,7 @@
+from collections import defaultdict
+from datetime import datetime, timedelta, timezone
+from typing import Dict, Any
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy.orm import Session
 
@@ -5,7 +9,6 @@ from app.core.token_blacklist import revocar_token
 from app.core.cookies import borrar_sesion, emitir_sesion
 from app.api.deps import get_current_user
 from app.core.database import get_db
-from app.core.limiter import get_login_username_key, limiter
 from app.core.security import crear_csrf_token, verify_password
 from app.core.settings import get_settings
 from app.models.user import Usuario
@@ -15,21 +18,54 @@ router = APIRouter(prefix="/autenticacion", tags=["autenticación"])
 settings = get_settings()
 
 
+FAILED_LOGIN_ATTEMPTS: Dict[str, Dict[str, Any]] = defaultdict(
+    lambda: {"attempts": 0, "blocked_until": None}
+)
+
+MAX_INTENTOS = 5
+MINUTOS_BLOQUEO = 15
+
+
 @router.post("/iniciar-sesion", response_model=LoginResponse)
-@limiter.limit("5/minute", key_func=get_login_username_key)
 async def login(
     request: Request,
     credentials: LoginRequest,
     response: Response,
     db: Session = Depends(get_db),
 ):
+    ahora = datetime.now(timezone.utc)
+    username = credentials.username.strip().lower()
+    user_tracker = FAILED_LOGIN_ATTEMPTS[username]
+
+    
+    if user_tracker["blocked_until"]:
+        if user_tracker["blocked_until"] > ahora:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Demasiados intentos fallidos. Intente de nuevo más tarde.",
+            )
+        else:
+            
+            user_tracker["attempts"] = 0
+            user_tracker["blocked_until"] = None
+
+    
     usuario = db.query(Usuario).filter(Usuario.username == credentials.username).first()
 
     if not usuario or not verify_password(credentials.password, usuario.hashed_password):
+        user_tracker["attempts"] += 1
+
+        if user_tracker["attempts"] >= MAX_INTENTOS:
+            user_tracker["blocked_until"] = ahora + timedelta(minutes=MINUTOS_BLOQUEO)
+            user_tracker["attempts"] = 0
+
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciales inválidas",
         )
+
+    
+    FAILED_LOGIN_ATTEMPTS.pop(username, None)
 
     emitir_sesion(response, usuario)
 
@@ -45,7 +81,6 @@ async def logout(
     response: Response,
     current_user: Usuario = Depends(get_current_user),
 ):
-    
     payload = request.state.token_payload
     await revocar_token(payload["jti"], payload["exp"])
     borrar_sesion(response)
