@@ -43,6 +43,8 @@ server {
         return 404;
     }
 
+    location ^~ /assets/ { try_files $uri $uri/ =404; }
+
     location ^~ /api/ {
         proxy_pass http://portal_api;
         proxy_http_version 1.1;
@@ -133,20 +135,7 @@ server {
         proxy_set_header X-Forwarded-Prefix /datos-abiertos;
     }
 
-    location ^~ /_debug_toolbar/ {
-        proxy_pass http://ckan_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Forwarded-Proto $forwarded_proto;
-        proxy_set_header X-Script-Name /datos-abiertos;
-        proxy_set_header X-Forwarded-Prefix /datos-abiertos;
-    }
-
-    location ^~ /acervo/portal/ {
-        limit_except GET HEAD { deny all; }
-
-        if ($uri ~ /$) { return 404; }
-
+    location ^~ /acervo/ {
         set $acervo_upstream ${ACERVO_UPSTREAM_URL};
         rewrite ^/acervo/(.*)$ /$1 break;
         proxy_pass $acervo_upstream;
@@ -160,10 +149,6 @@ server {
         proxy_send_timeout 60;
         proxy_read_timeout 60;
         client_max_body_size 0;
-    }
-
-    location ^~ /acervo/ {
-        return 404;
     }
 
     location = /robots.txt {
@@ -250,4 +235,10 @@ server {
         include /usr/share/nginx/html/csp-header.conf;
         add_header Cache-Control "no-store" always;
     }
+
+    # Bloquear consola y recursos del depurador de Werkzeug
+    location ^~ /datos-abiertos/console { return 404; }
+    location = /console { return 404; }
+
+    if ($arg___debugger__) { return 403; }
 }

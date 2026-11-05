@@ -47,6 +47,7 @@ from app.schemas.user import (
     UsuarioResponse,
     UsuarioUpdate,
 )
+from app.schemas.servicios import ServiciosCreate, ServiciosOut, ServiciosResponse
 
 __all__ = [
     "UsuarioCreate",
@@ -141,5 +142,8 @@ __all__ = [
     "CuadernilloOut",
     "CuadernilloResponse",
     "SearchResultItem",
-    "SearchResponse"
+    "SearchResponse",
+    "ServiciosCreate",
+    "ServiciosOut",
+    "ServiciosResponse",
 ]

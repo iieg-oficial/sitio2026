@@ -58,6 +58,7 @@ export default function Cuadernillos() {
                     pageSize: currentPageSize,
                     total: response.data.total
                 }));
+                setLoading(false);
             }).catch(() => {
                 message.error('Error al obtener los cuadernillos');
             }).finally(() => {
