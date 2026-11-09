@@ -97,8 +97,8 @@ export default function Servicios() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 container mx-auto my-15 px-5 xl:px-5 2xl:px-0">
                 {currentServicios.map((servicio) => (
-                    <TrackedLink key={servicio.id || servicio.titulo} to={servicio.archivo} target="_blank" download>
-                        <div className="p-4 group sm:min-h-[170px] 2xl:min-h-[150px] border-[#E6EEFF] border rounded-xl">
+                    
+                        <div key={servicio.id || servicio.titulo} className="p-4 group sm:min-h-[170px] 2xl:min-h-[150px] border-[#E6EEFF] border rounded-xl">
                             <div className='flex flex-wrap gap-2 mb-4'>
                                 {servicio.costos && (
                                     <p className='inline font-garet-extra text-tertiary text-[14px] capitalize border border-[#FF83004D] bg-[#FFF2E5] p-2 rounded-xl'>
@@ -129,7 +129,7 @@ export default function Servicios() {
                                 )}
                             </div>
                         </div>
-                    </TrackedLink>
+                    
                 ))}
             </div>
 
