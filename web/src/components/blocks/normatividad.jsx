@@ -27,7 +27,7 @@ export default function Normatividad() {
     }
 
     return (
-        <div className="container-fluid py-15 px-2 bg-card">
+        <div className="container-fluid py-15 px-2 bg-card" id="normatividad">
             <h2 className="text-titulo text-center">Normatividad</h2>
             
             <div className="container mx-auto mt-8">
