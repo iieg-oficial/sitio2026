@@ -10,7 +10,7 @@ export default function Normatividad() {
         try {
             const response = await api.get('/docs_iieg/tipo/normatividad');
             const docs = response.data?.docs_iieg;
-            const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
+            const sorted = Array.isArray(docs) ? [...docs].sort((a, b) => (a.id || 0) - (b.id || 0)) : [];
             setNormatividad(sorted);
         } catch (error) {
             console.error("Error al obtener la normatividad:", error);
