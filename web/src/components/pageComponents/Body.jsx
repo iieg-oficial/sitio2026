@@ -1,9 +1,12 @@
 import { useMemo, useRef, useState } from 'react';
 import Card from './Card';
 import TitleAndNote from './TitleAndNote';
-import Searcher from './searcher';
+import SearchBar from './SearchBar';
 import { buildTopics, buildGuide, buildSelect, DEFAULT_VIDEO_ID } from '../../helpers/homeAdapters';
 import { useHomeContent } from '@hooks/useHomeContent';
+import { SearchProvider } from '../../contexts/SearchContext';
+import TrackedLink from '@components/blocks/boton'
+import icoQuestion from '/mapalab/icons/ico_preguntas.webp';
 
 const Body = ({ isModal = false }) => {
     const carouselRef = useRef(null);
@@ -63,6 +66,7 @@ const Body = ({ isModal = false }) => {
     };
 
     return (
+        <SearchProvider>
         <div className="gap-y-9">
             {!isModal && (
                 <div
@@ -71,21 +75,83 @@ const Body = ({ isModal = false }) => {
                         p-3 md:p-5 lg:p-10 flex flex-col shadow-[0px_3px_21px_#ACBFE56C] gap-y-3
                     '
                 >
-                    <span className='block font-garet font-normal text-numeralia text-[18px] mt-4 lg:mt-0 mb-4 2xl:leading-16 tracking-normal text-center'>
+                    <span className='block font-garet font-normal text-titulo text-[18px] mt-4 lg:mt-0 mb-4 2xl:leading-16 tracking-normal text-center'>
                         Puedes buscar por palabra clave o seleccionar una de las temáticas disponibles para navegar en el mapa
                     </span>
-                    <Searcher className="relative mx-auto mb-2 w-6/12" />                   
+                    <SearchBar className="relative mx-auto mb-2" />
                     <Card topics={topicsList} />
                 </div>
             )}
             <div className="my-9 mx-4 flex flex-col justify-center items-center">
                 <TitleAndNote title="¿Qué puedes hacer en MapaLab?" description="*Para un mejor funcionamiento, te sugerimos acceder desde una computadora." />
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 lg:gap-x-16 2xl:gap-x-36 2xl:gap-y-14 md:mx-10 mt-8">
-                   
+                   {guideSteps.map((item) => (
+                        <div
+                            key={item.id}
+                            className="items-center justify-end rounded-[13px] py-6 px-10 bg-white w-full max-w-[400px] h-auto shadow-[0px_6px_12px_#ACBFE533]"
+                        >
+                            <img
+                                src={item.image}
+                                className="bg-[transparent linear-gradient(0deg, #F3EBFF 0%, #F4EBFF00 100%) 0% 0% no-repeat padding-box] size-[122px] rounded-[16px] mx-auto"
+                                alt=""
+                                loading="lazy"
+                            />
+                            <div className="flex flex-col justify-start items-center text-center">
+                                <h3 className="block font-garet-bold text-tertiary text-[16px] xl:leading-8 xl:mb-2.5 tracking-normal mb-5 mt-3 2xl:mb-0 xl:mt-0">
+                                    {item.header}
+                                </h3>
+                                <p className="font-garet font-book text-[#2E4372] text-[14px]/[24px] tracking-normal min-h-[93px]">
+                                    {item.label}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 
-            <div className="pt-5 relative">
+            {showVideo && (
+                <div className="my-9 mx-4 flex justify-center">
+                    <div className="w-full max-w-[900px] aspect-video rounded-[20px] overflow-hidden shadow-[0px_6px_12px_#ACBFE533]">
+                        <iframe
+                            src={`https://www.youtube.com/embed/${videoId}`}
+                            title={videoTitle}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="w-full h-full border-0"
+                            loading="lazy"
+                        />
+                    </div>
+                </div>
+            )}
+
+            <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-4 my-10 md:my-[61px] mx-1 sm:mx-4">
+                <TrackedLink to={`/preguntas-frecuentes/`} key="faq-mapalab">
+                    <button class="group relative bg-[#F3EBFF] flex flex-col lg:flex-row items-center justify-center lg:justify-end rounded-[50px]
+                        w-full max-w-[522px] lg:w-[450px]h-[150px] lg:h-[110px] transition-all border border-transparent 
+                        pl-0 py-5 lg:py-0
+                        hover:border-primary cursor-pointer">                       
+                        <div className="lg:absolute lg:left-[43px] flex items-center justify-center bg-white rounded-full p-4 size-[74px] group-hover:bg-[#E3CAF2] group-active:bg-[#E3CAF2]">
+                                <img
+                                    src={icoQuestion}
+                                    alt=""
+                                    className="size-full hidden block group-hover:hidden"
+                                    loading="lazy"
+                                />
+                                <img
+                                    src={icoQuestion}
+                                    alt=""
+                                    className="size-full block group-hover:block"
+                                    loading="lazy"
+                                />                            
+                        </div>    
+                        <h2 className="font-garet font-medium text-[24px]/[28px] pl-[35px] sm:px-[50px] lg:pl-[135px] pr-[35px] pt-4 lg:pt-0 text-primary group-active:text-primary">
+                            Preguntas frecuentes
+                        </h2>                    
+                    </button>
+                </TrackedLink>                
+            </div>
+
+            <div className="pt-5 relative mb-10">
                 <TitleAndNote title="No te pierdas estas funcionalidades del mapa" description="* La visualización de las capas dependerá de tu navegador; te sugerimos eliminar las capas que no estés utilizando para un mejor rendimiento del mapa." />
                 {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- drag-scroll en contenedor con rol region; keyboard users usan scroll nativo con flechas */}
                 <div
@@ -102,20 +168,52 @@ const Body = ({ isModal = false }) => {
                         [&::-webkit-scrollbar]:hidden [scrollbar-width:none]
                     "
                 >
-                    
+                    {selectOptions.map((item) => (
+                        <div
+                            key={item.id}
+                            className="relative flex-shrink-0 snap-start rounded-[40px] overflow-hidden h-auto pb-10 xl:h-[575px] w-full md:w-[calc(95%-24px)] max-w-[1422px]"
+                            style={{ backgroundColor: item.color }}
+                        >
+                            
+                            <div
+                                className="
+                                    relative z-10 grid grid-cols-1 xl:flex xl:flex-row justify-center xl:justify-start 
+                                    items-center px-4 md:px-10 xl:px-0 xl:pt-[85px] min-h-[305px] h-auto
+                                "
+                            >
+                                <img
+                                    src={item.image}
+                                    alt=""
+                                    className="mx-auto my-5 w-1/2 block lg:w-2/5 xl:max-w-[506px] xl:max-h-[389px] object-cover xl:ml-[33px]"
+                                    loading="lazy"
+                                />
+                                <div className="w-full flex flex-col justify-center xl:justify-start 2xl:mr-[188px]">
+                                    <h3
+                                        className="
+                                            font-garet-bold text-primary text-[24px] md:text-[36px]/[50px] tracking-normal 
+                                            text-center lg:text-left w-full max-w-[550px] mb-10
+                                        "
+                                    >
+                                        {item.header}
+                                    </h3>
+                                    <p
+                                        className="
+                                            font-garet font-book text-primary text-[16px] md:text-[18px]/[36px] tracking-normal 
+                                            text-center lg:text-justify xl:text-left w-full xl:max-w-[653px] whitespace-pre-line
+                                        "
+                                    >
+                                        {item.label}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                     
                 </div>
             </div>
-            <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-4 my-10 md:my-[61px] mx-1 sm:mx-4">
-               
-            </div>
-
-            <div ref={faqRef} className={`w-full px-2 bg-[#F9FBFF] ${expandedSection === 1 ? 'flex flex-col items-center justify-center' : 'hidden'}`}>
-                
-            </div>
-
 
         </div>
+        </SearchProvider>
     );
 };
 
