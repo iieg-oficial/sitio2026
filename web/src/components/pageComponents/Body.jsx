@@ -6,6 +6,7 @@ import { buildTopics, buildGuide, buildSelect, DEFAULT_VIDEO_ID } from '../../he
 import { useHomeContent } from '@hooks/useHomeContent';
 import { SearchProvider } from '../../contexts/SearchContext';
 import TrackedLink from '@components/blocks/boton'
+import icoQuestion from '../../assets/icons/ico_preguntas.webp';
 
 const Body = ({ isModal = false }) => {
     const carouselRef = useRef(null);
@@ -130,12 +131,12 @@ const Body = ({ isModal = false }) => {
                         pl-0 py-5 lg:py-0
                         hover:border-primary cursor-pointer">                       
                         <div className="lg:absolute lg:left-[43px] flex items-center justify-center bg-white rounded-full p-4 size-[74px] group-hover:bg-[#E3CAF2] group-active:bg-[#E3CAF2]">
-                                <img
-                                    src={`${import.meta.env.BASE_URL}mapalab/icons/ico_preguntas.webp`}
-                                    alt=""
-                                    className="size-full block group-hover:block"
-                                    loading="lazy"
-                                />                            
+                            <img
+                                src={icoQuestion}
+                                alt="Preguntas frecuentes"
+                                className="size-full block group-hover:block"
+                                loading="lazy"
+                            />                           
                         </div>    
                         <h2 className="font-garet font-medium text-[24px]/[28px] pl-[35px] sm:px-[50px] lg:pl-[135px] pr-[35px] pt-4 lg:pt-0 text-primary group-active:text-primary">
                             Preguntas frecuentes
