@@ -1,5 +1,5 @@
 import { cloneElement } from 'react';
-import { externalIcons } from '../../public/mapalab/icons';
+import { externalIcons } from '../assets/icons';
 
 const colibriIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
