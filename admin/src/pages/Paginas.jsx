@@ -283,11 +283,18 @@ export default function Paginas() {
                         <Checkbox>¿Activar página?</Checkbox>
                     </Form.Item>
                     <Form.Item
-                        label="Slug"
+                        label="Url personaliazada"
                         name="slug_custom"
                         rules={[{ required: true, message: 'Por favor ingrese el slug' }]}
                     >
                         <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Slug"
+                        name="slug"
+                        rules={[{ required: false, message: '' }]}                        
+                    >
+                        <Input disabled />
                     </Form.Item>
 
                     <Form.Item
