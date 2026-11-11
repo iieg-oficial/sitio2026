@@ -6,7 +6,6 @@ import { buildTopics, buildGuide, buildSelect, DEFAULT_VIDEO_ID } from '../../he
 import { useHomeContent } from '@hooks/useHomeContent';
 import { SearchProvider } from '../../contexts/SearchContext';
 import TrackedLink from '@components/blocks/boton'
-import icoQuestion from '/mapalab/icons/ico_preguntas.webp';
 
 const Body = ({ isModal = false }) => {
     const carouselRef = useRef(null);
@@ -132,7 +131,7 @@ const Body = ({ isModal = false }) => {
                         hover:border-primary cursor-pointer">                       
                         <div className="lg:absolute lg:left-[43px] flex items-center justify-center bg-white rounded-full p-4 size-[74px] group-hover:bg-[#E3CAF2] group-active:bg-[#E3CAF2]">
                                 <img
-                                    src={icoQuestion}
+                                    src={`${import.meta.env.BASE_URL}mapalab/icons/ico_preguntas.webp`}
                                     alt=""
                                     className="size-full block group-hover:block"
                                     loading="lazy"
