@@ -59,7 +59,7 @@ export default function Mapalab() {
                             <Backlink />
                         </div>
                         <header
-                            className="relative px-4 h-dvh md:h-[90dvh] 2xl:h-[80dvh] min-h-[600px] w-full overflow-visible"
+                            className="relative px-4 h-dvh md:h-[90dvh] 2xl:h-[80dvh] min-h-[720px] sm:min-h-[600px] w-full overflow-visible"
                         >
                             
                             <div className="hidden md:block md:absolute inset-0 xl:hidden" style={{ 
@@ -95,8 +95,8 @@ export default function Mapalab() {
                                 <div className="w-full mt-15 md:mt-0 2xl:w-[35vw] px-4 flex justify-center xl:justify-start">
                                     <div className="w-full max-w-[497px] xl:max-w-[600px] xl:pl-20 2xl:pl-0 2xl:max-w-[497] flex flex-col gap-3">
                                         <h1 className="font-garet text-[50px]/[59px] text-white tracking-normal text-left">
-                                            <span className="block font-medium tracking-normal"></span>
-                                            <span className="block font-extrabold tracking-normal">Explora Jalisco en capas</span>
+                                            <span className="block font-garet tracking-normal"></span>
+                                            <span className="block font-garet-extra tracking-normal">Explora Jalisco en capas</span>
                                         </h1>
                                         
                                             <p className="font-garet font-medium text-white text-[21px]/[34px] tracking-normal text-left">
@@ -104,7 +104,7 @@ export default function Mapalab() {
                                             </p>
                                         
                                                 <TrackedLink
-                                                    to="https://iieg.jalisco.gob.mx/mapalab/"
+                                                    to="https://iieg.jalisco.gob.mx/mapalab/mapa"
                                                     className={`
                                                         flex items-center justify-center h-[54px] w-full max-w-[410px]
                                                         mt-2 bg-tertiary rounded-[30px] transition-colors

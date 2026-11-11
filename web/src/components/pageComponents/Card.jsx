@@ -8,7 +8,7 @@ const Card = ({ topics = [] }) => {
     const lastTouchRef = useRef(0);
 
     const handleSubtopicClick = (subtopic) => {
-        trackHomeAction('subtopic_click', subtopic?.label || subtopic?.id || 'unknown');
+        
         if (subtopic?.link) {
             const link = subtopic.link;
             if (/^https?:\/\//i.test(link)) {
@@ -20,7 +20,7 @@ const Card = ({ topics = [] }) => {
         }
         const layerIds = subtopic?.layerIds;
         const layers = Array.isArray(layerIds) ? layerIds.join(',') : layerIds;
-        navigate(`/mapa?layers=${layers}`);
+        window.location.href = `https://iieg.jalisco.gob.mx/mapalab/mapa?layers=${layers}`;
     };
 
     return (
@@ -65,8 +65,8 @@ const Card = ({ topics = [] }) => {
                                     flex flex-col flex-1 transition-all duration-300
                                     ${isOpen ? 'gap-7 justify-start' : 'justify-center'}
                                 `}>
-                                    <p className={`font-garet font-bold text-[21px]/[28px] text-numeralia tracking-normal
-                                        ${isOpen ? 'text-purple' : ''}
+                                    <p className={`font-garet font-bold text-[21px]/[28px] text-titulo tracking-normal
+                                        ${isOpen ? 'text-primary' : ''}
                                     `}>
                                         {topic.label}
                                     </p>
@@ -91,7 +91,7 @@ const Card = ({ topics = [] }) => {
                                                         className="
                                                             w-full text-left px-3 py-2 rounded-lg
                                                             font-garet font-medium text-[14px] text-[#454545]
-                                                            hover:bg-[#F4F1FF] hover:text-purple
+                                                            hover:bg-[#F4F1FF] hover:text-primary
                                                             transition-all duration-200 cursor-pointer
                                                         "
                                                     >

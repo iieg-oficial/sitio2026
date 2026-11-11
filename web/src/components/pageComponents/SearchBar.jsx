@@ -1,0 +1,49 @@
+import { useState } from 'react';
+import { useSearch } from '../../contexts/SearchContext';
+import Icon from '../../components/Icon';
+
+const SearchBar = ({ className = '' }) => {
+    const [searchTerm, setSearchTerm] = useState('');    
+    const { setSearchFromUrl } = useSearch();
+
+    const handleSearch = () => {
+        if (searchTerm.trim()) {
+            const query = searchTerm.trim();
+            setSearchFromUrl(query);
+            
+            window.location.href = `https://iieg.jalisco.gob.mx/mapalab/mapa?q=${encodeURIComponent(query)}`;
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
+    return (
+        <div className={`w-full max-w-[603px] h-[60px] flex items-center justify-center ${className}`}>
+            <input
+                id="search-input"
+                type="text"
+                placeholder='¿Qué quieres buscar?'
+                className={`
+                    w-full h-full sm:text-center rounded-[40px] bg-[#F4F1FF] transition-all pl-5
+                    font-garet font-medium text-titulo text-[18px]/[47px] tracking-normal outline-none
+                    md:text-center hover:font-bold hover:text-tertiary placeholder-titulo hover:placeholder-tertiary placeholder-opacity-100
+                `}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
+            />
+            <button
+                onClick={handleSearch}
+                className={`flex items-center justify-center w-[55px] h-[44px] bg-[#FF8300] rounded-[40px] p-2 -ml-16 cursor-pointer`}
+            >
+                <Icon name="searchInput" className="hover:-rotate-90 transition-all" />
+            </button>
+        </div>
+    );
+};
+
+export default SearchBar;
