@@ -15,9 +15,8 @@ export default function Mapalab() {
     const fetchPageHome = async () => {
         setLoading(true)
         try {            
-            const res = await api.get('/paginas/slug/mapalab')
-            setPage(res.data)
-            console.log('Page data:', res.data)  
+            const res = await api.get('/paginas/slug/conoce-mapalab')
+            setPage(res.data)            
         } catch (err) {
             console.error("Error fetching page:", err)
         } finally {

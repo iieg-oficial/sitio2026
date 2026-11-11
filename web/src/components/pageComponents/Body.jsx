@@ -134,12 +134,6 @@ const Body = ({ isModal = false }) => {
                                 <img
                                     src={icoQuestion}
                                     alt=""
-                                    className="size-full hidden block group-hover:hidden"
-                                    loading="lazy"
-                                />
-                                <img
-                                    src={icoQuestion}
-                                    alt=""
                                     className="size-full block group-hover:block"
                                     loading="lazy"
                                 />                            

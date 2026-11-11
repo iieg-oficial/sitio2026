@@ -11,9 +11,9 @@ export default function Sieej() {
     const fetchPageHome = async () => {
         setLoading(true)
         try {            
-            const res = await api.get('/paginas/slug/siiej')
+            const res = await api.get('/paginas/slug/conoce-sieej')
             setPage(res.data)
-            console.log('Page data:', res.data)  
+            
         } catch (err) {
             console.error("Error fetching page:", err)
         } finally {
@@ -102,4 +102,3 @@ export default function Sieej() {
         </>
     )
 }
-
