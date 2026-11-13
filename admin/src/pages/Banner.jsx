@@ -204,6 +204,15 @@ export default function Banner() {
                     <Form.Item name="boton" label="Botón" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
+                    <Form.Item name="orden" label="Orden" rules={[{ required: true }]}>
+                        <Input value="0" />
+                    </Form.Item>
+                    <Form.Item
+                        name="activo"
+                        valuePropName="checked"
+                    >
+                        <Checkbox>Activar</Checkbox>
+                    </Form.Item>
 
                 </Form>
             </Modal>

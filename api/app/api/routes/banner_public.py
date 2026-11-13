@@ -14,7 +14,7 @@ def read_banner(
     limit: int = 5,
 ):
     """Obtener todos los banners"""
-    banners = db.query(Banner).order_by(desc(Banner.id)).limit(limit).all()
+    banners = db.query(Banner).filter(Banner.activo.is_(True)).order_by(Banner.orden.asc(), Banner.id.desc()).limit(limit).all()
     return banners
 
 @router.get("/{slug}", response_model=BannerOut)
