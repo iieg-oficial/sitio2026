@@ -17,3 +17,6 @@ class Banner(Base):
     color_fondo = Column(String(200), nullable=True)
     full_screen = Column(Boolean, default=False, nullable=True)
     slug = Column(String(200), nullable=True)
+
+    orden = Column(Integer, default=0, nullable=False, index=True)
+    activo = Column(Boolean, default=True, nullable=False)

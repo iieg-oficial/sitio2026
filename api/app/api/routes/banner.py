@@ -1,24 +1,34 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from slugify import slugify
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, verify_csrf
 from app.core.slugs import make_unique_slug
 from app.models import Banner, Usuario
-from app.schemas.banner import BannerCreate, BannerOut, BannerResponse
+from app.schemas.banner import (
+    BannerCreate,
+    BannerOrdenItem,
+    BannerOut,
+    BannerResponse,
+    BannerUpdate,
+)
 
 router = APIRouter(prefix="/banner", tags=["banner"])
+
 
 @router.get("/", response_model=BannerResponse)
 def read_banner(
     db: Session = Depends(get_db),
 ):
-    """Obtener todos los banners"""
-    banner = db.query(Banner).all()
+    """Obtener todos los banners ordenados por posición"""
+    banners = db.query(Banner).order_by(Banner.orden.asc(), Banner.id.desc()).all()
     return {
-        "banners": banner,
-        "total": len(banner),
+        "banners": banners,
+        "total": len(banners),
     }
+
 
 @router.post("/create", response_model=BannerOut, status_code=status.HTTP_201_CREATED)
 def create_banner(
@@ -26,6 +36,7 @@ def create_banner(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
+    """Crear un nuevo banner asignándolo al final del orden"""
     slug = slugify(banner.titulo)
     base_slug = slug
     contador = 1
@@ -33,7 +44,10 @@ def create_banner(
         slug = f"{base_slug}-{contador}"
         contador += 1
 
-    """Crear un nuevo banner"""
+    # Calcular la siguiente posición disponible
+    max_orden = db.query(func.max(Banner.orden)).scalar()
+    siguiente_orden = (max_orden + 1) if max_orden is not None else 0
+
     db_banner = Banner(
         titulo=banner.titulo,
         descripcion=banner.descripcion,
@@ -45,16 +59,39 @@ def create_banner(
         color_fondo=banner.color_fondo,
         full_screen=banner.full_screen,
         slug=slug,
+        orden=siguiente_orden,
     )
     db.add(db_banner)
     db.commit()
     db.refresh(db_banner)
     return db_banner
 
+
+# IMPORTANTE: Esta ruta estática debe ir ANTES de @router.patch("/{id}")
+@router.patch("/reordenar")
+def reordenar_banners(
+    items: List[BannerOrdenItem],
+    db: Session = Depends(get_db),
+    current_user: Usuario = Depends(verify_csrf),
+):
+    """Actualizar el orden de visibilidad de múltiples banners"""
+    if not items:
+        return {"status": "ok", "updated": 0}
+
+    mapeo_orden = {item.id: item.orden for item in items}
+
+    banners = db.query(Banner).filter(Banner.id.in_(mapeo_orden.keys())).all()
+    for banner in banners:
+        banner.orden = mapeo_orden[banner.id]
+
+    db.commit()
+    return {"status": "ok", "updated": len(banners)}
+
+
 @router.patch("/{id}", response_model=BannerOut)
 def update_banner(
     id: int,
-    banner: BannerCreate,
+    banner: BannerUpdate,
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(verify_csrf),
 ):
@@ -91,6 +128,7 @@ def update_banner(
     db.refresh(db_banner)
     return db_banner
 
+
 @router.delete("/{id}")
 def delete_banner(
     id: int,
@@ -107,6 +145,7 @@ def delete_banner(
     db.delete(db_banner)
     db.commit()
     return {"message": "Banner eliminado correctamente"}
+
 
 @router.get("/{slug}", response_model=BannerOut)
 def get_banner_slug(
