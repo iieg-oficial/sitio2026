@@ -1,5 +1,4 @@
 import { Form, Image, Input, Space } from 'antd';
-import ColorPickerField from './ColorPickerField';
 import { UploadAcervo } from '@components/UploadAcervo';
 
 
@@ -68,7 +67,9 @@ export const CamposBannerMin = () => {
 
     return (
         <>            
-            <ColorPickerField label="Color de Fondo" name="color_fondo" initialValue="#8936ab" />
+            <Form.Item name="color_fondo" label="Color de Fondo" value="#8936ab">
+                <Input />
+            </Form.Item>
             
             <Form.Item label="Imagen" required={false}>
                 <Space direction="vertical" style={{ width: '100%' }}>
