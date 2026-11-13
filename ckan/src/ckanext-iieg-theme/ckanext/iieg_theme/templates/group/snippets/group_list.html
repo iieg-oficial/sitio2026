@@ -1,0 +1,15 @@
+{% ckan_extends %}
+
+{% block group_list %}
+  <div class="groups-list-page container ">
+    {% block group_list_inner %}
+    <div class="row">
+      {% for group in groups %}
+        
+            {% snippet "snippets/group_item.html", group=group, show_capacity=show_capacity %}
+        
+      {% endfor %}
+      </div>
+    {% endblock %}
+  </div>
+{% endblock %}

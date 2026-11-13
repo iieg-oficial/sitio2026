@@ -1,11 +1,50 @@
 {% ckan_extends %}
 
+{# 1. Eliminamos la columna lateral #}
 {% block secondary %}{% endblock %}
 
+{# 2. Hacemos que el contenido principal ocupe todo el ancho #}
 {% block primary %}
-  <div class="primary col-md-12 col-xs-12 pb-8" role="main">
-    {% block primary_content %}
-      {{ super() }}
+
+  <div class="primary categoria col-md-12 col-xs-12 mt-3" role="main">
+    {% block content_action %}
+      {% if h.check_access('group_create') %}
+        <div class="float-end">
+          {% link_for h.humanize_entity_type('group', group_type, 'add link') or _('Add Group'), named_route=group_type+'.new', class_='btn btn-primary', icon='plus-square' %}
+        </div>
+      {% endif %}
+    {% endblock %}
+    {% block primary_content_inner %}
+    <h1 class="sr-only">{% block page_heading %}{{ h.humanize_entity_type('group', group_type, 'page title') or _('Groups') }}{% endblock %}</h1>
+    {% block groups_search_form %}
+      {% snippet 'snippets/search_form.html', form_id='group-search-form', type=group_type, query=q, sorting_selected=sort_by_selected, count=page.item_count, placeholder=h.humanize_entity_type('group', group_type, 'search placeholder') or _('Search groups...'), show_empty=request.args, no_bottom_border=true if page.items, sorting = [(_('Name Ascending'), 'title asc'), (_('Name Descending'), 'title desc')] %}
+    {% endblock %}
+    {% block groups_list %}
+      {% if page.items or request.args %}
+        {% if page.items %}
+          {% snippet "group/snippets/group_list.html", groups=page.items %}
+        {% endif %}
+      {% else %}
+        <p class="empty">
+          {{ h.humanize_entity_type('group', group_type, 'no any objects') or _('There are currently no groups for this site.') }}
+        </p>
+      {% endif %}
+    {% endblock %}
+    {% block page_pagination %}
+      {{ page.pager(q=q or '', sort=sort_by_selected or '') }}
+    {% endblock %}
+  {% endblock %}
+  </div>
+{% endblock %}
+
+{% block group_list %}
+  <div class="groups-list-page container">
+    {% block group_list_inner %}
+      {% for group in page.items %}
+        <div class="row">
+            {% snippet "snippets/group_item.html", group=group, show_capacity=show_capacity %}
+        </div>
+      {% endfor %}
     {% endblock %}
   </div>
 {% endblock %}

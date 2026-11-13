@@ -1,4 +1,49 @@
-name: portal
+name: portal-dev
+
+x-ckan-build: &ckan-build
+  context: ./ckan
+  dockerfile: Dockerfile
+  args:
+    CKAN_BASE_IMAGE: ckan/ckan-base:2.11.5
+
+x-ckan-env: &ckan-env
+  CKAN_SITE_URL: ${CKAN_SITE_URL:?CKAN_SITE_URL is required}
+  CKAN_SQLALCHEMY_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/ckan_default
+  CKAN_DB_PASSWORD: ${CKAN_DB_PASSWORD:?CKAN_DB_PASSWORD is required}
+  DATASTORE_RO_PASSWORD: ${DATASTORE_RO_PASSWORD:?DATASTORE_RO_PASSWORD is required}
+  CKAN_SOLR_URL: http://ckan-solr:8983/solr/ckan
+  CKAN_REDIS_URL: redis://redis:6379/1
+  CKAN___DEBUG: "True"
+  CKAN__UPLOADS_ENABLED: "True"
+  CKAN___BEAKER__SESSION__SECRET: ${CKAN_BEAKER_SESSION_SECRET:?CKAN_BEAKER_SESSION_SECRET is required}
+  CKAN___API_TOKEN__JWT__ENCODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET:?CKAN_API_TOKEN_JWT_SECRET is required}
+  CKAN___API_TOKEN__JWT__DECODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET}
+  CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME:?CKAN_SYSADMIN_NAME is required}
+  CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD:?CKAN_SYSADMIN_PASSWORD is required}
+  CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
+  CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg_theme stats tracking
+  CKAN__ROOT_PATH: /datos-abiertos/{{LANG}}
+  CKAN___FAVICON: /images/iieg_logo-32x32.png
+  CKAN___SITE_TITLE: "Datos Abiertos - IIEG"
+  CKAN___SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
+  CKAN__TRACKING_ENABLED: "true"
+  CKANEXT__S3FILESTORE__SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
+  CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
+  CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
+  CKANEXT__S3FILESTORE__REGION_NAME: us-east-1
+  CKANEXT__S3FILESTORE__AWS_ACCESS_KEY_ID: ${ACERVO_ACCESS_KEY:?ACERVO_ACCESS_KEY is required}
+  CKANEXT__S3FILESTORE__AWS_SECRET_ACCESS_KEY: ${ACERVO_SECRET_KEY:?ACERVO_SECRET_KEY is required}
+  CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
+  CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: ${CKAN_S3_STORAGE_PATH:?CKAN_S3_STORAGE_PATH is required}
+  CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
+  CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
+  CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
+  LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:-file:///srv/app/licenses.json}
+  CKAN__AUTH__CREATE_USER_VIA_WEB: "false"
+  CKAN__AUTH__CREATE_UNOWNED_DATASET: "false"
+  CKAN__AUTH__CREATE_DATASET_IF_NOT_IN_ORGANIZATION: "false"
+  CKAN__AUTH__ANON_CREATE_DATASET: "false"
+  CKAN__DATASETS_PER_PAGE: ${CKAN_DATASETS_PER_PAGE:-20}
 
 services:
 
@@ -7,118 +52,86 @@ services:
       context: .
       dockerfile: ./nginx/Dockerfile
       args:
-        VITE_NODE_ENV: development
+        VITE_NODE_ENV: production
         VITE_APP_NAME: Portal IIEG
         VITE_ADMIN_APP_NAME: Administrador
         VITE_API_TIMEOUT: "10000"
         VITE_ADMIN_API_TIMEOUT: "10000"
         VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:?VITE_GOOGLE_ANALYTICS_ID is required}
+        VITE_GOOGLE_TAG_MANAGER_ID: ${VITE_GOOGLE_TAG_MANAGER_ID:-}
         VITE_WEB_API_URL: ${VITE_WEB_API_URL:?VITE_WEB_API_URL is required}
         VITE_ADMIN_API_URL: ${VITE_ADMIN_API_URL:?VITE_ADMIN_API_URL is required}
         VITE_MEDIA_BASE_URL: ${VITE_MEDIA_BASE_URL:?VITE_MEDIA_BASE_URL is required}
         VITE_MAPALAB_BASE_URL: ${VITE_MAPALAB_BASE_URL:?VITE_MAPALAB_BASE_URL is required}
         VITE_MAPALAB_API_KEY: ${VITE_MAPALAB_API_KEY:?VITE_MAPALAB_API_KEY is required}
-    container_name: portal-nginx_dev
+        VITE_RECAPTCHA_SITE_KEY: ${VITE_RECAPTCHA_SITE_KEY:?VITE_RECAPTCHA_SITE_KEY is required}                
+    container_name: portal-nginx
+    restart: unless-stopped
     ports:
       - "${NGINX_PORT:?NGINX_PORT is required}:80"
     environment:
+      INTERNAL_SEO_SECRET: ${INTERNAL_SEO_SECRET:?INTERNAL_SEO_SECRET is required}
       ACERVO_UPSTREAM_URL: ${ACERVO_UPSTREAM_URL:?ACERVO_UPSTREAM_URL is required}
       ACERVO_UPSTREAM_HOST: ${ACERVO_UPSTREAM_HOST:?ACERVO_UPSTREAM_HOST is required}
-      NGINX_ENVSUBST_FILTER: "^ACERVO_"
+      NGINX_ENVSUBST_FILTER: "^(ACERVO_|INTERNAL_SEO_)"
     depends_on:
       - api
       - ckan
     networks:
-      portal_network_dev:
+      portal_network:
         ipv4_address: ${NGINX_CONTAINER_IP:?NGINX_CONTAINER_IP is required}
 
   postgres:
     image: postgres:18-alpine
-    container_name: portal-postgres-dev
+    container_name: portal-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
-    ports:
-      - "${POSTGRES_PORT:?POSTGRES_PORT is required}:5432"
     volumes:
-      - postgres_data_dev:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      portal_network_dev:
-
-  seaweedfs:
-    image: chrislusf/seaweedfs:4.23
-    container_name: portal-seaweedfs-dev
-    entrypoint: ["/bin/sh", "/init.sh"]
-    command:
-      - -dir=/data
-      - -s3
-      - -s3.config=/tmp/identities.json
-      - -s3.port=8333
-      - -volume.max=100
-      - -ip.bind=0.0.0.0
-    ports:
-      - "${ACERVO_S3_PORT:?ACERVO_S3_PORT is required}:8333"
-    environment:
-      WEED_LEVELDB2_ENABLED: "true"
-      ACERVO_BUCKETS: portal iieg
-      ACERVO_ADMIN_ACCESS_KEY: ${ACERVO_ADMIN_ACCESS_KEY:?ACERVO_ADMIN_ACCESS_KEY is required}
-      ACERVO_ADMIN_SECRET_KEY: ${ACERVO_ADMIN_SECRET_KEY:?ACERVO_ADMIN_SECRET_KEY is required}
-      ACERVO_ACCESS_KEY: ${ACERVO_ACCESS_KEY:?ACERVO_ACCESS_KEY is required}
-      ACERVO_SECRET_KEY: ${ACERVO_SECRET_KEY:?ACERVO_SECRET_KEY is required}
-      ACERVO_IIEG_ACCESS_KEY: ${ACERVO_IIEG_ACCESS_KEY:?ACERVO_IIEG_ACCESS_KEY is required}
-      ACERVO_IIEG_SECRET_KEY: ${ACERVO_IIEG_SECRET_KEY:?ACERVO_IIEG_SECRET_KEY is required}
-    volumes:
-      - seaweedfs_data_dev:/data
-      - ./dev-seaweedfs/identities.json.template:/init-template/identities.json.template:ro
-      - ./dev-seaweedfs/init.sh:/init.sh:ro
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:9333/cluster/status | grep -q IsLeader"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
-    networks:
-      portal_network_dev:
+      portal_network:
 
   redis:
     image: redis:8-alpine
-    container_name: portal-redis-dev
-    ports:
-      - "${REDIS_PORT:?REDIS_PORT is required}:6379"
+    container_name: portal-redis
+    restart: unless-stopped
     volumes:
-      - redis_data_dev:/data
+      - redis_data:/data
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      portal_network_dev:
-      ckan_network_dev:
+      ckan_network:
 
   redis-api:
     image: redis:8-alpine
-    container_name: portal-redis-api-dev
+    container_name: portal-redis-api
+    restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
-      - redis_api_data_dev:/data
+      - redis_api_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      portal_network_dev:
+      - portal_network
 
   ckan-db:
     image: postgres:16-alpine
-    container_name: portal-ckan-db-dev
+    container_name: portal-ckan-db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${CKAN_DB_SUPERUSER_PASSWORD:?CKAN_DB_SUPERUSER_PASSWORD is required}
@@ -127,10 +140,8 @@ services:
       CKAN_DB_PASSWORD: ${CKAN_DB_PASSWORD:?CKAN_DB_PASSWORD is required}
       DATASTORE_RO_USER: datastore_default
       DATASTORE_RO_PASSWORD: ${DATASTORE_RO_PASSWORD:?DATASTORE_RO_PASSWORD is required}
-    ports:
-      - "${CKAN_DB_PORT:?CKAN_DB_PORT is required}:5432"
     volumes:
-      - ckan_db_data_dev:/var/lib/postgresql/data
+      - ckan_db_data:/var/lib/postgresql/data
       - ./ckan/postgres-init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -138,34 +149,26 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      ckan_network_dev:
+      ckan_network:
 
   ckan-solr:
     image: ckan/ckan-solr:2.11-solr9
-    container_name: portal-ckan-solr-dev
-    ports:
-      - "${CKAN_SOLR_PORT:?CKAN_SOLR_PORT is required}:8983"
+    container_name: portal-ckan-solr
+    restart: unless-stopped
     volumes:
-      - ckan_solr_data_dev:/var/solr
+      - ckan_solr_data:/var/solr
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8983/solr/ckan/admin/ping"]
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
-      ckan_network_dev:
+      ckan_network:
 
   ckan:
-    build:
-      context: ./ckan
-      dockerfile: Dockerfile
-      args:
-        CKAN_BASE_IMAGE: ckan/ckan-base:2.11.5
-    container_name: portal-ckan-dev
-    command: ckan -c /srv/app/ckan.ini run -H 0.0.0.0 -p 5000
-    entrypoint: ["/bin/sh", "-c", "python3 /srv/app/prerun.py && ckan -c /srv/app/ckan.ini run -H 0.0.0.0"]
-    ports:
-      - "${CKAN_PORT:?CKAN_PORT is required}:5000"
+    build: *ckan-build
+    container_name: portal-ckan
+    restart: unless-stopped
     depends_on:
       ckan-db:
         condition: service_healthy
@@ -173,41 +176,12 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    environment:
-      CKAN_SITE_URL: ${CKAN_SITE_URL:?CKAN_SITE_URL is required}
-      CKAN_SQLALCHEMY_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/ckan_default
-      CKAN_DATASTORE_WRITE_URL: postgresql://ckan:${CKAN_DB_PASSWORD}@ckan-db:5432/datastore_default
-      CKAN_DATASTORE_READ_URL: postgresql://datastore_default:${DATASTORE_RO_PASSWORD}@ckan-db:5432/datastore_default
-      CKAN_SOLR_URL: http://ckan-solr:8983/solr/ckan
-      CKAN_REDIS_URL: redis://redis:6379/1
-      CKAN___DEBUG: "True"
-      CKAN__UPLOADS_ENABLED: "True"
-      CKAN___BEAKER__SESSION__SECRET: ${CKAN_BEAKER_SESSION_SECRET:?CKAN_BEAKER_SESSION_SECRET is required}
-      CKAN___API_TOKEN__JWT__ENCODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET:?CKAN_API_TOKEN_JWT_SECRET is required}
-      CKAN___API_TOKEN__JWT__DECODE__SECRET: ${CKAN_API_TOKEN_JWT_SECRET}
-      CKAN_SYSADMIN_NAME: ${CKAN_SYSADMIN_NAME:?CKAN_SYSADMIN_NAME is required}
-      CKAN_SYSADMIN_PASSWORD: ${CKAN_SYSADMIN_PASSWORD:?CKAN_SYSADMIN_PASSWORD is required}
-      CKAN_SYSADMIN_EMAIL: ${CKAN_SYSADMIN_EMAIL:?CKAN_SYSADMIN_EMAIL is required}
-      CKAN__PLUGINS: envvars image_view text_view datatables_view datastore xloader activity s3filestore iieg_theme stats
-      CKAN__ROOT_PATH: /datos-abiertos/{{LANG}}
-      CKAN_TRACKING_ENABLED: "True"
-      CKAN___SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
-      CKANEXT__S3FILESTORE__SECRET_KEY: ${SECRET_KEY:?SECRET_KEY is required}
-      CKANEXT__S3FILESTORE__AWS_BUCKET_NAME: ${ACERVO_BUCKET_NAME:?ACERVO_BUCKET_NAME is required}
-      CKANEXT__S3FILESTORE__HOST_NAME: ${ACERVO_S3_URL:?ACERVO_S3_URL is required}
-      CKANEXT__S3FILESTORE__REGION_NAME: us-east-1
-      CKANEXT__S3FILESTORE__AWS_ACCESS_KEY_ID: ${ACERVO_ACCESS_KEY:?ACERVO_ACCESS_KEY is required}
-      CKANEXT__S3FILESTORE__AWS_SECRET_ACCESS_KEY: ${ACERVO_SECRET_KEY:?ACERVO_SECRET_KEY is required}
-      CKANEXT__S3FILESTORE__SIGNATURE_VERSION: s3v4
-      CKANEXT__S3FILESTORE__AWS_STORAGE_PATH: datos-abiertos
-      CKANEXT__S3FILESTORE__ADDRESSING_STYLE: path
-      CKANEXT__S3FILESTORE__CHECK_ACCESS_ON_STARTUP: "False"
-      CKANEXT__S3FILESTORE__DOWNLOAD_PROXY: ${CKAN_DOWNLOAD_PROXY:?CKAN_DOWNLOAD_PROXY is required}
-      LICENSES_GROUP_URL: ${LICENSES_GROUP_URL:?LICENSES_GROUP_URL is required, default file:///srv/app/licenses.json}
+    environment: *ckan-env
     volumes:
-      - ckan_storage_dev:/var/lib/ckan
+      - ckan_storage:/var/lib/ckan
       - ./ckan/src/ckanext-iieg-theme:/srv/app/src/ckanext-iieg-theme
       - ./ckan/licenses.json:/srv/app/licenses.json
+      - ./ckan/templates:/srv/app/ckan/templates
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:5000/api/3/action/status_show"]
       interval: 30s
@@ -215,28 +189,42 @@ services:
       retries: 5
       start_period: 60s
     networks:
-      portal_network_dev:
+      portal_network:
         aliases:
           - portal-ckan
-      ckan_network_dev:
+      ckan_network:
+
+  ckan-tracking:
+    build: *ckan-build
+    container_name: portal-ckan-tracking
+    restart: unless-stopped
+    depends_on:
+      ckan:
+        condition: service_healthy
+    environment: *ckan-env
+    volumes:
+      - ./ckan/licenses.json:/srv/app/licenses.json
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while true; do
+          ckan -c /srv/app/ckan.ini tracking update
+          sleep 259200
+        done
+    networks:
+      - ckan_network
 
   api:
     build:
       context: ./api
       dockerfile: Dockerfile
-    container_name: portal-api-dev
-    ports:
-      - "${API_PORT:?API_PORT is required}:8000"
-    volumes:
-      - ./api:/app
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    container_name: portal-api
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
       redis-api:
-        condition: service_healthy
-      seaweedfs:
         condition: service_healthy
     environment:
       FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS:?FORWARDED_ALLOW_IPS is required}
@@ -278,70 +266,33 @@ services:
       ACERVO_IIEG_ACCESS_KEY: ${ACERVO_IIEG_ACCESS_KEY:?ACERVO_IIEG_ACCESS_KEY is required}
       ACERVO_IIEG_SECRET_KEY: ${ACERVO_IIEG_SECRET_KEY:?ACERVO_IIEG_SECRET_KEY is required}
       ACERVO_IIEG_BUCKET_NAME: ${ACERVO_IIEG_BUCKET_NAME:?ACERVO_IIEG_BUCKET_NAME is required}
+      ACERVO_API_KEY: ${ACERVO_API_KEY}
+      ACERVO_API_KEY_HEADER: ${ACERVO_API_KEY_HEADER:?ACERVO_API_KEY_HEADER is required}
+      SEED_EXAMPLES: ${SEED_EXAMPLES:?SEED_EXAMPLES is required}
+      SMTP_USER: ${SMTP_USER:?SMTP_USER is required}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:?SMTP_PASSWORD is required}
+      CONTACT_DEST_EMAIL: ${CONTACT_DEST_EMAIL:?CONTACT_DEST_EMAIL is required}
+      VITE_RECAPTCHA_SITE_KEY: ${VITE_RECAPTCHA_SITE_KEY:?VITE_RECAPTCHA_SITE_KEY is required}
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY:?RECAPTCHA_SECRET_KEY is required}
+      INTERNAL_SEO_SECRET: ${INTERNAL_SEO_SECRET:?INTERNAL_SEO_SECRET is required}
     networks:
-      portal_network_dev:
+      portal_network:
         aliases:
           - portal-api
 
-  web:
-    image: node:24-alpine
-    container_name: portal-web-dev
-    working_dir: /app
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
-    ports:
-      - "${WEB_PORT:?WEB_PORT is required}:3010"
-    volumes:
-      - ./web:/app
-      - web_node_modules:/app/node_modules
-    environment:
-      VITE_PORT: "3010"
-      VITE_NODE_ENV: development
-      VITE_APP_NAME: Portal IIEG
-      VITE_API_TIMEOUT: "10000"
-      VITE_WEB_API_URL: ${VITE_WEB_API_URL:?VITE_WEB_API_URL is required}
-      VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:?VITE_GOOGLE_ANALYTICS_ID is required}
-      VITE_GOOGLE_TAG_MANAGER_ID: ${VITE_GOOGLE_TAG_MANAGER_ID:?VITE_GOOGLE_TAG_MANAGER_ID is required}
-      VITE_MAPALAB_BASE_URL: ${VITE_MAPALAB_BASE_URL:?VITE_MAPALAB_BASE_URL is required}
-      VITE_MAPALAB_API_KEY: ${VITE_MAPALAB_API_KEY:?VITE_MAPALAB_API_KEY is required}
-    networks:
-      portal_network_dev:
-
-  admin:
-    image: node:24-alpine
-    container_name: portal-admin-dev
-    working_dir: /app
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
-    ports:
-      - "${ADMIN_PORT:?ADMIN_PORT is required}:3011"
-    volumes:
-      - ./admin:/app
-      - admin_node_modules:/app/node_modules
-    environment:
-      VITE_PORT: "3011"
-      VITE_NODE_ENV: development
-      VITE_ADMIN_APP_NAME: Administrador
-      VITE_ADMIN_API_TIMEOUT: "10000"
-      VITE_ADMIN_API_URL: ${VITE_ADMIN_API_URL:?VITE_ADMIN_API_URL is required}
-      VITE_GOOGLE_ANALYTICS_ID: ${VITE_GOOGLE_ANALYTICS_ID:?VITE_GOOGLE_ANALYTICS_ID is required}
-    networks:
-      portal_network_dev:
-
 volumes:
-  postgres_data_dev:
-  redis_data_dev:
-  redis_api_data_dev:
-  web_node_modules:
-  admin_node_modules:
-  ckan_db_data_dev:
-  ckan_solr_data_dev:
-  ckan_storage_dev:
-  seaweedfs_data_dev:
+  postgres_data:
+  redis_data:
+  redis_api_data:
+  ckan_db_data:
+  ckan_solr_data:
+  ckan_storage:
 
 networks:
-  portal_network_dev:
+  portal_network:
     driver: bridge
     ipam:
       config:
         - subnet: ${PORTAL_SUBNET:?PORTAL_SUBNET is required}
-  ckan_network_dev:
+  ckan_network:
     driver: bridge
