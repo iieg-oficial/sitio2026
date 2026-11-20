@@ -4,7 +4,7 @@ x-ckan-build: &ckan-build
   context: ./ckan
   dockerfile: Dockerfile
   args:
-    CKAN_BASE_IMAGE: ckan/ckan-base:2.11.5
+    CKAN_BASE_IMAGE: ckan/ckan-base:2.11.7
 
 x-ckan-env: &ckan-env
   CKAN_SITE_URL: ${CKAN_SITE_URL:?CKAN_SITE_URL is required}

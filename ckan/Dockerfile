@@ -1,4 +1,4 @@
-ARG CKAN_BASE_IMAGE=ckan/ckan-base:2.11.5
+ARG CKAN_BASE_IMAGE=ckan/ckan-base:2.11.7
 FROM ${CKAN_BASE_IMAGE}
 
 USER root
