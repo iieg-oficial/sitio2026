@@ -23,7 +23,7 @@ function shuffleArray(arr) {
 // ─── Constantes ───────────────────────────────────────────────────────────────
 const ITEMS_PER_PAGE = 12
 const DEBOUNCE_MS = 350
-const SEARCH_KEYS = ['titulo', 'autor', 'area','escala', 'ubicacion', 'informacion', 'editor', 'edicion', 'medida']
+const SEARCH_KEYS = ['titulo', 'informacion', 'edicion']
 
 export default function Mapas() {
     const [mapas, setMapas] = useState([])        // todos los mapas
