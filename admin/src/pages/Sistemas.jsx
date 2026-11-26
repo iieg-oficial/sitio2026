@@ -5,6 +5,7 @@ import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { ALLOWED_ACCEPT_STRING } from '@services/mediaService';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
 
@@ -250,6 +251,7 @@ export default function Sistemas() {
                                 bucket="portal"
                                 folder="/sistemas"
                                 label="Subir imagen"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
                                 }}
@@ -294,6 +296,7 @@ export default function Sistemas() {
                                 bucket="portal"
                                 folder="/sistemas"
                                 label="Subir imagen slider"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen_slider', media.url);
                                 }}

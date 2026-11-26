@@ -1,8 +1,9 @@
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import mediaService from '@services/mediaService';
+import { ALLOWED_ACCEPT_STRING } from '@services/mediaService';
 
-function UploadAcervo({ onUploaded, bucket = 'portal', folder = '/' , label = 'Subir Archivo' }) {
+function UploadAcervo({ onUploaded, bucket = 'portal', folder = '/' , label = 'Subir Archivo', accept = ALLOWED_ACCEPT_STRING }) {
 
        
     const handleUpload = async ({ file, onSuccess, onError, onProgress }) => {
@@ -31,7 +32,7 @@ function UploadAcervo({ onUploaded, bucket = 'portal', folder = '/' , label = 'S
     };
 
     return (
-        <Upload customRequest={handleUpload} showUploadList={false}>
+        <Upload customRequest={handleUpload} showUploadList={false} accept={accept}>
             <Button icon={<UploadOutlined />}>{ label }</Button>
         </Upload>
     );

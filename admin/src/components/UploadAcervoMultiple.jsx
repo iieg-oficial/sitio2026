@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import mediaService from '@services/mediaService';
+import { ALLOWED_ACCEPT_STRING } from '@services/mediaService';
 
-function UploadAcervoMultiple({ onUploaded, bucket = 'portal', folder = '/' , label = 'Subir Archivos' }) {
+function UploadAcervoMultiple({ onUploaded, bucket = 'portal', folder = '/' , label = 'Subir Archivos', accept = ALLOWED_ACCEPT_STRING }) {
 
     const [uploading, setUploading] = useState(false);
 
@@ -40,7 +41,7 @@ function UploadAcervoMultiple({ onUploaded, bucket = 'portal', folder = '/' , la
     };
 
     return (
-        <Upload multiple beforeUpload={handleBeforeUpload} showUploadList={false}>
+        <Upload multiple beforeUpload={handleBeforeUpload} showUploadList={false} accept={accept}>
         <Button icon={<UploadOutlined />} loading={uploading}>{label}</Button>
         </Upload>
     );

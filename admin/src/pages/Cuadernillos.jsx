@@ -3,6 +3,7 @@ import { Table, Card, Typography, Space, Button, Modal, Form, Input, message, Se
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { ALLOWED_ACCEPT_STRING } from '@services/mediaService';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
 
@@ -230,6 +231,7 @@ export default function Cuadernillos() {
                                 bucket="portal"
                                 folder={getDynamicFolder()}
                                 label="Subir Archivo"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) =>
                                     form.setFieldsValue({ archivo: media.url })
                                 }

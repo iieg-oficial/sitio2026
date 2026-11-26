@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { ALLOWED_ACCEPT_STRING } from '@services/mediaService';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
 import { SafeHtml } from '@components/SafeHtml';
@@ -192,6 +193,7 @@ export default function Snieg() {
                                 bucket="portal"
                                 folder="/snieg"
                                 label="Subir imagen"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
                                 }}

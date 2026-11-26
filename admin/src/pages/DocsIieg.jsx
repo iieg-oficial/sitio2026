@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { ALLOWED_ACCEPT_STRING } from '@services/mediaService';
 import parse from 'html-react-parser';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
@@ -272,6 +273,7 @@ export default function DocsIieg() {
                                 bucket="portal"
                                 folder="/documentosIieg/imagenes"
                                 label="Subir imagen"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
                                 }}
@@ -305,6 +307,7 @@ export default function DocsIieg() {
                                 bucket="portal"
                                 folder="/documentosIieg/documentos"
                                 label="Subir documento"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('documento', media.url);
                                 }}

@@ -5,6 +5,7 @@ import api from '@services/api';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervoMultiple } from '@components/UploadAcervoMultiple';
+import { ALLOWED_ACCEPT_STRING } from '@services/mediaService';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
 import { SafeHtml } from '@components/SafeHtml';
@@ -334,6 +335,7 @@ export default function Posts() {
                             bucket="portal"
                             folder="/blog"
                             label="Subir archivo"
+                            accept={ALLOWED_ACCEPT_STRING}
                             onUploaded={(urls) => {
                                 setGalleryImages((prev) => [...prev, ...urls]);
                             }}

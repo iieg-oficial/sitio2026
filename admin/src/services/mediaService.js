@@ -5,7 +5,7 @@ const DB_NAME = 'CMS_MediaStorage';
 const DB_VERSION = 1;
 const STORE_NAME = 'media_files';
 
-const DEFAULT_MAX_SIZE = 100 * 1024 * 1024; // 10 MB
+const DEFAULT_MAX_SIZE = 100 * 1024 * 1024; // 100 MB
 const MEDIA_BASE_URL = (import.meta.env.VITE_MEDIA_BASE_URL || 'https://iieg.jalisco.gob.mx/acervo').replace(/\/+$/, '');
 
 const ALLOWED_MIME_MAP = {
@@ -21,8 +21,13 @@ const ALLOWED_MIME_MAP = {
     'xlsx': { mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', bytes: [0x50, 0x4B, 0x03, 0x04] },
     'xml': { mime: 'application/xml', textFallback: true },
     'json': { mime: 'application/json', textFallback: true },
-    'csv': { mime: 'text/csv', textFallback: true }
+    'csv': { mime: 'text/csv', textFallback: true },
+    'html': { mime: 'text/html', textFallback: true }
 };
+
+export const ALLOWED_ACCEPT_STRING = Object.entries(ALLOWED_MIME_MAP)
+    .flatMap(([ext, config]) => [`.${ext}`, config.mime])
+    .join(',');
 
 let dbInstance = null;
 
@@ -46,23 +51,12 @@ const sanitizeMediaFilename = (filename) => {
     return normalizedExtension ? `${normalizedBase}.${normalizedExtension}` : normalizedBase;
 };
 
-export const buildMediaUrl = (filename, { bucket = 'portal', folder = '/' } = {}) => {
-    const folderClean = sanitizeFolderPath(folder);
-    const folderParts = String(folderClean || '/')
-        .split('/')
-        .filter(Boolean)
-        .map((part) => encodeURIComponent(part));
-    const pathParts = [encodeURIComponent(bucket), ...folderParts, encodeURIComponent(sanitizeMediaFilename(filename))];
-
-    return `${MEDIA_BASE_URL}/${pathParts.join('/')}`;
-};
-
 export const sanitizeFolderPath = (folder) => {
     if (!folder || folder === '/') return '';
 
     let clean = String(folder).trim();
 
-    // Normaliza separadores y quita espacios raross
+    // Normaliza separadores y quita espacios raros
     clean = clean.replace(/\\/g, '/');
 
     // Quita slashes al inicio/fin
@@ -77,13 +71,24 @@ export const sanitizeFolderPath = (folder) => {
     // Sanitiza cada segmento: minúsculas, sin acentos, sin caracteres raros
     const safeSegments = segments.map((s) =>
         s
-            .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
             .toLowerCase()
             .replace(/[^a-z0-9\-_.]/g, '-')
     );
 
     return safeSegments.join('/');
-}
+};
+
+export const buildMediaUrl = (filename, { bucket = 'portal', folder = '/' } = {}) => {
+    const folderClean = sanitizeFolderPath(folder);
+    const folderParts = String(folderClean || '/')
+        .split('/')
+        .filter(Boolean)
+        .map((part) => encodeURIComponent(part));
+    const pathParts = [encodeURIComponent(bucket), ...folderParts, encodeURIComponent(sanitizeMediaFilename(filename))];
+
+    return `${MEDIA_BASE_URL}/${pathParts.join('/')}`;
+};
 
 const initDB = () => {
     return new Promise((resolve, reject) => {
@@ -164,35 +169,109 @@ const readMagicBytes = (file) => {
                 reject(new Error('No se pudo leer la cabecera del archivo'));
             }
         };
-        // Leemos solo los primeros 8 bytes
         const blob = file.slice(0, 8);
         reader.readAsArrayBuffer(blob);
     });
 };
 
 /**
- * Valida tamaño, extensión y Magic Bytes del archivo.
+ * Valida archivos basados en texto plano (JSON, XML, CSV, HTML).
+ * Evita que suban ejecutables renombrados y verifica estructura básica.
+ */
+const validateTextFile = (file, extension) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+            if (e.target.readyState !== FileReader.DONE) {
+                reject(new Error('No se pudo leer el contenido del archivo de texto.'));
+                return;
+            }
+
+            const buffer = new Uint8Array(e.target.result);
+            
+            // Un archivo de texto real nunca tiene bytes nulos (0x00)
+            const hasNullBytes = buffer.some((byte) => byte === 0x00);
+            if (hasNullBytes) {
+                reject(new Error(`El archivo .${extension} parece ser un binario y no texto válido.`));
+                return;
+            }
+
+            // Validación específica para JSON
+            if (extension === 'json') {
+                const textReader = new FileReader();
+                textReader.onload = (ev) => {
+                    try {
+                        JSON.parse(ev.target.result);
+                        resolve(true);
+                    } catch {
+                        reject(new Error('El archivo .json no tiene un formato JSON válido.'));
+                    }
+                };
+                textReader.readAsText(file);
+                return;
+            }
+
+            // Validación específica para XML y HTML (deben tener etiquetas < >)
+            if (extension === 'xml' || extension === 'html') {
+                const textSample = new TextDecoder().decode(buffer).trim();
+                if (!textSample.includes('<') || !textSample.includes('>')) {
+                    reject(new Error(`El archivo .${extension} no contiene etiquetas válidas.`));
+                    return;
+                }
+            }
+
+            resolve(true);
+        };
+
+        // Analizamos los primeros 4 KB del archivo
+        reader.readAsArrayBuffer(file.slice(0, 4096));
+    });
+};
+
+/**
+ * Valida tamaño, extensión y Magic Bytes o estructura de texto del archivo.
  */
 export const validateFileClientSecurity = async (file, maxSize = DEFAULT_MAX_SIZE) => {
+    // 0. Validar que el archivo exista y no esté vacío
+    if (!file || file.size === 0) {
+        throw new Error('El archivo está vacío o no es válido.');
+    }
+
     // 1. Validar Tamaño
     if (file.size > maxSize) {
         throw new Error(`El archivo excede el tamaño máximo permitido de ${formatFileSize(maxSize)}.`);
     }
 
-    // 2. Extraer extensión del nombre
-    const extension = file.name.split('.').pop()?.toLowerCase();
+    // 2. Extraer extensión del nombre de forma segura
+    const parts = file.name.split('.');
+    const extension = parts.length > 1 ? parts.pop().toLowerCase() : '';
+
     if (!extension || !ALLOWED_MIME_MAP[extension]) {
-        throw new Error(`La extensión .${extension} no está permitida.`);
+        throw new Error(`La extensión .${extension || 'desconocida'} no está permitida.`);
     }
 
     const expectedConfig = ALLOWED_MIME_MAP[extension];
 
-    // 3. Validar Magic Bytes
-    const fileBytes = await readMagicBytes(file);
-    const isValidSignature = expectedConfig.bytes.every((byte, index) => fileBytes[index] === byte);
+    // 3. Validar Archivos de Texto (XML, JSON, CSV, HTML)
+    if (expectedConfig.textFallback) {
+        await validateTextFile(file, extension);
+        return true;
+    }
 
-    if (!isValidSignature) {
-        throw new Error(`El contenido del archivo no coincide con una firma válida de tipo .${extension}`);
+    // 4. Validar Magic Bytes para archivos binarios
+    if (expectedConfig.bytes) {
+        const fileBytes = await readMagicBytes(file);
+        if (fileBytes.length < expectedConfig.bytes.length) {
+            throw new Error(`El archivo .${extension} está corrupto o incompleto.`);
+        }
+
+        const isValidSignature = expectedConfig.bytes.every(
+            (byte, index) => fileBytes[index] === byte
+        );
+
+        if (!isValidSignature) {
+            throw new Error(`El contenido del archivo no coincide con una firma válida de tipo .${extension}`);
+        }
     }
 
     return true;
@@ -337,7 +416,6 @@ export const deleteMultipleFiles = async (ids, bucket) => {
     }
 };
 
-
 export const getFolders = async () => {
     try {
         const response = await api.get('/multimedia/carpetas');
@@ -368,7 +446,6 @@ export const deleteFolder = async (id) => {
     }
 };
 
-
 export const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
 
@@ -388,6 +465,7 @@ export const getFileIcon = (type) => {
     if (type.includes('excel') || type.includes('spreadsheet')) return 'FileExcelOutlined';
     if (type.includes('powerpoint') || type.includes('presentation')) return 'FilePptOutlined';
     if (type.includes('zip') || type.includes('rar') || type.includes('7z')) return 'FileZipOutlined';
+    if (type === 'text/html' || type === 'application/xml' || type === 'application/json') return 'FileTextOutlined';
     return 'FileOutlined';
 };
 
@@ -456,6 +534,8 @@ export const getImageDimensions = (file) => {
 };
 
 export default {
+    ALLOWED_ACCEPT_STRING,
+    validateFileClientSecurity,
     getMediaFiles,
     getMediaFile,
     uploadMediaFile,

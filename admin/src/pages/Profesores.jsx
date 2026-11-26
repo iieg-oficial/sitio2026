@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { ALLOWED_ACCEPT_STRING } from '@services/mediaService';
 import { TableSearch } from '@components/common/TableSearch';
 import { useSearchFilter } from '@components/common/searchHooks';
 
@@ -216,6 +217,7 @@ export default function Profesores() {
                                 bucket="portal"
                                 folder="/profesores"
                                 label="Subir foto"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('foto', media.url);
                                 }}

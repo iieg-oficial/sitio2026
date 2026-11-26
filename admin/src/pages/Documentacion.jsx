@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import api from '@services/api';
 import RichTextEditor from '@components/campos/RichTextEditor';
 import { UploadAcervo } from '@components/UploadAcervo';
+import { ALLOWED_ACCEPT_STRING } from '@services/mediaService';
 import { TemaSelector } from '@components/pageComponents/SubjectSelector';
 import { TableSearch } from '@components/common/TableSearch';
 import { useDebouncedSearch } from '@components/common/searchHooks';
@@ -298,6 +299,7 @@ export default function Documentacion() {
                                 bucket="portal"
                                 folder={getDynamicFolder()}
                                 label="Subir archivo"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('archivo', media.url);
                                 }}
