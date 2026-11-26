@@ -272,6 +272,7 @@ export default function DocsIieg() {
                                 bucket="portal"
                                 folder="/documentosIieg/imagenes"
                                 label="Subir imagen"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
                                 }}
@@ -305,6 +306,7 @@ export default function DocsIieg() {
                                 bucket="portal"
                                 folder="/documentosIieg/documentos"
                                 label="Subir documento"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('documento', media.url);
                                 }}

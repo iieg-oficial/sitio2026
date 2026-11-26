@@ -250,6 +250,7 @@ export default function Sistemas() {
                                 bucket="portal"
                                 folder="/sistemas"
                                 label="Subir imagen"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
                                 }}
@@ -294,6 +295,7 @@ export default function Sistemas() {
                                 bucket="portal"
                                 folder="/sistemas"
                                 label="Subir imagen slider"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen_slider', media.url);
                                 }}

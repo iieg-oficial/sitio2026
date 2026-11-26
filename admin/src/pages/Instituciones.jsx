@@ -213,6 +213,7 @@ export default function Instituciones() {
                                 bucket="portal"
                                 folder="/instituciones"
                                 label="Subir logo"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('logo', media.url);
                                 }}

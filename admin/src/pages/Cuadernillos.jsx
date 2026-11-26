@@ -230,6 +230,7 @@ export default function Cuadernillos() {
                                 bucket="portal"
                                 folder={getDynamicFolder()}
                                 label="Subir Archivo"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) =>
                                     form.setFieldsValue({ archivo: media.url })
                                 }

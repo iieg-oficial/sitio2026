@@ -192,6 +192,7 @@ export default function Snieg() {
                                 bucket="portal"
                                 folder="/snieg"
                                 label="Subir imagen"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
                                 }}

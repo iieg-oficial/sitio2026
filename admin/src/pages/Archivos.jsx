@@ -332,6 +332,7 @@ export default function Archivos() {
                                 bucket="portal"
                                 folder={getDynamicFolder()}
                                 label="Subir archivo"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('archivo', media.url);
                                 }}

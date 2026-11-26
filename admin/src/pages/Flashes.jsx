@@ -304,6 +304,7 @@ export default function Flashes() {
                                 bucket="portal"
                                 folder="/flashes"
                                 label="Archivo"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('link', media.url);
                                 }}

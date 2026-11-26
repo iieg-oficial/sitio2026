@@ -334,6 +334,7 @@ export default function Posts() {
                             bucket="portal"
                             folder="/blog"
                             label="Subir archivo"
+                            accept={ALLOWED_ACCEPT_STRING}
                             onUploaded={(urls) => {
                                 setGalleryImages((prev) => [...prev, ...urls]);
                             }}

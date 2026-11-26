@@ -26,6 +26,7 @@ ALLOWED_MIME_TYPES = {
     'application/json',
     'text/csv',
     'text/plain',
+    'text/html',
 }
 
 class AcervoService:

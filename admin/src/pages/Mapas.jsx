@@ -276,6 +276,7 @@ export default function Mapas() {
                                 bucket="portal"
                                 folder="/mapas"
                                 label="Subir imagen"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('imagen', media.url);
                                 }}
@@ -294,6 +295,7 @@ export default function Mapas() {
                                 bucket="portal"
                                 folder="/mapas"
                                 label="Subir archivo"
+                                accept={ALLOWED_ACCEPT_STRING}
                                 onUploaded={(media) => {
                                     form.setFieldValue('archivo', media.url);
                                 }}
